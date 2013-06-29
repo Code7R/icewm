@@ -1,0 +1,160 @@
+Index: icewm-1.3.7/src/wmapp.cc
+===================================================================
+--- icewm-1.3.7.orig/src/wmapp.cc	2013-06-29 11:55:44.870378113 +0200
++++ icewm-1.3.7/src/wmapp.cc	2013-06-29 15:18:44.280543303 +0200
+@@ -1592,13 +1592,18 @@
+ #endif
+ #ifndef NO_CONFIGURE
+             char *value;
+-
+-            if ((value = GET_LONG_ARGUMENT("config")) != NULL ||
+-                (value = GET_SHORT_ARGUMENT("c")) != NULL)
++            if(GetLongArgument(value, "config", arg, argv+argc)
++            		|| GetShortArgument(value, "c", arg, argv+argc))
++            {
+                 configArg = newstr(configFile = newstr(value));
+-            else if ((value = GET_LONG_ARGUMENT("theme")) != NULL ||
+-                     (value = GET_SHORT_ARGUMENT("t")) != NULL)
++                continue;
++            }
++            else if ( GetLongArgument(value, "theme", arg, argv+argc) ||
++            		GetLongArgument(value, "t", arg, argv+argc))
++            {
+                 overrideTheme = value;
++                continue;
++            }
+             else if (IS_LONG_SWITCH("restart"))
+                 restart = true;
+             else if (IS_LONG_SWITCH("replace"))
+Index: icewm-1.3.7/src/ysmapp.cc
+===================================================================
+--- icewm-1.3.7.orig/src/ysmapp.cc	2013-06-29 11:55:44.870378113 +0200
++++ icewm-1.3.7/src/ysmapp.cc	2013-06-29 15:22:28.165871457 +0200
+@@ -226,9 +226,11 @@
+     for (char ** arg = *argv + 1; arg < *argv + *argc; ++arg) {
+         if (**arg == '-') {
+             char *value;
+-
+-            if ((value = GET_LONG_ARGUMENT("client-id")) != NULL)
++            if (GetLongArgument(value, "client-id", arg, *argv+*argc))
++            {
+                 oldSessionId = value;
++                continue;
++            }
+         }
+     }
+ 
+Index: icewm-1.3.7/src/yxapp.cc
+===================================================================
+--- icewm-1.3.7.orig/src/yxapp.cc	2013-06-29 11:55:44.870378113 +0200
++++ icewm-1.3.7/src/yxapp.cc	2013-06-29 15:26:16.358921846 +0200
+@@ -785,9 +785,11 @@
+     for (char ** arg = *argv + 1; arg < *argv + *argc; ++arg) {
+         if (**arg == '-') {
+             char *value;
+-
+-            if ((value = GET_LONG_ARGUMENT("display")) != NULL)
++            if (GetLongArgument(value, "display", arg, *argv+*argc))
++            {
+                 displayName = value;
++                continue;
++            }
+             else if (IS_LONG_SWITCH("sync"))
+                 runSynchronized = true;
+         }
+Index: icewm-1.3.7/src/base.h
+===================================================================
+--- icewm-1.3.7.orig/src/base.h	2013-06-29 12:39:19.851528865 +0200
++++ icewm-1.3.7/src/base.h	2013-06-29 15:48:01.453642901 +0200
+@@ -216,14 +216,8 @@
+ 
+ #if 1
+ 
+-/// this should be abstracted somehow (maybe in yapp)
+-#define GET_SHORT_ARGUMENT(Name) \
+-    (!strncmp(*arg, "-" Name, 3) ? *++arg : NULL)
+-#define GET_LONG_ARGUMENT(Name) \
+-    (!strpcmp(*arg, "--" Name, "=") ? \
+-      ('=' == (*arg)[sizeof(Name) + 1] ? (*arg) + sizeof(Name) + 2 : *++arg) \
+-      : \
+-      NULL)
++bool GetShortArgument(char* &ret, const char *name, char** &argpp, char ** endpp);
++bool GetLongArgument(char* &ret, const char *name, char** &argpp, char ** endpp);
+ 
+ #define IS_SHORT_SWITCH(Name)  (0 == strcmp(*arg, "-" Name))
+ #define IS_LONG_SWITCH(Name)   (0 == strcmp(*arg, "--" Name))
+Index: icewm-1.3.7/src/gnome2.cc
+===================================================================
+--- icewm-1.3.7.orig/src/gnome2.cc	2010-10-31 15:09:36.000000000 +0100
++++ icewm-1.3.7/src/gnome2.cc	2013-06-29 15:41:05.036803428 +0200
+@@ -355,11 +355,10 @@
+             char *path = 0;
+             if (IS_SWITCH("h", "help"))
+                 break;
+-            if ((path = GET_LONG_ARGUMENT("open")) != NULL) {
++            if (GetLongArgument(path, "open", arg, argv+argc))
+                 return runFile(path);
+-            } else if ((path = GET_LONG_ARGUMENT("list")) != NULL) {
++            else if (GetLongArgument(path, "list", arg, argv+argc))
+                 return makeMenu(path);
+-            }
+         }
+     }
+     msg("Usage: %s [ --open PATH | --list PATH ]", argv[0]);
+Index: icewm-1.3.7/src/misc.cc
+===================================================================
+--- icewm-1.3.7.orig/src/misc.cc	2010-10-31 15:09:36.000000000 +0100
++++ icewm-1.3.7/src/misc.cc	2013-06-29 15:46:13.788665141 +0200
+@@ -455,6 +455,42 @@
+     return str;
+ }
+ 
++
++bool GetShortArgument(char* &ret, const char *name, char** &argpp, char **endpp)
++{
++	unsigned int alen=strlen(name);
++	if(**argpp != '-' || strncmp((*argpp)+1, name, alen))
++		return false;
++	if(*((*argpp)+1+alen))
++	{
++		ret=(*argpp)+1+alen;
++		return true;
++	}
++	else if(argpp+1>=endpp)
++		return false;
++	++argpp;
++	ret=*argpp;
++	return true;
++}
++
++bool GetLongArgument(char* &ret, const char *name, char** &argpp, char **endpp)
++{
++	unsigned int alen=strlen(name);
++	if(strncmp(*argpp, "--", 2) || strncmp((*argpp)+2, name, alen))
++		return false;
++	if(*((*argpp)+2+alen) == '=')
++	{
++		ret=(*argpp)+3+alen;
++		return true;
++	}
++	if(argpp+1>=endpp)
++		return false;
++	++argpp;
++	ret = *argpp;
++	return true;
++}
++
++
+ #if 0
+ 
+ /*
+Index: icewm-1.3.7/src/yapp.h
+===================================================================
+--- icewm-1.3.7.orig/src/yapp.h	2013-06-29 11:55:44.654391388 +0200
++++ icewm-1.3.7/src/yapp.h	2013-06-29 14:35:26.199435219 +0200
+@@ -95,4 +95,5 @@
+ 
+ extern YApplication *app;
+ 
++
+ #endif
