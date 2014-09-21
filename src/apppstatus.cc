@@ -37,9 +37,16 @@
 
 extern ref<YPixmap> taskbackPixmap;
 
-NetStatus::NetStatus(mstring netdev, IAppletContainer *taskBar, YWindow *aParent):
+NetStatus::NetStatus(
+    IApp *app,
+    YSMListener *smActionListener, 
+    mstring netdev,
+    IAppletContainer *taskBar,
+    YWindow *aParent):
     YWindow(aParent), fNetDev(netdev)
 {
+    this->app = app;
+    this->smActionListener = smActionListener;
     fTaskBar = taskBar;
     ppp_in = new long[taskBarNetSamples];
     ppp_out = new long[taskBarNetSamples];
@@ -55,7 +62,7 @@ NetStatus::NetStatus(mstring netdev, IAppletContainer *taskBar, YWindow *aParent
 
     setSize(taskBarNetSamples, 20);
 
-    fUpdateTimer = new YTimer();
+    fUpdateTimer = new YTimer(0);
     if (fUpdateTimer) {
         fUpdateTimer->setInterval(taskBarNetDelay);
         fUpdateTimer->setTimerListener(this);
@@ -82,7 +89,9 @@ NetStatus::NetStatus(mstring netdev, IAppletContainer *taskBar, YWindow *aParent
 }
 
 NetStatus::~NetStatus() {
-    delete[] color;
+    delete color[0];
+    delete color[1];
+    delete color[2];
     delete[] ppp_in;
     delete[] ppp_out;
     delete fUpdateTimer;
@@ -208,7 +217,7 @@ void NetStatus::handleClick(const XButtonEvent &up, int count) {
                 start_obytes = cur_obytes;
             } else {
                 if (netCommand && netCommand[0])
-                    wmapp->runCommandOnce(netClassHint, netCommand);
+                    smActionListener->runCommandOnce(netClassHint, netCommand);
             }
         }
     }

@@ -67,7 +67,8 @@ static YColor *cadBg = 0;
 
 CtrlAltDelete *ctrlAltDelete = 0;
 
-CtrlAltDelete::CtrlAltDelete(YWindow *parent): YWindow(parent) {
+CtrlAltDelete::CtrlAltDelete(IApp *app, YWindow *parent): YWindow(parent) {
+    this->app = app;
     int w = 0, h = 0;
     YButton *b;
 
@@ -193,7 +194,7 @@ void CtrlAltDelete::actionPerformed(YAction *action, unsigned int /*modifiers*/)
         // !!! side-effect, not really nice
         manager->doWMAction(ICEWM_ACTION_CANCEL_LOGOUT);
     } else if (action == restartButton) {
-        wmapp->restartClient(0, 0);
+        manager->doWMAction(ICEWM_ACTION_RESTARTWM);
     } else if (action == shutdownButton) {
         manager->doWMAction(ICEWM_ACTION_SHUTDOWN);
     } else if (action == rebootButton) {
@@ -206,7 +207,7 @@ void CtrlAltDelete::actionPerformed(YAction *action, unsigned int /*modifiers*/)
 }
 
 bool CtrlAltDelete::handleKey(const XKeyEvent &key) {
-    KeySym k = XKeycodeToKeysym(xapp->display(), (KeyCode)key.keycode, 0);
+    KeySym k = keyCodeToKeySym(key.keycode);
     int m = KEY_MODMASK(key.state);
         
     if (key.type == KeyPress) {

@@ -200,7 +200,7 @@ void YSMApplication::smCancelShutdown() {
 }
 
 void YSMApplication::smDie() {
-    app->exit(0);
+    this->exit(0);
 }
 
 bool YSMApplication::haveSessionManager() {
@@ -226,9 +226,11 @@ YXApplication(argc, argv, displayName)
     for (char ** arg = *argv + 1; arg < *argv + *argc; ++arg) {
         if (**arg == '-') {
             char *value;
-
-            if ((value = GET_LONG_ARGUMENT("client-id")) != NULL)
+            if (GetLongArgument(value, "client-id", arg, *argv+*argc))
+            {
                 oldSessionId = value;
+                continue;
+            }
         }
     }
 

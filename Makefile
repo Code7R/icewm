@@ -4,11 +4,13 @@
 # Please run 'configure' first (generate it with autogen.sh)
 ################################################################################
 
+SHELL=/bin/bash
+
 srcdir     = .
 top_srcdir = .
 
 PACKAGE = icewm
-VERSION = 1.3.7
+VERSION = 1.3.8
 
 PREFIX = /usr
 BINDIR = /usr/X11R6/bin
@@ -21,13 +23,13 @@ MANDIR = /usr/share/man
 
 EXEEXT = 
 
-INSTALL    = /usr/bin/install -c
-INSTALLDIR = /usr/bin/install -c -m 755 -d
+INSTALL    = /bin/install -c
+INSTALLDIR = /bin/install -c -m 755 -d
 INSTALLBIN = ${INSTALL}
 INSTALLLIB = ${INSTALL} -m 644
 INSTALLETC = ${INSTALL} -m 644
 INSTALLMAN = ${INSTALL} -m 644
-MKFONTDIR  = /usr/bin/mkfontdir
+MKFONTDIR  = /bin/mkfontdir
 
 DESTDIR     =
 
@@ -46,21 +48,22 @@ all:		base nls
 install:	install-base install-nls 
 
 base icesound icehelp:
-	@cd src; $(MAKE) $@
+	@cd src && $(MAKE) $@
 
 docs:
-	@cd doc; $(MAKE) all
+	@cd doc && $(MAKE) all
 
 nls:
-	@cd po; $(MAKE) all
+	@cd po && $(MAKE) all
 
 srcclean:
-	@cd src; $(MAKE) clean
+	@cd src && $(MAKE) clean
 
 clean:  srcclean
-	@cd doc; $(MAKE) clean
+	@cd doc && $(MAKE) clean
 
-distclean: clean
+distclean:
+	@-$(MAKE) clean
 	rm -f *~ config.cache config.log config.status install.inc \
 	sysdep.inc src/config.h \
 	lib/preferences \
@@ -68,10 +71,10 @@ distclean: clean
 
 maintainer-clean: distclean
 	rm -f icewm.spec icewm.lsm Makefile configure src/config.h.in
-	@cd doc; $(MAKE) maintainer-clean
+	@cd doc && $(MAKE) maintainer-clean
 
 check:
-	@cd src ; $(MAKE) check >/dev/null
+	@cd src && $(MAKE) check >/dev/null
 
 dist:	distclean docs configure
 
@@ -126,7 +129,7 @@ install-docs: docs
 
 install-nls: nls
 	@echo ------------------------------------------
-	@cd po; $(MAKE) install
+	@cd po && $(MAKE) install
 	@echo ------------------------------------------
 
 install-man:

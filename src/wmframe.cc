@@ -55,7 +55,13 @@ bool YFrameWindow::isButton(char c) {
     return false;
 }
 
-YFrameWindow::YFrameWindow(YWindow *parent): YWindow(parent) {
+YFrameWindow::YFrameWindow(
+    YActionListener *wmActionListener,
+    YWindow *parent)
+    : YWindow(parent)
+{
+    this->wmActionListener = wmActionListener;
+
     if (activeBorderBg == 0)
         activeBorderBg = new YColor(clrActiveBorder);
     if (inactiveBorderBg == 0)
@@ -1336,7 +1342,7 @@ void YFrameWindow::actionPerformed(YAction *action, unsigned int modifiers) {
                 return ;
             }
         }
-        wmapp->actionPerformed(action, modifiers);
+        wmActionListener->actionPerformed(action, modifiers);
     }
 }
 
@@ -2370,13 +2376,14 @@ ref<YIcon> newClientIcon(int count, int reclen, long * elem) {
         }
 
         if (depth == xapp->depth()) {
+            MSG(("client icon color: %ld %d %d %d %d", pixmap, w, h, depth, xapp->depth()));
             if (w <= YIcon::smallSize()) {
                 small = YImage::createFromPixmapAndMaskScaled(
                     pixmap, mask, w, h, YIcon::smallSize(), YIcon::smallSize());
             } else if (w <= YIcon::largeSize()) {
                 large = YImage::createFromPixmapAndMaskScaled(
                     pixmap, mask, w, h, YIcon::largeSize(), YIcon::largeSize());
-            } else if (w <= YIcon::hugeSize()) {
+            } else if (w <= YIcon::hugeSize() || huge == null || huge->width() < w || huge->height() < h) {
                 huge = YImage::createFromPixmapAndMaskScaled(
                     pixmap, mask, w, h, YIcon::hugeSize(), YIcon::hugeSize());
             }
@@ -2655,10 +2662,8 @@ bool YFrameWindow::getInputFocusHint() {
     bool input = true;
 
     if (!(frameOptions() & YFrameWindow::foIgnoreNoFocusHint)) {
-
-
         if (hints && (hints->flags & InputHint) && !hints->input) {
-            if (!(client()->protocols() & YFrameClient::wpTakeFocus) ||
+            if ((client()->protocols() & YFrameClient::wpTakeFocus) ||
                 (frameOptions() & foAppTakesFocus))
             {
                 input = false;
@@ -3287,21 +3292,11 @@ void YFrameWindow::setDoNotCover(bool doNotCover) {
 void YFrameWindow::updateMwmHints() {
     int bx = borderX();
     int by = borderY();
-    int ty = titleY(), tt;
 
     getFrameHints();
 
     int gx, gy;
     client()->gravityOffsets(gx, gy);
-
-#ifdef TITLEBAR_BOTTOM
-    if (gy == -1)
-#else
-    if (gy == 1)
-#endif
-        tt = titleY() - ty;
-    else
-        tt = 0;
 
     if (!isRollup() && !isIconic()) /// !!! check (emacs hates this)
         configureClient(x() + bx + bx - borderX(),
@@ -3417,7 +3412,11 @@ void YFrameWindow::handleMsgBox(YMsgBox *msgbox, int operation) {
 #ifdef WMSPEC_HINTS
 void YFrameWindow::updateNetWMStrut() {
     int l, r, t, b;
-    client()->getNetWMStrut(&l, &r, &t, &b);
+    
+    if (!client()->getNetWMStrutPartial(&l, &r, &t, &b))   
+      if (!client()->getNetWMStrut(&l, &r, &t, &b))
+        return;
+	
     if (l != fStrutLeft ||
         r != fStrutRight ||
         t != fStrutTop ||

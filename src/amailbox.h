@@ -15,6 +15,8 @@
 #include <netinet/in.h>
 
 class MailBoxStatus;
+class YSMListener;
+class IApp;
 
 class MailCheck: public YSocketListener {
 public:
@@ -25,6 +27,7 @@ public:
         WAIT_USER,
         WAIT_PASS,
         WAIT_STAT,
+        WAIT_UNSEEN,
         WAIT_QUIT,
         ERROR,
         SUCCESS
@@ -76,7 +79,7 @@ public:
         mbxError
     };
     
-    MailBoxStatus(mstring mailBox, YWindow *aParent = 0);
+    MailBoxStatus(IApp *app, YSMListener *smActionListener, mstring mailBox, YWindow *aParent = 0);
     virtual ~MailBoxStatus();
 
     virtual void paint(Graphics &g, const YRect &r);
@@ -93,6 +96,8 @@ private:
     MailBoxState fState;
     MailCheck check;
     YTimer *fMailboxCheckTimer;
+    YSMListener *smActionListener;
+    IApp *app;
 };
 #endif
 

@@ -7,12 +7,19 @@
 
 class BrowseMenu: public ObjectMenu {
 public:
-    BrowseMenu(upath path, YWindow *parent = 0);
+    BrowseMenu(
+        IApp *app,
+        YSMListener *smActionListener,
+        YActionListener *wmActionListener,
+        upath path,
+        YWindow *parent = 0);
     virtual ~BrowseMenu();
     virtual void updatePopup();
 private:
     upath fPath;
-    time_t fModTime;
+    time_t fModTime;    
+    YSMListener *smActionListener;
+    IApp *app;
 };
 
 #endif

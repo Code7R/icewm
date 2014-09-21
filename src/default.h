@@ -88,6 +88,7 @@ XIV(bool, useMouseWheel,                        false)
 XIV(bool, quickSwitch,                          true)
 XIV(bool, quickSwitchToMinimized,               true)
 XIV(bool, quickSwitchToHidden,                  true)
+XIV(bool, quickSwitchToUrgent,                  true)
 XIV(bool, quickSwitchToAllWorkspaces,           false)
 XIV(bool, quickSwitchGroupWorkspaces,           true)
 XIV(bool, quickSwitchAllIcons,                  true)
@@ -249,6 +250,7 @@ cfoption icewm_preferences[] = {
     OBV("QuickSwitch",                          &quickSwitch,                   "Alt+Tab window switching"),
     OBV("QuickSwitchToMinimized",               &quickSwitchToMinimized,        "Alt+Tab to minimized windows"),
     OBV("QuickSwitchToHidden",                  &quickSwitchToHidden,           "Alt+Tab to hidden windows"),
+    OBV("QuickSwitchToUrgent",                  &quickSwitchToUrgent,           "Priorize Alt+Tab to urgent windows"),
     OBV("QuickSwitchToAllWorkspaces",           &quickSwitchToAllWorkspaces,    "Alt+Tab to windows on other workspaces"),
     OBV("QuickSwitchGroupWorkspaces",           &quickSwitchGroupWorkspaces,    "Alt+Tab: group windows on current workspace"),
     OBV("QuickSwitchAllIcons",                  &quickSwitchAllIcons,           "Show all reachable icons when quick switching"),
@@ -331,6 +333,7 @@ cfoption icewm_preferences[] = {
 #endif
     OBV("DoubleBuffer",                         &doubleBuffer,                  "Use double buffering when redrawing the display"),
     OBV("XRRDisable",                           &xrrDisable,                    "Disable use of new XRANDR API for dual head (nvidia workaround)"),
+    OIV("DelayFuzziness",                       &DelayFuzziness, 0, 100,        "Delay fuzziness, to allow merging of multiple timer timeouts into one (notebook power saving)"),
     OIV("ClickMotionDistance",                  &ClickMotionDistance, 0, 32,    "Pointer motion distance before click gets interpreted as drag"),
     OIV("ClickMotionDelay",                     &ClickMotionDelay, 0, 2000,     "Delay before click gets interpreted as drag"),
     OIV("MultiClickTime",                       &MultiClickTime, 0, 5000,       "Multiple click time"),
