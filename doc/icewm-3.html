@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="LinuxDoc-Tools 0.9.66">
+ <TITLE>IceWM: First steps</TITLE>
+ <LINK HREF="icewm-4.html" REL=next>
+ <LINK HREF="icewm-2.html" REL=previous>
+ <LINK HREF="icewm.html#toc3" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="icewm-4.html">Next</A>
+<A HREF="icewm-2.html">Previous</A>
+<A HREF="icewm.html#toc3">Contents</A>
+<HR>
+<H2><A NAME="s3">3.</A> <A HREF="icewm.html#toc3">First steps</A></H2>
+
+
+
+<H2><A NAME="ss3.1">3.1</A> <A HREF="icewm.html#toc3.1">IceWM components</A>
+</H2>
+
+
+<P>The IceWM suite consists of the following core applications provided by
+the main package:</P>
+<P>
+<UL>
+<LI>icewm - the actual window manager binary. This is the one you need to
+get window decorations.</LI>
+<LI>icewmbg - the background setting applications. It can assign plain
+background color or images in different formats to the X background,
+shared or separated for different workspaces. This program should be
+started before IceWM startup.</LI>
+<LI>icewmtray - catches the Docklet objects installed by various
+applications like PSI</LI>
+<LI>icewm-session - runs all of the above when needed</LI>
+<LI>icewm-menu-gnome1 - used internaly, generates IceWM program menus from
+located GNOME(1) menus</LI>
+<LI>icewm-menu-gnome2 - used internaly, generates IceWM program menus from
+FreeDesktop .desktop files (KDE/GNOME(2) menus).</LI>
+<LI>icewmhint - used internaly</LI>
+</UL>
+</P>
+
+<H2><A NAME="ss3.2">3.2</A> <A HREF="icewm.html#toc3.2">Starting icewm</A>
+</H2>
+
+
+<P>The <CODE>icewm</CODE> executable must be in your path for the restart
+function to work correctly.  Please set your $PATH environment
+variable accordingly. The <CODE>icewm</CODE> program alone is suitable for usabe
+with Desktop environments like GNOME.</P>
+<P>If you wish to run the whole IceWM suite (WM, background changer,
+Docklet support, and startup/shutdown script handling), use the
+<CODE>icewm-session</CODE> binary instead of pure <CODE>icewm</CODE>. Note that this is
+not a complete Session Manager but a helps only to automate the startup.</P>
+<P>First make sure that you choose the correct X startup script in your
+home directory. For most distributions the file $HOME/.xsession is
+honored by startx and X Display Managers like kdm. On RedHat, the
+$HOME/.Xclients may be used instead. In all cases, choose the one
+recommended by your distribution and make sure that there
+is no concurency between the X startup scripts.</P>
+<P>The recommended way to start is from $HOME/.xsession shell script (may
+be executable, must be on RedHat). Mine looks something like this:</P>
+<P>
+<PRE>
+# run profile to set $PATH and other env vars correctly
+. $HOME/.bash_profile
+# setup touchpad and the external mouse
+xset m 7 2
+xinput set-ptr-feedback 0 7 1.9 1
+
+# start icewm-session
+exec icewm-session
+</PRE>
+</P>
+<P>The xterm on the last line is there simply to make sure that your X
+session doesn't crash if icewm does (should never happen). You can
+restart icewm from there or start some other window manager. The
+session will close if you close the xterm.</P>
+<P>The above should work for most Linux systems. On commercial unices you
+should use $HOME/.dtprofile if you have CDE or $HOME/.vueprofile for
+HP-UX with HP VUE. If you are running xdm or some other login program
+check it's manpage for the correct place to start the window manager
+(usually &nbsp;/.xsession or &nbsp;/.Xsession, sometimes also &nbsp;/.xinitrc.os5).</P>
+
+<H2><A NAME="ss3.3">3.3</A> <A HREF="icewm.html#toc3.3">Startup and shutdown scripts</A>
+</H2>
+
+
+<P>After initialization IceWM-Session will search the resource path (
+<A HREF="icewm-7.html#lib">lib</A>
+)
+for a startup script. If this file is found to exist and to be executeable
+IceWM-Session will run the script. On startup IceWM-Session will search for a script
+called "startup". And during the termination of icewm, the
+"shutdown" script is executed.</P>
+<P>Additionally the flag "--with-gnome" is passed if a GNOME session 
+manager is detected.</P>
+<P>Example (startup):
+<PRE>
+#!/bin/bash
+
+[ -x ~/.icewm/restart ] &amp;&amp; source ~/.icewm/restart
+
+gnome-terminal --geometry 80x25+217+235 &amp;
+xscreensaver &amp;
+</PRE>
+</P>
+<P><B>Hint: </B> 
+This feature is meant for easy desktop initialization and it is
+part of IceWM due popular demand. For more sophisticated session management 
+you should learn how to use a real session manager - IceWM does support 
+the XSESSION protocol.</P>
+
+<HR>
+<A HREF="icewm-4.html">Next</A>
+<A HREF="icewm-2.html">Previous</A>
+<A HREF="icewm.html#toc3">Contents</A>
+</BODY>
+</HTML>

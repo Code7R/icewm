@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="LinuxDoc-Tools 0.9.66">
+ <TITLE>IceWM: Configuration/Resource/Library Path</TITLE>
+ <LINK HREF="icewm-8.html" REL=next>
+ <LINK HREF="icewm-6.html" REL=previous>
+ <LINK HREF="icewm.html#toc7" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="icewm-8.html">Next</A>
+<A HREF="icewm-6.html">Previous</A>
+<A HREF="icewm.html#toc7">Contents</A>
+<HR>
+<H2><A NAME="s7">7.</A> <A HREF="icewm.html#toc7">Configuration/Resource/Library Path</A></H2>
+
+<P>
+<A NAME="lib"></A> </P>
+<P>Icewm knows several locations to look for configuration
+information, themes and customization; put together these
+locations are called the resource path.
+The resource path contains the following
+directories:</P>
+<P>
+<DL>
+<DT><B>$HOME/.icewm</B><DD>
+<P>user's personal customization. This location can
+be customized by setting the $ICEWM_PRIVCFG environment variable.</P>
+<DT><B>/etc/X11/icewm</B><DD>
+<P>system-wide customized defaults</P>
+<DT><B>/usr/share/icewm OR /usr/local/share/icewm</B><DD>
+<P>compiled-in default directory
+with default files</P>
+</DL>
+</P>
+<P>The directories are searched in the above order, so any file located
+in the system/install directory can be overridden by the user by creating
+the same directory hierarchy under <CODE>$HOME/.icewm</CODE>.</P>
+<P>To customize icewm yourself, you should create the $HOME/.icewm directory and copy
+the files that you wish to modify (preferences, winoptions),from /etc/X11/icewm,
+/usr/share/icewm or /usr/local/share/icewm and then modify as you like.</P>
+<P>To customize the default themes, you should create the $HOME/.icewm/themes directory
+and copy all the theme files there and then modify as necessary.</P>
+
+<HR>
+<A HREF="icewm-8.html">Next</A>
+<A HREF="icewm-6.html">Previous</A>
+<A HREF="icewm.html#toc7">Contents</A>
+</BODY>
+</HTML>

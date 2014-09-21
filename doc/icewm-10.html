@@ -1,0 +1,286 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="LinuxDoc-Tools 0.9.66">
+ <TITLE>IceWM: Preferences</TITLE>
+ <LINK HREF="icewm-11.html" REL=next>
+ <LINK HREF="icewm-9.html" REL=previous>
+ <LINK HREF="icewm.html#toc10" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="icewm-11.html">Next</A>
+<A HREF="icewm-9.html">Previous</A>
+<A HREF="icewm.html#toc10">Contents</A>
+<HR>
+<H2><A NAME="preferences"></A> <A NAME="s10">10.</A> <A HREF="icewm.html#toc10">Preferences</A></H2>
+
+
+<P>This section shows preferences that can be set in &nbsp;/.icewm/preferences.
+Themes will not be able to override these settings.
+Default values are shown following the equal sign.</P>
+
+<H2><A NAME="ss10.1">10.1</A> <A HREF="icewm.html#toc10.1">Focus and Behavior</A>
+</H2>
+
+
+<P>The following settings can be set to value 1 (enabled) or value 0 (disabled).</P>
+<P>
+<DL>
+<DT><B>ClickToFocus = 1</B><DD>
+<P>Enables click to focus mode.</P>
+<DT><B>RaiseOnFocus = 1</B><DD>
+<P>Window is raised when focused.</P>
+<DT><B>FocusOnClickClient = 1</B><DD>
+<P>Window is focused when client area is clicked.</P>
+<DT><B>RaiseOnClickClient = 1</B><DD>
+<P>Window is raised when client area is clicked.</P>
+<DT><B>RaiseOnClickTitleBar = 1</B><DD>
+<P>Window is raised when titlebar is clicked.</P>
+<DT><B>RaiseOnClickButton = 1</B><DD>
+<P>Window is raised when title bar button is clicked.</P>
+<DT><B>RaiseOnClickFrame = 1</B><DD>
+<P>Window is raised when frame is clicked.</P>
+<DT><B>PassFirstClickToClient = 1</B><DD>
+<P>The click which raises the window is also passed to the client.</P>
+<DT><B>AutoRaise = 0</B><DD>
+<P>Windows will raise automatically after AutoRaiseDelay when focused.</P>
+<DT><B>StrongPointerFocus = 0</B><DD>
+<P>When focus follows mouse always give the focus to
+the window under mouse pointer - Even when no mouse motion has occured. Using this
+is not recommended. Please prefer to use just ClickToFocus=0.</P>
+<DT><B>FocusOnMap = 1</B><DD>
+<P>Window is focused after being mapped.</P>
+<DT><B>FocusOnMapTransient = 1</B><DD>
+<P>Transient window is focused after being mapped.</P>
+<DT><B>FocusOnAppRaise = 1</B><DD>
+<P>The window is focused when application raises it.</P>
+<DT><B>PointerColormap = 0</B><DD>
+<P>Colormap focus follows pointer.</P>
+<DT><B>SizeMaximized = 0</B><DD>
+<P>Window can be resized when maximized.</P>
+<DT><B>MinimizeToDesktop = 0</B><DD>
+<P>Window is minimized to desktop area (in addition to the taskbar).</P>
+<DT><B>QuickSwitch = 1</B><DD>
+<P>enable Alt+Tab window switcher.</P>
+<DT><B>QuickSwitchToMinimized = 1</B><DD>
+<P>Alt+Tab switches to minimized windows too.</P>
+<DT><B>QuickSwitchToAllWorkspaces = 1</B><DD>
+<P>Alt+Tab switches to windows on any workspace.</P>
+<DT><B>ShowMoveSizeStatus = 1</B><DD>
+<P>Move/resize status window is visible when
+moving/resizing the window.</P>
+<DT><B>ShowWorkspaceStatusAfterSwitch = 1</B><DD>
+<P>Show name of current workspace while
+switching workspaces.</P>
+<DT><B>ShowWorkspaceStatusAfterActivation = 1</B><DD>
+<P>Show name of current workspace after explicit activation.</P>
+<DT><B>WarpPointer = 0</B><DD>
+<P>Pointer is moved in pointer focus move when focus is moved using the keyboard.</P>
+<DT><B>OpaqueMove = 1</B><DD>
+<P>Window is immediately moved when dragged, no outline is shown.</P>
+<DT><B>OpaqueResize = 0</B><DD>
+<P>Window is immediately resized when dragged, no outline is shown.</P>
+<DT><B>Win95Keys = 0</B><DD>
+<P>Makes 3 additional keys perform sensible functions. The keys
+must be mapped to MetaL,MetaR and Menu. The left one will activate the start menu
+and the right one will display the window list.</P>
+<DT><B>ManualPlacement = 0</B><DD>
+<P>Windows must be placed manually by the user.</P>
+<DT><B>IgnoreNoFocusHint = 0</B><DD>
+<P>Ignore no-accept-focus hint set by some windows.</P>
+<DT><B>MenuMouseTracking = 0</B><DD>
+<P>If enabled, menus will track the mouse even when no mouse button is pressed.</P>
+<DT><B>SnapMove = 1</B><DD>
+<P>Snap to nearest screen edge/window when moving windows.</P>
+<DT><B>SnapDistance</B><DD>
+<P>Distance in pixels before windows snap together</P>
+<DT><B>EdgeSwitch = 0</B><DD>
+<P>Workspace switches by moving mouse to left/right screen edge.</P>
+<DT><B>AutoReloadMenus = 1</B><DD>
+<P>Reload menu files automatically if set to 1.</P>
+<DT><B>ShowThemesMenu = 1</B><DD>
+<P>Show themes submenu.</P>
+<DT><B>ShowHelp = 1</B><DD>
+<P>Show the help menu item.</P>
+<DT><B>MsgBoxDefaultAction = 0</B><DD>
+<P>Preselect to Cancel (0) or the OK (1) button in message
+boxes</P>
+<DT><B>UseRootButtons</B><DD>
+<P>Bitmask of root window button click to use in window manager</P>
+<DT><B>ButtonRaiseMask</B><DD>
+<P>Bitmask of buttons that raise the window when pressed</P>
+<DT><B>EdgeResistance = 32</B><DD>
+<P>Resistance to move window with mouse outside screen
+limits. Setting it to 10000 makes the resistance infinite.</P>
+</DL>
+</P>
+
+<H2><A NAME="ss10.2">10.2</A> <A HREF="icewm.html#toc10.2">Task Bar</A>
+</H2>
+
+
+<P>The following settings can be set to value 1 (enabled) or value 0 (disabled).</P>
+<P>
+<DL>
+<DT><B>ShowTaskBar = 1</B><DD>
+<P>Task bar is visible.</P>
+<DT><B>TaskBarAtTop = 0</B><DD>
+<P>Task bar is located at top of screen.</P>
+<DT><B>TaskBarKeepBelow = 1</B><DD>
+<P>Keep the task bar below regular windows</P>
+<DT><B>TaskBarAutoHide = 0</B><DD>
+<P>Task bar will auto hide when mouse leaves it.</P>
+<DT><B>TaskBarShowStartMenu = 1</B><DD>
+<P>Show button for the start menu on the task bar.</P>
+<DT><B>TaskBarShowWindowListMenu</B><DD>
+<P>Show button for window list menu on taskbar.</P>
+<DT><B>TaskBarShowWorkspaces = 1</B><DD>
+<P>Show workspace switching buttons on task bar.</P>
+<DT><B>TaskBarShowAllWindows = 0</B><DD>
+<P>Show windows from all workspaces on task bar.</P>
+<DT><B>TaskBarShowClock = 1</B><DD>
+<P>Task bar clock is visible.</P>
+<DT><B>TaskBarShowMailboxStatus = 1</B><DD>
+<P>Display status of mailbox (determined by $MAIL environment variable).</P>
+<DT><B>TaskBarMailboxStatusBeepOnNewMail = 0</B><DD>
+<P>Beep when new mail arrives.</P>
+<DT><B>TaskBarMailboxStatusCountMessages = 0</B><DD>
+<P>Display mail message count as tooltip.</P>
+<DT><B>MailBoxPath</B><DD>
+<P>Path to a mbox file. Remote mail boxes are accessed by
+specifying an URL using the Common Internet Scheme Syntax (RFC 1738):
+<PRE>
+    scheme://[user[:password]@]server[:port][/path]
+  
+</PRE>
+
+Supported schemes are "pop3", "imap" and "file". When the scheme is 
+omitted "file://" is prepended silently. IMAP subfolders can be access by 
+using the  path component.</P>
+<P>Reserved characters like slash, at and colon can be specified by using 
+escape sequences using a hexadecimal encoding like %2f for the slash
+or %40 for the at sign.</P>
+<P>Examples:
+<PRE>
+    file:///var/spool/mail/captnmark
+    pop3://markus:%2f%40%3a@maol.ch/
+    imap://mathias@localhost/INBOX.Maillisten.icewm-user
+  
+</PRE>
+</P>
+<DT><B>TaskBarDoubleHeight = 0</B><DD>
+<P>Double height task bar</P>
+<DT><B>TaskBarShowCPUStatus = 1</B><DD>
+<P>Show CPU status on task bar.</P>
+<DT><B>TimeFormat</B><DD>
+<P>format for the taskbar clock (time) (see strftime(3) manpage)</P>
+<DT><B>DateFormat</B><DD>
+<P>format for the taskbar clock tooltip (date+time) (see strftime(3) manpage).</P>
+<DT><B>UseMouseWheel</B><DD>
+<P>mouse wheel support</P>
+<DT><B>DelayPointerFocus</B><DD>
+<P>similar to delayed auto raise.</P>
+</DL>
+</P>
+
+<H2><A NAME="ss10.3">10.3</A> <A HREF="icewm.html#toc10.3">Timings</A>
+</H2>
+
+<P>
+<DL>
+<DT><B>ClickMotionDistance = 5</B><DD>
+<P>Movement before click is interpreted as drag.</P>
+<DT><B>MultiClickTime = 400</B><DD>
+<P>Time (ms) to recognize for double click.</P>
+<DT><B>AutoRaiseDelay = 400</B><DD>
+<P>Time to auto raise (must enable first with AutoRaise)</P>
+<DT><B>AutoHideDelay = 300</B><DD>
+<P>Time to auto hide taskbar (must enable first with
+TaskBarAutoHide).</P>
+<DT><B>ToolTipDelay = 5000</B><DD>
+<P>Time before showing the tooltip.</P>
+<DT><B>ToolTipTime = 60000</B><DD>
+<P>Time before tooltip window is hidden (0 means never)</P>
+<DT><B>ScrollBarStartDelay</B><DD>
+<P>Initial scroll bar autoscroll delay</P>
+<DT><B>ScrollBarDelay</B><DD>
+<P>Scroll bar autoscroll delay</P>
+<DT><B>AutoScrollStartDelay</B><DD>
+<P>Auto scroll start delay</P>
+<DT><B>AutoScrollDelay</B><DD>
+<P>Auto scroll delay</P>
+</DL>
+</P>
+
+<H2><A NAME="ss10.4">10.4</A> <A HREF="icewm.html#toc10.4">Workspaces</A>
+</H2>
+
+
+<P>
+<DL>
+<DT><B>WorkspaceNames</B><DD>
+<P>List of workspace names, for example</P>
+<P><CODE>WorkspaceNames=" 1 ", " 2 ", " 3 ", " 4 "</CODE></P>
+</DL>
+</P>
+
+<H2><A NAME="ss10.5">10.5</A> <A HREF="icewm.html#toc10.5">Paths</A>
+</H2>
+
+
+<P>
+<DL>
+<DT><B>LibPath</B><DD>
+<P>Path to the icewm/lib directory.</P>
+<DT><B>IconPath</B><DD>
+<P>Path to the icon directory. Multiple paths can be entered
+using the colon (UNIX) or semicolon (OS/2) as the separator.</P>
+<DT><B>LibPath</B><DD>
+<P>Path to the icewm/lib directory.</P>
+</DL>
+</P>
+
+<H2><A NAME="ss10.6">10.6</A> <A HREF="icewm.html#toc10.6">Programs</A>
+</H2>
+
+
+<P>
+<DL>
+<DT><B>ClockCommand</B><DD>
+<P>program to run when the clock is double clicked.</P>
+<DT><B>MailCommand</B><DD>
+<P>program to run when mailbox icon is double clicked.</P>
+<DT><B>LockCommand</B><DD>
+<P>program to run to lock the screen.</P>
+<DT><B>RunCommand</B><DD>
+<P>program to run when <B>Run</B> is selected from the start menu.</P>
+</DL>
+</P>
+
+<H2><A NAME="ss10.7">10.7</A> <A HREF="icewm.html#toc10.7">Window Menus</A>
+</H2>
+
+
+<P>
+<DL>
+<DT><B>WinMenuItems</B><DD>
+<P>Items to show in the window menus, posible values are:</P>
+<P>r=Restore, m=Move, s=Size, n=miNimize, x=maXimize, f=Fullscreen, h=Hide, u=roolUp, 
+a=rAise, l=Lower, y=laYer, t=moveTo, i=trayIcon, c=Close, k=Kill, w=WindowsList</P>
+<P>Examples:</P>
+<P>
+<PRE>
+WinMenuItems=rmsnxfhualyticw   #Default menu
+WinMenuItems=rmsnxfhualytickw  #Menu with all possible options
+WinMenuItems=rmsnxc            #MS-Windows menu
+</PRE>
+</P>
+</DL>
+</P>
+
+<HR>
+<A HREF="icewm-11.html">Next</A>
+<A HREF="icewm-9.html">Previous</A>
+<A HREF="icewm.html#toc10">Contents</A>
+</BODY>
+</HTML>

@@ -1,0 +1,349 @@
+/* src/config.h.in.  Generated from configure.in by autoheader.  */
+
+/* Address bar */
+#undef CONFIG_ADDRESSBAR
+
+/* APM status applet */
+#undef CONFIG_APPLET_APM
+
+/* LCD clock applet */
+#undef CONFIG_APPLET_CLOCK
+
+/* CPU status applet */
+#undef CONFIG_APPLET_CPU_STATUS
+
+/* Mailbox applet */
+#undef CONFIG_APPLET_MAILBOX
+
+/* Network status applet */
+#undef CONFIG_APPLET_NET_STATUS
+
+/* Define to enable X11 core conts. */
+#undef CONFIG_COREFONTS
+
+/* Define to use gdk_pixbuf_xlib for image rendering */
+#undef CONFIG_GDK_PIXBUF_XLIB
+
+/* Define to make IceWM more GNOME-friendly */
+#undef CONFIG_GNOME_MENUS
+
+/* Define to enable gradient support. */
+#undef CONFIG_GRADIENTS
+
+/* Define to enable GUI events support. */
+#undef CONFIG_GUIEVENTS
+
+/* Define to enable internationalization */
+#undef CONFIG_I18N
+
+/* Define when using libiconv */
+#undef CONFIG_LIBICONV
+
+/* define how to query the current locale's codeset */
+#undef CONFIG_NL_CODESETS
+
+/* Define to support the X session managment protocol */
+#undef CONFIG_SESSION
+
+/* Define to enable X shape extension */
+#undef CONFIG_SHAPE
+
+/* Define to allow transparent frame borders. */
+#undef CONFIG_SHAPED_DECORATION
+
+/* Taskbar */
+#undef CONFIG_TASKBAR
+
+/* Tooltips */
+#undef CONFIG_TOOLTIP
+
+/* Window tray */
+#undef CONFIG_TRAY
+
+/* preferred Unicode set */
+#undef CONFIG_UNICODE_SET
+
+/* OS/2 like window list */
+#undef CONFIG_WINLIST
+
+/* Window menu */
+#undef CONFIG_WINMENU
+
+/* Define to enable x86 assembly code. */
+#undef CONFIG_X86_ASM
+
+/* Define to enable XFreeType support. */
+#undef CONFIG_XFREETYPE
+
+/* Define to enable XRANDR extension */
+#undef CONFIG_XRANDR
+
+/* Define if you want to debug IceWM */
+#undef DEBUG
+
+/* Define to enable ESD support. */
+#undef ENABLE_ESD
+
+/* Define to enable internationalized message */
+#undef ENABLE_NLS
+
+/* Define to enable OSS support. */
+#undef ENABLE_OSS
+
+/* Define to enable YIFF support. */
+#undef ENABLE_YIFF
+
+/* GNOME1 hints */
+#undef GNOME1_HINTS
+
+/* Define to 1 if you have the `basename' function. */
+#undef HAVE_BASENAME
+
+/* define if nl_langinfo supports CODESET */
+#undef HAVE_CODESET
+
+/* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
+   */
+#undef HAVE_DIRENT_H
+
+/* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
+#undef HAVE_DOPRNT
+
+/* Define to 1 if you have the <esd.h> header file. */
+#undef HAVE_ESD_H
+
+/* Define to 1 if you have the <fcntl.h> header file. */
+#undef HAVE_FCNTL_H
+
+/* getloadavg() is available */
+#undef HAVE_GETLOADAVG2
+
+/* Define to 1 if you have the `gettimeofday' function. */
+#undef HAVE_GETTIMEOFDAY
+
+/* Define to 1 if you have the `iconv' function. */
+#undef HAVE_ICONV
+
+/* Define to 1 if you have the `iconv_close' function. */
+#undef HAVE_ICONV_CLOSE
+
+/* Define to 1 if you have the <iconv.h> header file. */
+#undef HAVE_ICONV_H
+
+/* Define to 1 if you have the `iconv_open' function. */
+#undef HAVE_ICONV_OPEN
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the <kstat.h> header file. */
+#undef HAVE_KSTAT_H
+
+/* Define to 1 if you have the <langinfo.h> header file. */
+#undef HAVE_LANGINFO_H
+
+/* Define to 1 if you have the `esd' library (-lesd). */
+#undef HAVE_LIBESD
+
+/* Define to 1 if you have the <libgen.h> header file. */
+#undef HAVE_LIBGEN_H
+
+/* Define to 1 if you have the <limits.h> header file. */
+#undef HAVE_LIMITS_H
+
+/* Define to 1 if you have the <linux/tasks.h> header file. */
+#undef HAVE_LINUX_TASKS_H
+
+/* Define to 1 if you have the <linux/threads.h> header file. */
+#undef HAVE_LINUX_THREADS_H
+
+/* Define to 1 if you have the <machine/apmvar.h> header file. */
+#undef HAVE_MACHINE_APMVAR_H
+
+/* Define to 1 if you have the <machine/apm_bios.h> header file. */
+#undef HAVE_MACHINE_APM_BIOS_H
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
+#undef HAVE_NDIR_H
+
+/* define if have old kstat (Solaris only?) */
+#undef HAVE_OLD_KSTAT
+
+/* Define to 1 if you have the `putenv' function. */
+#undef HAVE_PUTENV
+
+/* Define to 1 if you have the <sched.h> header file. */
+#undef HAVE_SCHED_H
+
+/* Define to 1 if you have the `select' function. */
+#undef HAVE_SELECT
+
+/* Define to 1 if you have the `socket' function. */
+#undef HAVE_SOCKET
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the `strftime' function. */
+#undef HAVE_STRFTIME
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define to 1 if you have the `strtol' function. */
+#undef HAVE_STRTOL
+
+/* Define to 1 if you have the `strtoul' function. */
+#undef HAVE_STRTOUL
+
+/* Define to 1 if you have the `sysctlbyname' function. */
+#undef HAVE_SYSCTLBYNAME
+
+/* kern.cp_time MIB item is available */
+#undef HAVE_SYSCTL_CP_TIME
+
+/* Define to 1 if you have the <sys/dir.h> header file, and it defines `DIR'.
+   */
+#undef HAVE_SYS_DIR_H
+
+/* Define to 1 if you have the <sys/dkstat.h> header file. */
+#undef HAVE_SYS_DKSTAT_H
+
+/* Define to 1 if you have the <sys/ioctl.h> header file. */
+#undef HAVE_SYS_IOCTL_H
+
+/* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.
+   */
+#undef HAVE_SYS_NDIR_H
+
+/* Define to 1 if you have the <sys/param.h> header file. */
+#undef HAVE_SYS_PARAM_H
+
+/* Define to 1 if you have the <sys/select.h> header file. */
+#undef HAVE_SYS_SELECT_H
+
+/* Define to 1 if you have the <sys/socket.h> header file. */
+#undef HAVE_SYS_SOCKET_H
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/sysctl.h> header file. */
+#undef HAVE_SYS_SYSCTL_H
+
+/* Define to 1 if you have the <sys/time.h> header file. */
+#undef HAVE_SYS_TIME_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have <sys/wait.h> that is POSIX.1 compatible. */
+#undef HAVE_SYS_WAIT_H
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define to 1 if you have the <uvm/uvm_param.h> header file. */
+#undef HAVE_UVM_UVM_PARAM_H
+
+/* Define to 1 if you have the `vprintf' function. */
+#undef HAVE_VPRINTF
+
+/* Define to 1 if you have the <X11/Xft/Xft.h> header file. */
+#undef HAVE_X11_XFT_XFT_H
+
+/* Define to enable XInternAtoms */
+#undef HAVE_XINTERNATOMS
+
+/* Define to 1 if you have the <Y2/Y.h> header file. */
+#undef HAVE_Y2_Y_H
+
+/* define if nl_langinfo supports _NL_CTYPE_CODESET_NAME */
+#undef HAVE__NL_CTYPE_CODESET_NAME
+
+/* Lite version */
+#undef LITE
+
+/* Define to disable preferences support. */
+#undef NO_CONFIGURE
+
+/* Define to disable configurable menu support. */
+#undef NO_CONFIGURE_MENUS
+
+/* Define to disable keybinding support. */
+#undef NO_KEYBIND
+
+/* Define to disable configurable window options support. */
+#undef NO_WINDOW_OPTIONS
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* Define as the return type of signal handlers (`int' or `void'). */
+#undef RETSIGTYPE
+
+/* Define to the type of arg 1 for `select'. */
+#undef SELECT_TYPE_ARG1
+
+/* Define to the type of args 2, 3 and 4 for `select'. */
+#undef SELECT_TYPE_ARG234
+
+/* Define to the type of arg 5 for `select'. */
+#undef SELECT_TYPE_ARG5
+
+/* The size of `char', as computed by sizeof. */
+#undef SIZEOF_CHAR
+
+/* The size of `int', as computed by sizeof. */
+#undef SIZEOF_INT
+
+/* The size of `long', as computed by sizeof. */
+#undef SIZEOF_LONG
+
+/* The size of `short', as computed by sizeof. */
+#undef SIZEOF_SHORT
+
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
+#undef TIME_WITH_SYS_TIME
+
+/* Define to 1 if your <sys/time.h> declares `struct tm'. */
+#undef TM_IN_SYS_TIME
+
+/* wmspec hints */
+#undef WMSPEC_HINTS
+
+/* Define to enable Xinerama support */
+#undef XINERAMA
+
+/* Define to 1 if the X Window System is missing or not being used. */
+#undef X_DISPLAY_MISSING
+
+/* Define to `unsigned int' if <sys/types.h> does not define. */
+#undef size_t

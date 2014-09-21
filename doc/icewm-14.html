@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="LinuxDoc-Tools 0.9.66">
+ <TITLE>IceWM: Window Options</TITLE>
+ <LINK HREF="icewm-15.html" REL=next>
+ <LINK HREF="icewm-13.html" REL=previous>
+ <LINK HREF="icewm.html#toc14" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="icewm-15.html">Next</A>
+<A HREF="icewm-13.html">Previous</A>
+<A HREF="icewm.html#toc14">Contents</A>
+<HR>
+<H2><A NAME="winoptions"></A> <A NAME="s14">14.</A> <A HREF="icewm.html#toc14">Window Options</A></H2>
+
+
+<P><B>winoptions</B> file is used to configure settings for individual application windows.</P>
+<P>Each line in the file must be in one of the possible formats:</P>
+<P>window_class.window_name.window_role.option: argument
+window_class.window_name.option: argument
+window_class.window_role.option: argument
+window_name.window_role.option: argument
+window_class.option: argument
+window_name.option: argument
+window_role.option: argument</P>
+<P>Each window on the desktop has (should) <B>class</B> and <B>name</B> resources associated with it. Some more recent applications will also have a <B>window role</B> resource, though not all do.
+They can be determined using the <CODE>xprop</CODE> utility.</P>
+<P>xprop should display a line like this when used on a toplevel window:
+<PRE>
+WM_CLASS = "name", "class"
+</PRE>
+
+and may also display a line like this:
+<PRE>
+WM_WINDOW_ROLE = "window role"
+</PRE>
+</P>
+<P>It's possible that an application's <B>class</B> and/or <B>name</B> contains the dot character (".") used by IceWM to separate <B>class</B>, <B>name</B> and <B>role</B> values. To lock it, precede it with the backslash character. In the following example, we suppose an application's window has <B>the.class</B> as its <B>class</B> value and <B>the.name</B> as its <B>name</B> value :</P>
+<P>
+<PRE>
+the\.class.the\.name.option: argument
+</PRE>
+</P>
+<P>Options that can be set per window are as follows:</P>
+<P>
+<DL>
+<DT><B>icon</B><DD>
+<P>The name of the icon.</P>
+<DT><B>workspace</B><DD>
+<P>Default workspace for window (number, counting from 0)</P>
+<DT><B>layer</B><DD>
+<P>Default layer for the window. Layer can be one of the following strings:</P>
+<P>
+<DL>
+<DT><B>Desktop</B><DD>
+<P>Desktop window. There should be only one window in this layer.</P>
+<DT><B>Below</B><DD>
+<P>Below default layer.</P>
+<DT><B>Normal</B><DD>
+<P>Default layer for the windows.</P>
+<DT><B>OnTop</B><DD>
+<P>Above the default.</P>
+<DT><B>Dock</B><DD>
+<P>Layer for windows docked to the edge of the screen.</P>
+<DT><B>AboveDock</B><DD>
+<P>Layer for the windows above the dock.</P>
+<DT><B>Menu</B><DD>
+<P>Layer for the windows above the dock.</P>
+</DL>
+</P>
+<P>You can also use the numbers from <CODE>WinMgr.h</CODE>.</P>
+
+<DT><B>geometry</B><DD>
+<P>Default geometry for window. This geometry should be
+specified in the X11-syntax, formal notation:
+[=][&lt;width&gt;{xX}&lt;height&gt;][{+-}&lt;xoffset&gt;{+-}&lt;yoffset&gt;]</P>
+
+<DT><B>tray</B><DD>
+<P>Default tray option for the window. Affects both the tray and the
+task pane. Tray can be one of the following strings:</P>
+<P>
+<DL>
+<DT><B>Ignore</B><DD>
+<P>Don't add an icon to the tray pane.</P>
+<DT><B>Minimized</B><DD>
+<P>Add an icon the the tray. Remove the task pane button when minimized.</P>
+<DT><B>Exclusive</B><DD>
+<P>Add an icon the the tray. Never create a task pane button .</P>
+</DL>
+</P>
+
+<DT><B>allWorkspaces=0</B><DD>
+<P>If set to 1, window will be visible on all workspaces.</P>
+<DT><B>ignoreWinList=0</B><DD>
+<P>If set to 1, window will not appear in the window list.</P>
+<DT><B>ignoreTaskBar=0</B><DD>
+<P>If set to 1, window will not appear on the task bar.</P>
+<DT><B>ignoreQuickSwitch=0</B><DD>
+<P>If set to 1, window will not be accessible using QuickSwitch feature (Alt+Tab).</P>
+<DT><B>fullKeys=0</B><DD>
+<P>If set to 1, the window manager leave more keys (Alt+F?) to the application.</P>
+<DT><B>fMove=1</B><DD>
+<P>If set to 0, window will not be movable.</P>
+<DT><B>fResize=1</B><DD>
+<P>If set to 0, window will not be resizable.</P>
+<DT><B>fClose=1</B><DD>
+<P>If set to 0, window will not be closable.</P>
+<DT><B>fMinimize=1</B><DD>
+<P>If set to 0, window will not be minimizable.</P>
+<DT><B>fMaximize=1</B><DD>
+<P>If set to 0, window will not be maximizable.</P>
+<DT><B>fHide=1</B><DD>
+<P>If set to 0, window will not be hidable.</P>
+<DT><B>fRollup=1</B><DD>
+<P>If set to 0, window will not be shadable.</P>
+<DT><B>dTitleBar=1</B><DD>
+<P>If set to 0, window will not have a title bar.</P>
+<DT><B>dSysMenu=1</B><DD>
+<P>If set to 0, window will not have a system menu.</P>
+<DT><B>dBorder=1</B><DD>
+<P>If set to 0, window will not have a border.</P>
+<DT><B>dResize=1</B><DD>
+<P>If set to 0, window will not have a resize border.</P>
+<DT><B>dClose=1</B><DD>
+<P>If set to 0, window will not have a close button.</P>
+<DT><B>dMinimize=1</B><DD>
+<P>If set to 0, window will not have a minimize button.</P>
+<DT><B>dMaximize=1</B><DD>
+<P>If set to 0, window will not have a maximize button.</P>
+<DT><B>noFocusOnAppRaise</B><DD>
+<P>if set to 1, window will not automatically get focus as
+application raises it.</P>
+<DT><B>ignoreNoFocusHint</B><DD>
+<P>if set to 1, icewm will focus even if the window does not
+handle input.</P>
+<DT><B>doNotCover=0</B><DD>
+<P>if set to 1, this window will limit the workspace available for
+regular applications. window has to be sticky at the moment to make it work</P>
+<DT><B>forcedClose=0</B><DD>
+<P>if set to 1 and the application had not registered
+WM_DELETE_WINDOW, a close confirmation dialog won't be offered upon closing
+the window.</P>
+
+</DL>
+</P>
+
+<HR>
+<A HREF="icewm-15.html">Next</A>
+<A HREF="icewm-13.html">Previous</A>
+<A HREF="icewm.html#toc14">Contents</A>
+</BODY>
+</HTML>
