@@ -23,10 +23,10 @@ esac
 exit 0
 
 @DPATCH@
-Index: icewm-1.3.7/lib/keys.in
+Index: icewm/lib/keys.in
 ===================================================================
---- icewm-1.3.7.orig/lib/keys.in	2013-06-28 18:34:51.408274821 +0200
-+++ icewm-1.3.7/lib/keys.in	2013-06-28 18:34:51.396275534 +0200
+--- icewm.orig/lib/keys.in
++++ icewm/lib/keys.in
 @@ -9,13 +9,16 @@
  # You'll have to omit XK_ prefixs and to replace XF86XK_ prefixes by
  # XF86. Valid modifiers are Alt, Ctrl, Shift, Meta, Super and Hyper.
@@ -48,7 +48,7 @@ Index: icewm-1.3.7/lib/keys.in
  
  key "Alt+Ctrl+KP_Divide"	aumix -v -5		# lower volume
  key "Alt+Ctrl+KP_Multiply"	aumix -v +5		# raise volume
-@@ -30,7 +33,11 @@
+@@ -30,7 +33,11 @@ key "XF86AudioRaiseVolume"	aumix -v +5
  key "XF86AudioMute"		aumix -v 0
  key "XF86AudioPlay"		cdplay play 1
  key "XF86AudioStop"		cdplay stop
@@ -63,10 +63,10 @@ Index: icewm-1.3.7/lib/keys.in
 +key "XF86Mail"			mozilla-thunderbird mailto:
 +key "XF86Search"		sensible-browser http://www.yahoo.com/
  key "XF86Eject"			eject
-Index: icewm-1.3.7/lib/menu.in
+Index: icewm/lib/menu.in
 ===================================================================
---- icewm-1.3.7.orig/lib/menu.in	2013-06-28 18:34:51.408274821 +0200
-+++ icewm-1.3.7/lib/menu.in	2013-06-28 18:34:51.400275297 +0200
+--- icewm.orig/lib/menu.in
++++ icewm/lib/menu.in
 @@ -5,10 +5,10 @@
  # (re)install icewm.
  #
@@ -80,10 +80,10 @@ Index: icewm-1.3.7/lib/menu.in
  prog XChat xchat xchat
  prog Gimp gimp gimp
  separator
-Index: icewm-1.3.7/lib/toolbar.in
+Index: icewm/lib/toolbar.in
 ===================================================================
---- icewm-1.3.7.orig/lib/toolbar.in	2013-06-28 18:34:51.408274821 +0200
-+++ icewm-1.3.7/lib/toolbar.in	2013-06-28 18:34:51.400275297 +0200
+--- icewm.orig/lib/toolbar.in
++++ icewm/lib/toolbar.in
 @@ -4,6 +4,8 @@
  # since modifications to this file will be discarded when you
  # (re)install icewm.
@@ -96,10 +96,10 @@ Index: icewm-1.3.7/lib/toolbar.in
 +#prog Netscape netscape netscape
 +prog    "gvim" /usr/X11R6/include/X11/pixmaps/vim.xpm /usr/bin/gvim -f
 +prog    "Iceweasel" /usr/share/pixmaps/iceweasel.xpm iceweasel
-Index: icewm-1.3.7/lib/winoptions.in
+Index: icewm/lib/winoptions.in
 ===================================================================
---- icewm-1.3.7.orig/lib/winoptions.in	2013-06-28 18:34:51.408274821 +0200
-+++ icewm-1.3.7/lib/winoptions.in	2013-06-28 18:34:51.400275297 +0200
+--- icewm.orig/lib/winoptions.in
++++ icewm/lib/winoptions.in
 @@ -6,6 +6,8 @@
  
  xterm.icon: xterm
@@ -109,11 +109,11 @@ Index: icewm-1.3.7/lib/winoptions.in
  nxterm.icon: xterm
  fte.icon: fte
  emacs.Emacs.icon: emacs
-Index: icewm-1.3.7/src/default.h
+Index: icewm/src/default.h
 ===================================================================
---- icewm-1.3.7.orig/src/default.h	2013-06-28 18:34:51.408274821 +0200
-+++ icewm-1.3.7/src/default.h	2013-06-28 18:34:51.400275297 +0200
-@@ -112,7 +112,7 @@
+--- icewm.orig/src/default.h
++++ icewm/src/default.h
+@@ -113,7 +113,7 @@ XIV(bool, centerMaximizedWindows,
  XIV(bool, win95keys,                            true)
  XIV(bool, autoReloadMenus,                      true)
  XIV(bool, clientMouseActions,                   true)
@@ -122,7 +122,7 @@ Index: icewm-1.3.7/src/default.h
  XIV(bool, showSettingsMenu,                     true)
  XIV(bool, showFocusModeMenu,                    true)
  XIV(bool, showThemesMenu,                       true)
-@@ -161,15 +161,15 @@
+@@ -162,15 +162,15 @@ XSV(const char *, acpiIgnoreBatteries,
  #endif
  
  XSV(const char *, mailBoxPath,                  0)
@@ -142,7 +142,7 @@ Index: icewm-1.3.7/src/default.h
  XSV(const char *, logoutCommand,                0)
  XSV(const char *, logoutCancelCommand,          0)
  XSV(const char *, shutdownCommand,              0)
-@@ -177,9 +177,9 @@
+@@ -178,9 +178,9 @@ XSV(const char *, rebootCommand,
  XIV(int, taskBarCPUDelay,                       500)
  XIV(int, taskBarNetSamples,                     20)
  XIV(int, taskBarNetDelay,                       500)
@@ -154,11 +154,11 @@ Index: icewm-1.3.7/src/default.h
  XSV(const char *, netClassHint,                 "netstat.XTerm")
  XSV(const char *, netDevice,                    "ppp0 eth0")
  XSV(const char *, addressBarCommand,            0)
-Index: icewm-1.3.7/src/themable.h
+Index: icewm/src/themable.h
 ===================================================================
---- icewm-1.3.7.orig/src/themable.h	2013-06-28 18:34:51.408274821 +0200
-+++ icewm-1.3.7/src/themable.h	2013-06-28 18:34:51.400275297 +0200
-@@ -45,25 +45,25 @@
+--- icewm.orig/src/themable.h
++++ icewm/src/themable.h
+@@ -45,25 +45,25 @@ XSV(const char *, titleButtonsSupported,
  XSV(const char *, themeAuthor,                  0)
  XSV(const char *, themeDescription,             0)
  
@@ -201,24 +201,24 @@ Index: icewm-1.3.7/src/themable.h
  
  XSV(const char *, clrDialog,                    "rgb:C0/C0/C0")
  XSV(const char *, clrActiveBorder,              "rgb:C0/C0/C0")
-Index: icewm-1.3.7/src/wmapp.cc
+Index: icewm/src/wmapp.cc
 ===================================================================
---- icewm-1.3.7.orig/src/wmapp.cc	2013-06-28 18:34:51.408274821 +0200
-+++ icewm-1.3.7/src/wmapp.cc	2013-06-28 18:34:51.404275059 +0200
-@@ -774,7 +774,7 @@
+--- icewm.orig/src/wmapp.cc
++++ icewm/src/wmapp.cc
+@@ -779,7 +779,7 @@ static void initMenus(
              logoutMenu->addItem(_("Restart _Icewm"), -2, null, actionRestart);
  
              DProgram *restartXTerm =
--                DProgram::newProgram(_("Restart _Xterm"), null, true, 0, "xterm", noargs);
-+                DProgram::newProgram(_("Restart _Xterm"), null, true, 0, "x-terminal-emulator", noargs);
+-                DProgram::newProgram(app, smActionListener, _("Restart _Xterm"), null, true, 0, "xterm", noargs);
++                DProgram::newProgram(app, smActionListener, _("Restart _Xterm"), null, true, 0, "x-terminal-emulator", noargs);
              if (restartXTerm)
                  logoutMenu->add(new DObjectMenuItem(restartXTerm));
  #endif
-Index: icewm-1.3.7/src/yfontxft.cc
+Index: icewm/src/yfontxft.cc
 ===================================================================
---- icewm-1.3.7.orig/src/yfontxft.cc	2013-06-28 18:34:51.408274821 +0200
-+++ icewm-1.3.7/src/yfontxft.cc	2013-06-28 18:34:51.404275059 +0200
-@@ -131,8 +131,8 @@
+--- icewm.orig/src/yfontxft.cc
++++ icewm/src/yfontxft.cc
+@@ -131,8 +131,8 @@ YXftFont::YXftFont(ustring name, bool us
          msg("xft: fallback from '%s'", cstring(name).c_str());
          XftFont *sans =
              XftFontOpen(xapp->display(), xapp->screen(),
@@ -229,7 +229,7 @@ Index: icewm-1.3.7/src/yfontxft.cc
                          NULL);
  
          if (NULL != sans) {
-@@ -145,7 +145,7 @@
+@@ -145,7 +145,7 @@ YXftFont::YXftFont(ustring name, bool us
              fAscent = sans->ascent;
              fDescent = sans->descent;
          } else
@@ -238,7 +238,7 @@ Index: icewm-1.3.7/src/yfontxft.cc
      }
  }
  
-@@ -287,7 +287,7 @@
+@@ -287,7 +287,7 @@ ref<YFont> getXftFontXlfd(ustring name,
      ref<YFont> font(new YXftFont(name, true, antialias));
      if (font == null || !font->valid()) {
          msg("failed to load font '%s', trying fallback", cstring(name).c_str());
@@ -247,7 +247,7 @@ Index: icewm-1.3.7/src/yfontxft.cc
          if (font == null || !font->valid())
              msg("Could not load fallback Xft font.");
      }
-@@ -298,7 +298,7 @@
+@@ -298,7 +298,7 @@ ref<YFont> getXftFont(ustring name, bool
      ref<YFont>font(new YXftFont(name, false, antialias));
      if (font == null || !font->valid()) {
          msg("failed to load font '%s', trying fallback", cstring(name).c_str());
@@ -256,11 +256,11 @@ Index: icewm-1.3.7/src/yfontxft.cc
          if (font == null || !font->valid())
              msg("Could not load fallback Xft font.");
      }
-Index: icewm-1.3.7/src/yprefs.h
+Index: icewm/src/yprefs.h
 ===================================================================
---- icewm-1.3.7.orig/src/yprefs.h	2013-06-28 18:34:51.408274821 +0200
-+++ icewm-1.3.7/src/yprefs.h	2013-06-28 18:34:51.404275059 +0200
-@@ -33,7 +33,7 @@
+--- icewm.orig/src/yprefs.h
++++ icewm/src/yprefs.h
+@@ -34,7 +34,7 @@ XIV(bool, grabRootWindow,
  #ifdef CONFIG_XFREETYPE
  XIV(bool, haveXft,                              true)
  #endif
@@ -269,7 +269,7 @@ Index: icewm-1.3.7/src/yprefs.h
  #define CONFIG_DEFAULT_THEME "icedesert/default.theme"
  XSV(const char *, themeName,                    CONFIG_DEFAULT_THEME)
  XSV(const char *, xineramaPrimaryScreenName,    0)
-@@ -165,6 +165,6 @@
+@@ -166,6 +166,6 @@ XIV(WMLook, wmLook,
  XSV(const char *, clrToolTip,                   "rgb:E0/E0/00")
  XSV(const char *, clrToolTipText,               "rgb:00/00/00")
  #endif
@@ -277,3 +277,16 @@ Index: icewm-1.3.7/src/yprefs.h
 +XFV(const char *, toolTipFontName,              FONT(120), "DejaVu Sans,sans-serif:size=11")
  
  #endif
+Index: icewm/src/yapp.cc
+===================================================================
+--- icewm.orig/src/yapp.cc
++++ icewm/src/yapp.cc
+@@ -431,7 +431,7 @@ int YApplication::mainLoop() {
+             handleSignal(SIGHUP);
+ #endif
+ 
+-        {
++        if (measure_latency) { // no spam in user's logs please
+             struct timeval difftime;
+             struct timeval curtime;
+ 

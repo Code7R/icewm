@@ -4,11 +4,11 @@
 ## DP: Check the state of the interface with SIOCGIFFLAGS instead of traversing the SIOCGIFCONF output, also checking the link state more exactly (Debian bug #563371)
 
 @DPATCH@
-Index: icewm-1.3.7~pre2/src/apppstatus.cc
+Index: icewm/src/apppstatus.cc
 ===================================================================
---- icewm-1.3.7~pre2.orig/src/apppstatus.cc	2010-04-28 21:00:30.000000000 +0200
-+++ icewm-1.3.7~pre2/src/apppstatus.cc	2010-04-29 22:11:16.961086255 +0200
-@@ -429,19 +429,18 @@
+--- icewm.orig/src/apppstatus.cc
++++ icewm/src/apppstatus.cc
+@@ -438,19 +438,18 @@ bool NetStatus::isUp() {
      }
      return false;
  #else
@@ -34,7 +34,7 @@ Index: icewm-1.3.7~pre2/src/apppstatus.cc
      ifc.ifc_len = sizeof(buffer);
      ifc.ifc_buf = buffer;
      if (ioctl(s, SIOCGIFCONF, &ifc) < 0) {
-@@ -459,6 +458,14 @@
+@@ -468,6 +467,14 @@ bool NetStatus::isUp() {
          ifr++;
      }
  
