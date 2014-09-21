@@ -19,6 +19,8 @@ extern YAction *layerActionSet[WinLayerCount];
 class YWindowManager;
 class YFrameClient;
 class YFrameWindow;
+class YSMListener;
+class IApp;
 
 class EdgeSwitch: public YWindow, public YTimerListener {
 public:
@@ -45,7 +47,13 @@ public:
 
 class YWindowManager: public YDesktop {
 public:
-    YWindowManager(YWindow *parent, Window win = 0);
+    YWindowManager(
+        IApp *app,
+        YActionListener *wmActionListener,
+        YSMListener *smListener,
+        YWindow *parent,
+        Window win = 0);
+
     virtual ~YWindowManager();
 
     virtual void grabKeys();
@@ -130,7 +138,7 @@ public:
     void relocateWindows(long workspace, int screen, int dx, int dy);
     void updateClientList();
 
-    YMenu *createWindowMenu(YMenu *menu, long workspace);
+    YMenu *createWindowMenu(IApp *app, YMenu *menu, long workspace);
     int windowCount(long workspace);
 #ifdef CONFIG_WINMENU
     void popupWindowListMenu(YWindow *owner, int x, int y);
@@ -224,6 +232,9 @@ private:
     long fActiveWorkspace;
     long fLastWorkspace;
     YFrameWindow *fColormapWindow;
+    YActionListener *wmActionListener;
+    YSMListener *smActionListener;
+    IApp *app;
 
     long fWorkAreaWorkspaceCount;
     int fWorkAreaScreenCount;
@@ -340,6 +351,7 @@ extern Atom _XA_NET_WM_ACTION_CHANGE_DESKTOP;    // TODO
 extern Atom _XA_NET_WM_ACTION_CLOSE;             // TODO
 
 extern Atom _XA_NET_WM_STRUT;                    // OK
+extern Atom _XA_NET_WM_STRUT_PARTIAL;            // OK (partial support)
 ///extern Atom _XA_NET_WM_ICON_GEOMETRY;         // N/A
 extern Atom _XA_NET_WM_ICON;                     // TODO
 extern Atom _XA_NET_WM_PID;                      // TODO

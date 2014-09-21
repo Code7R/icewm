@@ -187,6 +187,7 @@ static void registerProtocols2(Window xid) {
         _XA_NET_ACTIVE_WINDOW,
         _XA_NET_CLOSE_WINDOW,
         _XA_NET_WM_STRUT,
+        _XA_NET_WM_STRUT_PARTIAL,
         _XA_NET_WORKAREA,
         _XA_NET_WM_STATE,
         _XA_NET_WM_STATE_MAXIMIZED_VERT,
@@ -219,7 +220,7 @@ static void registerProtocols2(Window xid) {
                     PropModeReplace, (unsigned char *)win_proto, i);
 #endif
 
-    pid_t pid = getpid();
+    long pid = getpid();
     const char wmname[] = "IceWM "VERSION" ("HOSTOS"/"HOSTCPU")";
 
 #ifdef GNOME1_HINTS
@@ -291,13 +292,13 @@ static void initAtoms() {
     _XA_XROOTCOLOR_PIXEL = XInternAtom(xapp->display(), "_XROOTCOLOR_PIXEL", False);
 }
 
-static void initFontPath() {
+static void initFontPath(IApp *app) {
 #ifndef LITE
     if (themeName) { // =================== find the current theme directory ===
         upath themesFile(themeName);
         upath themesDir = themesFile.parent();
         upath fonts_dirFile = themesDir.child("fonts.dir");
-        upath fonts_dirPath = YApplication::findConfigFile(fonts_dirFile);
+        upath fonts_dirPath = app->findConfigFile(fonts_dirFile);
         upath fonts_dirDir(null);
 
         if (fonts_dirPath != null)
@@ -737,9 +738,13 @@ static void initPixmaps() {
         buttonAPixmap->replicate(true, false);
 }
 
-static void initMenus() {
+static void initMenus(
+    IApp *app,
+    YSMListener *smActionListener,
+    YActionListener *wmActionListener)
+{
 #ifdef CONFIG_WINMENU
-    windowListMenu = new WindowListMenu();
+    windowListMenu = new WindowListMenu(app);
     windowListMenu->setShared(true); // !!!
     windowListMenu->setActionListener(wmapp);
 #endif
@@ -774,7 +779,7 @@ static void initMenus() {
             logoutMenu->addItem(_("Restart _Icewm"), -2, null, actionRestart);
 
             DProgram *restartXTerm =
-                DProgram::newProgram(_("Restart _Xterm"), null, true, 0, "xterm", noargs);
+                DProgram::newProgram(app, smActionListener, _("Restart _Xterm"), null, true, 0, "xterm", noargs);
             if (restartXTerm)
                 logoutMenu->add(new DObjectMenuItem(restartXTerm));
 #endif
@@ -868,7 +873,7 @@ static void initMenus() {
 #endif
 
 #ifndef NO_CONFIGURE_MENUS
-    rootMenu = new StartMenu("menu");
+    rootMenu = new StartMenu(app, smActionListener, wmActionListener, "menu");
     rootMenu->setActionListener(wmapp);
 #endif
 }
@@ -1047,7 +1052,7 @@ void YWMApp::actionPerformed(YAction *action, unsigned int /*modifiers*/) {
     } else if (action == actionCancelLogout) {
         cancelLogout();
     } else if (action == actionLock) {
-        app->runCommand(lockCommand);
+        this->runCommand(lockCommand);
     } else if (action == actionShutdown) {
         manager->doWMAction(ICEWM_ACTION_SHUTDOWN);
     } else if (action == actionReboot) {
@@ -1155,15 +1160,29 @@ bool configurationNeeded(true);
 YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
     YSMApplication(argc, argv, displayName)
 {
+#ifndef NO_CONFIGURE
+    {
+        cfoption theme_prefs[] = {
+            OSV("Theme", &themeName, "Theme name"),
+            OK0()
+        };
+        
+        YConfig::findLoadConfigFile(this, theme_prefs, "preferences");
+        YConfig::findLoadConfigFile(this, theme_prefs, "theme");
+    }
+    if (overrideTheme)
+        themeName = newstr(overrideTheme);
+#endif
+
     wmapp = this;
     managerWindow = None;
 
 #ifndef NO_CONFIGURE
-    loadConfiguration("preferences");
+    loadConfiguration(this, "preferences");
     if (themeName != 0) {
         MSG(("themeName=%s", themeName));
 
-        loadThemeConfiguration(themeName);
+        loadThemeConfiguration(this, themeName);
     }
     {
         cfoption focus_prefs[] = {
@@ -1171,9 +1190,9 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
             OK0()
         };
 
-        YConfig::findLoadConfigFile(focus_prefs, "focus_mode");
+        YConfig::findLoadConfigFile(this, focus_prefs, "focus_mode");
     }
-    loadConfiguration("prefoverride");
+    loadConfiguration(this, "prefoverride");
     switch (focusMode) {
     case 0: /* custom */
         break;
@@ -1221,11 +1240,11 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
 
 #ifndef NO_WINDOW_OPTIONS
     if (winOptFile == null)
-        winOptFile = app->findConfigFile("winoptions");
+        winOptFile = this->findConfigFile("winoptions");
 #endif
 
     if (keysFile == null)
-        keysFile = app->findConfigFile("keys");
+        keysFile = this->findConfigFile("keys");
 
     catchSignal(SIGINT);
     catchSignal(SIGTERM);
@@ -1243,7 +1262,7 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
 
 #ifndef NO_CONFIGURE_MENUS
     if (keysFile != null)
-        loadMenus(keysFile, 0);
+        loadMenus(this, this, this, keysFile, 0);
 #endif
 
     XSetErrorHandler(handler);
@@ -1258,20 +1277,19 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
 
     managerWindow = registerProtocols1();
     
-    desktop = manager = fWindowManager =
-        new YWindowManager(0, RootWindow(display(),
-                                         DefaultScreen(display())));
+    desktop = manager = fWindowManager = new YWindowManager(
+        this, this, this, 0, RootWindow(display(), DefaultScreen(display())));
     PRECONDITION(desktop != 0);
     
     registerProtocols2(managerWindow);
 
-    initFontPath();
+    initFontPath(this);
 #ifndef LITE
     initIcons();
 #endif
     initIconSize();
     initPixmaps();
-    initMenus();
+    initMenus(this, this, this);
 
 #ifndef NO_CONFIGURE
     if (scrollBarWidth == 0) {
@@ -1339,7 +1357,7 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
         switchWindow = new SwitchWindow(manager);
 #ifdef CONFIG_TASKBAR
     if (showTaskBar) {
-        taskBar = new TaskBar(manager);
+        taskBar = new TaskBar(this, manager, this, this);
         if (taskBar)
           taskBar->showBar(true);
     } else {
@@ -1347,11 +1365,11 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
     }
 #endif
 #ifdef CONFIG_WINLIST
-    windowList = new WindowList(manager);
+    windowList = new WindowList(manager, this);
 #endif
     //windowList->show();
 #ifndef LITE
-    ctrlAltDelete = new CtrlAltDelete(manager);
+    ctrlAltDelete = new CtrlAltDelete(this, manager);
 #endif
 #ifndef LITE
     aboutDlg = new AboutDlg();
@@ -1497,9 +1515,9 @@ void YWMApp::afterWindowEvent(XEvent &xev) {
     static XEvent lastKeyEvent = { 0 };
 
     if (xev.type == KeyRelease && lastKeyEvent.type == KeyPress) {
-        KeySym k1 = XKeycodeToKeysym(xapp->display(), (KeyCode)xev.xkey.keycode, 0);
+        KeySym k1 = XkbKeycodeToKeysym(xapp->display(), xev.xkey.keycode, 0, 0);
         unsigned int m1 = KEY_MODMASK(lastKeyEvent.xkey.state);
-        KeySym k2 = XKeycodeToKeysym(xapp->display(), (KeyCode)lastKeyEvent.xkey.keycode, 0);
+        KeySym k2 = XkbKeycodeToKeysym(xapp->display(), lastKeyEvent.xkey.keycode, 0, 0);
 
         if (m1 == 0 && xapp->WinMask && win95keys) {
             if (k1 == xapp->Win_L && k2 == xapp->Win_L) {
@@ -1593,13 +1611,18 @@ int main(int argc, char **argv) {
 #endif
 #ifndef NO_CONFIGURE
             char *value;
-
-            if ((value = GET_LONG_ARGUMENT("config")) != NULL ||
-                (value = GET_SHORT_ARGUMENT("c")) != NULL)
+            if(GetLongArgument(value, "config", arg, argv+argc)
+            		|| GetShortArgument(value, "c", arg, argv+argc))
+            {
                 configArg = newstr(configFile = newstr(value));
-            else if ((value = GET_LONG_ARGUMENT("theme")) != NULL ||
-                     (value = GET_SHORT_ARGUMENT("t")) != NULL)
+                continue;
+            }
+            else if ( GetLongArgument(value, "theme", arg, argv+argc) ||
+            		GetLongArgument(value, "t", arg, argv+argc))
+            {
                 overrideTheme = value;
+                continue;
+            }
             else if (IS_LONG_SWITCH("restart"))
                 restart = true;
             else if (IS_LONG_SWITCH("replace"))
@@ -1611,19 +1634,6 @@ int main(int argc, char **argv) {
 #endif
         }
     }
-#ifndef NO_CONFIGURE
-    {
-        cfoption theme_prefs[] = {
-            OSV("Theme", &themeName, "Theme name"),
-            OK0()
-        };
-
-        YConfig::findLoadConfigFile(theme_prefs, "preferences");
-        YConfig::findLoadConfigFile(theme_prefs, "theme");
-    }
-    if (overrideTheme)
-        themeName = newstr(overrideTheme);
-#endif
     YWMApp app(&argc, &argv);
 
 #ifdef CONFIG_GUIEVENTS
@@ -1719,3 +1729,35 @@ void YWMApp::handleMsgBox(YMsgBox *msgbox, int operation) {
         }
     }
 }
+
+void YWMApp::handleSMAction(int message) {
+    switch (message) {
+    case ICEWM_ACTION_LOGOUT:
+        rebootOrShutdown = 0;
+        wmapp->doLogout();
+        break;
+    case ICEWM_ACTION_CANCEL_LOGOUT:
+        wmapp->actionPerformed(actionCancelLogout, 0);
+        break;
+    case ICEWM_ACTION_SHUTDOWN:
+        rebootOrShutdown = 2;
+        wmapp->doLogout();
+        break;
+    case ICEWM_ACTION_REBOOT:
+        rebootOrShutdown = 1;
+        wmapp->doLogout();
+        break;
+    case ICEWM_ACTION_RESTARTWM:
+        wmapp->restartClient(0, 0);
+        break;
+    case ICEWM_ACTION_WINDOWLIST:
+        wmapp->actionPerformed(actionWindowList, 0);
+        break;
+    case ICEWM_ACTION_ABOUT:
+#ifndef LITE
+        wmapp->actionPerformed(actionAbout, 0);
+#endif
+        break;
+    }
+}
+

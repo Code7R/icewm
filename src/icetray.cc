@@ -36,14 +36,10 @@ public:
     bool checkMessageEvent(const XClientMessageEvent &message);
     void requestDock();
 
-    void handleUnmap(const XUnmapEvent &ev) {
-        YWindow::handleUnmap(ev);
-        MSG(("hide1"));
-//        if (visible() && ev.window == handle()) {
-            MSG(("hide2"));
+    void handleUnmap(const XUnmapEvent &) {
+        MSG(("hide"));
+        if (visible())
             hide();
-            fManaged = false;
-//        }
     }
 
     void trayChanged();
@@ -51,7 +47,6 @@ private:
     Atom icewm_internal_tray;
     Atom _NET_SYSTEM_TRAY_OPCODE;
     YXTray *fTray2;
-    bool fManaged;
 };
 
 class SysTrayApp: public YXApplication {
@@ -112,17 +107,19 @@ void SysTrayApp::loadConfig() {
             OK0()
         };
 
-        YConfig::findLoadConfigFile(theme_prefs, "preferences");
-        YConfig::findLoadConfigFile(theme_prefs, "theme");
+        YConfig::findLoadConfigFile(this, theme_prefs, "preferences");
+        YConfig::findLoadConfigFile(this, theme_prefs, "theme");
     }
-    YConfig::findLoadConfigFile(icewmbg_prefs, "preferences");
+    YConfig::findLoadConfigFile(this, icewmbg_prefs, "preferences");
     if (themeName != 0) {
         MSG(("themeName=%s", themeName));
 
-        YConfig::findLoadConfigFile(icewmbg_prefs,
-                                 upath("themes").child(themeName));
+        YConfig::findLoadConfigFile(
+            this,
+            icewmbg_prefs,
+            upath("themes").child(themeName));
     }
-    YConfig::findLoadConfigFile(icewmbg_prefs, "prefoverride");
+    YConfig::findLoadConfigFile(this, icewmbg_prefs, "prefoverride");
 #endif
     if (taskBarBg) 
            delete taskBarBg;
@@ -187,7 +184,6 @@ SysTray::SysTray(): YWindow(0) {
     setSize(fTray2->width(),
             fTray2->height());
     fTray2->show();
-    fManaged = false;
     requestDock();
 }
     
@@ -195,15 +191,10 @@ void SysTray::trayChanged() {
     fTray2->backgroundChanged();
     setSize(fTray2->width(),
             fTray2->height());
-    if (fTray2->visible()) {
-        if (!fManaged)
-            requestDock();
-        else
-            show();
-    } else {
-        fManaged = false;
+    if (fTray2->visible())
+        show();
+    else 
         hide();
-    }
 }
 
 void SysTray::requestDock() {
@@ -223,19 +214,12 @@ void SysTray::requestDock() {
 
         XSendEvent(xapp->display(), w, False, StructureNotifyMask, (XEvent *) &xev);
     }
-    fManaged = true;
 }
 
 bool SysTray::checkMessageEvent(const XClientMessageEvent &message) {
     if (message.message_type == icewm_internal_tray) {
-        MSG(("requestDock %lX", (long)handle()));
-        setSize(fTray2->width(),
-                fTray2->height());
-        MSG(("requestDock2 %d %d", width(), height()));
-        if (fTray2->visible())
-            requestDock();
-        else
-            fManaged = false;
+        MSG(("requestDock"));
+        requestDock();
     }
     return true;
 }
@@ -244,5 +228,5 @@ int main(int argc, char **argv) {
     YLocale locale;
     SysTrayApp stapp(&argc, &argv);
 
-    return app->mainLoop();
+    return stapp.mainLoop();
 }

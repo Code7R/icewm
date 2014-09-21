@@ -1,6 +1,6 @@
 
 Name:		icewm
-Version:	1.3.7
+Version:	1.3.8
 Release:	1
 Obsoletes:	icewm-common <= 1.2.2
 Summary:	Fast and small X11 window manager

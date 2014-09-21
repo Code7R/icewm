@@ -44,7 +44,7 @@
 #define CONFIG_NL_CODESETS CODESET, _NL_CTYPE_CODESET_NAME, 0
 
 /* Define to support the X session managment protocol */
-#define CONFIG_SESSION 1
+/* #undef CONFIG_SESSION */
 
 /* Define to enable X shape extension */
 #define CONFIG_SHAPE 1
@@ -210,7 +210,7 @@
 /* #undef HAVE_SYSCTLBYNAME */
 
 /* kern.cp_time MIB item is available */
-/* #undef HAVE_SYSCTL_CP_TIME */
+#define HAVE_SYSCTL_CP_TIME 1
 
 /* Define to 1 if you have the <sys/dir.h> header file, and it defines `DIR'.
    */

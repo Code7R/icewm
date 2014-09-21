@@ -14,12 +14,12 @@ POFILES =	be.po bg.po ca.po cs.po da.po de.po el.po en.po es.po fi.po fr.po hr.p
 POXFILES =	be.pox bg.pox ca.pox cs.pox da.pox de.pox el.pox en.pox es.pox fi.pox fr.pox hr.pox hu.pox id.pox it.pox ja.pox ko.pox lt.pox lv.pox mk.pox nb.pox nl.pox pl.pox pt_BR.pox ro.pox ru.pox sk.pox sl.pox sv.pox tr.pox uk.pox vi.pox zh_CN.pox zh_TW.pox
 MOFILES =	be.mo bg.mo ca.mo cs.mo da.mo de.mo el.mo en.mo es.mo fi.mo fr.mo hr.mo hu.mo id.mo it.mo ja.mo ko.mo lt.mo lv.mo mk.mo nb.mo nl.mo pl.mo pt_BR.mo ro.mo ru.mo sk.mo sl.mo sv.mo tr.mo uk.mo vi.mo zh_CN.mo zh_TW.mo
 
-INSTALL =       /usr/bin/install -c
-INSTALLDIR =    /usr/bin/install -c -m 755 -d
+INSTALL =       /bin/install -c
+INSTALLDIR =    /bin/install -c -m 755 -d
 INSTALLLIB =    ${INSTALL} -m 644
-XGETTEXT =	/usr/bin/xgettext
-MSGMERGE =	/usr/bin/msgmerge
-MSGFMT =	/usr/bin/msgfmt
+XGETTEXT =	/bin/xgettext
+MSGMERGE =	/bin/msgmerge
+MSGFMT =	/bin/msgfmt
 
 .SUFFIXES:
 .SUFFIXES: .po .mo

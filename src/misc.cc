@@ -374,7 +374,7 @@ char *cstrJoin(char const *str, ...) {
     return res;
 }
 
-#if __GNUC__ == 3
+#if (__GNUC__ == 3) || defined(__clang__)
 
 extern "C" void __cxa_pure_virtual() {
     warn("BUG: Pure virtual method called. Terminating.");
@@ -454,6 +454,42 @@ char const * strnxt(const char * str, const char * delim) {
     str+= strspn(str, delim);
     return str;
 }
+
+
+bool GetShortArgument(char* &ret, const char *name, char** &argpp, char **endpp)
+{
+	unsigned int alen=strlen(name);
+	if(**argpp != '-' || strncmp((*argpp)+1, name, alen))
+		return false;
+	if(*((*argpp)+1+alen))
+	{
+		ret=(*argpp)+1+alen;
+		return true;
+	}
+	else if(argpp+1>=endpp)
+		return false;
+	++argpp;
+	ret=*argpp;
+	return true;
+}
+
+bool GetLongArgument(char* &ret, const char *name, char** &argpp, char **endpp)
+{
+	unsigned int alen=strlen(name);
+	if(strncmp(*argpp, "--", 2) || strncmp((*argpp)+2, name, alen))
+		return false;
+	if(*((*argpp)+2+alen) == '=')
+	{
+		ret=(*argpp)+3+alen;
+		return true;
+	}
+	if(argpp+1>=endpp)
+		return false;
+	++argpp;
+	ret = *argpp;
+	return true;
+}
+
 
 #if 0
 

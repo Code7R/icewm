@@ -80,10 +80,6 @@ applications like PSI
 <item>icewm-session - runs all of the above when needed
 </item>
 <item>
-icewm-menu-gnome1 - used internaly, generates IceWM program menus from
-located GNOME(1) menus
-</item>
-<item>
 icewm-menu-gnome2 - used internaly, generates IceWM program menus from
 FreeDesktop .desktop files (KDE/GNOME(2) menus).
 </item>
@@ -424,6 +420,7 @@ The following settings can be set to value 1 (enabled) or value 0 (disabled).
 
 <sect1>Timings<p>
 <descrip>
+<tag/DelayFuzziness = 10/ Percentage of delay/timeout fuzziness to allow for merging of timer timeouts
 <tag/ClickMotionDistance = 5/ Movement before click is interpreted as drag.
 <tag/MultiClickTime = 400/ Time (ms) to recognize for double click.
 <tag/AutoRaiseDelay = 400/ Time to auto raise (must enable first with AutoRaise)

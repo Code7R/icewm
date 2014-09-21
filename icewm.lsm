@@ -1,14 +1,14 @@
 Begin3
 Title:          IceWM Window Manager
-Version:        1.3.7
-Entered-date:   31Oct2010
+Version:        1.3.8
+Entered-date:   17Nov2013
 Description:    Window manager for X11
 Keywords:       window-manager, x11, fast, small, source, w'95, os2, motif.
 Author:         marko.macek@gmx.net (Marko Macek)
 Maintained-by:  mathias.hasselmann@gmx.de (Mathias Hasselmann)
 Primary-site:   http://sourceforge.net/project/?form_grp=31
-                298 KB icewm-1.3.7.src.tar.bz2
-                383 KB icewm-1.3.7.src.tar.gz
+                298 KB icewm-1.3.8.src.tar.bz2
+                383 KB icewm-1.3.8.src.tar.gz
 Home-page:      http://icewm.sourceforge.net/
 Platforms:      X11, Xpm, c++
 Copying-policy: LGPL
