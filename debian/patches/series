@@ -1,4 +1,5 @@
 package_build_fixes
+lite_linking
 debian_defaults
 i18n_updates
 tray_hotfixes
