@@ -1,4 +1,4 @@
-icewm (1.3.8-1) UNRELEASED; urgency=low
+icewm (1.3.8-1) unstable; urgency=low
 
   * New upstream version (closes: #749475)
     + supports _NET_WM_STRUT_PARTIAL and Qt5 windows (closes: #751794)
@@ -11,7 +11,7 @@ icewm (1.3.8-1) UNRELEASED; urgency=low
   * Added usage of 16x16 xpm versions for menus where available, based on
     patch by Kevin Ryde (closes: #723906)
 
- -- Eduard Bloch <blade@debian.org>  Sun, 21 Sep 2014 23:48:06 +0200
+ -- Eduard Bloch <blade@debian.org>  Mon, 22 Sep 2014 22:15:13 +0200
 
 icewm (1.3.7-5) unstable; urgency=low
 
