@@ -1,6 +1,25 @@
 IceWM for Debian
 ================
 
+Adding missing functionality:
+----------------------------
+
+ * Screensaver and display locking function:
+   Install xscreensaver package!
+
+ * Enabling Shutdown and Reboot actions:
+   a) Install sudo
+   b) Create a special user group:
+      addgroup shutdown
+   c) Add your user account to this group:
+      adduser username shutdown
+   d) Edit /etc/sudoers, add:
+
+    Cmnd_Alias POWEROFF = /sbin/shutdown, /sbin/halt, /sbin/reboot, /sbin/poweroff
+    %shutdown   ALL = (root) NOPASSWD: POWEROFF
+
+   e) Logout and login again
+
 General startup hints:
 ---------------------
 
@@ -93,63 +112,5 @@ exec /usr/bin/icewm-session
 #/usr/bin/icewmbg&
 #exec icewm
 ---
-
-Version update instructions:
----------------------------
-
-In version 1.3.7pre1, a new graphic display for the battery charge
-level was added. This is now the default battery display. To get the
-old numeric percentage display, put the line
-   TaskBarShowAPMGraph=0
-into your preferences file under ~/.icewm or under /etc/X11/icewm.
-
-
-With version 1.2.28, some details of the behavior have been changed. In 1.2.29
-and 1.2.30 some options have been added to make the behavior details more
-configurable:
-
-	- new setting MapInactiveOnTop (default 1)
-	- new setting RequestFocusOnAppRaise (when FocusOnAppRaise=0)
-
-See /usr/share/doc/icewm-common/examples for config snipped demonstrating how
-to use the new options.
-
-
-With version 1.2.20, GNOME support is only available for the new
-format, provided by the additional program icewm-menu-gnome2.  You
-can find this binary as well as some more GNOME support files in
-the `icewm-gnome-support' package.
-
-If your users installed personal copies of the menu file, they will
-need to adapt their files as described below to see the new GNOME2
-menues. There is a script that will assist, run
-/usr/share/icewm/contrib/config-fix.pl as user.
-
-For upgrade purpose, the `icewm-gnome' package is now a dummy
-package which depends on `icewm' and `icewm-gnome-support' and
-provides icewm-gnome binaries as links to icewm's binaries.
-
-With version 1.0.8.6, you may have problems with some themes
-when in TitleBarCentered=1 mode: a hole may appear in the left
-side of the title bar.
-
-The reason is that the TitleBarCentered option is deprecated and
-should no longer be used nor provided by themes.
-However, it is still supported via a dirty hack by icewm since
-too many themes are still using it (most of them are outdated).
-
-Hence, the problem will arise with themes that do not support
-centering correctly, i.e. with those not providing the following
-files:
-
-  titleAP.xpm
-  titleAS.xpm
-  titleIP.xpm
-  titleIS.xpm
-
-Among all themes provided by icewm, the following are problematic:
-
-  Infadel2
-  metal2
 
  -- Eduard Bloch <blade@debian.org>, Mon, 14 Mar 2011 17:48:49 +0100
