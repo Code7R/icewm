@@ -161,7 +161,7 @@ install: build
 	install -m 644 $(FDO)/IceWM.desktop $(ICEWM)/usr/share/xsessions
 
 	# new, made by upstream, not decided yet how to port to other flavors
-	mv $(ICEWM_COMMON)/usr/share/xsessions/icewm-session.desktop $(ICEWM)/usr/share/xsessions
+	# user only ours for now... mv $(ICEWM_COMMON)/usr/share/xsessions/icewm-session.desktop $(ICEWM)/usr/share/xsessions
 	# we already have one...
 	-rm $(ICEWM_COMMON)/usr/share/applications/*desktop
 
