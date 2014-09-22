@@ -2,6 +2,9 @@ icewm (1.3.8-1) UNRELEASED; urgency=low
 
   * New upstream version (closes: #749475)
     + supports _NET_WM_STRUT_PARTIAL and Qt5 windows (closes: #751794)
+  * removed xz setting from package building, it's default now
+  * changed xlockmore suggestion and it's usage in debian_defaults patch to
+    xscreensaver version (closes: #721415)
 
  -- Eduard Bloch <blade@debian.org>  Sun, 21 Sep 2014 23:48:06 +0200
 

@@ -117,7 +117,7 @@ clean:
 	dh_testroot
 	rm -rf $(BDIR)*
 	-$(MAKE) -C po clean 
-	rm -f stamp* *stamp `find . -name "*~"` Makefile icewm.lsm icewm.spec src/icesound-* config.log src/config.h
+	rm -f stamp* *stamp config.guess config.sub # `find . -name "*~"` Makefile icewm.lsm icewm.spec src/icesound-* config.log src/config.h
 	dh_clean
 
 install: build
@@ -250,7 +250,7 @@ binary-arch: build install
 	dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums
-	dh_builddeb -v -- -Zxz -z9
+	dh_builddeb
 
 binary:	binary-indep binary-arch
 

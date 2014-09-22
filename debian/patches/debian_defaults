@@ -132,7 +132,7 @@ Index: icewm/src/default.h
 +XSV(const char *, mailClassHint,                "mutt.XTerm")
  XSV(const char *, newMailCommand,               0)
 -XSV(const char *, lockCommand,                  0)
-+XSV(const char *, lockCommand,                  "xlock -remote -mode blank")
++XSV(const char *, lockCommand,                  "xscreensaver-command -lock")
  XSV(const char *, clockCommand,                 "xclock -name icewm -title Clock")
  XSV(const char *, clockClassHint,               "icewm.XClock")
  XSV(const char *, runDlgCommand,                0)

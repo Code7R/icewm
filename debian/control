@@ -6,7 +6,6 @@ Build-Depends: debhelper (>= 5.0.51), libgdk-pixbuf2.0-dev, libgnome-desktop-dev
 Build-Conflicts: libttf-dev
 Standards-Version: 3.9.5
 Homepage: http://www.icewm.org
-Vcs-Svn: svn://anonscm.debian.org/pkg-icewm/
 Vcs-Browser: https://alioth.debian.org/scm/browser.php?group_id=30131
 Vcs-Git: https://alioth.debian.org/anonscm/git/pkg-icewm/pkg-icewm.git
 
@@ -14,7 +13,7 @@ Package: icewm-common
 Architecture: any
 Conflicts: menu (<< 2.1.9-1)
 Replaces: icewm (<< 1.2.14)
-Suggests: icewm-themes, icepref, iceme, grun, xlockmore
+Suggests: icewm-themes, xscreensaver
 Depends: ${misc:Depends}
 Recommends: menu
 Description: wonderful Win95-OS/2-Motif-like window manager
