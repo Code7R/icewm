@@ -188,3 +188,16 @@ index 5a9663e..15a36d2 100644
  
  /* workspaces */
  #define XA_WIN_WORKSPACES "_WIN_WORKSPACES"
+diff --git a/src/wmapp.h b/src/wmapp.h
+index 101992c..9a77888 100644
+--- a/src/wmapp.h
++++ b/src/wmapp.h
+@@ -78,7 +78,7 @@ private:
+     Window managerWindow;
+ };
+ 
+-#if 0
++#if 1 // XXX: FIXME, this workaround for global access is needed to run signalGuiEvent from the code which is not adapted yet
+ extern YWMApp * wmapp;
+ #endif
+ 
