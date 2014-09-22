@@ -1,6 +1,7 @@
 icewm (1.3.8-1) UNRELEASED; urgency=low
 
-  * New upstream version
+  * New upstream version (closes: #749475)
+    + supports _NET_WM_STRUT_PARTIAL and Qt5 windows (closes: #751794)
 
  -- Eduard Bloch <blade@debian.org>  Sun, 21 Sep 2014 23:48:06 +0200
 
