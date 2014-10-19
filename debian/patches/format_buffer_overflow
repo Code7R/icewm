@@ -1,0 +1,72 @@
+--- icewm-1.3.8.obsolete.1411417476.53.orig/src/acpustatus.cc	2014-09-22 22:16:57.000000000 +0200
++++ icewm-1.3.8/src/acpustatus.cc	2014-10-20 00:08:11.819812179 +0200
+@@ -217,38 +217,41 @@
+ 
+ void CPUStatus::updateToolTip() {
+ #ifdef linux
+-    char load[31], ram[31] = "", swap[31] = "", acpitemp[61] = "", cpufreq[31] = "";
++    char load[63], ram[63] = "", swap[63] = "", acpitemp[63] = "", cpufreq[63] = "";
+     struct sysinfo sys;
+-    double l1, l5, l15;
+ 
+-    sysinfo(&sys);
+-    l1 = (float)sys.loads[0] / 65536.0;
+-    l5 = (float)sys.loads[1] / 65536.0;
+-    l15 = (float)sys.loads[2] / 65536.0;
++    if(0==sysinfo(&sys))
++    {
++       double l1 = double(sys.loads[0]) / 65536.0,
++              l5 = double(sys.loads[1]) / 65536.0,
++              l15 = double(sys.loads[2]) / 65536.0;
+ 
+-    sprintf(load, _("CPU Load: %3.2f %3.2f %3.2f, %d"), l1, l5, l15, sys.procs);
+-    if (ShowRamUsage) {
+-        float tr =(float)sys.totalram * (float)sys.mem_unit / 1048576.0f;
+-        float fr =(float)sys.freeram * (float)sys.mem_unit / 1048576.0f;
+-        sprintf(ram, _("\nRam: %5.2f/%.2fM"), tr, fr);
+-    }
+-    if (ShowSwapUsage) {
+-        float ts =(float)sys.totalswap * (float)sys.mem_unit / 1048576.0f;
+-        float fs =(float)sys.freeswap * (float)sys.mem_unit / 1048576.0f;
+-        sprintf(swap, _("\nSwap: %.2f/%.2fM"), ts, fs);
+-    }
+-    if (ShowAcpiTemp) {
+-        int headlen;
+-        sprintf(acpitemp, _("\nACPI Temp:"));
+-        headlen = strlen(acpitemp);
+-        getAcpiTemp(acpitemp + headlen, (sizeof(acpitemp) - headlen) / sizeof(char));
+-    }
+-    if (ShowCpuFreq) {
+-        sprintf(cpufreq, _("\nCPU Freq: %.3fGHz"), getCpuFreq(0) / 1e6);
+-    }
+-    char *loadmsg = cstrJoin(load, ram, swap, acpitemp, cpufreq, NULL);
++       snprintf(load, sizeof(load), _("CPU Load: %3.2f %3.2f %3.2f, %u"),
++             l1, l5, l15, (unsigned) sys.procs);
++       if (ShowRamUsage) {
++          float tr =(float)sys.totalram * (float)sys.mem_unit / 1048576.0f;
++          float fr =(float)sys.freeram * (float)sys.mem_unit / 1048576.0f;
++          snprintf(ram, sizeof(ram), _("\nRam: %5.2f/%.2fM"), tr, fr);
++       }
++       if (ShowSwapUsage) {
++          float ts =(float)sys.totalswap * (float)sys.mem_unit / 1048576.0f;
++          float fs =(float)sys.freeswap * (float)sys.mem_unit / 1048576.0f;
++          snprintf(swap, sizeof(swap), _("\nSwap: %.2f/%.2fM"), ts, fs);
++       }
++       if (ShowAcpiTemp) {
++          int headlen;
++          snprintf(acpitemp, sizeof(acpitemp), _("\nACPI Temp:"));
++          headlen = strlen(acpitemp);
++          getAcpiTemp(acpitemp + headlen, (sizeof(acpitemp) - headlen) / sizeof(char));
++       }
++       if (ShowCpuFreq) {
++          snprintf(cpufreq, sizeof(cpufreq), _("\nCPU Freq: %.3fGHz"),
++                getCpuFreq(0) / 1e6);
++       }
++       char *loadmsg = cstrJoin(load, ram, swap, acpitemp, cpufreq, NULL);
+ 
+-    setToolTip(ustring(loadmsg));
++       setToolTip(ustring(loadmsg));
++    }
+ #elif defined HAVE_GETLOADAVG2
+     char load[31]; // enough for "CPU Load: 999.99 999.99 999.99\0"
+     double loadavg[3];

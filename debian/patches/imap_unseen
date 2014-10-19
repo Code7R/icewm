@@ -1,8 +1,0 @@
-#! /bin/sh /usr/share/dpatch/dpatch-run
-## imap_unseen.dpatch by Alexander Galanin <al@galanin.nnov.ru>
-##
-## DP: Debian Bug report logs - #539956
-## DP: [icewm] support for unseen messages on IMAP
-## DP: with minor changes by Eduard Bloch <blade@debian.org>
-
-@DPATCH@

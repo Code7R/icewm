@@ -2,6 +2,5 @@ package_build_fixes
 lite_linking
 debian_defaults
 i18n_updates
-#tray_hotfixes # accepted upstream?
 ifstate_exact_check
-# icon_property_fix # accepted upstream?
+format_buffer_overflow
