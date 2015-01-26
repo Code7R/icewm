@@ -105,7 +105,7 @@ build-indep: build-stamp
 build-stamp: build-normal build-lite
 	#hm... best place to run that?!
 	# cp -a po pod && cd pod && make merge && for x in *.po ; do cp $${x}x $$x ; done
-	$(MAKE) -C doc
+	$(MAKE) -C $(BDIR)-normal/doc
 	# Generate the most exhaustive preference file, i.e. the one
 	# from the experimental version.
 	# $(BDIR)-exp/src/genpref-experimental > lib/preferences
@@ -123,10 +123,10 @@ clean:
 install: build
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 	dh_installdirs
 	# Install everything but documentation
-	cd $(BDIR)-normal && $(MAKE) install-base install-nls install-desktop DESTDIR=$(ICEWM_COMMON)
+	cd $(BDIR)-normal && $(MAKE) install DESTDIR=$(ICEWM_COMMON)
 	# Do not provide a programs files, it is added by the menu system
 	rm -f $(ICEWM_COMMON)/etc/X11/icewm/programs
 
@@ -147,8 +147,7 @@ install: build
 	rm -rf $(ICEWM_COMMON)/usr/bin
 
 	# Install documentation
-	install -m 644 doc/*.html $(ICEWM_COMMON)/usr/share/doc/icewm-common/html
-	install -m 644 doc/*.sgml $(ICEWM_COMMON)/usr/share/doc/icewm-common/sgml
+	install -m 644 $(BDIR)-normal/doc/*.html $(ICEWM_COMMON)/usr/share/doc/icewm-common/html/
 	dh_installdocs -X.svn
 	mv $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ/source/* $(ICEWM_COMMON)/usr/share/doc/icewm-common/sgml && rm -rf $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ/source
 
@@ -175,7 +174,7 @@ install: build
 	install -m 755 -d $(ICEWM_GNOME_SUPP)/usr/share/icewm/contrib
 	install -m 755 debian/icewm-config-fix.pl $(ICEWM_GNOME_SUPP)/usr/share/icewm/contrib/config-fix.pl
 	install -m 755 debian/icewm-gnome $(ICEWM_GNOME_SUPP)/usr/bin/icewm-gnome
-	mv $(ICEWM_COMMON)/usr/share/applications $(ICEWM_GNOME_SUPP)/usr/share
+	#mv $(ICEWM_COMMON)/usr/share/applications $(ICEWM_GNOME_SUPP)/usr/share
 
 	# Remove doc directories since we will add links
 	# to icewm-common instead.
@@ -193,7 +192,7 @@ install: build
 	#cp -a $(BDIR)-exp/src/ice*-experimental $(ICEWM_EXP)/usr/bin
 # making -experimental compat symlinks
 	cd  $(ICEWM_EXP)/usr/bin && for x in icewm-session icewm icewmhint icehelp icewmtray icewmbg icesh icesound genpref ; do ln -sf $$x $$x-experimental ; done ; ln -sf genpref genpref-experimental
-	install -m 644 $(FDO)/IceWM-Experimental.desktop $(ICEWM_EXP)/usr/share/xsessions
+	#install -m 644 $(FDO)/IceWM-Experimental.desktop $(ICEWM_EXP)/usr/share/xsessions
 
 	# Remove doc directories since we will add links
 	# to icewm-common instead.
