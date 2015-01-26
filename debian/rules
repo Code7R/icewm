@@ -86,7 +86,12 @@ stamp-normal: autofoo-update-stamp
 		&& $(MAKE) $(MAKEFLAGS)
 	touch $@
 
-autofoo-update-stamp:
+configure:
+	bash autogen.sh
+
+autofoo-update-stamp: configure
+
+autofoo-update-stamp-legacy-REMOVE-LATER:
 	dh_testdir
 	chmod +x debian/kde-config
 ifneq "$(wildcard /usr/share/misc/config.sub)" ""

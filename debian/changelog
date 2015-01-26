@@ -7,6 +7,8 @@ icewm (1.3.8+githubmod+20150126.1+79e1109) UNRELEASED; urgency=low
     Shutdown/Reboot/Suspend (otherwise requiring sudo)
   * Removed -name and -title options from x-terminal-emulator calls, those
     options are not universal
+  * TODO: review README.Debian, do something about interface
+    tray icon heisenbug, add closes: tags for some bugs
 
  -- Eduard Bloch <blade@debian.org>  Mon, 26 Jan 2015 20:32:54 +0100
 

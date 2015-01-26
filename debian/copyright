@@ -1,9 +1,9 @@
-This package was debianized by Gergely Madarasz gorgo@caesar.elte.hu on
-Mon, 10 Nov 1997 17:12:55 +0100, and is currently maintained by
-Eduard Bloch <blade@debian.org>.
+This package was debianized by Eduard Bloch <blade@debian.org> on Jan 26 2015.
 
-It was downloaded from : http://www.icewm.org or via CVS from
-:pserver:anonymous@cvs.sf.net:2401/cvsroot/icewm
+It contains a modified version of icewm source downloaded from
+https://github.com/Code7R/icewm that contains code from
+https://github.com/bbidulock/icewm which is based on the original icewm as
+available on http://www.icewm.org/ or in the related Sourceforge project space.
 
 Upstream Authors:
 
@@ -21,6 +21,22 @@ network monitor:
 
 icon tray:
         Jan Krupa <j.krupa@netweb.cz>
+
+Various bugfixes and improvements:
+      Alexander Galanin <al@galanin.nnov.ru>
+      Alvaro G. M <alvaro.gamez@hazent.com>
+      Andrey Danin <danindrey@mail.ru>
+      Anthony G. Basile <blueness@gentoo.org>
+      Brian Bidulock <bidulock@openss7.org>
+      DeltaResero <deltaresero@zoho.com>
+      Eduard Bloch <blade@debian.org>
+      Jeff Woods <klaatu@fnordco.com>
+      Mario <kdesi@kdesi.sk>
+      Pacho Ramos <pacho@gentoo.org>
+      Stefan Giermair <zstegi@gmail.com>
+      Tomá¨ Chvátal <tomas.chvatal@gmail.com>
+      Thorsten “mirabilos” Glaser <t.glaser@tarent.de>
+      ... and others
 
 This software is released under the GNU Lesser General Public Licence. See
 /usr/share/common-licenses/LGPL on Debian systems for details.
