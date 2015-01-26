@@ -1,0 +1,203 @@
+diff --git a/Makefile.in b/Makefile.in
+index 92f76aa..ceb33a1 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -35,7 +35,7 @@ DESTDIR     =
+ 
+ ################################################################################
+ 
+-BINFILES    = @BINFILES@ icewm-set-gnomewm
++BINFILES    = @BINFILES@ "$(srcdir)/icewm-set-gnomewm"
+ LIBFILES    = lib/preferences lib/winoptions lib/keys \
+               lib/menu lib/toolbar # lib/programs
+ DOCFILES    = README BUGS CHANGES COPYING AUTHORS INSTALL VERSION icewm.lsm
+@@ -83,21 +83,23 @@ install-base: base
+ 	@echo ------------------------------------------
+ 	@echo "Installing binaries in $(DESTDIR)$(BINDIR)"
+ 	@$(INSTALLDIR) "$(DESTDIR)$(BINDIR)"
++#generated files, relative to the build directory
+ 	@for bin in $(BINFILES); do \
+              $(INSTALLBIN) "$${bin}" "$(DESTDIR)$(BINDIR)"; \
+          done
+ 	
+ 	@echo "Installing presets and icons in $(DESTDIR)$(LIBDIR)"
+ 	@$(INSTALLDIR) "$(DESTDIR)$(LIBDIR)"
++# data files from the source directory
+ 	#-@$(INSTALLDIR) "$(DESTDIR)$(CFGDIR)"
+ 	@for lib in $(LIBFILES); do \
+-             $(INSTALLLIB) "$${lib}" "$(DESTDIR)$(LIBDIR)"; \
++             $(INSTALLLIB) "$(top_srcdir)/$${lib}" "$(DESTDIR)$(LIBDIR)"; \
+          done
+ 
+ 	@for xpmdir in $(XPMDIRS); do \
+-	     if test -d "lib/$${xpmdir}"; then \
++	     if test -d "$(top_srcdir)/lib/$${xpmdir}"; then \
+ 		$(INSTALLDIR) "$(DESTDIR)$(LIBDIR)/$${xpmdir}"; \
+-		for pixmap in "lib/$${xpmdir}/"*.xpm; do \
++		for pixmap in "$(top_srcdir)/lib/$${xpmdir}/"*.xpm; do \
+ 		    $(INSTALLLIB) "$${pixmap}" "$(DESTDIR)$(LIBDIR)/$${xpmdir}"; \
+ 		done; \
+ 	    fi; \
+diff --git a/configure b/configure
+index e71d7cc..4a90b7e 100755
+--- a/configure
++++ b/configure
+@@ -5985,7 +5985,7 @@ fi
+ 
+ 
+ 
+-  NLS_SOURCES=`grep -l '\<_\>' "src/"*.cc | sed 's%^%\$(top_srcdir)/%g'`
++  NLS_SOURCES=`grep -l '\<_\>' "${srcdir}/src/"*.cc | sed 's%^%\$(top_srcdir)/%g'`
+   NLS_SOURCES=`echo ${NLS_SOURCES}`
+   NLS_POFILES=`cd "${srcdir}/po"; echo *.po`
+   NLS_POXFILES=`echo ${NLS_POFILES} | sed 's%\.po%.pox%g'`
+@@ -6995,8 +6995,9 @@ fi
+ 
+       if test "${PKG_CONFIG}" != ""; then
+ 	GNOME_VER=2
+-	GNOME2_CFLAGS=`pkg-config --cflags gnome-desktop-2.0 libgnomeui-2.0`
+-	GNOME2_LIBS=`pkg-config --libs gnome-desktop-2.0 libgnomeui-2.0`
++  GNOME2_CFLAGS="`pkg-config --cflags gnome-desktop-2.0 gnome-vfs-2.0 libgnomeui-2.0 fontconfig`"
++	GNOME2_LIBS="`pkg-config --libs gnome-desktop-2.0 gnome-vfs-2.0 libgnomeui-2.0 fontconfig` -lm"
++
+ 
+ 
+ $as_echo "#define CONFIG_GNOME_MENUS 1" >>confdefs.h
+@@ -7029,9 +7030,9 @@ $as_echo "#define WMSPEC_HINTS 1" >>confdefs.h
+ $as_echo "#define GNOME1_HINTS 1" >>confdefs.h
+ 
+ 
+-PACKAGE=`sed -ne 's/PACKAGE=//p' VERSION`
++PACKAGE=`sed -ne 's/PACKAGE=//p' ${srcdir}/VERSION`
+ 
+-VERSION=`sed -ne 's/VERSION=//p' VERSION`
++VERSION=`sed -ne 's/VERSION=//p' ${srcdir}/VERSION`
+ 
+ HOSTOS=`uname -sr || echo unknown`
+ 
+@@ -7231,7 +7232,7 @@ done
+ 
+ 
+ TARGETS_INSTALL=`for target in ${TARGETS}; do echo $ECHO_N "install-${target} $ECHO_C"; done`
+-BINFILES=`for binary in ${APPLICATIONS}; do echo $ECHO_N "\\\$(top_srcdir)/src/${binary}\\\$(EXEEXT) $ECHO_C"; done`
++BINFILES=`for binary in ${APPLICATIONS}; do echo $ECHO_N "src/${binary}\\\$(EXEEXT) $ECHO_C"; done`
+ 
+ 
+ 
+diff --git a/configure.in b/configure.in
+index 0c1296e..7957696 100644
+--- a/configure.in
++++ b/configure.in
+@@ -346,9 +346,9 @@ if test "$enable_nls" != "no"; then
+   AC_SUBST(MSGMERGE)
+   AC_SUBST(MSGFMT)
+ 
+-  NLS_SOURCES=`grep -l '\<_\>' "src/"*.cc | sed 's%^%\$(top_srcdir)/%g'`
++  NLS_SOURCES=`grep -l '\<_\>' "${srcdir}/src/"*.cc | sed 's%^%\$(top_srcdir)/%g'`
+   NLS_SOURCES=`echo ${NLS_SOURCES}`
+-  NLS_POFILES=`cd "${srcdir}/po"; echo *.po`
++  NLS_POFILES=`echo "${srcdir}/po/"*.po`
+   NLS_POXFILES=`echo ${NLS_POFILES} | sed 's%\.po%.pox%g'`
+   NLS_MOFILES=`echo ${NLS_POFILES} | sed 's%\.po%.mo%g'`
+ 
+@@ -727,8 +727,8 @@ AC_ARG_ENABLE(menus-gnome2,
+     
+       if test "${PKG_CONFIG}" != ""; then
+ 	GNOME_VER=2
+-	GNOME2_CFLAGS=`pkg-config --cflags gnome-desktop-2.0 libgnomeui-2.0`
+-	GNOME2_LIBS=`pkg-config --libs gnome-desktop-2.0 libgnomeui-2.0`
++  GNOME2_CFLAGS=`pkg-config --cflags gnome-desktop-2.0 gnome-vfs-2.0 libgnomeui-2.0 fontconfig`
++	GNOME2_LIBS=`pkg-config --libs gnome-desktop-2.0 gnome-vfs-2.0 libgnomeui-2.0 fontconfig` -lm
+ 
+ 	AC_DEFINE(CONFIG_GNOME_MENUS, 1, [Define to make IceWM more GNOME-friendly])
+ 
+@@ -755,8 +755,8 @@ AC_DEFINE(GNOME1_HINTS, 1, [GNOME1 hints])
+ dnl ====================================================== Write out results ===
+ dnl ---------------------------------------- First adjust some substitutions ---
+ 
+-AC_SUBST(PACKAGE,`sed -ne 's/PACKAGE=//p' VERSION`)
+-AC_SUBST(VERSION,`sed -ne 's/VERSION=//p' VERSION`)
++AC_SUBST(PACKAGE,`sed -ne 's/PACKAGE=//p' "${srcdir}/VERSION"`)
++AC_SUBST(VERSION,`sed -ne 's/VERSION=//p' "${srcdir}/VERSION"`)
+ AC_SUBST(HOSTOS,`uname -sr || echo unknown`)
+ AC_SUBST(HOSTCPU,`uname -m || echo unknown`)
+ 
+@@ -820,7 +820,7 @@ AC_SUBST(TESTBINS)
+ 
+ dnl -------------------------------------------------------- Install targets ---
+ TARGETS_INSTALL=`for target in ${TARGETS}; do echo $ECHO_N "install-${target} $ECHO_C"; done`
+-BINFILES=`for binary in ${APPLICATIONS}; do echo $ECHO_N "\\\$(top_srcdir)/src/${binary}\\\$(EXEEXT) $ECHO_C"; done`
++BINFILES=`for binary in ${APPLICATIONS}; do echo $ECHO_N "src/${binary}\\\$(EXEEXT) $ECHO_C"; done`
+ 
+ AC_SUBST(TARGETS)
+ AC_SUBST(TARGETS_INSTALL)
+diff --git a/po/Makefile.in b/po/Makefile.in
+index 4636bd5..d10316b 100644
+--- a/po/Makefile.in
++++ b/po/Makefile.in
+@@ -20,6 +20,7 @@ INSTALLLIB =    @INSTALLLIB@
+ XGETTEXT =	@XGETTEXT@
+ MSGMERGE =	@MSGMERGE@
+ MSGFMT =	@MSGFMT@
++VPATH = .:po:@srcdir@
+ 
+ .SUFFIXES:
+ .SUFFIXES: .po .mo
+diff --git a/src/Makefile.in b/src/Makefile.in
+index 73f015b..a50f712 100644
+--- a/src/Makefile.in
++++ b/src/Makefile.in
+@@ -188,6 +188,8 @@ APPLICATIONS = @APPLICATIONS@
+ TESTCASES = @TESTCASES@
+ OBJECTS = @BASEOBJS@ @TESTOBJS@
+ BINARIES = @BASEBINS@ @TESTBINS@
++BASEOBJS = @BASEOBJS@
++VPATH = .:@srcdir@
+ 
+ ################################################################################
+ 
+@@ -205,7 +207,8 @@ clean:
+ 	@echo "  CXX     " $@
+ 	@$(CXX) $(CXXFLAGS) $(GCCDEP) -c $<
+ 
+-$(BINARIES):
++$(BINARIES): $(BASEOBJS)
++#	@$(MAKE) --no-print-directory build-dep DEPLIST="$($(@:$(EXEEXT)=)_OBJS)"
+ 	@echo "  LD      " $@
+ 	@$(LD) -o $@ $($(@:$(EXEEXT)=)_OBJS) $(LFLAGS) $($(@:$(EXEEXT)=)_LFLAGS) $(LIBS) $($(@:$(EXEEXT)=)_LIBS)
+ 
+@@ -237,6 +240,8 @@ wmabout.o: ../VERSION
+ 
+ genpref$(EXEEXT): $(genpref_OBJS)
+ 
++build-dep: $(DEPLIST)
++
+ ################################################################################
+ 
+ check:	all tests
+diff --git a/src/WinMgr.h b/src/WinMgr.h
+index 5a9663e..15a36d2 100644
+--- a/src/WinMgr.h
++++ b/src/WinMgr.h
+@@ -128,7 +128,7 @@
+  * this where WIN_WORKSPACE_COUNT comes into play.
+  */
+ 
+-#define WinWorkspaceInvalid    (-1L)
++#define WinWorkspaceInvalid    ((unsigned long)-1)
+ 
+ /* workspaces */
+ #define XA_WIN_WORKSPACES "_WIN_WORKSPACES"
+diff --git a/src/wmapp.h b/src/wmapp.h
+index 101992c..9a77888 100644
+--- a/src/wmapp.h
++++ b/src/wmapp.h
+@@ -78,7 +78,7 @@ private:
+     Window managerWindow;
+ };
+ 
+-#if 0
++#if 1 // XXX: FIXME, this workaround for global access is needed to run signalGuiEvent from the code which is not adapted yet
+ extern YWMApp * wmapp;
+ #endif
+ 
