@@ -178,8 +178,8 @@ YXftFont::YXftFont(ustring name, bool use_xlfd, bool /*antialias*/):
         msg("xft: fallback from '%s'", cstring(name).c_str());
         XftFont *sans =
             XftFontOpen(xapp->display(), xapp->screen(),
-                        XFT_FAMILY, XftTypeString, "sans-serif",
-                        XFT_PIXEL_SIZE, XftTypeInteger, 12,
+                        XFT_FAMILY, XftTypeString, "DejaVu Sans,sans-serif",
+                        XFT_PIXEL_SIZE, XftTypeInteger, 11,
                         NULL);
 
         if (NULL != sans) {
@@ -192,7 +192,7 @@ YXftFont::YXftFont(ustring name, bool use_xlfd, bool /*antialias*/):
             fAscent = sans->ascent;
             fDescent = sans->descent;
         } else
-            warn(_("Loading of fallback font \"%s\" failed."), "sans-serif");
+            warn(_("Loading of fallback font \"%s\" failed."), "DejaVu Sans,sans-serif");
     }
 }
 
@@ -335,7 +335,7 @@ ref<YFont> getXftFontXlfd(ustring name, bool antialias) {
     ref<YFont> font(new YXftFont(name, true, antialias));
     if (font == null || !font->valid()) {
         msg("failed to load font '%s', trying fallback", cstring(name).c_str());
-        font.init(new YXftFont("sans-serif:size=12", false, antialias));
+        font.init(new YXftFont("DejaVu Sans,sans-serif:size=11", false, antialias));
         if (font == null || !font->valid())
             msg("Could not load fallback Xft font.");
     }
@@ -346,7 +346,7 @@ ref<YFont> getXftFont(ustring name, bool antialias) {
     ref<YFont>font(new YXftFont(name, false, antialias));
     if (font == null || !font->valid()) {
         msg("failed to load font '%s', trying fallback", cstring(name).c_str());
-        font.init(new YXftFont("sans-serif:size=12", false, antialias));
+        font.init(new YXftFont("DejaVu Sans,sans-serif:size=11", false, antialias));
         if (font == null || !font->valid())
             msg("Could not load fallback Xft font.");
     }

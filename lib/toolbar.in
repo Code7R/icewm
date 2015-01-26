@@ -4,6 +4,6 @@
 # since modifications to this file will be discarded when you
 # (re)install icewm.
 #
-prog xterm /usr/share/icons/gnome/16x16/apps/terminal.png xterm
-prog "Web browser" /usr/share/icons/gnome/16x16/apps/web-browser.png xdg-open about:blank
+prog Terminal /usr/share/icons/gnome/16x16/apps/terminal.png x-terminal-emulator
+prog "Web browser" /usr/share/icons/gnome/16x16/apps/web-browser.png sensible-browser about:blank
 

@@ -5,10 +5,10 @@
 # (re)install icewm.
 #
 prog xterm xterm xterm
-prog rxvt xterm rxvt -bg black -cr green -fg white -C -fn 9x15 -sl 500
+prog rxvt xterm rxvt -rv -C -fn 9x15 -sl 500
 prog fte fte fte
 prog NEdit nedit nedit
-prog Mozilla mozilla mozilla
+prog "Iceweasel" iceweasel iceweasel
 prog XChat xchat xchat
 prog Gimp gimp gimp
 separator

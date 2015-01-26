@@ -7,7 +7,10 @@ Adding missing functionality:
  * Screensaver and display locking function:
    Install xscreensaver package!
 
- * Enabling Shutdown and Reboot actions:
+ * Enabling Shutdown, Reboot and Suspend actions:
+   I) Install systemd-sysv and start using systemd
+   or
+   II)
    a) Install sudo
    b) Create a special user group:
       addgroup shutdown
@@ -15,7 +18,7 @@ Adding missing functionality:
       adduser username shutdown
    d) Edit /etc/sudoers, add:
 
-    Cmnd_Alias POWEROFF = /sbin/shutdown, /sbin/halt, /sbin/reboot, /sbin/poweroff
+    Cmnd_Alias POWEROFF = /sbin/shutdown, /sbin/halt, /sbin/reboot, /sbin/poweroff, /usr/sbin/pm-suspend
     %shutdown   ALL = (root) NOPASSWD: POWEROFF
 
    e) Logout and login again

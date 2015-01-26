@@ -34,7 +34,7 @@ XIV(bool, grabRootWindow,                       true)
 #ifdef CONFIG_XFREETYPE
 XIV(bool, haveXft,                              true)
 #endif
-XSV(const char *, iconPath,                     0)
+XSV(const char *, iconPath,                     "/usr/share/icons:/usr/share/pixmaps")
 #define CONFIG_DEFAULT_THEME "icedesert/default.theme"
 XSV(const char *, themeName,                    CONFIG_DEFAULT_THEME)
 XSV(const char *, xineramaPrimaryScreenName,    0)
@@ -166,6 +166,6 @@ XIV(WMLook, wmLook,                             CONFIG_DEFAULT_LOOK)
 XSV(const char *, clrToolTip,                   "rgb:E0/E0/00")
 XSV(const char *, clrToolTipText,               "rgb:00/00/00")
 #endif
-XFV(const char *, toolTipFontName,              FONT(120), "sans-serif:size=12")
+XFV(const char *, toolTipFontName,              FONT(120), "DejaVu Sans,sans-serif:size=11")
 
 #endif

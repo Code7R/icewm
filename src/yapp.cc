@@ -431,7 +431,7 @@ int YApplication::mainLoop() {
             handleSignal(SIGHUP);
 #endif
 
-        {
+        if (measure_latency) { // no spam in user's logs please
             struct timeval difftime;
             struct timeval curtime;
 

@@ -6,6 +6,8 @@
 
 xterm.icon: xterm
 rxvt.icon: xterm
+urxvtc.icon: urxvt
+urxvt.icon: urxvt
 nxterm.icon: xterm
 fte.icon: fte
 emacs.Emacs.icon: emacs
