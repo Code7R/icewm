@@ -1,0 +1,297 @@
+#!/bin/sh -e
+## debian_defaults.dpatch by Eduard Bloch <blade@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: No description.
+
+if [ $# -ne 1 ]; then
+    echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+    exit 1
+fi
+
+[ -f debian/patches/00patch-opts ] && . debian/patches/00patch-opts
+patch_opts="${patch_opts:--f --no-backup-if-mismatch}"
+
+case "$1" in
+       -patch) patch $patch_opts -p1 < $0;;
+       -unpatch) patch $patch_opts -p1 -R < $0;;
+        *)
+                echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+                exit 1;;
+esac
+
+exit 0
+
+@DPATCH@
+Index: icewm/lib/keys.in
+===================================================================
+--- icewm.orig/lib/keys.in
++++ icewm/lib/keys.in
+@@ -9,13 +9,16 @@
+ # You'll have to omit XK_ prefixs and to replace XF86XK_ prefixes by
+ # XF86. Valid modifiers are Alt, Ctrl, Shift, Meta, Super and Hyper.
+ #
+-key "Alt+Ctrl+t"		xterm
++key "Alt+Ctrl+t"		x-terminal-emulator
+ key "Alt+Ctrl+f"		fte
+ key "Alt+Ctrl+e"		nedit
+ key "Alt+Ctrl+g"		gimp
+-key "Alt+Ctrl+n"		netscape -noraise -remote openBrowser
+-key "Alt+Ctrl+b"		netscape -noraise -remote openBookmarks
+-key "Alt+Ctrl+m"		netscape -noraise -remote openURL(mailto:,new-window) 
++#key "Alt+Ctrl+n"		netscape -noraise -remote openBrowser
++#key "Alt+Ctrl+b"		netscape -noraise -remote openBookmarks
++#key "Alt+Ctrl+m"		netscape -noraise -remote openURL(mailto:,new-window)
++key "Alt+Ctrl+n"		sensible-browser
++#key "Alt+Ctrl+b"		mozilla -noraise -remote openBookmarks
++key "Alt+Ctrl+m"		mozilla-thunderbird mailto:
+ 
+ key "Alt+Ctrl+KP_Divide"	aumix -v -5		# lower volume
+ key "Alt+Ctrl+KP_Multiply"	aumix -v +5		# raise volume
+@@ -30,7 +33,11 @@ key "XF86AudioRaiseVolume"	aumix -v +5
+ key "XF86AudioMute"		aumix -v 0
+ key "XF86AudioPlay"		cdplay play 1
+ key "XF86AudioStop"		cdplay stop
+-key "XF86HomePage"		netscape -noraise -remote openHomepage
+-key "XF86Mail"			netscape -noraise -remote openURL(mailto:,new-window) 
+-key "XF86Search"		netscape -noraise -remote openURL(http://www.google.com/)
++#key "XF86HomePage"		netscape -noraise -remote openHomepage
++#key "XF86Mail"			netscape -noraise -remote openURL(mailto:,new-window)
++#key "XF86Search"		netscape -noraise -remote openURL(http://www.google.com/)
++key "XF86HomePage"		sensible-browser
++key "XF86WWW"		sensible-browser
++key "XF86Mail"			mozilla-thunderbird mailto:
++key "XF86Search"		sensible-browser http://www.yahoo.com/
+ key "XF86Eject"			eject
+Index: icewm/lib/menu.in
+===================================================================
+--- icewm.orig/lib/menu.in
++++ icewm/lib/menu.in
+@@ -5,10 +5,10 @@
+ # (re)install icewm.
+ #
+ prog xterm xterm xterm
+-prog rxvt xterm rxvt -bg black -cr green -fg white -C -fn 9x15 -sl 500
++prog rxvt xterm rxvt -rv -C -fn 9x15 -sl 500
+ prog fte fte fte
+ prog NEdit nedit nedit
+-prog Mozilla mozilla mozilla
++prog "Iceweasel" iceweasel iceweasel
+ prog XChat xchat xchat
+ prog Gimp gimp gimp
+ separator
+Index: icewm/lib/toolbar.in
+===================================================================
+--- icewm.orig/lib/toolbar.in
++++ icewm/lib/toolbar.in
+@@ -4,6 +4,8 @@
+ # since modifications to this file will be discarded when you
+ # (re)install icewm.
+ #
+-prog XTerm xterm xterm
+-prog FTE fte fte
+-prog Netscape netscape netscape
++prog XTerm xterm x-terminal-emulator
++#prog FTE fte fte
++#prog Netscape netscape netscape
++prog    "gvim" /usr/X11R6/include/X11/pixmaps/vim.xpm /usr/bin/gvim -f
++prog    "Iceweasel" /usr/share/pixmaps/iceweasel.xpm iceweasel
+Index: icewm/lib/winoptions.in
+===================================================================
+--- icewm.orig/lib/winoptions.in
++++ icewm/lib/winoptions.in
+@@ -6,6 +6,8 @@
+ 
+ xterm.icon: xterm
+ rxvt.icon: xterm
++urxvtc.icon: urxvt
++urxvt.icon: urxvt
+ nxterm.icon: xterm
+ fte.icon: fte
+ emacs.Emacs.icon: emacs
+Index: icewm/src/default.h
+===================================================================
+--- icewm.orig/src/default.h
++++ icewm/src/default.h
+@@ -113,7 +113,7 @@ XIV(bool, centerMaximizedWindows,
+ XIV(bool, win95keys,                            true)
+ XIV(bool, autoReloadMenus,                      true)
+ XIV(bool, clientMouseActions,                   true)
+-XIV(bool, showPrograms,                         false)
++XIV(bool, showPrograms,                         true)
+ XIV(bool, showSettingsMenu,                     true)
+ XIV(bool, showFocusModeMenu,                    true)
+ XIV(bool, showThemesMenu,                       true)
+@@ -162,27 +162,27 @@ XSV(const char *, acpiIgnoreBatteries,
+ #endif
+ 
+ XSV(const char *, mailBoxPath,                  0)
+-XSV(const char *, mailCommand,                  "xterm -name pine -title PINE -e pine")
+-XSV(const char *, mailClassHint,                "pine.XTerm")
++XSV(const char *, mailCommand,                  "x-terminal-emulator -name mutt -title Mutt -e mutt")
++XSV(const char *, mailClassHint,                "mutt.XTerm")
+ XSV(const char *, newMailCommand,               0)
+-XSV(const char *, lockCommand,                  0)
++XSV(const char *, lockCommand,                  "xscreensaver-command -lock")
+ XSV(const char *, clockCommand,                 "xclock -name icewm -title Clock")
+ XSV(const char *, clockClassHint,               "icewm.XClock")
+ XSV(const char *, runDlgCommand,                0)
+ XSV(const char *, openCommand,                  0)
+-XSV(const char *, terminalCommand,              "xterm")
++XSV(const char *, terminalCommand,              "x-terminal-emulator")
+ XSV(const char *, logoutCommand,                0)
+ XSV(const char *, logoutCancelCommand,          0)
+-XSV(const char *, shutdownCommand,              0)
+-XSV(const char *, rebootCommand,                0)
++XSV(const char *, shutdownCommand,              "sudo /sbin/halt")
++XSV(const char *, rebootCommand,                "sudo /sbin/reboot")
+ XIV(int, taskBarCPUDelay,                       500)
+ XIV(int, taskBarNetSamples,                     20)
+ XIV(int, taskBarNetDelay,                       500)
+-XSV(const char *, cpuCommand,                   "xterm -name top -title Process\\ Status -e top")
++XSV(const char *, cpuCommand,                   "x-terminal-emulator -name top -title Process\\ Status -e top")
+ XSV(const char *, cpuClassHint,                 "top.XTerm")
+-XSV(const char *, netCommand,                   "xterm -name netstat -title 'Network Status' -e netstat -c")
++XSV(const char *, netCommand,                   "x-terminal-emulator -name netstat -title 'Network Status' -e netstat -c")
+ XSV(const char *, netClassHint,                 "netstat.XTerm")
+-XSV(const char *, netDevice,                    "ppp0 eth0")
++XSV(const char *, netDevice,                    "eth0 wlan0")
+ XSV(const char *, addressBarCommand,            0)
+ #ifdef CONFIG_I18N
+ XSV(const char *, fmtTime,                      "%X")
+Index: icewm/src/themable.h
+===================================================================
+--- icewm.orig/src/themable.h
++++ icewm/src/themable.h
+@@ -45,25 +45,25 @@ XSV(const char *, titleButtonsSupported,
+ XSV(const char *, themeAuthor,                  0)
+ XSV(const char *, themeDescription,             0)
+ 
+-XFV(const char *, titleFontName,                FONT(120), "sans-serif:size=12")
+-XFV(const char *, menuFontName,                 BOLDFONT(100), "sans-serif:size=10:bold")
+-XFV(const char *, statusFontName,               BOLDTTFONT(120), "monospace:size=12:bold")
+-XFV(const char *, switchFontName,               BOLDTTFONT(120), "monospace:size=12:bold")
+-XFV(const char *, normalButtonFontName,         FONT(120), "sans-serif:size=12")
+-XFV(const char *, activeButtonFontName,         BOLDFONT(120), "sans-serif:size=12:bold")
++XFV(const char *, titleFontName,                FONT(120), "DejaVu Sans,sans-serif:size=11")
++XFV(const char *, menuFontName,                 BOLDFONT(100), "DejaVu Sans,sans-serif,Bitstream Vera Serif:size=10:bold")
++XFV(const char *, statusFontName,               BOLDTTFONT(110), "DejaVu Sans Mono,monospace:size=11:bold")
++XFV(const char *, switchFontName,               BOLDTTFONT(110), "DejaVu Sans Mono,monospace:size=11")
++XFV(const char *, normalButtonFontName,         FONT(110), "DejaVu Sans,sans-serif:size=11")
++XFV(const char *, activeButtonFontName,         BOLDFONT(110), "DejaVu Sans,sans-serif:size=11:bold")
+ #ifdef CONFIG_TASKBAR
+-XFV(const char *, normalTaskBarFontName,        FONT(120), "sans-serif:size=12")
+-XFV(const char *, activeTaskBarFontName,        BOLDFONT(120), "sans-serif:size=12:bold")
+-XFV(const char *, toolButtonFontName,           FONT(120), "sans-serif:size=12")
+-XFV(const char *, normalWorkspaceFontName,      FONT(120), "sans-serif:size=12")
+-XFV(const char *, activeWorkspaceFontName,      FONT(120), "sans-serif:size=12")
++XFV(const char *, normalTaskBarFontName,        FONT(110), "DejaVu Sans,sans-serif:size=11")
++XFV(const char *, activeTaskBarFontName,        BOLDFONT(110), "DejaVu Sans,sans-serif:size=10:bold")
++XFV(const char *, toolButtonFontName,           FONT(110), "DejaVu Sans,sans-serif:size=11")
++XFV(const char *, normalWorkspaceFontName,      FONT(110), "DejaVu Sans,sans-serif:size=11")
++XFV(const char *, activeWorkspaceFontName,      FONT(110), "DejaVu Sans,sans-serif:size=11")
+ #endif
+-XFV(const char *, minimizedWindowFontName,      FONT(120), "sans-serif:size=12")
+-XFV(const char *, listBoxFontName,              FONT(120), "sans-serif:size=12")
+-XFV(const char *, labelFontName,                FONT(140), "sans-serif:size=12")
+-XFV(const char *, clockFontName,                TTFONT(140), "monospace:size=12")
+-XFV(const char *, apmFontName,                  TTFONT(140), "monospace:size=12")
+-XFV(const char *, inputFontName,                TTFONT(140), "monospace:size=12")
++XFV(const char *, minimizedWindowFontName,      FONT(110), "DejaVu Sans,sans-serif:size=11")
++XFV(const char *, listBoxFontName,              FONT(110), "DejaVu Sans,sans-serif:size=11")
++XFV(const char *, labelFontName,                FONT(140), "DejaVu Sans,sans-serif:size=11")
++XFV(const char *, clockFontName,                TTFONT(140), "DejaVu Sans Mono,monospace:size=11")
++XFV(const char *, apmFontName,                  TTFONT(140), "DejaVu Sans Mono,monospace:size=11")
++XFV(const char *, inputFontName,                TTFONT(140), "DejaVu Sans Mono,monospace:size=11")
+ 
+ XSV(const char *, clrDialog,                    "rgb:C0/C0/C0")
+ XSV(const char *, clrActiveBorder,              "rgb:C0/C0/C0")
+Index: icewm/src/wmapp.cc
+===================================================================
+--- icewm.orig/src/wmapp.cc
++++ icewm/src/wmapp.cc
+@@ -779,7 +779,7 @@ static void initMenus(
+             logoutMenu->addItem(_("Restart _Icewm"), -2, null, actionRestart);
+ 
+             DProgram *restartXTerm =
+-                DProgram::newProgram(app, smActionListener, _("Restart _Xterm"), null, true, 0, "xterm", noargs);
++                DProgram::newProgram(app, smActionListener, _("Restart _Xterm"), null, true, 0, "x-terminal-emulator", noargs);
+             if (restartXTerm)
+                 logoutMenu->add(new DObjectMenuItem(restartXTerm));
+ #endif
+Index: icewm/src/yfontxft.cc
+===================================================================
+--- icewm.orig/src/yfontxft.cc
++++ icewm/src/yfontxft.cc
+@@ -131,8 +131,8 @@ YXftFont::YXftFont(ustring name, bool us
+         msg("xft: fallback from '%s'", cstring(name).c_str());
+         XftFont *sans =
+             XftFontOpen(xapp->display(), xapp->screen(),
+-                        XFT_FAMILY, XftTypeString, "sans-serif",
+-                        XFT_PIXEL_SIZE, XftTypeInteger, 12,
++                        XFT_FAMILY, XftTypeString, "DejaVu Sans,sans-serif",
++                        XFT_PIXEL_SIZE, XftTypeInteger, 11,
+                         NULL);
+ 
+         if (NULL != sans) {
+@@ -145,7 +145,7 @@ YXftFont::YXftFont(ustring name, bool us
+             fAscent = sans->ascent;
+             fDescent = sans->descent;
+         } else
+-            warn(_("Loading of fallback font \"%s\" failed."), "sans-serif");
++            warn(_("Loading of fallback font \"%s\" failed."), "DejaVu Sans,sans-serif");
+     }
+ }
+ 
+@@ -287,7 +287,7 @@ ref<YFont> getXftFontXlfd(ustring name,
+     ref<YFont> font(new YXftFont(name, true, antialias));
+     if (font == null || !font->valid()) {
+         msg("failed to load font '%s', trying fallback", cstring(name).c_str());
+-        font.init(new YXftFont("sans-serif:size=12", false, antialias));
++        font.init(new YXftFont("DejaVu Sans,sans-serif:size=11", false, antialias));
+         if (font == null || !font->valid())
+             msg("Could not load fallback Xft font.");
+     }
+@@ -298,7 +298,7 @@ ref<YFont> getXftFont(ustring name, bool
+     ref<YFont>font(new YXftFont(name, false, antialias));
+     if (font == null || !font->valid()) {
+         msg("failed to load font '%s', trying fallback", cstring(name).c_str());
+-        font.init(new YXftFont("sans-serif:size=12", false, antialias));
++        font.init(new YXftFont("DejaVu Sans,sans-serif:size=11", false, antialias));
+         if (font == null || !font->valid())
+             msg("Could not load fallback Xft font.");
+     }
+Index: icewm/src/yprefs.h
+===================================================================
+--- icewm.orig/src/yprefs.h
++++ icewm/src/yprefs.h
+@@ -34,7 +34,7 @@ XIV(bool, grabRootWindow,
+ #ifdef CONFIG_XFREETYPE
+ XIV(bool, haveXft,                              true)
+ #endif
+-XSV(const char *, iconPath,                     0)
++XSV(const char *, iconPath,                     "/usr/share/icons:/usr/share/pixmaps")
+ #define CONFIG_DEFAULT_THEME "icedesert/default.theme"
+ XSV(const char *, themeName,                    CONFIG_DEFAULT_THEME)
+ XSV(const char *, xineramaPrimaryScreenName,    0)
+@@ -166,6 +166,6 @@ XIV(WMLook, wmLook,
+ XSV(const char *, clrToolTip,                   "rgb:E0/E0/00")
+ XSV(const char *, clrToolTipText,               "rgb:00/00/00")
+ #endif
+-XFV(const char *, toolTipFontName,              FONT(120), "sans-serif:size=12")
++XFV(const char *, toolTipFontName,              FONT(120), "DejaVu Sans,sans-serif:size=11")
+ 
+ #endif
+Index: icewm/src/yapp.cc
+===================================================================
+--- icewm.orig/src/yapp.cc
++++ icewm/src/yapp.cc
+@@ -431,7 +431,7 @@ int YApplication::mainLoop() {
+             handleSignal(SIGHUP);
+ #endif
+ 
+-        {
++        if (measure_latency) { // no spam in user's logs please
+             struct timeval difftime;
+             struct timeval curtime;
+ 

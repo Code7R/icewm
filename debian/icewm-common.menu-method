@@ -1,0 +1,45 @@
+#!/usr/bin/install-menu
+
+compat="menu-1"
+
+!include menu.h
+
+outputencoding="LOCALE"
+
+function iconordash()=ifelse(icon(),"\"" icon() "\"","-")
+function q($com)=esc($com,"\"")
+
+# icewm 1.3.7 displays its icons 16x16, so prefer $icon16x16 if
+# available.  Plain $icon is an unknown size but will be resized by
+# icewm at runtime as necessary.
+#
+# $icon32x32 is a fallback, though it would be unusual to have it but
+# have neither $icon16x16 nor plain $icon.
+#
+# Normally the menu.h icon() func would be used so the user or
+# sysadmin can configure a preferred size, but since icewm always
+# shows 16x16 the order is fixed here.
+#
+function icewm_icon()=ifelse($icon16x16, $icon16x16, \
+                        ifelse($icon, $icon, \
+                          $icon32x32))
+
+supported
+#  x11=	"  prog    \"" q(title()) "\" " iconordash() " /bin/sh -c \"" q($command) "\"\n"
+#  text= "  prog    \"" q(title()) "\" " iconordash() " /bin/sh -c \"" q(term())   "\"\n"
+#  wm=   "  restart \"" q(title()) "\" " iconordash() " /bin/sh -c \"" q($command) "\"\n"
+  x11= "  prog \"" $title "\" " ifempty(icewm_icon(),"-") ifnempty(icewm_icon(),icewm_icon()) " " $command"\n"
+  text= "  prog \"" $title"\" " ifempty(icewm_icon(),"-") ifnempty(icewm_icon(),icewm_icon()) "  xterm -T \"" $title "\" -e " $command"\n"
+  wm=   "  restart \"" $title"\" " ifempty(icewm_icon(),"-") ifnempty(icewm_icon(),icewm_icon()) " " $command"\n"
+endsupported
+
+startmenu=ifneq($title,"Debian menu",ifroot("menu \"" q(title()) "\" folder {\n","menu \"" q(title()) "\" folder {\n"))
+endmenu=ifneq($title,"Debian menu","}\n")
+genmenu="programs"
+submenutitle=""
+#submenutitle="  menu \"" $title "\" folder {\n"
+preoutput="\n"
+rootprefix="/etc/X11/icewm/"
+mainmenutitle="Debian menu"
+treewalk="(M)"
+userprefix=".icewm"

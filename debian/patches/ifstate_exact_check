@@ -1,0 +1,51 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## ifstate_exact_check.dpatch by Eduard Bloch <blade@debian.org>
+##
+## DP: Check the state of the interface with SIOCGIFFLAGS instead of traversing the SIOCGIFCONF output, also checking the link state more exactly (Debian bug #563371)
+
+@DPATCH@
+Index: icewm/src/apppstatus.cc
+===================================================================
+--- icewm.orig/src/apppstatus.cc
++++ icewm/src/apppstatus.cc
+@@ -438,19 +438,18 @@ bool NetStatus::isUp() {
+     }
+     return false;
+ #else
+-    char buffer[32 * sizeof(struct ifreq)];
+-    struct ifconf ifc;
+-    struct ifreq *ifr;
+-    long long len;
+-
+     if (fNetDev == null)
+         return false;  
+-    
+-    int s = socket(PF_INET, SOCK_STREAM, 0);
+ 
++    int s = socket(PF_INET, SOCK_STREAM, 0);
+     if (s == -1)
+         return false;
+ 
++#if BROWSE_SIOCGIFCONF_LIST
++    char buffer[32 * sizeof(struct ifreq)];
++    struct ifconf ifc;
++    struct ifreq *ifr;
++    long long len;
+     ifc.ifc_len = sizeof(buffer);
+     ifc.ifc_buf = buffer;
+     if (ioctl(s, SIOCGIFCONF, &ifc) < 0) {
+@@ -468,6 +467,14 @@ bool NetStatus::isUp() {
+         ifr++;
+     }
+ 
++#else
++    struct ifreq ifr;
++    fNetDev.copy(ifr.ifr_name, IFNAMSIZ-1);
++    bool bUp = (ioctl(s, SIOCGIFFLAGS, &ifr) >= 0 && (ifr.ifr_flags & IFF_UP));
++    close(s);
++    return bUp;
++#endif
++
+     close(s);
+     return false;
+ #endif
