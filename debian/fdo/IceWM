@@ -1,7 +1,0 @@
-#!/bin/sh
-#
-# /etc/gdm/Sessions/IceWM
-#
-# global IceWM session file, used by gdm
-
-exec /etc/X11/Xsession /usr/bin/icewm-session

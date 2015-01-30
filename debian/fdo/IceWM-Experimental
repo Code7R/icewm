@@ -1,7 +1,0 @@
-#!/bin/sh
-#
-# /etc/gdm/Sessions/IceWM-Experimental
-#
-# global IceWM-Experimental session file, used by gdm
-
-exec /etc/X11/Xsession /usr/bin/icewm-session-experimental
