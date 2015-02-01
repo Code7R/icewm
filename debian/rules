@@ -28,11 +28,12 @@ DOCDIR=/usr/share/doc/icewm-common
 BDIR=builddir
 
 confflags += --build $(DEB_BUILD_GNU_TYPE) --host $(DEB_HOST_GNU_TYPE) \
-						 --prefix=/usr --with-cfgdir=/etc/X11/icewm \
-						 --datadir=/usr/share --disable-debug \
-						 --enable-i18n --enable-nls \
-						 --htmldir=$(DOCDIR)/html \
-						 --docdir=$(DOCDIR)
+	     --prefix=/usr --with-cfgdir=/etc/X11/icewm \
+	     --datadir=/usr/share --disable-debug \
+	     --enable-i18n --enable-nls \
+	     --htmldir=$(DOCDIR)/html \
+	     --docdir=$(DOCDIR) \
+	     EXTRA_LIBS="-lsupc++"
 
 ICONS=$(CURDIR)/debian/icons
 FDO=$(CURDIR)/debian/fdo
@@ -42,7 +43,6 @@ MP=icewm-common.7
 build-lite: stamp-build-lite
 stamp-build-lite: autofoo-update-stamp
 	mkdir -p $(BDIR)-lite
-	echo $(CPPFLAGS)
 	cd $(BDIR)-lite && EXEEXT=-lite ../configure $(confflags) --prefix=/usr \
 		 --disable-menus-gnome2 \
 		 --enable-lite --disable-xfreetype \

@@ -318,7 +318,8 @@ void precondition(char const *msg, ...) {
     fflush(stderr);
 
     show_backtrace();
-    *(char *)0 = 0x42;
+    abort();
+    // clang++ doesn't like that... *(char *)0 = 0x42;
 }
 
 void warn(char const *msg, ...) {
