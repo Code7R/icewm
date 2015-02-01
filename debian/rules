@@ -43,12 +43,12 @@ build-lite: stamp-build-lite
 stamp-build-lite: autofoo-update-stamp
 	mkdir -p $(BDIR)-lite
 	echo $(CPPFLAGS)
-	cd $(BDIR)-lite && ../configure $(confflags) --prefix=/usr \
+	cd $(BDIR)-lite && EXEEXT=-lite ../configure $(confflags) --prefix=/usr \
 		 --disable-menus-gnome2 \
 		 --enable-lite --disable-xfreetype \
 		 --enable-corefonts \
-		 --disable-taskbar  --disable-xrandr  EXEEXT=-lite
-	$(MAKE) -C $(BDIR)-lite
+		 --disable-taskbar  --disable-xrandr
+	$(MAKE) -C $(BDIR)-lite EXEEXT=-lite
 	touch stamp-build-lite
 
 build-normal: stamp-normal
@@ -62,7 +62,7 @@ stamp-normal: autofoo-update-stamp
 	$(MAKE) -C $(BDIR)-normal
 	touch $@
 
-configure: configure.ac config.h.in Makefile.am src/Makefile.am
+configure: configure.ac Makefile.am src/Makefile.am
 	bash autogen.sh
 
 autofoo-update-stamp: configure
