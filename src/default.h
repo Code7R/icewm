@@ -178,8 +178,13 @@ XSV(const char *, openCommand,                  0)
 XSV(const char *, terminalCommand,              "x-terminal-emulator")
 XSV(const char *, logoutCommand,                0)
 XSV(const char *, logoutCancelCommand,          0)
+#if defined(__linux__)
 XSV(const char *, shutdownCommand,              "/bin/sh -c \"{ test -e /run/systemd/system && systemctl poweroff; } || sudo -n /sbin/halt\"")
 XSV(const char *, rebootCommand,                "/bin/sh -c \"{ test -e /run/systemd/system && systemctl reboot; } || sudo -n /sbin/reboot\"")
+#else
+XSV(const char *, shutdownCommand,              0)
+XSV(const char *, rebootCommand,                0)
+#endif // LINUX
 XIV(int, taskBarCPUDelay,                       500)
 XIV(int, taskBarNetSamples,                     20)
 XIV(int, taskBarNetDelay,                       500)

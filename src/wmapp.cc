@@ -714,14 +714,21 @@ static void initPixmaps() {
 
         for (int a = 0; a <= 1; a++) {
             for (int b = 0; b <= 1; b++) {
-                frameT[a][b]->replicate(true, copyMask);
-                frameB[a][b]->replicate(true, copyMask);
-                frameL[a][b]->replicate(false, copyMask);
-                frameR[a][b]->replicate(false, copyMask);
+               if(frameT[a][b]._ptr())
+                  frameT[a][b]->replicate(true, copyMask);
+               if(frameB[a][b]._ptr())
+                  frameB[a][b]->replicate(true, copyMask);
+               if(frameL[a][b]._ptr())
+                  frameL[a][b]->replicate(false, copyMask);
+               if(frameR[a][b]._ptr())
+                  frameR[a][b]->replicate(false, copyMask);
             }
-            titleS[a]->replicate(true, copyMask);
-            titleT[a]->replicate(true, copyMask);
-            titleB[a]->replicate(true, copyMask);
+            if(titleS[a]._ptr())
+               titleS[a]->replicate(true, copyMask);
+            if(titleT[a]._ptr())
+               titleT[a]->replicate(true, copyMask);
+            if(titleB[a]._ptr())
+               titleB[a]->replicate(true, copyMask);
         }
 
         menuButton[0] = paths->loadPixmap(0, "menuButtonI.xpm");
@@ -1654,6 +1661,7 @@ static void print_usage(const char *argv0) {
 
 int main(int argc, char **argv) {
     YLocale locale;
+    bool notify_parent(false);
 
     for (char ** arg = argv + 1; arg < argv + argc; ++arg) {
         if (**arg == '-') {
@@ -1683,6 +1691,8 @@ int main(int argc, char **argv) {
                 replace_wm = true;
             else if (IS_SWITCH("v", "version"))
                 print_version();
+            else if (IS_LONG_SWITCH("notify"))
+                notify_parent = true;
             else if (IS_SWITCH("h", "help"))
                 print_usage(my_basename(argv[0]));
 #endif
@@ -1694,6 +1704,9 @@ int main(int argc, char **argv) {
     app.signalGuiEvent(geStartup);
 #endif
     manager->manageClients();
+
+    if(notify_parent)
+       kill(getppid(), SIGUSR1);
 
     int rc = app.mainLoop();
 #ifdef CONFIG_GUIEVENTS
