@@ -149,7 +149,8 @@ install: build
 
 	## icewm-experimental ########################################
 # making -experimental compat symlinks
-	cd  $(ICEWM_EXP)/usr/bin && for x in icewm-session icewm icewmhint icehelp icewmtray icewmbg icesh icesound genpref ; do ln -sf $$x $$x-experimental ; done ; ln -sf genpref genpref-experimental
+	cd  $(ICEWM_EXP)/usr/bin && for x in icewm-session icewm icewmhint icehelp icewmtray icewmbg icesh icesound ; do ln -s $$x $$x-experimental ; done
+	#; ln -sf genpref genpref-experimental
 	# Remove doc directories since we will add links
 	# to icewm-common instead.
 	rm -rf $(ICEWM_EXP)/usr/share/doc/icewm-experimental
