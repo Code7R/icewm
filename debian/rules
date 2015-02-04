@@ -40,16 +40,20 @@ FDO=$(CURDIR)/debian/fdo
 CUSTOM=$(CURDIR)/debian/custom
 MP=icewm-common.7
 
+DEBVERSION=$(shell dpkg-parsechangelog -SVersion)
+modversion = sed -e 's,\(.*\)VERSION.*,\1VERSION "$(DEBVERSION)",' < $(BDIR)$(1)/config.h > stamph && mv stamph $(BDIR)$(1)/config.h
+
 build-lite: stamp-build-lite
 stamp-build-lite: autofoo-update-stamp
 	mkdir -p $(BDIR)-lite
-	cd $(BDIR)-lite && EXEEXT=-lite ../configure $(confflags) --prefix=/usr \
+	cd $(BDIR)-lite && ../configure $(confflags) \
 		 --disable-menus-gnome2 \
 		 --enable-lite --disable-xfreetype \
 		 --enable-corefonts \
 		 --disable-taskbar  --disable-xrandr
+	$(call modversion,-lite)
 	$(MAKE) -C $(BDIR)-lite EXEEXT=-lite
-	touch stamp-build-lite
+	touch $@
 
 build-normal: stamp-normal
 stamp-normal: autofoo-update-stamp
@@ -58,7 +62,8 @@ stamp-normal: autofoo-update-stamp
 		 --enable-menus-gnome2 \
 		 --enable-antialiasing  --enable-shaped-decorations \
 		 --enable-gradients \
-		 --enable-guievents --with--esd-config=/usr/bin/esd-config
+		 --enable-guievents
+	$(call modversion,-normal)
 	$(MAKE) -C $(BDIR)-normal
 	touch $@
 
