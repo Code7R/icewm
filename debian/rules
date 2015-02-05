@@ -19,6 +19,10 @@ ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	export MAKEFLAGS
 endif
 
+ifeq (linux,$(DEB_TARGET_ARCH_OS))
+	 CPPFLAGS += -DUSE_SIGNALFD
+endif
+
 ICEWM_COMMON=$(CURDIR)/debian/icewm-common
 ICEWM=$(CURDIR)/debian/icewm
 ICEWM_GNOME_SUPP=$(CURDIR)/debian/icewm-gnome-support
