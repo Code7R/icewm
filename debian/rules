@@ -21,7 +21,6 @@ endif
 
 ICEWM_COMMON=$(CURDIR)/debian/icewm-common
 ICEWM=$(CURDIR)/debian/icewm
-ICEWM_GNOME_SUPP=$(CURDIR)/debian/icewm-gnome-support
 ICEWM_LITE=$(CURDIR)/debian/icewm-lite
 ICEWM_EXP=$(CURDIR)/debian/icewm-experimental
 DOCDIR=/usr/share/doc/icewm-common
@@ -48,6 +47,7 @@ stamp-build-lite: autofoo-update-stamp
 	mkdir -p $(BDIR)-lite
 	cd $(BDIR)-lite && ../configure $(confflags) \
 		 --disable-menus-gnome2 \
+		 --disable-menus-fdo \
 		 --enable-lite --disable-xfreetype \
 		 --enable-corefonts \
 		 --disable-taskbar  --disable-xrandr
@@ -59,7 +59,8 @@ build-normal: stamp-normal
 stamp-normal: autofoo-update-stamp
 	mkdir -p $(BDIR)-normal
 	cd $(BDIR)-normal && ../configure $(confflags) \
-		 --enable-menus-gnome2 \
+		 --disable-menus-gnome2 \
+		 --enable-menus-fdo \
 		 --enable-antialiasing  --enable-shaped-decorations \
 		 --enable-gradients \
 		 --enable-guievents
@@ -135,14 +136,7 @@ install: build
 	# to icewm-common instead.
 	rm -rf $(ICEWM)/usr/share/doc/icewm
 
-	## icewm-gnome-support #######################################
-
-	mv $(ICEWM)/usr/bin/icewm-menu-gnome2 $(ICEWM_GNOME_SUPP)/usr/bin
-	install -m 755 -d $(ICEWM_GNOME_SUPP)/usr/share/icewm/contrib
-
-	# Remove doc directories since we will add links
-	# to icewm-common instead.
-	rm -rf $(ICEWM_GNOME_SUPP)/usr/share/doc/icewm-gnome-support
+	mv $(ICEWM)/usr/bin/icewm-menu-fdo $(ICEWM_COMMON)/usr/bin
 
 	## icewm-lite ################################################
 	install -m 755 $(BDIR)-lite/src/ice*-lite $(ICEWM_LITE)/usr/bin
@@ -170,7 +164,6 @@ binary-arch: build install
 	cd debian ; for x in -lite -experimental ; do cp -lf icewm.postinst icewm$$x.postinst ; cp -lf icewm.prerm icewm$$x.prerm ; done
 
 	dh_link -picewm usr/share/doc/icewm-common usr/share/doc/icewm
-	dh_link -picewm-gnome-support usr/share/doc/icewm-common usr/share/doc/icewm-gnome-support
 	dh_link -picewm-lite usr/share/doc/icewm-common usr/share/doc/icewm-lite
 	dh_link -picewm-experimental usr/share/doc/icewm-common usr/share/doc/icewm-experimental
 
@@ -197,9 +190,9 @@ binary-arch: build install
 		done ; \
 	done
 	
-	mkdir -p debian/icewm-gnome-support/usr/share/man/man1
-	ln -sf ../man7/$(MP).gz debian/icewm-gnome-support/usr/share/man/man1/icewm-menu-gnome2.1x.gz
-	ln -sf ../man7/$(MP).gz debian/icewm-experimental/usr/share/man/man1/icesound-experimental.1x.gz
+	#mkdir -p debian/icewm-gnome-support/usr/share/man/man1
+	#ln -sf ../man7/$(MP).gz debian/icewm-gnome-support/usr/share/man/man1/icewm-menu-gnome2.1x.gz
+	#ln -sf ../man7/$(MP).gz debian/icewm-experimental/usr/share/man/man1/icesound-experimental.1x.gz
 
 
 	dh_installdeb
