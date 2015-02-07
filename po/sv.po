@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Icewm 1.2.0-beta1\n"
 "Report-Msgid-Bugs-To: http://github.com/bbidulock/icewm\n"
-"POT-Creation-Date: 2015-02-02 23:22-0700\n"
+"POT-Creation-Date: 2015-02-07 13:13+0100\n"
 "PO-Revision-Date: 2002-04-20 20:40+0200\n"
 "Last-Translator: Per Larsson <tucker@algonet.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -130,6 +130,62 @@ msgstr ""
 #: src/wmstatus.cc:168
 msgid "Workspace: "
 msgstr "Arbetsyta:"
+
+#: src/fdomenu.cc:228
+msgid "Settings"
+msgstr ""
+
+#: src/fdomenu.cc:229
+msgid "Screensavers"
+msgstr ""
+
+#: src/fdomenu.cc:230
+msgid "Accessories"
+msgstr ""
+
+#: src/fdomenu.cc:231
+msgid "Development"
+msgstr ""
+
+#: src/fdomenu.cc:232
+msgid "Education"
+msgstr ""
+
+#: src/fdomenu.cc:233
+msgid "Games"
+msgstr ""
+
+#: src/fdomenu.cc:234
+msgid "Graphics"
+msgstr ""
+
+#: src/fdomenu.cc:235
+msgid "Multimedia"
+msgstr ""
+
+#: src/fdomenu.cc:236
+msgid "Network"
+msgstr ""
+
+#: src/fdomenu.cc:237
+msgid "Office"
+msgstr ""
+
+#: src/fdomenu.cc:238
+msgid "System"
+msgstr ""
+
+#: src/fdomenu.cc:239
+msgid "WINE"
+msgstr ""
+
+#: src/fdomenu.cc:240
+msgid "Editors"
+msgstr ""
+
+#: src/fdomenu.cc:245
+msgid "Other"
+msgstr ""
 
 #: src/icehelp.cc:715
 msgid "Back"
@@ -1120,7 +1176,7 @@ msgstr "Fönsterlista"
 msgid "%lu. Workspace %-.32s"
 msgstr "%lu. Arbetsyta %-.32s"
 
-#: src/yapp.cc:462
+#: src/yapp.cc:483
 #, c-format
 msgid "Message Loop: select failed (errno=%d)"
 msgstr "Meddelandeloop: select misslyckades (errno=%d)"

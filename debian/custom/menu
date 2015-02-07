@@ -94,4 +94,4 @@ menu Utilities folder {
 }
 menufile Toolbar folder toolbar
 separator
-menuprog "Desktop Apps" folder icewm-menu-gnome2 --list /usr/share/applications
+menuprog "Desktop Apps" folder /usr/bin/icewm-menu-fdo
