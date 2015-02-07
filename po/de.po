@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icewm 1.2.26\n"
 "Report-Msgid-Bugs-To: http://github.com/bbidulock/icewm\n"
-"POT-Creation-Date: 2015-02-02 23:22-0700\n"
+"POT-Creation-Date: 2015-02-07 13:13+0100\n"
 "PO-Revision-Date: 2001-10-02 00:28+0200\n"
 "Last-Translator: Eduard Bloch <edi@gmx.de>\n"
 "Language-Team: German\n"
@@ -140,6 +140,62 @@ msgstr ""
 #: src/wmstatus.cc:168
 msgid "Workspace: "
 msgstr "Arbeitsbereich: "
+
+#: src/fdomenu.cc:228
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: src/fdomenu.cc:229
+msgid "Screensavers"
+msgstr "Bildschirmschoner"
+
+#: src/fdomenu.cc:230
+msgid "Accessories"
+msgstr "Zubehör"
+
+#: src/fdomenu.cc:231
+msgid "Development"
+msgstr "Entwicklung"
+
+#: src/fdomenu.cc:232
+msgid "Education"
+msgstr "Bildung"
+
+#: src/fdomenu.cc:233
+msgid "Games"
+msgstr "Spiele"
+
+#: src/fdomenu.cc:234
+msgid "Graphics"
+msgstr "Grafik"
+
+#: src/fdomenu.cc:235
+msgid "Multimedia"
+msgstr "Multimedia"
+
+#: src/fdomenu.cc:236
+msgid "Network"
+msgstr "Netzwerk"
+
+#: src/fdomenu.cc:237
+msgid "Office"
+msgstr "Büro"
+
+#: src/fdomenu.cc:238
+msgid "System"
+msgstr "System"
+
+#: src/fdomenu.cc:239
+msgid "WINE"
+msgstr "WINE"
+
+#: src/fdomenu.cc:240
+msgid "Editors"
+msgstr "Editoren"
+
+#: src/fdomenu.cc:245
+msgid "Other"
+msgstr "Sonstiges"
 
 #: src/icehelp.cc:715
 msgid "Back"
@@ -1184,7 +1240,7 @@ msgstr "Fensterliste"
 msgid "%lu. Workspace %-.32s"
 msgstr "%lu. Arbeitsbereich %-.32s"
 
-#: src/yapp.cc:462
+#: src/yapp.cc:483
 #, c-format
 msgid "Message Loop: select failed (errno=%d)"
 msgstr "Nachrichtenschleife: select fehlgeschlagen (errno=%d)"
