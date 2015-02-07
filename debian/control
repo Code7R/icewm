@@ -14,7 +14,7 @@ Architecture: any
 Conflicts: menu (<< 2.1.9-1)
 Replaces: icewm (<< 1.2.14)
 Suggests: icewm-themes, xscreensaver
-Depends: ${misc:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}
 Recommends: menu
 Description: wonderful Win95-OS/2-Motif-like window manager
  IceWm is a Window Manager for X Window System. Can emulate the look of

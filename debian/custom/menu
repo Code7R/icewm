@@ -94,5 +94,4 @@ menu Utilities folder {
 }
 menufile Toolbar folder toolbar
 separator
-menuprog "Gnome" folder icewm-menu-gnome2 --list /usr/share/gnome/vfolders
-menuprog KDE folder icewm-menu-gnome2 --list /usr/share/applnk
+menuprog "Desktop Apps" folder /usr/bin/icewm-menu-fdo

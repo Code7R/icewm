@@ -81,6 +81,7 @@ build-indep: build-stamp
 
 build-stamp: build-normal build-lite
 	$(MAKE) -C $(BDIR)-normal/doc
+	# make sure to build it with fullfeatured version
 	$(BDIR)-normal/src/genpref > lib/preferences
 	touch $@
 
@@ -97,55 +98,32 @@ install: build
 	dh_testroot
 	dh_prep
 	dh_installdirs
-	# Install everything but documentation
-	cd $(BDIR)-normal && $(MAKE) install DESTDIR=$(ICEWM_COMMON)
-	# Do not provide a programs files, it is added by the menu system
-	rm -f $(ICEWM_COMMON)/etc/X11/icewm/programs
-
+	$(MAKE) -C $(BDIR)-normal install DESTDIR=$(ICEWM)
+	$(MAKE) -C $(BDIR)-lite   install DESTDIR=$(ICEWM_LITE)  EXEEXT=-lite
+	rm -rf $(ICEWM_LITE)/usr/{bin/*gnome*,share/{doc/*icewm*,locale,man,icewm}}
+	mkdir -p $(ICEWM_COMMON)/usr/bin
+	mv $(ICEWM)/usr/share $(ICEWM_COMMON)/usr/
+	# XXX: fix the session file name and contents
+	rm $(ICEWM_LITE)/usr/share/xsessions/*desktop
+	sed -e 's,icewm-session,icewm-session-lite,g;s,^Name\(.*\),Name\1 [lite],' < lib/icewm-session.desktop > $(ICEWM_LITE)/usr/share/xsessions/IceWM-Lite.desktop
 	# Install Debian custom files
-	install -m 644 $(ICONS)/{mutt,mozilla,icewm}*.xpm \
-		$(ICEWM_COMMON)/usr/share/icewm/icons
+	install -m 644 $(ICONS)/{mutt,mozilla,icewm}*.xpm $(ICEWM_COMMON)/usr/share/icewm/icons
 	-mv $(ICEWM_COMMON)/usr/share/icewm/taskbar/icewm.xpm  $(ICEWM_COMMON)/usr/share/icewm/taskbar/icewm.orig.xpm
 	install -m 644 $(ICONS)/debian.xpm $(ICEWM_COMMON)/usr/share/icewm/taskbar/icewm.xpm
-	install -m 644 $(CUSTOM)/toolbar $(CUSTOM)/menu $(ICEWM_COMMON)/etc/X11/icewm
-
-	# Add some links
-	dh_link -picewm-common
-
+	mkdir -p $(ICEWM_COMMON)/etc/X11/icewm $(ICEWM_COMMON)/usr/bin $(ICEWM_COMMON)/usr/share/doc/icewm-common/html/
+	install -m 644 $(CUSTOM)/toolbar $(CUSTOM)/menu $(ICEWM_COMMON)/etc/X11/icewm/
 	# Move files in the right package directory
-	mv $(ICEWM_COMMON)/usr/bin/icewm-set-gnomewm $(ICEWM_COMMON)/usr/share/icewm/
-	mv $(ICEWM_COMMON)/usr/bin/* $(ICEWM)/usr/bin
-	rm -rf $(ICEWM_COMMON)/usr/bin
-
+	mv $(ICEWM)/usr/bin/*gnome* $(ICEWM_COMMON)/usr/share/icewm/
+	mv $(ICEWM)/usr/bin/icewm-menu* $(ICEWM_COMMON)/usr/bin
+	rm -rf $(ICEWM_COMMON)/usr/share/applications/*desktop
 	# Install documentation
 	install -m 644 $(BDIR)-normal/doc/*.html $(ICEWM_COMMON)/usr/share/doc/icewm-common/html/
-	dh_installdocs -X.svn
-	mv $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ/source/* $(ICEWM_COMMON)/usr/share/doc/icewm-common/sgml && rm -rf $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ/source
-
+	rm -rf $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ/source
 	# and add our bits to fix the font insanity with xft2
 	dh_installexamples -picewm-common $(CURDIR)/debian/examples/preferences.fonts $(CURDIR)/debian/examples/preferences.noClickToFocus $(CURDIR)/debian/examples/focus_mode.noClickToFocus
-
-	## icewm #####################################################
-
-	# Install the fd.o X Sessions file
-	#install -m 644 lib/icewm-session.desktop $(ICEWM)/usr/share/xsessions
-	mv $(ICEWM_COMMON)/usr/share/xsessions/icewm-session.desktop $(ICEWM)/usr/share/xsessions
-	-rm $(ICEWM_COMMON)/usr/share/applications/*desktop
-
 	# Remove doc directories since we will add links
 	# to icewm-common instead.
 	rm -rf $(ICEWM)/usr/share/doc/icewm
-
-	mv $(ICEWM)/usr/bin/icewm-menu-fdo $(ICEWM_COMMON)/usr/bin
-
-	## icewm-lite ################################################
-	install -m 755 $(BDIR)-lite/src/ice*-lite $(ICEWM_LITE)/usr/bin
-	sed -e 's,icewm-session,icewm-session-lite,g;s,^Name\(.*\),Name\1 [lite],' < lib/icewm-session.desktop > $(ICEWM_LITE)/usr/share/xsessions/IceWM-Lite.desktop
-
-	# Remove doc directories since we will add links
-	# to icewm-common instead.
-	rm -rf $(ICEWM_LITE)/usr/share/doc/icewm-lite
-
 	## icewm-experimental ########################################
 # making -experimental compat symlinks
 	cd  $(ICEWM_EXP)/usr/bin && for x in icewm-session icewm icewmhint icehelp icewmtray icewmbg icesh icesound ; do ln -s $$x $$x-experimental ; done
@@ -162,21 +140,15 @@ binary-arch: build install
 	dh_testroot
 
 	cd debian ; for x in -lite -experimental ; do cp -lf icewm.postinst icewm$$x.postinst ; cp -lf icewm.prerm icewm$$x.prerm ; done
-
+	#rm -r $(ICEWM_LITE)/usr/share/doc/icewm-lite $(ICEWM_EXP)/usr/share/doc/icewm-experimental
 	dh_link -picewm usr/share/doc/icewm-common usr/share/doc/icewm
 	dh_link -picewm-lite usr/share/doc/icewm-common usr/share/doc/icewm-lite
 	dh_link -picewm-experimental usr/share/doc/icewm-common usr/share/doc/icewm-experimental
+	dh_installdocs -X.svn
 
 	dh_installmenu
 	dh_icons
-
-	dh_installchangelogs -picewm-common CHANGES
-
-	# Stop using dh_installwm until bug #85963 is fixed.
-	#dh_installwm -picewm --priority=50 icewm
-	#dh_installwm -picewm-lite --priority=40 icewm-lite
-	#dh_installwm -picewm-experimental --priority=40 icewm-experimental
-
+	dh_installchangelogs -picewm-common CHANGES ChangeLog
 	dh_installman -picewm-common debian/$(MP)
 
 	dh_strip
@@ -185,15 +157,12 @@ binary-arch: build install
 	# Install undocumented manpages
 	for v in "" -experimental -lite ; do \
 		mkdir -p debian/icewm$$v/usr/share/man/man1 ; \
-			for f in icewm icehelp icewmbg icewmhint icesh icewmtray icewm-session icesound; do \
+			for f in icewm icehelp icewmbg icewmhint icesh icewmtray icewm-session icesound icewm-menu-fdo ; do \
 				ln -sf ../man7/$(MP).gz debian/icewm$$v/usr/share/man/man1/$$f$$v.1x.gz ; \
 		done ; \
 	done
 	
-	#mkdir -p debian/icewm-gnome-support/usr/share/man/man1
-	#ln -sf ../man7/$(MP).gz debian/icewm-gnome-support/usr/share/man/man1/icewm-menu-gnome2.1x.gz
 	#ln -sf ../man7/$(MP).gz debian/icewm-experimental/usr/share/man/man1/icesound-experimental.1x.gz
-
 
 	dh_installdeb
 	dh_shlibdeps
