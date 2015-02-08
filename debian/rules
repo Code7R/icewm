@@ -20,7 +20,7 @@ ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 endif
 
 ifeq (linux,$(DEB_TARGET_ARCH_OS))
-	 CPPFLAGS += -DUSE_SIGNALFD
+	 CXXFLAGS += -DUSE_SIGNALFD
 endif
 
 ICEWM_COMMON=$(CURDIR)/debian/icewm-common
@@ -41,7 +41,6 @@ confflags += --build $(DEB_BUILD_GNU_TYPE) --host $(DEB_HOST_GNU_TYPE) \
 ICONS=$(CURDIR)/debian/icons
 FDO=$(CURDIR)/debian/fdo
 CUSTOM=$(CURDIR)/debian/custom
-MP=icewm-common.7
 
 DEBVERSION=$(shell dpkg-parsechangelog -SVersion)
 modversion = sed -e 's,\(.*\)VERSION.*,\1VERSION "$(DEBVERSION)",' < $(BDIR)$(1)/config.h > stamph && mv stamph $(BDIR)$(1)/config.h
@@ -107,6 +106,10 @@ install: build
 	rm -rf $(ICEWM_LITE)/usr/{bin/*gnome*,share/{doc/*icewm*,locale,man,icewm}}
 	mkdir -p $(ICEWM_COMMON)/usr/bin
 	mv $(ICEWM)/usr/share $(ICEWM_COMMON)/usr/
+	# get just one file back and drop non-session version
+	mkdir -p $(ICEWM)/usr/share/xsessions
+	mv $(ICEWM_COMMON)/usr/share/xsessions/icewm-session.desktop $(ICEWM)/usr/share/xsessions
+	rm -rf $(ICEWM_COMMON)/usr/share/xsessions/*.desktop
 	# XXX: fix the session file name and contents
 	rm $(ICEWM_LITE)/usr/share/xsessions/*desktop
 	sed -e 's,icewm-session,icewm-session-lite,g;s,^Name\(.*\),Name\1 [lite],' < lib/icewm-session.desktop > $(ICEWM_LITE)/usr/share/xsessions/IceWM-Lite.desktop
@@ -153,7 +156,6 @@ binary-arch: build install
 	dh_installmenu
 	dh_icons
 	dh_installchangelogs -picewm-common CHANGES ChangeLog
-	dh_installman -picewm-common debian/$(MP)
 
 	dh_strip
 	dh_compress
@@ -162,11 +164,9 @@ binary-arch: build install
 	for v in "" -experimental -lite ; do \
 		mkdir -p debian/icewm$$v/usr/share/man/man1 ; \
 			for f in icewm icehelp icewmbg icewmhint icesh icewmtray icewm-session icesound icewm-menu-fdo ; do \
-				ln -sf ../man7/$(MP).gz debian/icewm$$v/usr/share/man/man1/$$f$$v.1x.gz ; \
+				ln -sf ../man1/icewm.gz debian/icewm$$v/usr/share/man/man1/$$f$$v.1x.gz ; \
 		done ; \
 	done
-	
-	#ln -sf ../man7/$(MP).gz debian/icewm-experimental/usr/share/man/man1/icesound-experimental.1x.gz
 
 	dh_installdeb
 	dh_shlibdeps
