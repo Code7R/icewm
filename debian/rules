@@ -23,6 +23,8 @@ ifeq (linux,$(DEB_TARGET_ARCH_OS))
 	 CXXFLAGS += -DUSE_SIGNALFD
 endif
 
+CXXFLAGS += -DXTERMCMD=x-terminal-emulator
+
 ICEWM_COMMON=$(CURDIR)/debian/icewm-common
 ICEWM=$(CURDIR)/debian/icewm
 ICEWM_LITE=$(CURDIR)/debian/icewm-lite
