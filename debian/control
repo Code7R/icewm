@@ -28,7 +28,7 @@ Description: wonderful Win95-OS/2-Motif-like window manager
 
 Package: icewm
 Architecture: any
-Depends: icewm-common (= ${binary:Version}), ${shlibs:Depends}, ttf-dejavu-core | custom-icewm-font, ${misc:Depends}
+Depends: icewm-common (= ${binary:Version}), ${shlibs:Depends}, fonts-dejavu-core | ttf-dejavu-core | custom-icewm-font, ${misc:Depends}
 Provides: x-window-manager
 Description: wonderful Win95-OS/2-Motif-like window manager
  IceWm is a Window Manager for X Window System. It is fast and
@@ -57,7 +57,7 @@ Description: wonderful Win95-OS/2-Motif-like window manager
 
 Package: icewm-experimental
 Architecture: any
-Depends: icewm (= ${binary:Version}), icewm-common (= ${binary:Version}), ttf-dejavu-core | custom-icewm-font, ${misc:Depends}
+Depends: icewm (= ${binary:Version}), icewm-common (= ${binary:Version}), fonts-dejavu-core | ttf-dejavu-core | custom-icewm-font, ${misc:Depends}
 Provides: x-window-manager
 Description: wonderful Win95-OS/2-Motif-like window manager
  IceWm is a Window Manager for X Window System. It is fast and
