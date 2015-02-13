@@ -1,3 +1,10 @@
+icewm (1.3.8+githubmod+20150213.1+d373d99) experimental; urgency=low
+
+  * Adjusting build dependencies
+  * Added a workaround for older glib version (for wheezy)
+
+ -- Eduard Bloch <blade@debian.org>  Fri, 13 Feb 2015 16:55:57 +0100
+
 icewm (1.3.8+githubmod+20150213.1+d373d98) experimental; urgency=low
 
   * Alternative upstream version: moving to community patched version on

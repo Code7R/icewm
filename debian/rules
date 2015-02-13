@@ -43,7 +43,10 @@ ICONS=$(CURDIR)/debian/icons
 FDO=$(CURDIR)/debian/fdo
 CUSTOM=$(CURDIR)/debian/custom
 
-DEBVERSION=$(shell dpkg-parsechangelog -SVersion)
+# DEBVERSION=$(shell dpkg-parsechangelog -SVersion)
+# that one also works with wheezy
+DEBVERSION=$(dpkg-parsechangelog |grep ^Version | sed -e s,Version:.,,)
+
 modconfig = sed -e 's,\(.*\)VERSION.*,\1VERSION "$(DEBVERSION)",' \
 						-e 's,ICEHELPIDX.*,ICEHELPIDX "$(DOCDIR)/html/icewm.html",' \
 						< $(BDIR)$(1)/config.h \
