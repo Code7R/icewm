@@ -167,10 +167,13 @@ binary-arch: build install
 	# Install undocumented manpages
 	for v in "" -experimental -lite ; do \
 		mkdir -p debian/icewm$$v/usr/share/man/man1 ; \
-			for f in icewm icehelp icewmbg icewmhint icesh icewmtray icewm-session icesound icewm-menu-fdo ; do \
-				ln -sf ../man1/icewm.gz debian/icewm$$v/usr/share/man/man1/$$f$$v.1x.gz ; \
+			for f in icewm icehelp icewmbg icewmhint icesh icewmtray icewm-session icewm-menu-fdo ; do \
+				ln -sf icewm.gz debian/icewm$$v/usr/share/man/man1/$$f$$v.1x.gz ; \
 		done ; \
 	done
+	ln -sf icewm.gz debian/icewm/usr/share/man/man1/icesound.1x.gz
+	ln -sf icewm.gz debian/icewm-experimental/usr/share/man/man1/icesound-experimental.1x.gz
+	ln -sf icewm.gz debian/icewm-common/usr/share/man/man1/icewm-menu-fdo.1x.gz
 
 	dh_installdeb
 	dh_shlibdeps

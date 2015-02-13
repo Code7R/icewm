@@ -1,4 +1,4 @@
-icewm (1.3.8+githubmod+20150126.1+79e1109) unstable; urgency=low
+icewm (1.3.8+githubmod+20150213.1+d373d98) unstable; urgency=low
 
   * This release is based on alternative source, based on a community fork
     maintained on Github.
