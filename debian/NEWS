@@ -1,14 +1,17 @@
-icewm (1.3.8+githubmod+20150213.1+d373d98) unstable; urgency=low
+icewm (1.3.8+githubmod+20150213.1+d373d98) experimental; urgency=low
 
   * This release is based on alternative source, based on a community fork
     maintained on Github.
   * Some left-overs from the long history if IceWM in Debian are removed since
     probably nobody has used them in this decade. This includes Gnome (1) GDM
     integration, additional (actually duplicated) session options in the
-    display manager selection, startup script emulated deprecated icewm-gnome
-    package
+    display manager selection, startup script (which emulated deprecated icewm-gnome
+    package) and the old icewm-menu-gnome2 menu generation tool (which didn't
+    work properly with Debian's stock configuration anyway). For custom menu
+    configurations, this may require adaptions of user configuration files,
+    see new /etc/X11/icewm/menu file for examples.
 
- -- Eduard Bloch <blade@debian.org>  Thu, 29 Jan 2015 18:31:33 +0100
+ -- Eduard Bloch <blade@debian.org>  Fri, 13 Feb 2015 16:18:20 +0100
 
 icewm (1.2.30-1) unstable; urgency=medium
 
