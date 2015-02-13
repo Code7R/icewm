@@ -1,4 +1,4 @@
-icewm (1.3.8+githubmod+20150213.1+d373d99) experimental; urgency=low
+icewm (1.3.8+githubmod+20150213.2+d373d98) experimental; urgency=low
 
   * Adjusting build dependencies
   * Added a workaround for older glib version (for wheezy)
