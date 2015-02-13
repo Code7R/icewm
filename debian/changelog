@@ -1,9 +1,10 @@
-icewm (1.3.8+githubmod+20150212.1+b7d3864) UNRELEASED; urgency=low
+icewm (1.3.8+githubmod+20150213.1+d373d98) experimental; urgency=low
 
   * Alternative upstream version: moving to community patched version on
     GitHub, with a Debian specific branch on top of icewm-1-3-BRANCH from
     Brian Bidulock <bidulock@openss7.org>
-    + fixes shutdown and reboot commands (closes: #771845)
+    + fixes shutdown and reboot commands (closes: #771845). Adaptation of some
+      Debian defaults to use systemd services (otherwise via sudo like before).
     + includes the autocompletion patch (closes: #774231)
   * Dropped icewm-gnome-support package (now integrating a new desktop menu
     plugin supporting any modern format; dropping dependencies on ancient
@@ -14,18 +15,11 @@ icewm (1.3.8+githubmod+20150212.1+b7d3864) UNRELEASED; urgency=low
     icewm-session*desktop invocation configs
   * Added a workaround for zombie windows apparently caused by startup races
     in icewm-session (closes: #695040, #695035, #760399)
-  * Adaptation of some Debian defaults to use systemd services for
-    Shutdown/Reboot/Suspend (otherwise requiring sudo)
   * Removed -name and -title options from x-terminal-emulator calls, those
     options are not universal
-  * Not installing genpref anymore (no point, use config examples!)
-  * TODO: review README.Debian, do something about interface
-    tray icon heisenbug, add closes: tags for some bugs, install both
-    changelogs, make the upgrade smooth because of files moved across the
-    packages
+  * Not installing genpref anymore (no point, use config examples)
 
-
- -- Eduard Bloch <blade@debian.org>  Mon, 26 Jan 2015 20:32:54 +0100
+ -- Eduard Bloch <blade@debian.org>  Fri, 13 Feb 2015 15:31:48 +0100
 
 icewm (1.3.8-2) unstable; urgency=medium
 

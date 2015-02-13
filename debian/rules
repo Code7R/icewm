@@ -36,7 +36,6 @@ confflags += --build $(DEB_BUILD_GNU_TYPE) --host $(DEB_HOST_GNU_TYPE) \
 	     --prefix=/usr --with-cfgdir=/etc/X11/icewm \
 	     --datadir=/usr/share --disable-debug \
 	     --enable-i18n --enable-nls \
-	     --htmldir=$(DOCDIR)/html \
 	     --docdir=$(DOCDIR) \
 	     EXTRA_LIBS="-lsupc++"
 
@@ -45,7 +44,10 @@ FDO=$(CURDIR)/debian/fdo
 CUSTOM=$(CURDIR)/debian/custom
 
 DEBVERSION=$(shell dpkg-parsechangelog -SVersion)
-modversion = sed -e 's,\(.*\)VERSION.*,\1VERSION "$(DEBVERSION)",' < $(BDIR)$(1)/config.h > stamph && mv stamph $(BDIR)$(1)/config.h
+modconfig = sed -e 's,\(.*\)VERSION.*,\1VERSION "$(DEBVERSION)",' \
+						-e 's,ICEHELPIDX.*,ICEHELPIDX "$(DOCDIR)/html/icewm.html",' \
+						< $(BDIR)$(1)/config.h \
+						> $(BDIR)$(1)/config.h.mod && mv $(BDIR)$(1)/config.h.mod $(BDIR)$(1)/config.h
 
 build-lite: stamp-build-lite
 stamp-build-lite: autofoo-update-stamp
@@ -56,12 +58,12 @@ stamp-build-lite: autofoo-update-stamp
 		 --enable-lite --disable-xfreetype \
 		 --enable-corefonts \
 		 --disable-taskbar  --disable-xrandr
-	$(call modversion,-lite)
+	$(call modconfig,-lite)
 	$(MAKE) -C $(BDIR)-lite EXEEXT=-lite
 	touch $@
 
-build-normal: stamp-normal
-stamp-normal: autofoo-update-stamp
+build-normal: stamp-build-normal
+stamp-build-normal: autofoo-update-stamp
 	mkdir -p $(BDIR)-normal
 	cd $(BDIR)-normal && ../configure $(confflags) \
 		 --disable-menus-gnome2 \
@@ -69,7 +71,7 @@ stamp-normal: autofoo-update-stamp
 		 --enable-antialiasing  --enable-shaped-decorations \
 		 --enable-gradients \
 		 --enable-guievents
-	$(call modversion,-normal)
+	$(call modconfig,-normal)
 	$(MAKE) -C $(BDIR)-normal
 	touch $@
 
@@ -126,7 +128,7 @@ install: build
 	mv $(ICEWM)/usr/bin/icewm-menu* $(ICEWM_COMMON)/usr/bin
 	rm -rf $(ICEWM_COMMON)/usr/share/applications/*desktop
 	# Install documentation
-	install -m 644 $(BDIR)-normal/doc/*.html $(ICEWM_COMMON)/usr/share/doc/icewm-common/html/
+	mv $(ICEWM_COMMON)/usr/share/doc/icewm-common/*.html $(ICEWM_COMMON)/usr/share/doc/icewm-common/html/
 	rm -rf $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ/source
 	# and add our bits to fix the font insanity with xft2
 	dh_installexamples -picewm-common $(CURDIR)/debian/examples/preferences.fonts $(CURDIR)/debian/examples/preferences.noClickToFocus $(CURDIR)/debian/examples/focus_mode.noClickToFocus
@@ -157,7 +159,7 @@ binary-arch: build install
 
 	dh_installmenu
 	dh_icons
-	dh_installchangelogs -picewm-common CHANGES ChangeLog
+	dh_installchangelogs -picewm-common CHANGES
 
 	dh_strip
 	dh_compress

@@ -39,19 +39,25 @@ the optional features (see IceWM manual for details).
 Solving font selection and size problems
 ----------------------------------------
 
-From the icewm-user mailing list:
-
 There are at least three factors that modify the size of the fonts:
 
  - the X resources settings that you can check with "xrdb -query". If
    set, it is called Xft.dpi and can have a float value, something
-   between 50 and 200 dpi, depending on your monitor
+   between 50 and 200 dpi, depending on your monitor. See also check
+   ~/.Xresources file and use "xrdb -merge < .Xresources" to apply changes.
 
  - the DPI settings that the X server suggests to the applications. You
-   can check it with xdpyinfo. The setting is done either via
-   XF86Config-4 or via command line parameters (and I think those are
-   different in different xserverrc scripts with the behaviour described
-   above). Also check the X FAQ in /usr/share/doc/xfree86-common/FAQ.gz.
+   can check it with xdpyinfo. There are different ways to set this value, it
+   be made through xorg.conf file or the command line options of the X server,
+   which can be set on different places where X server is started from (for
+   example /etc/X11/xinit/xserverrc for startx resp. xinit,
+   /etc/X11/xdm/Xservers, other places for other display managers)
+
+ - the DPI setting (again, see above) with runtime manipulation via XRANDR
+   extension. You can use xrandr command wiht --dpi or -fbmm options to tune
+   that (see manpage). However, xrandr command call can be hardly used in the
+   startup script because it's not guaranteed that it will be applied before
+   icewm starts.
 
  - The fontconfig braindamage factor, producing all kinds of font
    problems for different people, including missing chars or huge fonts.
@@ -61,11 +67,10 @@ PS: and the easiest way to set font sizes is using the fontconfig
 specification, as shown in the file
 /usr/share/doc/icewm-common/examples/preferences.fonts .
 
-Another issue is dealing with fonts that don't provide the required
-range of Unicode characters. This repeatedly hits users of Asian
-encodings trying to display special European characters in window
-titles. Often this can be solved by using Xft fonts with a list of alternative
-fonts , comma-separated. E.g.:
+Another issue is dealing with fonts that don't provide the required range of
+Unicode characters. This repeatedly hits users of Asian encodings trying to
+display special European characters in window titles. Often this can be solved
+by using Xft fonts with a list of alternative fonts, comma-separated. E.g.:
 
   QuickSwitchFontNameXft="sans-serif,Bitstream Vera Sans"
   NormalTaskBarFontNameXft="sans-serif,Bitstream Vera Sans"
@@ -116,4 +121,4 @@ exec /usr/bin/icewm-session
 #exec icewm
 ---
 
- -- Eduard Bloch <blade@debian.org>, Mon, 14 Mar 2011 17:48:49 +0100
+ -- Eduard Bloch <blade@debian.org>, Fri, 13 Feb 2015 13:26:42 +0100
