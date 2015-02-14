@@ -170,7 +170,7 @@ binary-arch: build install
 	# Install undocumented manpages
 	for v in "" -experimental -lite ; do \
 		mkdir -p debian/icewm$$v/usr/share/man/man1 ; \
-			for f in icewm icehelp icewmbg icewmhint icesh icewmtray icewm-session icewm-menu-fdo ; do \
+			for f in icewm icehelp icewmbg icewmhint icesh icewmtray icewm-session ; do \
 				ln -sf icewm.gz debian/icewm$$v/usr/share/man/man1/$$f$$v.1x.gz ; \
 		done ; \
 	done
