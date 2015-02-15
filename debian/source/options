@@ -1,1 +1,3 @@
 extend-diff-ignore = "(^|/)(config.sub|config.guess|src/Makefile|doc/icewm.*html|lib/preferences)$"
+single-debian-patch
+auto-commit
