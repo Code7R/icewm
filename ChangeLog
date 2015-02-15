@@ -1,6 +1,116 @@
 # created with git log -n 200 --abbrev-commit --decorate --stat=76 -M -C|fmt -sct -w80
 
-commit d00e077 (HEAD, origin/debian/experimental, debian/experimental)
+commit 60fcb4d (HEAD, debian/experimental)
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sun Feb 15 12:45:16 2015 +0100
+
+    Misc
+
+ debian/gbp.conf |  4 ++--
+ debian/rules    | 10 +++++-----
+ 2 files changed, 7 insertions(+), 7 deletions(-)
+
+commit 12441c4
+Merge: 43e76b0 d46fea3
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sun Feb 15 11:41:23 2015 +0100
+
+    Merge remote-tracking branch 'bbidulock/icewm-1-3-BRANCH' into
+    debian/experimental
+
+commit 43e76b0
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sat Feb 14 17:31:43 2015 +0100
+
+    Fix file manpage symlink, move it to the icewm-common package
+
+ debian/changelog | 3 ++-
+ debian/rules     | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+commit d46fea3 (bbidulock/icewm-1-3-BRANCH, icewm-1-3-BRANCH)
+Author: Eduard Bloch <blade@debian.org>
+Date:   Fri Feb 13 17:26:32 2015 +0100
+
+    Add workarounds for older glib versions
+
+ src/fdomenu.cc | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+commit 48180fa
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sat Feb 14 12:06:24 2015 +0100
+
+    Use dh_fixperms
+
+ debian/changelog | 6 ++++++
+ debian/rules     | 2 +-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
+
+commit 57abfae (tag: debian/1.3.8+githubmod+20150213.2+d373d98)
+Author: Eduard Bloch <blade@debian.org>
+Date:   Fri Feb 13 18:28:20 2015 +0100
+
+    New experimental version
+
+ debian/changelog | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 95902a7
+Author: Eduard Bloch <blade@debian.org>
+Date:   Fri Feb 13 18:21:18 2015 +0100
+
+    FTBFS fixes
+
+ debian/changelog | 7 +++++++
+ debian/control   | 2 +-
+ debian/rules     | 5 ++++-
+ 3 files changed, 12 insertions(+), 2 deletions(-)
+
+commit 626f61c
+Author: Eduard Bloch <blade@debian.org>
+Date:   Fri Feb 13 17:26:32 2015 +0100
+
+    Add workarounds for older glib versions
+
+ src/fdomenu.cc | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+commit 3f2f33f (tag: debian/1.3.8+githubmod+20150213.1+d373d98)
+Author: Eduard Bloch <blade@debian.org>
+Date:   Fri Feb 13 16:18:26 2015 +0100
+
+    NEWS file update
+
+ debian/NEWS | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+commit c40934b
+Author: Eduard Bloch <blade@debian.org>
+Date:   Fri Feb 13 15:47:05 2015 +0100
+
+    Misc. fixes
+
+ README.md                                 | 4 ++--
+ configure.ac                              | 6 +++---
+ debian/NEWS                               | 2 +-
+ debian/control                            | 2 +-
+ debian/icewm-common.doc-base.icewm-faq    | 2 +-
+ debian/icewm-common.doc-base.icewm-manual | 2 +-
+ debian/rules                              | 7 +++++--
+ 7 files changed, 14 insertions(+), 11 deletions(-)
+
+commit 44aad33
+Author: Eduard Bloch <blade@debian.org>
+Date:   Fri Feb 13 15:40:58 2015 +0100
+
+    Keep the extra changelog in the Debian branch for consistency reasons,
+    even if auto-generated
+
+ ChangeLog | 2971 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 2971 insertions(+)
+
+commit d00e077 (origin/debian/experimental)
 Author: Eduard Bloch <blade@debian.org>
 Date:   Fri Feb 13 15:32:18 2015 +0100
 
@@ -57,8 +167,7 @@ Date:   Fri Feb 13 13:44:16 2015 +0100
 	po/zh_CN.po
 	po/zh_TW.po
 
-commit d373d98 (origin/icewm-1-3-BRANCH, origin/HEAD,
-bbidulock/icewm-1-3-BRANCH, icewm-1-3-BRANCH)
+commit d373d98 (origin/icewm-1-3-BRANCH, origin/HEAD)
 Author: Eduard Bloch <blade@debian.org>
 Date:	Fri Feb 13 00:09:34 2015 +0100
 
@@ -2797,175 +2906,3 @@ Date:	Tue Dec 17 11:52:53 2013 -0700
  po/zh_TW.po	 | 127 +++++++--------
  src/icesound.cc |   2 +-
  37 files changed, 2079 insertions(+), 2695 deletions(-)
-
-commit d6dea53
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Tue Dec 17 09:02:01 2013 -0700
-
-    added src/icesound to .gitignore
-
- .gitignore | 1 +
- 1 file changed, 1 insertion(+)
-
-commit 6b15e45
-Merge: f3da550 4e6e0e4
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Tue Dec 17 09:01:00 2013 -0700
-
-    Merge branch 'icewm-1-3-BRANCH' of https://github.com/DeltaResero/icewm
-    into icewm-1-3-BRANCH
-
-    Conflicts:
-	configure.ac
-
-commit f3da550
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Tue Dec 17 08:03:33 2013 -0700
-
-    add ALSA to configure
-
- configure.ac | 22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
-
-commit 4e6e0e4
-Author: DeltaResero <deltaresero@zoho.com>
-Date:	Tue Dec 17 03:41:43 2013 -0400
-
-    Remove compiled .pox files
-
- .gitignore	     |	  1 +
- po/ca.pox	     | 1541 ------------------------------------------
- po/de.pox	     | 1558 -------------------------------------------
- po/es.pox	     | 1579 -------------------------------------------
- po/fi.pox	     | 1518 ------------------------------------------
- po/fr.pox	     | 1541 ------------------------------------------
- po/hr.pox	     | 1453 ----------------------------------------
- po/hu.pox	     | 1694 -----------------------------------------------
- po/it.pox	     | 1525 ------------------------------------------
- po/ja.pox	     | 1444 ----------------------------------------
- po/lt.pox	     | 1555 -------------------------------------------
- po/pt_BR.pox	     | 1438 ----------------------------------------
- po/ru.pox	     | 1433 ---------------------------------------
- po/zh_CN.gb2312.pox | 1326 -------------------------------------
- po/zh_TW.Big5.pox   | 1456 ----------------------------------------
- 15 files changed, 1 insertion(+), 21061 deletions(-)
-
-commit f64635f
-Author: DeltaResero <deltaresero@zoho.com>
-Date:	Tue Dec 17 03:40:38 2013 -0400
-
-    Merge README files into README.md and tweak code comments
-
- BUGS			   |   1 -
- INSTALL		   |   6 +-
- README			   | 114 -------------------------------
- README.icewm		   |  20 ------
- README.md		   | 142 +++++++++++++++++++++++++++++++++++++++
- README.wm-session	   |  36 ----------
- configure.ac		   | 153 +++++++++++++++++++-----------------------
- doc/icewm.1.man	   |   6 +-
- doc/icewm.sgml		   |  16 ++---
- lib/icewm-session.desktop |   1 -
- lib/icewm.desktop	   |   2 +-
- 11 files changed, 227 insertions(+), 270 deletions(-)
-
-commit be5a87a
-Author: DeltaResero <deltaresero@zoho.com>
-Date:	Tue Dec 17 03:39:25 2013 -0400
-
-    Merge .cvsignore files into .gitignore
-
- .cvsignore	| 11 --------
- .gitignore	| 80 ++++++++++++++++++++++++++++++++++++++++++++++++------
- doc/.cvsignore |  1 -
- lib/.cvsignore |  6 ----
- po/.cvsignore	|  2 --
- src/.cvsignore | 22 ---------------
- 6 files changed, 71 insertions(+), 51 deletions(-)
-
-commit a0ed24e
-Author: DeltaResero <deltaresero@zoho.com>
-Date:	Tue Dec 17 03:37:39 2013 -0400
-
-    Merge branches - Add missing for alsa icewm sound
-
- configure.ac	 | 12 ++++++++----
- po/be.po	 |  4 ++--
- po/bg.po	 |  4 ++--
- po/ca.po	 |  4 ++--
- po/cs.po	 |  2 +-
- po/da.po	 |  4 ++--
- po/de.po	 |  6 +++---
- po/el.po	 |  2 +-
- po/en.po	 |  2 +-
- po/es.po	 |  2 +-
- po/fi.po	 |  2 +-
- po/fr.po	 |  4 ++--
- po/hr.po	 |  2 +-
- po/hu.po	 |  2 +-
- po/icewm.pot	 |  2 +-
- po/id.po	 |  2 +-
- po/it.po	 |  4 ++--
- po/ja.po	 |  2 +-
- po/ko.po	 |  4 ++--
- po/lt.po	 |  4 ++--
- po/lv.po	 |  4 ++--
- po/mk.po	 |  4 ++--
- po/nb.po	 |  4 ++--
- po/nl.po	 | 12 ++++++------
- po/no.po	 |  4 ++--
- po/pl.po	 |  4 ++--
- po/pt_BR.po	 |  2 +-
- po/ro.po	 |  4 ++--
- po/ru.po	 |  2 +-
- po/sk.po	 |  2 +-
- po/sl.po	 |  4 ++--
- po/sv.po	 |  6 +++---
- po/tr.po	 |  2 +-
- po/uk.po	 |  2 +-
- po/vi.po	 |  4 ++--
- po/zh_CN.po	 |  2 +-
- po/zh_TW.po	 |  4 ++--
- src/icesound.cc | 39 +++++++++++++++++++--------------------
- 38 files changed, 89 insertions(+), 86 deletions(-)
-
-commit 8d57f5a
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Mon Dec 16 16:35:21 2013 -0700
-
-    applied icewm-1.2.23-alsa.patch
-
- src/icesound.cc | 254 +++++++++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 220 insertions(+), 34 deletions(-)
-
-commit 76bcc87
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Mon Dec 16 16:27:20 2013 -0700
-
-    get --enable-guievents working again Issue #1
-
- src/wmapp.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 24bc212
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Thu Dec 5 03:44:44 2013 -0700
-
-    mark support for _NET_STARTUP_ID
-
- COMPLIANCE | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 483b315
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Thu Dec 5 03:43:49 2013 -0700
-
-    process _NET_STARTUP_ID timestamps
-
- src/wmapp.cc	 |  2 +-
- src/wmclient.cc | 21 +++++++++++++++++++++
- src/wmclient.h  |  2 ++
- src/wmframe.cc  | 11 +++++++++++
- src/wmframe.h	 |  1 +
- src/wmmgr.h	 |  2 +-
- 6 files changed, 37 insertions(+), 2 deletions(-)
