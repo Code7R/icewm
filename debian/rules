@@ -152,21 +152,17 @@ binary-indep:
 binary-arch: build install
 	dh_testdir
 	dh_testroot
-
 	cd debian ; for x in -lite -experimental ; do cp -lf icewm.postinst icewm$$x.postinst ; cp -lf icewm.prerm icewm$$x.prerm ; done
 	#rm -r $(ICEWM_LITE)/usr/share/doc/icewm-lite $(ICEWM_EXP)/usr/share/doc/icewm-experimental
 	dh_link -picewm usr/share/doc/icewm-common usr/share/doc/icewm
 	dh_link -picewm-lite usr/share/doc/icewm-common usr/share/doc/icewm-lite
 	dh_link -picewm-experimental usr/share/doc/icewm-common usr/share/doc/icewm-experimental
-	dh_installdocs -X.svn
-
+	dh_installdocs
 	dh_installmenu
 	dh_icons
 	dh_installchangelogs -picewm-common CHANGES
-
 	dh_strip
 	dh_compress
-
 	# Install undocumented manpages
 	for v in "" -experimental -lite ; do \
 		mkdir -p debian/icewm$$v/usr/share/man/man1 ; \
@@ -185,5 +181,9 @@ binary-arch: build install
 	dh_builddeb
 
 binary:	binary-indep binary-arch
+
+distclean:
+	git clean -fdx -e .cproject -e .project -e .settings
+	git checkout HEAD -- README.md configure.ac
 
 .PHONY: binary binary-arch binary-indep clean install
