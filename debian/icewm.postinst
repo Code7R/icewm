@@ -24,7 +24,7 @@ if [ "$1" = "configure" ]; then
    update-alternatives --install /usr/bin/x-window-manager \
    x-window-manager /usr/bin/icewm$FLAVOR $PRIO \
    --slave /usr/share/man/man1/x-window-manager.1.gz x-window-manager.1.gz \
-   /usr/share/man/man1/icewm$FLAVOR.1x.gz
+   /usr/share/man/man1/icewm$FLAVOR.1.gz
 
   update-alternatives --install /usr/bin/x-session-manager \
   x-session-manager /usr/bin/icewm-session$FLAVOR $PRIOS

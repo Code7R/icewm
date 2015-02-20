@@ -63,7 +63,9 @@ stamp-build-lite: autofoo-update-stamp
 		 --enable-corefonts \
 		 --disable-taskbar  --disable-xrandr
 	$(call modconfig,-lite)
-	$(MAKE) -C $(BDIR)-lite EXEEXT=-lite
+	#echo .NOTPARALLEL >> $(BDIR)-lite/po/Makefile
+	$(MAKE) -C $(BDIR)-lite/src EXEEXT=-lite
+	$(MAKE) -C $(BDIR)-lite/lib EXEEXT=-lite
 	touch $@
 
 build-normal: stamp-build-normal
@@ -111,7 +113,8 @@ install: build
 	dh_prep
 	dh_installdirs
 	$(MAKE) -C $(BDIR)-normal install DESTDIR=$(ICEWM)
-	$(MAKE) -C $(BDIR)-lite   install DESTDIR=$(ICEWM_LITE)  EXEEXT=-lite
+	$(MAKE) -C $(BDIR)-lite/src install DESTDIR=$(ICEWM_LITE)  EXEEXT=-lite
+	$(MAKE) -C $(BDIR)-lite/lib install DESTDIR=$(ICEWM_LITE)  EXEEXT=-lite
 	rm -rf $(ICEWM_LITE)/usr/{bin/*gnome*,share/{doc/*icewm*,locale,man,icewm}}
 	mkdir -p $(ICEWM_COMMON)/usr/bin
 	mv $(ICEWM)/usr/share $(ICEWM_COMMON)/usr/
@@ -165,17 +168,18 @@ binary-arch: build install
 	dh_icons
 	dh_installchangelogs -picewm-common CHANGES
 	dh_strip
+	ls -l $(ICEWM_COMMON)/usr/share/man/man1/icewm.1
 	dh_compress
 	# Install undocumented manpages
 	for v in "" -experimental -lite ; do \
 		mkdir -p debian/icewm$$v/usr/share/man/man1 ; \
 			for f in icewm icehelp icewmbg icewmhint icesh icewmtray icewm-session ; do \
-				ln -sf icewm.gz debian/icewm$$v/usr/share/man/man1/$$f$$v.1x.gz ; \
+				ln -sf icewm.1.gz debian/icewm$$v/usr/share/man/man1/$$f$$v.1.gz ; \
 		done ; \
 	done
-	ln -sf icewm.gz debian/icewm/usr/share/man/man1/icesound.1x.gz
-	ln -sf icewm.gz debian/icewm-experimental/usr/share/man/man1/icesound-experimental.1x.gz
-	ln -sf icewm.gz debian/icewm-common/usr/share/man/man1/icewm-menu-fdo.1x.gz
+	ln -sf icewm.1.gz debian/icewm/usr/share/man/man1/icesound.1.gz
+	ln -sf icewm.1.gz debian/icewm-experimental/usr/share/man/man1/icesound-experimental.1.gz
+	ln -sf icewm.1.gz debian/icewm-common/usr/share/man/man1/icewm-menu-fdo.1.gz
 	dh_fixperms
 	dh_installdeb
 	dh_shlibdeps
@@ -187,7 +191,7 @@ binary:	binary-indep binary-arch
 
 cleancruft:
 	git clean -fdx -e .cproject -e .project -e .settings
-	git checkout HEAD -- README.md configure.ac
+	git checkout HEAD -- README.md configure.ac ChangeLog
 
 get-orig-source:
 	git archive icewm-1-3-BRANCH --prefix icewm-$(ORIGVERSION)/ | xz -9 > ../icewm_$(ORIGVERSION).orig.tar.xz
