@@ -1,6 +1,7 @@
 icewm (1.3.8+githubmod+20150214+d373d98-2) experimental; urgency=low
 
-  * Fix naming of icewm.1 (make it icewm.1x like before, closes: #778797)
+  * Unified naming of manpage suffix, removed conflicting symlink in icewm
+    package (closes: #778797)
   * Added another conflicts to icewm, against previous versions of
     icewm-common that erroneously contained some meta files (closes: #778555)
 
