@@ -177,6 +177,9 @@ binary-arch: build install
 				ln -sf icewm.1.gz debian/icewm$$v/usr/share/man/man1/$$f$$v.1.gz ; \
 		done ; \
 	done
+	# is delivered via common
+	rm debian/icewm/usr/share/man/man1/icewm.*
+	# only where needed
 	ln -sf icewm.1.gz debian/icewm/usr/share/man/man1/icesound.1.gz
 	ln -sf icewm.1.gz debian/icewm-experimental/usr/share/man/man1/icesound-experimental.1.gz
 	ln -sf icewm.1.gz debian/icewm-common/usr/share/man/man1/icewm-menu-fdo.1.gz
