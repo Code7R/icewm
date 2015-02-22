@@ -40,30 +40,13 @@ option(CONFIG_GDK_PIXBUF_XLIB "LIBGDKPIXBUF based image loader" on)
 option(CONFIG_I18N "Define to enable internationalization" on)
 option(CONFIG_SESSION "Define to enable X session management" on)
 
-set(PREFIX "/usr/local" CACHE STRING "Target file space")
-# iiieh, neeing to add some guards, since having this nested construct
-# interacts badly when changing a variable afterwards cmake also insists on
-# overwritting that variables later :-( if not protected
-IF(NOT DATADIR)
-set(DATADIR "${PREFIX}/share" CACHE STRING "Shared data files directory")
+SET(CONFIG_UNICODE_SET "" CACHE STRING "Your iconv unicode set in machine endian encoding (e.g. WCHAR_T, UCS-4-INTERNAL, UCS-4LE, UCS-4BE)")
+# turn off when empty, see config.h template for details
+IF("${CONFIG_UNICODE_SET}")
+	MESSAGE(STATUS "Configured custom unicode set: ${CONFIG_UNICODE_SET}.")
+ELSE()
+	SET(CONFIG_UNICODE_SET OFF)
 ENDIF()
-IF(NOT LIBDIR)
-set(LIBDIR "${DATADIR}/icewm")
-ENDIF()
-IF(NOT DOCDIR)
-set(DOCDIR "${DATADIR}/doc/icewm")
-ENDIF()
-IF(NOT LOCDIR)
-set(LOCDIR "${DATADIR}/locale")
-ENDIF()
-IF(NOT CFGDIR)
-set(CFGDIR "${PREFIX}/etc/icewm")
-ENDIF()
-IF(NOT ICEHELPIDX)
-set(ICEHELPIDX "${DOCDIR}/icewm.html")
-ENDIF()
-
-#set(CONFIG_UNICODE_SET "" cache string "Your iconv unicode set in machine endian encoding (e.g. WCHAR_T, UCS-4-INTERNAL, UCS-4LE, UCS-4BE)")
 
 # the only used ones...
 # for x in `cat funclist` ; do grep $x src/* lib/* && echo $x >> exlist ; done 
