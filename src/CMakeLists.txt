@@ -17,19 +17,19 @@ STRING(REGEX REPLACE "\n" ";" vfilecontents "${vfilecontents}")
 foreach (line ${vfilecontents})
 	STRING(REGEX REPLACE "=" ";" keyval "${line}")
 	list(GET keyval 0 _key)
-	list(GET keyval 1 ${_key})
+	#IF(NOT _key)
+		list(GET keyval 1 ${_key})
+		#ENDIF()
 endforeach()
 
 SET(CXXFLAGS_COMMON " -pthread -g -O2 -Wall -Wextra -Wno-unused-parameter -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -I. ${CMAKE_CXX_FLAGS}")
-# same for linker flags, imported from LDFLAGS environment var
-SET(LDFLAGS_COMMON "${CMAKE_EXE_LINKER_FLAGS}")
-#message("Initial CXX flags: ${ACNG_CXXFLAGS_COMMON}")
-#message("Initial linker flags: ${LDFLAGS_MIN}")
+
+# I don't need -rdynamic, thanks!
+SET(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
+SET(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
 
 # apply to test calls
 SET(CMAKE_REQUIRED_FLAGS ${CXXFLAGS_COMMON})
-SET(CMAKE_EXE_LINKER_FLAGS ${LDFLAGS_COMMON})
-
 
 include_directories(${PROJECT_SOURCE_DIR})
 
@@ -280,13 +280,12 @@ ENDIF()
 #######################################
 
 SET(CMAKE_REQUIRED_FLAGS ${CXXFLAGS_COMMON})
-SET(CMAKE_EXE_LINKER_FLAGS "${LDFLAGS_COMMON}  -Wl,--as-needed ")
+SET(LDFLAGS_ORIG ${CMAKE_EXE_LINKER_FLAGS})
+SET(CMAKE_EXE_LINKER_FLAGS "${LDFLAGS_ORIG} -Wl,--as-needed ")
 CHECK_CXX_SOURCE_COMPILES("int main() {return 0;}" USE_WLASNEEDED)
-if(USE_WLASNEEDED)
-   SET(LDFLAGS_COMMON ${CMAKE_EXE_LINKER_FLAGS})
-else(USE_WLASNEEDED)
-   SET(CMAKE_EXE_LINKER_FLAGS "${LDFLAGS_COMMON}")
-endif(USE_WLASNEEDED)
+IF(NOT USE_WLASNEEDED)
+   SET(CMAKE_EXE_LINKER_FLAGS ${LDFLAGS_ORIG})
+ENDIF()
 
 
 #######################################
@@ -302,10 +301,9 @@ include_directories("${CMAKE_BINARY_DIR}")
 # declaring targets and build flags   #
 #######################################
 
-# pkg-config delivers strings, we need argument lists :-(
+# pkg-config delivers lists, we need plain compiler options! :-(
 foreach(pfx fontconfig xext x11 pixbuf xrandr xft alsa 
 		esd yiff xinerama fribidi gio)
-	#string(REPLACE ";" " " ${pfx}_LDFLAGS "${${pfx}_LDFLAGS}")
 	string(REPLACE ";" " " ${pfx}_CFLAGS "${${pfx}_CFLAGS}")
 	#message(STATUS "Normalizing argument lists: ${${pfx}_LDFLAGS} ; ${${pfx}_CFLAGS}")
 endforeach()
@@ -317,7 +315,7 @@ SET(ICE_COMMON_SRCS mstring.cc upath.cc yapp.cc yxapp.cc ytimer.cc
  yimage_gdk.cc yimage_imlib.cc yimage_xpm.cc ytooltip.cc)
 
 SET(ITK_SRCS ymenu.cc ylabel.cc yscrollview.cc ymenuitem.cc yscrollbar.cc ybutton.cc ylistbox.cc yinput.cc yicon.cc wmconfig.cc ref.cc
-   ydialog.cc ymsgbox.cc yurl.cc)
+   ydialog.cc ymsgbox.cc)
 
 SET(ICEWM_SRCS ${ICE_COMMON_SRCS} ${ITK_SRCS}
    wmsession.cc wmwinlist.cc wmtaskbar.cc
@@ -326,48 +324,65 @@ SET(ICEWM_SRCS ${ICE_COMMON_SRCS} ${ITK_SRCS}
  wmapp.cc wmframe.cc wmbutton.cc wmminiicon.cc wmtitle.cc
  movesize.cc themes.cc decorate.cc browse.cc wmprog.cc atasks.cc
  aworkspaces.cc amailbox.cc aclock.cc acpustatus.cc apppstatus.cc
- aaddressbar.cc objbar.cc aapm.cc atray.cc ysmapp.cc yxtray.cc)
+ aaddressbar.cc objbar.cc aapm.cc atray.cc ysmapp.cc yxtray.cc yurl.cc)
 
 IF(HAVE_GLOB_PATTERN_P AND HAVE_ASPRINTF)
 	LIST(APPEND ICEWM_SRCS globit.c)
 ENDIF()
 
 ADD_EXECUTABLE(icewm${EXEEXT} ${ICEWM_SRCS})
-set(icewm_flags_extra "${CXXFLAGS_COMMON} ${fontconfig_CFLAGS} ${x11_CFLAGS} ${xext_CFLAGS} ${pixbuf_CFLAGS} ${xft_CFLAGS} ${xrandr_CFLAGS} ${xinerama_CFLAGS} ${fribidi_CFLAGS}")
-#message("extra flags: ${icewm_flags_extra}")
-SET_TARGET_PROPERTIES(icewm${EXEEXT} PROPERTIES COMPILE_FLAGS "${icewm_flags_extra}")
-set(icewm_ld_extra ${lsd_LDFLAGS} ${pixbuf_LDFLAGS} ${fontconfig_LDFLAGS} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS} ${xinerama_LDFLAGS} ${fribidi_LDFLAGS})
-TARGET_LINK_LIBRARIES(icewm${EXEEXT} ${sm_LIBS} ${icewm_ld_extra})
+set(icewm_pc_flags "${fontconfig_CFLAGS} ${x11_CFLAGS} ${xext_CFLAGS} ${pixbuf_CFLAGS} ${xft_CFLAGS} ${xrandr_CFLAGS} ${xinerama_CFLAGS} ${fribidi_CFLAGS}")
+SET_TARGET_PROPERTIES(icewm${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
+set(icewm_libs ${sm_LIBS} ${lsd_LDFLAGS} ${pixbuf_LDFLAGS} ${fontconfig_LDFLAGS} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS} ${xinerama_LDFLAGS} ${fribidi_LDFLAGS} ${EXTRA_LIBS})
+TARGET_LINK_LIBRARIES(icewm${EXEEXT} ${icewm_libs})
+
+ADD_EXECUTABLE(genpref${EXEEXT} genpref.cc)
+TARGET_LINK_LIBRARIES(genpref${EXEEXT} ${EXTRA_LIBS})
+
+IF(CONFIG_FDO_MENUS)
+ADD_EXECUTABLE(icewm-menu-fdo${EXEEXT} fdomenu.cc)
+SET_TARGET_PROPERTIES(icewm-menu-fdo${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${gio_CFLAGS}")
+TARGET_LINK_LIBRARIES(icewm-menu-fdo${EXEEXT} ${gio_LDFLAGS} ${EXTRA_LIBS})
+ENDIF()
+
+ADD_EXECUTABLE(icewm-session${EXEEXT} icesm.cc yapp.cc misc.cc mstring.cc upath.cc ytimer.cc yprefs.cc)
+SET_TARGET_PROPERTIES(icewm-session${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
+TARGET_LINK_LIBRARIES(icewm-session${EXEEXT} ${EXTRA_LIBS})
+
+ADD_EXECUTABLE(icewmhint${EXEEXT} icewmhint.cc)
+SET_TARGET_PROPERTIES(icewmhint${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
+TARGET_LINK_LIBRARIES(icewmhint${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${EXTRA_LIBS})
+
+ADD_EXECUTABLE(icewmbg${EXEEXT} icewmbg.cc misc.cc mstring.cc ref.cc ${ICE_COMMON_SRCS})
+SET_TARGET_PROPERTIES(icewmbg${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
+TARGET_LINK_LIBRARIES(icewmbg${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS}  ${pixbuf_LDFLAGS} ${EXTRA_LIBS})
+
+IF(CONFIG_GUIEVENTS AND (CONFIG_ALSA OR CONFIG_ESD OR CONFIG_OSS OR CONFIG_YIFF))
+ADD_EXECUTABLE(icesound${EXEEXT} icesound.cc ycmdline.cc misc.cc mstring.cc)
+SET_TARGET_PROPERTIES(icesound${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
+TARGET_LINK_LIBRARIES(icesound${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${EXTRA_LIBS})
+ENDIF()
+
+ADD_EXECUTABLE(icehelp${EXEEXT} icehelp.cc ${ICE_COMMON_SRCS} yscrollbar.cc ref.cc yicon.cc wmconfig.cc ymenu.cc ymenuitem.cc yprefs.cc yscrollview.cc)
+SET_TARGET_PROPERTIES(icehelp${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
+TARGET_LINK_LIBRARIES(icehelp${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS} ${pixbuf_LDFLAGS} ${EXTRA_LIBS})
+
+ADD_EXECUTABLE(icewmtray${EXEEXT} icetray.cc ywindow.cc yxapp.cc yapp.cc ref.cc mstring.cc yprefs.cc wmconfig.cc yxtray.cc ${ICE_COMMON_SRCS})
+SET_TARGET_PROPERTIES(icewmtray${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
+TARGET_LINK_LIBRARIES(icewmtray${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS} ${pixbuf_LDFLAGS} ${EXTRA_LIBS})
+
 
 #######################################
 # print information and some warnings #
 #######################################
-
-
-# the compiler used for C++ files 
-#MESSAGE( STATUS "CMAKE_CXX_COMPILER: " ${CMAKE_CXX_COMPILER} )
-# if the compiler is a variant of gcc, this should be set to 1 
-#MESSAGE( STATUS "CMAKE_COMPILER_IS_GNUCC: " ${CMAKE_COMPILER_IS_GNUCC} )
-# if the compiler is a variant of g++, this should be set to 1 
-#MESSAGE( STATUS "CMAKE_COMPILER_IS_GNUCXX : " ${CMAKE_COMPILER_IS_GNUCXX} )
-
-#MESSAGE( STATUS "Target filespace: " ${PREFIX})
-#MESSAGE( STATUS "DATADIR: " ${DATADIR})
-#option(DATADIR "Shared data files directory" "${PREFIX}/share")
-#option(LIBDIR "Package data directory" "${DATADIR}/icewm")
-
-#get_cmake_property(_variableNames VARIABLES)
-#foreach (_variableName ${_variableNames})
-#    message(STATUS "${_variableName}=${${_variableName}}")
-#endforeach()
 foreach (_variableName 
 		PACKAGE
 		VERSION
 		PREFIX DATADIR LIBDIR LOCDIR DOCDIR CFGDIR ICEHELPIDX
-      CONFIG_XPM
-CONFIG_IMLIB 
-CONFIG_GDK_PIXBUF_XLIB
-      )
+		CONFIG_XPM
+		CONFIG_IMLIB 
+		CONFIG_GDK_PIXBUF_XLIB
+		)
     message(STATUS "${_variableName} => ${${_variableName}}")
 endforeach()
 
