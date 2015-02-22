@@ -3,43 +3,16 @@
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
-// FIXME:
-//
-/* Name of package */
-#define PACKAGE "icewm"
-
-/* Define to the address where bug reports for this package should be sent. */
-#define PACKAGE_BUGREPORT "http://github.com/bbidulock/icewm"
-
-/* Define to the full name of this package. */
-#define PACKAGE_NAME "icewm"
-
-/* Define to the full name and version of this package. */
-#define PACKAGE_STRING "icewm 1.3.9.74"
-
-/* Define to the one symbol short name of this package. */
-#define PACKAGE_TARNAME "icewm"
-
-/* Define to the home page for this package. */
+#define PACKAGE "@PACKAGE@"
+#define PACKAGE_NAME "@PACKAGE@"
+#define PACKAGE_TARNAME "@PACKAGE@"
+#define PACKAGE_VERSION "@VERSION@"
+#define PACKAGE_STRING "@PACKAGE@ @VERSION@"
 #define PACKAGE_URL ""
+#define VERSION "@VERSION@"
 
-/* Define to the version of this package. */
-#define PACKAGE_VERSION "1.3.9.74"
-
-
-/* Version number of package */
-#define VERSION "1.3.9.74"
-
-/* Define to the host CPU. */
-#define HOSTCPU "x86_64"
-
-/* Define to the host operating system. */
-#define HOSTOS "linux-gnu"
-
-/* Define to the IceWM help index file. */
-#define ICEHELPIDX "/usr/local/share/doc/icewm/icewm.html"
-
-
+#define HOSTCPU "@CMAKE_HOST_SYSTEM_PROCESSOR@"
+#define HOSTOS "@CMAKE_HOST_SYSTEM_NAME@"
 
 // autoconf declares them but I couldn't find any good reason to use them. Wiping out...
 #define SELECT_TYPE_ARG1
@@ -117,9 +90,11 @@
 #cmakedefine HAVE_EXECINFO_H
 
 #define LIBDIR "@LIBDIR@"
-#define CFGDIR "@DOCDIR@"
+#define CFGDIR "@CFGDIR@"
 #define DOCDIR "@DOCDIR@"
-#define LIBDIR "@LIBDIR@"
+#define LOCDIR "@LOCDIR@"
+#define DATADIR "@DATADIR@"
+#define ICEHELPIDX "@ICEHELPIDX@"
 
 #cmakedefine NO_CONFIGURE_MENUES
 #cmakedefine CONFIG_XPM
@@ -151,5 +126,37 @@
 
 #cmakedefine CONFIG_COREFONTS
 #cmakedefine CONFIG_PDA
+
+#cmakedefine CONFIG_GUIEVENTS
+#cmakedefine CONFIG_ALSA
+#cmakedefine CONFIG_OSS
+#cmakedefine CONFIG_YIFF
+#cmakedefine CONFIG_ESD
+#cmakedefine CONFIG_XINERAMA
+#cmakedefine CONFIG_FRIBIDI
+
+#cmakedefine NO_CONFIGURE
+#cmakedefine NO_KEYBIND
+#cmakedefine NO_CONFIGURE_MENUS
+#cmakedefine NO_WINDOW_OPTIONS
+#cmakedefine LITE
+#cmakedefine CONFIG_TOOLTIP
+#cmakedefine CONFIG_WINLIST
+#cmakedefine CONFIG_TASKBAR
+#cmakedefine CONFIG_ADDRESSBAR
+#cmakedefine CONFIG_TRAY
+#cmakedefine CONFIG_APPLET_MAILBOX
+#cmakedefine CONFIG_APPLET_CPU_STATUS
+#cmakedefine CONFIG_APPLET_NET_STATUS
+#cmakedefine CONFIG_APPLET_CLOCK
+#cmakedefine CONFIG_APPLET_APM
+#cmakedefine CONFIG_WINMENU
+
+#cmakedefine WMSPEC_HINTS
+#cmakedefine GNOME1_HINTS
+#cmakedefine DEBUG
+
+
+
 
 #endif // __CONFIG_H__

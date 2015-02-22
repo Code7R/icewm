@@ -12,7 +12,15 @@ INCLUDE(CheckIncludeFileCXX)
 INCLUDE(FindPkgConfig)
 INCLUDE(CheckCXXSourceCompiles)
 
-SET(CXXFLAGS_COMMON " -pthread -g -O2 -Wall -Wextra -Wno-unused-parameter -D_FILE_OFFSET_BITS=64 ${CMAKE_CXX_FLAGS}")
+FILE(READ "${CMAKE_SOURCE_DIR}/VERSION" vfilecontents)
+STRING(REGEX REPLACE "\n" ";" vfilecontents "${vfilecontents}")
+foreach (line ${vfilecontents})
+	STRING(REGEX REPLACE "=" ";" keyval "${line}")
+	list(GET keyval 0 _key)
+	list(GET keyval 1 ${_key})
+endforeach()
+
+SET(CXXFLAGS_COMMON " -pthread -g -O2 -Wall -Wextra -Wno-unused-parameter -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -I. ${CMAKE_CXX_FLAGS}")
 # same for linker flags, imported from LDFLAGS environment var
 SET(LDFLAGS_COMMON "${CMAKE_EXE_LINKER_FLAGS}")
 #message("Initial CXX flags: ${ACNG_CXXFLAGS_COMMON}")
@@ -26,21 +34,34 @@ SET(CMAKE_EXE_LINKER_FLAGS ${LDFLAGS_COMMON})
 include_directories(${PROJECT_SOURCE_DIR})
 
 find_library(CONFIG_LIBICONV "iconv")
-#option(NO_CONFIGURE_MENUES "Define to disable configurable menu support" off)
 option(CONFIG_XPM "Legacy XPM image loader" off)
 option(CONFIG_IMLIB "(Deprecated) IMLIB image loader" off)
 option(CONFIG_GDK_PIXBUF_XLIB "LIBGDKPIXBUF based image loader" on)
 option(CONFIG_I18N "Define to enable internationalization" on)
 option(CONFIG_SESSION "Define to enable X session management" on)
 
-CHECK_LIBRARY_EXISTS (X11 XInternAtoms "" HAVE_XINTERNATOMS)
-
 set(PREFIX "/usr/local" CACHE STRING "Target file space")
+# iiieh, neeing to add some guards, since having this nested construct
+# interacts badly when changing a variable afterwards cmake also insists on
+# overwritting that variables later :-( if not protected
+IF(NOT DATADIR)
 set(DATADIR "${PREFIX}/share" CACHE STRING "Shared data files directory")
+ENDIF()
+IF(NOT LIBDIR)
 set(LIBDIR "${DATADIR}/icewm")
+ENDIF()
+IF(NOT DOCDIR)
 set(DOCDIR "${DATADIR}/doc/icewm")
+ENDIF()
+IF(NOT LOCDIR)
 set(LOCDIR "${DATADIR}/locale")
+ENDIF()
+IF(NOT CFGDIR)
 set(CFGDIR "${PREFIX}/etc/icewm")
+ENDIF()
+IF(NOT ICEHELPIDX)
+set(ICEHELPIDX "${DOCDIR}/icewm.html")
+ENDIF()
 
 #set(CONFIG_UNICODE_SET "" cache string "Your iconv unicode set in machine endian encoding (e.g. WCHAR_T, UCS-4-INTERNAL, UCS-4LE, UCS-4BE)")
 
@@ -83,7 +104,9 @@ CHECK_FUNCTION_EXISTS(socket HAVE_SOCKET)
 CHECK_FUNCTION_EXISTS(strtol HAVE_STRTOL)
 CHECK_FUNCTION_EXISTS(basename HAVE_BASENAME)
 CHECK_FUNCTION_EXISTS(sysctlbyname HAVE_SYSCTLBYNAME)
-CHECK_FUNCTION_EXISTS("getloadavg" HAVE_GETLOADAVG)
+CHECK_FUNCTION_EXISTS(getloadavg HAVE_GETLOADAVG)
+
+CHECK_LIBRARY_EXISTS (X11 XInternAtoms "" HAVE_XINTERNATOMS)
 
 # perl -e 'do { s/\.|\//_/g; $_=uc $_;  print "#cmakedefine HAVE_$_\n"} for @ARGV' `cat headersDa`
 # perl -e 'do {my $orig=$_; s/\.|\//_/g; $_=uc $_; print "CHECK_INCLUDE_FILE_CXX($orig HAVE_$_)\n"} for @ARGV' `cat headersDa`
@@ -124,23 +147,15 @@ CHECK_TYPE_SIZE(short SIZEOF_SHORT)
 #########################################################
 
 pkg_check_modules(fontconfig fontconfig)
-string(REPLACE ";" " " fontconfig_LDFLAGS "${fontconfig_LDFLAGS}")
-string(REPLACE ";" " " fontconfig_CFLAGS "${fontconfig_CFLAGS}")
 pkg_check_modules(xext xext)
-string(REPLACE ";" " " xext_LDFLAGS "${xext_LDFLAGS}")
-string(REPLACE ";" " " xext_CFLAGS "${xext_CFLAGS}")
 pkg_check_modules(x11 x11)
-string(REPLACE ";" " " x11_LDFLAGS "${x11_LDFLAGS}")
-string(REPLACE ";" " " x11_CFLAGS "${x11_CFLAGS}")
 if(CONFIG_GDK_PIXBUF_XLIB)
-pkg_check_modules(pixbuf gdk-pixbuf-xlib-2.0)
-string(REPLACE ";" " " pixbuf_LDFLAGS "${pixbuf_LDFLAGS}")
-string(REPLACE ";" " " pixbuf_CFLAGS "${pixbuf_CFLAGS}")
+	pkg_check_modules(pixbuf gdk-pixbuf-xlib-2.0)
 endif()
 
 IF(CONFIG_SESSION)
-   LIST(APPEND sm_LIBS SM)
-   LIST(APPEND sm_LIBS ICE)
+	LIST(APPEND sm_LIBS SM)
+	LIST(APPEND sm_LIBS ICE)
 ENDIF()
 
 option(CONFIG_SHAPE "Define to enable transparent frame	decoration (titlebar borders), requests X shape extension." on)
@@ -161,9 +176,6 @@ pkg_check_modules(xrandr xrandr)
 IF(NOT xrandr_FOUND)
    message(WARNING "Xrandr library not found, disabling CONFIG_XRANDR")
    set(CONFIG_XRANDR off)
-ELSE()
-   string(REPLACE ";" " " xrandr_LDFLAGS "${xrandr_LDFLAGS}")
-   string(REPLACE ";" " " xrandr_CFLAGS "${xrandr_CFLAGS}")
 ENDIF()
 endif()
 
@@ -178,22 +190,94 @@ if(CONFIG_XFREETYPE)
    IF(NOT xft_FOUND)
       message(WARNING "xft library not found, disabling CONFIG_xft")
       set(CONFIG_XFREETYPE off)
-   ELSE()
-      string(REPLACE ";" " " xft_LDFLAGS "${xft_LDFLAGS}")
-      string(REPLACE ";" " " xft_CFLAGS "${xft_CFLAGS}")
    ENDIF()
 endif()
 
 option(CONFIG_COREFONTS "Define to enable X11 core fonts" off)
 option(CONFIG_PDA "Define to enable PDA operation (no window hiding)" off)
+option(CONFIG_GUIEVENTS "Define to enable GUI events (experimental)" off)
+set(ICESOUND "ALSA,OSS,Y,ESound" CACHE STRING "List of supported audio subsystems")
+if(CONFIG_GUIEVENTS)
+	string(TOLOWER ${ICESOUND} ICESOUND)
+	if("${ICESOUND}" MATCHES "alsa")
+		pkg_check_modules(alsa sndfile alsa)
+		set(CONFIG_ALSA "${alsa_FOUND}")
+	endif()
+	if("${ICESOUND}" MATCHES "esound" OR ("${ICESOUND}" MATCHES "esd"))
+		pkg_check_modules(esd esound)
+		set(CONFIG_ESD "${esd_FOUND}")
+	endif()
+	if("${ICESOUND}" MATCHES "y")
+		pkg_check_modules(yiff y2)
+		set(CONFIG_YIFF "${yiff_FOUND}")
+	endif()
+	if("${ICESOUND}" MATCHES "oss")
+		set(CONFIG_OSS on)
+	endif()
+endif()
 
+option(XINERAMA "Define to enable Xinerama support" on)
+if(XINERAMA)
+	pkg_check_modules(xinerama xinerama)
+	if(NOT xinerama_FOUND)
+		message(WARNING "XINERAMA is not supported")
+		set(XINERAMA off)
+	endif()
+endif()
 
+option(CONFIG_FRIBIDI on)
+if(CONFIG_FRIBIDI)
+	pkg_check_modules(fribidi fribidi)
+	if(not fribidi_FOUND)
+		message(WARNING "FRIBIDI is not supported")
+		set(CONFIG_FRIBIDI off)
+			
+	endif()
+endif()
 
+option(NO_CONFIGURE "Define to disable preferences support")
+option(NO_KEYBIND "Define to disable keybinding support")
+option(NO_CONFIGURE_MENUS "Define to disable configurable menu support")
+option(NO_WINDOW_OPTIONS "Define to disable configurable window options support")
+option(LITE "Lite version (overrides certain options)")
+if(NOT LITE)
+	option(CONFIG_TOOLTIP "Define to support tooltips" on)
+	option(CONFIG_WINLIST "Define for OS/2 like window list" on)
+	option(CONFIG_TASKBAR "Define to enable builtin taskbar" on)
+	if(CONFIG_TASKBAR)
+		option(CONFIG_ADDRESSBAR "Define for address bar" on)
+		option(CONFIG_TRAY "Define for system tray" on)
+		option(CONFIG_APPLET_MAILBOX "Define for mailbox applet" on)
+		option(CONFIG_APPLET_CPU_STATUS "Define for CPU status applet" on)
+		option(CONFIG_APPLET_NET_STATUS "Define for network status applet" on)
+		option(CONFIG_APPLET_CLOCK "Define for LCD clock applet" on)
+		option(CONFIG_APPLET_APM "Define for APM status applet" on)
+	endif()
+	option(CONFIG_WINMENU "Define to enable window list menu" on)
+endif()
+
+option(CONFIG_FDO_MENUS "Define to support freedesktop.org style menus" on)
+if(CONFIG_FDO_MENUS)
+	pkg_check_modules(gio gio-2.0 gio-unix-2.0)
+	if(NOT gio_FOUND)
+		set(CONFIG_FDO_MENUS off)
+		message(WARNING "Freedesktop style menus not supported")
+	endif()
+endif()
+
+option(WMSPEC_HINTS "Define to enable NetWM/EWMH support" on)
+option(GNOME1_HINTS "Define to enable WinWM/WMH (GNOME1) support" on)
+option(DEBUG "Define if you want to debug IceWM" off)
+
+CHECK_FUNCTION_EXISTS(asprintf HAVE_ASPRINTF)
+CHECK_FUNCTION_EXISTS(glob_pattern_p HAVE_GLOB_PATTERN_P)
+IF(HAVE_GLOB_PATTERN_P AND HAVE_ASPRINTF)
+	option(CONFIG_COMPLETION "Define to use completion in the command line" ON)
+ENDIF()
 
 #######################################
 # some extra sugar where available    #
 #######################################
-
 
 SET(CMAKE_REQUIRED_FLAGS ${CXXFLAGS_COMMON})
 SET(CMAKE_EXE_LINKER_FLAGS "${LDFLAGS_COMMON}  -Wl,--as-needed ")
@@ -210,6 +294,21 @@ endif(USE_WLASNEEDED)
 #######################################
 
 CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/src/config.cmake.h.in" "${CMAKE_BINARY_DIR}/config.h")
+include_directories("${CMAKE_BINARY_DIR}")
+
+
+
+#######################################
+# declaring targets and build flags   #
+#######################################
+
+# pkg-config delivers strings, we need argument lists :-(
+foreach(pfx fontconfig xext x11 pixbuf xrandr xft alsa 
+		esd yiff xinerama fribidi gio)
+	#string(REPLACE ";" " " ${pfx}_LDFLAGS "${${pfx}_LDFLAGS}")
+	string(REPLACE ";" " " ${pfx}_CFLAGS "${${pfx}_CFLAGS}")
+	#message(STATUS "Normalizing argument lists: ${${pfx}_LDFLAGS} ; ${${pfx}_CFLAGS}")
+endforeach()
 
 SET(ICE_COMMON_SRCS mstring.cc upath.cc yapp.cc yxapp.cc ytimer.cc
  ywindow.cc ypaint.cc ypopup.cc misc.cc ycursor.cc ysocket.cc ypaths.cc
@@ -217,8 +316,8 @@ SET(ICE_COMMON_SRCS mstring.cc upath.cc yapp.cc yxapp.cc ytimer.cc
  yprefs.cc yfont.cc yfontcore.cc yfontxft.cc ypixmap.cc yimage.cc
  yimage_gdk.cc yimage_imlib.cc yimage_xpm.cc ytooltip.cc)
 
-SET(ITK_SRCS ymenu.cc ylabel.cc yscrollview.cc ymenuitem.cc yscrollbar.cc ybutton.cc ylistbox.cc yinput.cc globit.c yicon.cc wmconfig.cc ref.cc
-   ydialog.cc ymsgbox.cc    )
+SET(ITK_SRCS ymenu.cc ylabel.cc yscrollview.cc ymenuitem.cc yscrollbar.cc ybutton.cc ylistbox.cc yinput.cc yicon.cc wmconfig.cc ref.cc
+   ydialog.cc ymsgbox.cc yurl.cc)
 
 SET(ICEWM_SRCS ${ICE_COMMON_SRCS} ${ITK_SRCS}
    wmsession.cc wmwinlist.cc wmtaskbar.cc
@@ -229,9 +328,15 @@ SET(ICEWM_SRCS ${ICE_COMMON_SRCS} ${ITK_SRCS}
  aworkspaces.cc amailbox.cc aclock.cc acpustatus.cc apppstatus.cc
  aaddressbar.cc objbar.cc aapm.cc atray.cc ysmapp.cc yxtray.cc)
 
+IF(HAVE_GLOB_PATTERN_P AND HAVE_ASPRINTF)
+	LIST(APPEND ICEWM_SRCS globit.c)
+ENDIF()
+
 ADD_EXECUTABLE(icewm${EXEEXT} ${ICEWM_SRCS})
-SET_TARGET_PROPERTIES(icewm${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${fontconfig_CFLAGS} ${x11_CFLAGS} ${xext_CFLAGS} ${pixbuf_CFLAGS} ${xft_CFLAGS} ${xrandr_CFLAGS}")
-set(icewm_ld_extra ${lsd_LDFLAGS} ${pixbuf_LDFLAGS} ${fontconfig_LDFLAGS} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS})
+set(icewm_flags_extra "${CXXFLAGS_COMMON} ${fontconfig_CFLAGS} ${x11_CFLAGS} ${xext_CFLAGS} ${pixbuf_CFLAGS} ${xft_CFLAGS} ${xrandr_CFLAGS} ${xinerama_CFLAGS} ${fribidi_CFLAGS}")
+#message("extra flags: ${icewm_flags_extra}")
+SET_TARGET_PROPERTIES(icewm${EXEEXT} PROPERTIES COMPILE_FLAGS "${icewm_flags_extra}")
+set(icewm_ld_extra ${lsd_LDFLAGS} ${pixbuf_LDFLAGS} ${fontconfig_LDFLAGS} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS} ${xinerama_LDFLAGS} ${fribidi_LDFLAGS})
 TARGET_LINK_LIBRARIES(icewm${EXEEXT} ${sm_LIBS} ${icewm_ld_extra})
 
 #######################################
@@ -255,7 +360,10 @@ TARGET_LINK_LIBRARIES(icewm${EXEEXT} ${sm_LIBS} ${icewm_ld_extra})
 #foreach (_variableName ${_variableNames})
 #    message(STATUS "${_variableName}=${${_variableName}}")
 #endforeach()
-foreach (_variableName PREFIX DATADIR LIBDIR LOCDIR DOCDIR CFGDIR
+foreach (_variableName 
+		PACKAGE
+		VERSION
+		PREFIX DATADIR LIBDIR LOCDIR DOCDIR CFGDIR ICEHELPIDX
       CONFIG_XPM
 CONFIG_IMLIB 
 CONFIG_GDK_PIXBUF_XLIB
