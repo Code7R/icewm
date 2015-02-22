@@ -17,9 +17,9 @@ STRING(REGEX REPLACE "\n" ";" vfilecontents "${vfilecontents}")
 foreach (line ${vfilecontents})
 	STRING(REGEX REPLACE "=" ";" keyval "${line}")
 	list(GET keyval 0 _key)
-	#IF(NOT _key)
+	IF(NOT _key)
 		list(GET keyval 1 ${_key})
-		#ENDIF()
+	ENDIF()
 endforeach()
 
 SET(CXXFLAGS_COMMON " -pthread -g -O2 -Wall -Wextra -Wno-unused-parameter -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -I. ${CMAKE_CXX_FLAGS}")
@@ -105,6 +105,7 @@ CHECK_FUNCTION_EXISTS(strtol HAVE_STRTOL)
 CHECK_FUNCTION_EXISTS(basename HAVE_BASENAME)
 CHECK_FUNCTION_EXISTS(sysctlbyname HAVE_SYSCTLBYNAME)
 CHECK_FUNCTION_EXISTS(getloadavg HAVE_GETLOADAVG)
+CHECK_FUNCTION_EXISTS(asprintf HAVE_ASPRINTF)
 
 CHECK_LIBRARY_EXISTS (X11 XInternAtoms "" HAVE_XINTERNATOMS)
 
@@ -269,11 +270,6 @@ option(WMSPEC_HINTS "Define to enable NetWM/EWMH support" on)
 option(GNOME1_HINTS "Define to enable WinWM/WMH (GNOME1) support" on)
 option(DEBUG "Define if you want to debug IceWM" off)
 
-CHECK_FUNCTION_EXISTS(asprintf HAVE_ASPRINTF)
-CHECK_FUNCTION_EXISTS(glob_pattern_p HAVE_GLOB_PATTERN_P)
-IF(HAVE_GLOB_PATTERN_P AND HAVE_ASPRINTF)
-	option(CONFIG_COMPLETION "Define to use completion in the command line" ON)
-ENDIF()
 
 #######################################
 # some extra sugar where available    #
@@ -324,11 +320,8 @@ SET(ICEWM_SRCS ${ICE_COMMON_SRCS} ${ITK_SRCS}
  wmapp.cc wmframe.cc wmbutton.cc wmminiicon.cc wmtitle.cc
  movesize.cc themes.cc decorate.cc browse.cc wmprog.cc atasks.cc
  aworkspaces.cc amailbox.cc aclock.cc acpustatus.cc apppstatus.cc
- aaddressbar.cc objbar.cc aapm.cc atray.cc ysmapp.cc yxtray.cc yurl.cc)
-
-IF(HAVE_GLOB_PATTERN_P AND HAVE_ASPRINTF)
-	LIST(APPEND ICEWM_SRCS globit.c)
-ENDIF()
+ aaddressbar.cc objbar.cc aapm.cc atray.cc ysmapp.cc yxtray.cc yurl.cc
+ globit.cc)
 
 ADD_EXECUTABLE(icewm${EXEEXT} ${ICEWM_SRCS})
 set(icewm_pc_flags "${fontconfig_CFLAGS} ${x11_CFLAGS} ${xext_CFLAGS} ${pixbuf_CFLAGS} ${xft_CFLAGS} ${xrandr_CFLAGS} ${xinerama_CFLAGS} ${fribidi_CFLAGS}")
