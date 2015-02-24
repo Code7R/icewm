@@ -264,8 +264,6 @@ ENDIF()
 CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/src/config.cmake.h.in" "${CMAKE_BINARY_DIR}/config.h")
 include_directories("${CMAKE_BINARY_DIR}")
 
-
-
 #######################################
 # declaring targets and build flags   #
 #######################################
@@ -337,6 +335,9 @@ ADD_EXECUTABLE(icewmtray${EXEEXT} icetray.cc ywindow.cc yxapp.cc yapp.cc ref.cc 
 SET_TARGET_PROPERTIES(icewmtray${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
 TARGET_LINK_LIBRARIES(icewmtray${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS} ${pixbuf_LDFLAGS} ${EXTRA_LIBS})
 
+
+INSTALL(TARGETS icewm-menu-fdo${EXEEXT} icewm-session${EXEEXT} icewmhint${EXEEXT} icewmbg${EXEEXT} icehelp${EXEEXT} icewmtray${EXEEXT} 
+   DESTINATION ${BINDIR})
 
 #######################################
 # print information and some warnings #
