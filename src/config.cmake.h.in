@@ -19,6 +19,11 @@
 #define SELECT_TYPE_ARG234
 #define SELECT_TYPE_ARG5
 
+#define SIZEOF_CHAR @SIZEOF_CHAR@
+#define SIZEOF_INT @SIZEOF_INT@
+#define SIZEOF_LONG @SIZEOF_LONG@
+#define SIZEOF_SHORT @SIZEOF_SHORT@
+
 #cmakedefine HAVE_DUP2
 #cmakedefine HAVE_GETCWD
 #cmakedefine HAVE_GETHOSTBYNAME
@@ -55,12 +60,6 @@
 #cmakedefine HAVE_BASENAME
 #cmakedefine HAVE_SYSCTLBYNAME
 #cmakedefine HAVE_GETLOADAVG
-
-#define SIZEOF_CHAR @SIZEOF_CHAR@
-#define SIZEOF_INT @SIZEOF_INT@
-#define SIZEOF_LONG @SIZEOF_LONG@
-#define SIZEOF_SHORT @SIZEOF_SHORT@
-
 
 #cmakedefine HAVE_FCNTL_H
 #cmakedefine HAVE_LANGINFO_H
@@ -105,12 +104,7 @@
 #cmakedefine CONFIG_SESSION
 #cmakedefine CONFIG_SHAPE
 
-// adapt to dual-purpose of this var
-#cmakedefine CONFIG_UNICODE_SET
-#ifdef CONFIG_UNICODE_SET
-#undef CONFIG_UNICODE_SET
-#define CONFIG_UNICODE_SET "@CONFIG_UNICODE_SET@"
-#endif
+#cmakedefine CONFIG_UNICODE_SET "@CONFIG_UNICODE_SET@"
 
 #cmakedefine HAVE_XINTERNATOMS
 
@@ -119,11 +113,7 @@
 #cmakedefine CONFIG_GRADIENTS
 #cmakedefine CONFIG_XRANDR
 
-#cmakedefine CONFIG_XFREETYPE
-#ifdef CONFIG_XFREETYPE
-#undef CONFIG_XFREETYPE
-#define CONFIG_XFREETYPE @CONFIG_XFREETYPE_VALUE@
-#endif
+#cmakedefine CONFIG_XFREETYPE @CONFIG_XFREETYPE_VALUE@
 
 #cmakedefine CONFIG_COREFONTS
 #cmakedefine CONFIG_PDA

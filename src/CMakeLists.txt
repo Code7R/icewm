@@ -12,16 +12,6 @@ INCLUDE(CheckIncludeFileCXX)
 INCLUDE(FindPkgConfig)
 INCLUDE(CheckCXXSourceCompiles)
 
-FILE(READ "${CMAKE_SOURCE_DIR}/VERSION" vfilecontents)
-STRING(REGEX REPLACE "\n" ";" vfilecontents "${vfilecontents}")
-foreach (line ${vfilecontents})
-	STRING(REGEX REPLACE "=" ";" keyval "${line}")
-	list(GET keyval 0 _key)
-	IF(NOT _key)
-		list(GET keyval 1 ${_key})
-	ENDIF()
-endforeach()
-
 SET(CXXFLAGS_COMMON " -pthread -g -O2 -Wall -Wextra -Wno-unused-parameter -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -I. ${CMAKE_CXX_FLAGS}")
 
 # I don't need -rdynamic, thanks!
@@ -42,10 +32,10 @@ option(CONFIG_SESSION "Define to enable X session management" on)
 
 SET(CONFIG_UNICODE_SET "" CACHE STRING "Your iconv unicode set in machine endian encoding (e.g. WCHAR_T, UCS-4-INTERNAL, UCS-4LE, UCS-4BE)")
 # turn off when empty, see config.h template for details
-IF("${CONFIG_UNICODE_SET}")
-	MESSAGE(STATUS "Configured custom unicode set: ${CONFIG_UNICODE_SET}.")
-ELSE()
+IF("" STREQUAL "${CONFIG_UNICODE_SET}")
 	SET(CONFIG_UNICODE_SET OFF)
+ELSE()
+	MESSAGE(STATUS "Configured custom unicode set: ${CONFIG_UNICODE_SET}.")
 ENDIF()
 
 # the only used ones...
