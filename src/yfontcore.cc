@@ -173,6 +173,14 @@ XFontSet YFontSet::getFontSetWithGuess(char const * pattern, char *** missing,
 
     if (*nMissing) XFreeStringList(*missing);
 
+/// TODO Not sure, added this as first attempt, without switching the locale to
+// default. Getting fontset with C gets something not latin1 capable (crops
+// strings at non-ascii chars later)
+    if (None == fontset) {
+        fontset = XCreateFontSet(xapp->display(), pattern,
+                                 missing, nMissing, defString);
+    }
+
     if (None == fontset) { // --- get a fallback fontset for pattern analyis ---
 /// TODO #warning "remove this broken locale switching"
         char const * locale(setlocale(LC_CTYPE, NULL));
