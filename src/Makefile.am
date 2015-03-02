@@ -182,7 +182,7 @@ libitk_la_SOURCES = \
 	ylistbox.cc \
 	ylistbox.h \
 	yinput.cc \
-	globit.c \
+	globit.cc \
 	globit.h \
 	yicon.cc \
 	yicon.h \
@@ -286,6 +286,8 @@ icewm_SOURCES = \
 	aclock.h \
 	acpustatus.cc \
 	acpustatus.h \
+	amemstatus.cc \
+	amemstatus.h \
 	apppstatus.cc \
 	apppstatus.h \
 	aaddressbar.cc \
@@ -452,6 +454,8 @@ icebar_SOURCES = \
 	aclock.h \
 	acpustatus.cc \
 	acpustatus.h \
+	amemstatus.cc \
+	amemstatus.h \
 	apppstatus.cc \
 	apppstatus.h \
 	aaddressbar.cc \

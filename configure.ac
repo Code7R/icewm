@@ -104,7 +104,7 @@ if test x$cross_compling != xyes ; then :; AC_FUNC_REALLOC fi
 AC_FUNC_STRNLEN
 AC_CHECK_FUNCS([dup2 getcwd gethostbyname gethostname gettimeofday mblen memchr memmove memset mkdir nl_langinfo putenv select setlocale socket strcasecmp strchr strcspn strdup strerror strncasecmp strrchr strspn strstr strtol sysinfo uname abort])
 AC_CHECK_FUNCS([gettimeofday putenv select socket strtol strtoul basename])
-AC_CHECK_FUNCS([sysctlbyname])
+AC_CHECK_FUNCS([sysctlbyname asprintf])
 AC_CHECK_FUNC([getloadavg],[AC_DEFINE([HAVE_GETLOADAVG2], 1, [getloadavg() is available])])
 AC_FUNC_SELECT_ARGTYPES
 
@@ -326,6 +326,7 @@ if test x$enable_lite != xyes ; then
 	AC_DEFINE([CONFIG_TRAY],[1],[Define for system tray.])
 	AC_DEFINE([CONFIG_APPLET_MAILBOX],[1],[Define for mailbox applet.])
 	AC_DEFINE([CONFIG_APPLET_CPU_STATUS],[1],[Define for CPU status applet.])
+	AC_DEFINE([CONFIG_APPLET_MEM_STATUS],[1],[Define for memory status applet.])
 	AC_DEFINE([CONFIG_APPLET_NET_STATUS],[1],[Define for network status applet.])
 	AC_DEFINE([CONFIG_APPLET_CLOCK],[1],[Define for LCD clock applet.])
 	AC_DEFINE([CONFIG_APPLET_APM],[1],[Define for APM status applet.])

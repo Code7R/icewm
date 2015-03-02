@@ -9,7 +9,10 @@
 #include "yxtray.h"
 
 class ObjectBar;
-#if CONFIG_APPLET_CPU_STATUS
+#ifdef CONFIG_APPLET_MEM_STATUS
+class MEMStatus;
+#endif
+#ifdef CONFIG_APPLET_CPU_STATUS
 class CPUStatus;
 #endif
 #ifdef CONFIG_APPLET_NET_STATUS
@@ -149,6 +152,9 @@ private:
 #endif
 #ifdef CONFIG_APPLET_MAILBOX
     MailBoxStatus **fMailBoxStatus;
+#endif
+#ifdef CONFIG_APPLET_MEM_STATUS
+    MEMStatus *fMEMStatus;
 #endif
 #ifdef CONFIG_APPLET_CPU_STATUS
     CPUStatus *fCPUStatus;
