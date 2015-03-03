@@ -53,13 +53,13 @@ stamp-build-lite:
 build-normal: stamp-build-normal
 stamp-build-normal:
 	mkdir -p $(BDIR)-normal
-	cd $(BDIR)-normal && $(cmakecmd) -DCONFIG_XRANDR=on -DCONFIG_GUIEVENTS=1
+	cd $(BDIR)-normal && $(cmakecmd) -DCONFIG_XRANDR=on -DCONFIG_GUIEVENTS=on
 	$(MAKE) -C $(BDIR)-normal
 	touch $@
 
 build: build-arch build-indep
-build-arch: build-stamp
-build-indep: build-stamp
+build-arch: build-normal build-lite
+build-indep: build-normal build-lite
 
 clean:
 	dh_testdir
@@ -76,8 +76,7 @@ install: build
 	dh_prep
 	dh_installdirs
 	$(MAKE) -C $(BDIR)-normal install DESTDIR=$(ICEWM)
-	$(MAKE) -C $(BDIR)-lite/src install DESTDIR=$(ICEWM_LITE)  EXEEXT=-lite
-	$(MAKE) -C $(BDIR)-lite/lib install DESTDIR=$(ICEWM_LITE)  EXEEXT=-lite
+	$(MAKE) -C $(BDIR)-lite install DESTDIR=$(ICEWM_LITE)
 	rm -rf $(ICEWM_LITE)/usr/{bin/*gnome*,share/{doc/*icewm*,locale,man,icewm}}
 	mkdir -p $(ICEWM_COMMON)/usr/bin
 	mv $(ICEWM)/usr/share $(ICEWM_COMMON)/usr/
@@ -151,6 +150,8 @@ binary-arch: build install
 	dh_fixperms
 	# more plausibility checks
 	ls -l $(ICEWM_COMMON)/usr/share/doc/icewm-common/html/icewm-1.html
+	ls -l $(ICEWM_LITE)/usr/bin/icewm-lite
+	ls -l $(ICEWM_LITE)/usr/bin/icewmbg-lite
 	dh_installdeb
 	dh_shlibdeps
 	dh_gencontrol
