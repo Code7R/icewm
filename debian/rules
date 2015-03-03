@@ -10,20 +10,13 @@ include /usr/share/dpkg/buildflags.mk
 include /usr/share/dpkg/architecture.mk
 -include /usr/share/quilt/quilt.make
 
-LDFLAGS += -lm -Wl,--as-needed
-CXXFLAGS += $(CPPFLAGS)
-
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	MAKEFLAGS += -j$(NUMJOBS)
 	export MAKEFLAGS
 endif
 
-ifeq (linux,$(DEB_TARGET_ARCH_OS))
-	 CXXFLAGS += -DUSE_SIGNALFD
-endif
-
-CXXFLAGS += -DXTERMCMD=x-terminal-emulator
+MAKEFLAGS += VERBOSE=1
 
 ICEWM_COMMON=$(CURDIR)/debian/icewm-common
 ICEWM=$(CURDIR)/debian/icewm
@@ -31,13 +24,6 @@ ICEWM_LITE=$(CURDIR)/debian/icewm-lite
 ICEWM_EXP=$(CURDIR)/debian/icewm-experimental
 DOCDIR=/usr/share/doc/icewm-common
 BDIR=builddir
-
-confflags += --build $(DEB_BUILD_GNU_TYPE) --host $(DEB_HOST_GNU_TYPE) \
-	     --prefix=/usr --with-cfgdir=/etc/X11/icewm \
-	     --datadir=/usr/share --disable-debug \
-	     --enable-i18n --enable-nls \
-	     --docdir=$(DOCDIR) \
-	     EXTRA_LIBS="-lsupc++"
 
 ICONS=$(CURDIR)/debian/icons
 FDO=$(CURDIR)/debian/fdo
@@ -48,55 +34,32 @@ CUSTOM=$(CURDIR)/debian/custom
 DEBVERSION=$(shell dpkg-parsechangelog |grep ^Version | sed -e s,Version:.,,)
 ORIGVERSION=$(shell echo $(DEBVERSION) | sed -e 's,-[^-]*$$,,' )
 
-modconfig = sed -e 's,\(.*\)VERSION.*,\1VERSION "$(DEBVERSION)",' \
-						-e 's,ICEHELPIDX.*,ICEHELPIDX "$(DOCDIR)/html/icewm.html",' \
-						< $(BDIR)$(1)/config.h \
-						> $(BDIR)$(1)/config.h.mod && mv $(BDIR)$(1)/config.h.mod $(BDIR)$(1)/config.h
+CXXFLAGS += $(CPPFLAGS) -DXTERMCMD=x-terminal-emulator -Wall -Wextra
+ifeq (linux,$(DEB_TARGET_ARCH_OS))
+	 CXXFLAGS += -DUSE_SIGNALFD
+endif
+cmakecmd = cmake .. -DICEHELPIDX=/usr/share/doc/icewm-common/html/icewm.html -DCFGDIR=/etc/X11/icewm -DPREFIX=/usr -DVERSION=$(ORIGVERSION) -DEXTRA_LIBS="-lsupc++"
+
+#CXXFLAGS += -flto
+#cmakecmd+= -DEXTRA_LIBS="-flto -lsupc++"
 
 build-lite: stamp-build-lite
-stamp-build-lite: autofoo-update-stamp
+stamp-build-lite:
 	mkdir -p $(BDIR)-lite
-	cd $(BDIR)-lite && ../configure $(confflags) \
-		 --disable-menus-gnome2 \
-		 --disable-menus-fdo \
-		 --enable-lite --disable-xfreetype \
-		 --enable-corefonts \
-		 --disable-taskbar  --disable-xrandr
-	$(call modconfig,-lite)
-	#echo .NOTPARALLEL >> $(BDIR)-lite/po/Makefile
-	$(MAKE) -C $(BDIR)-lite/src EXEEXT=-lite
-	$(MAKE) -C $(BDIR)-lite/lib EXEEXT=-lite
+	cd $(BDIR)-lite && $(cmakecmd) -DLITE=on -DEXEEXT=-lite -DCONFIG_XFREETYPE=off -DCONFIG_COREFONTS=on -DXINERAMA=on -DCONFIG_XRANDR=off -DCONFIG_TASKBAR=off -DCONFIG_FDO_MENUS=off -DSKIP_TRANSLATIONS=on
+	$(MAKE) -C $(BDIR)-lite
 	touch $@
 
 build-normal: stamp-build-normal
-stamp-build-normal: autofoo-update-stamp
+stamp-build-normal:
 	mkdir -p $(BDIR)-normal
-	cd $(BDIR)-normal && ../configure $(confflags) \
-		 --disable-menus-gnome2 \
-		 --enable-menus-fdo \
-		 --enable-antialiasing  --enable-shaped-decorations \
-		 --enable-gradients \
-		 --enable-guievents
-	$(call modconfig,-normal)
+	cd $(BDIR)-normal && $(cmakecmd) -DCONFIG_XRANDR=on -DCONFIG_GUIEVENTS=1
 	$(MAKE) -C $(BDIR)-normal
 	touch $@
 
-configure: configure.ac Makefile.am src/Makefile.am
-	bash autogen.sh
-
-autofoo-update-stamp: configure
-	touch $@
-
 build: build-arch build-indep
-
 build-arch: build-stamp
 build-indep: build-stamp
-
-build-stamp: build-normal build-lite
-	$(MAKE) -C $(BDIR)-normal/doc
-	# make sure to build it with fullfeatured version
-	$(BDIR)-normal/src/genpref > lib/preferences
-	touch $@
 
 clean:
 	dh_testdir
@@ -129,15 +92,17 @@ install: build
 	install -m 644 $(ICONS)/{mutt,mozilla,icewm}*.xpm $(ICEWM_COMMON)/usr/share/icewm/icons
 	-mv $(ICEWM_COMMON)/usr/share/icewm/taskbar/icewm.xpm  $(ICEWM_COMMON)/usr/share/icewm/taskbar/icewm.orig.xpm
 	install -m 644 $(ICONS)/debian.xpm $(ICEWM_COMMON)/usr/share/icewm/taskbar/icewm.xpm
-	mkdir -p $(ICEWM_COMMON)/etc/X11/icewm $(ICEWM_COMMON)/usr/bin $(ICEWM_COMMON)/usr/share/doc/icewm-common/html/
+	mkdir -p $(ICEWM_COMMON)/etc/X11/icewm $(ICEWM_COMMON)/usr/bin
+	#mkdir -p $(ICEWM_COMMON)/etc/X11/icewm $(ICEWM_COMMON)/usr/bin $(ICEWM_COMMON)/usr/share/doc/icewm-common/html/
 	install -m 644 $(CUSTOM)/toolbar $(CUSTOM)/menu $(ICEWM_COMMON)/etc/X11/icewm/
+	$(BDIR)-normal/genpref > $(ICEWM_COMMON)/usr/share/icewm/preferences
 	# Move files in the right package directory
 	mv $(ICEWM)/usr/bin/*gnome* $(ICEWM_COMMON)/usr/share/icewm/
 	mv $(ICEWM)/usr/bin/icewm-menu* $(ICEWM_COMMON)/usr/bin
 	rm -rf $(ICEWM_COMMON)/usr/share/applications/*desktop
 	# Install documentation
-	mv $(ICEWM_COMMON)/usr/share/doc/icewm-common/*.html $(ICEWM_COMMON)/usr/share/doc/icewm-common/html/
-	mkdir $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ
+	#mv $(ICEWM_COMMON)/usr/share/doc/icewm-common/*.html $(ICEWM_COMMON)/usr/share/doc/icewm-common/html/
+	mkdir -p "$(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ"
 	cd $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ && sgml2html $(CURDIR)/debian/FAQ/source/*.sgml
 	# and add our bits to fix the font insanity with xft2
 	dh_installexamples -picewm-common $(CURDIR)/debian/examples/preferences.fonts $(CURDIR)/debian/examples/preferences.noClickToFocus $(CURDIR)/debian/examples/focus_mode.noClickToFocus
@@ -184,6 +149,8 @@ binary-arch: build install
 	ln -sf icewm.1.gz debian/icewm-experimental/usr/share/man/man1/icesound-experimental.1.gz
 	ln -sf icewm.1.gz debian/icewm-common/usr/share/man/man1/icewm-menu-fdo.1.gz
 	dh_fixperms
+	# more plausibility checks
+	ls -l $(ICEWM_COMMON)/usr/share/doc/icewm-common/html/icewm-1.html
 	dh_installdeb
 	dh_shlibdeps
 	dh_gencontrol
