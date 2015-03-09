@@ -1,9 +1,14 @@
-icewm (1.3.8+githubmod+20150302+5e2b78e-1) experimental; urgency=low
+icewm (1.3.8+githubmod+20150304+e223c3e-1) UNRELEASED; urgency=low
 
   * New upstream snapshot
     + fixes chopped strings with non-ascii locales in icewm-lite
+  * Automatic deleting of known unmodified files from /etc/X11/icewm (the
+    copies in /usr/share/icewm are used instead, this should stop the general
+    confusion, closes: #409269) and added instructions for
+    configuration to README.Debian (closes: #593295)
+  * Buggy icewm-menus-gnome is gone (closes: #716629, actually two versions ago)
 
- -- Your Name <your@email.address>  Mon, 02 Mar 2015 13:36:40 +0100
+ -- Eduard Bloch <blade@debian.org>  Wed, 04 Mar 2015 15:30:51 +0100
 
 icewm (1.3.8+githubmod+20150214+d373d98-2) experimental; urgency=low
 

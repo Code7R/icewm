@@ -23,6 +23,20 @@ Adding missing functionality:
 
    e) Logout and login again
 
+
+Configuration
+-------------
+IceWM is configured using several text files (mainly: preferences, keys,
+toolbar, menu and winoptions).
+These files can be placed under ~/.icewm/ (personal configuration) or
+/etc/X11/icewm/ (system-wide configuration). A file under ~/.icewm/ will
+override the corresponding file under /etc/X11/icewm/. 
+
+Sample configuration files with comments are provided under
+/usr/share/icewm/. Just copy the files there to ~/.icewm/ or
+/etc/X11/icewm/ and edit as required. Note that many settings are
+commented out in the sample files (using a leading #).
+
 General startup hints:
 ---------------------
 
