@@ -1,36 +1,642 @@
 # created with git log -n 200 --abbrev-commit --decorate --stat=76 -M -C|fmt -sct -w80
 
-commit 60fcb4d (HEAD, debian/experimental)
+commit 52792ec (HEAD, debian/sid)
 Author: Eduard Bloch <blade@debian.org>
-Date:   Sun Feb 15 12:45:16 2015 +0100
+Date:   Tue Mar 10 14:28:58 2015 +0100
+
+    Updated the list of contributors
+
+ debian/copyright | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+commit 35eff62
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Mar 10 14:23:10 2015 +0100
+
+    Making Lintian happy
+
+ debian/control | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 53e8a96
+Merge: 641fe26 95cab08
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Mar 10 14:19:04 2015 +0100
+
+    Merge branch 'icewm-1-3-BRANCH' into debian/sid
+
+commit 95cab08 (bbidulock/icewm-1-3-BRANCH, icewm-1-3-BRANCH)
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Mar 10 14:16:40 2015 +0100
+
+    Fix build failure with GCC <= 4.7
+
+ src/globit.cc | 3 +++
+ 1 file changed, 3 insertions(+)
+
+commit 641fe26
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Mar 10 14:15:58 2015 +0100
+
+    Build-Dep cleanup
+
+ debian/control | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 0ac0155
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Mar 10 13:03:11 2015 +0100
+
+    Fixing build deps, stripped all the autoconf foo
+
+ debian/changelog | 6 ++++++
+ debian/control   | 4 ++--
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+commit 0c105fc (tag: debian/1.3.8+githubmod+20150310+31bfd46-1)
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Mar 10 11:54:41 2015 +0100
+
+    Moving to Sid, improve orig tarball export
+
+ debian/changelog | 6 +++---
+ debian/gbp.conf  | 2 +-
+ debian/rules     | 5 +++--
+ 3 files changed, 7 insertions(+), 6 deletions(-)
+
+commit 31bfd46 (tag: upstream/1.3.8+githubmod+20150310+31bfd46,
+origin/icewm-1-3-BRANCH, origin/HEAD)
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sun Mar 8 15:01:53 2015 +0100
+
+    Also react to the sleep key found on Compaq keyboards
+
+ lib/keys.in | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+commit 2910bd9 (origin/debian/experimental, debian/experimental)
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Mar 9 20:11:15 2015 +0100
+
+    Changelog update
+
+ debian/changelog | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit a5352d8
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Mar 9 19:59:10 2015 +0100
+
+    Various bugfixing, removing of old conffiles
+
+ debian/README.Debian        | 14 ++++++++++++++
+ debian/changelog            |  9 +++++++--
+ debian/icewm-common.preinst | 15 +++++++++++++--
+ 3 files changed, 34 insertions(+), 4 deletions(-)
+
+commit 2396c2d
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Mar 9 19:58:51 2015 +0100
+
+    Better version checking and tagging when making upstream snapshots
+
+ debian/rules | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+commit 0579224
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sun Mar 8 15:01:53 2015 +0100
+
+    Also react to the sleep key found on Compaq keyboard(s)
+
+ lib/keys.in | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+commit 20e2bb1
+Merge: 83a7026 e223c3e
+Author: Eduard Bloch <blade@debian.org>
+Date:   Wed Mar 4 15:25:13 2015 +0100
+
+    Merge remote-tracking branch 'bbidulock/icewm-1-3-BRANCH' into
+    debian/experimental
+
+commit e223c3e (tag: upstream/1.3.8+githubmod+20150304+e223c3e)
+Author: Eduard Bloch <blade@debian.org>
+Date:   Wed Mar 4 15:08:19 2015 +0100
+
+    More cmake usage information for integrators
+
+ INSTALL.cmakebuild | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+commit 83a7026
+Merge: 5b326c2 63665d0
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Mar 3 21:27:20 2015 +0100
+
+    Merge branch 'icewm-1-3-BRANCH' into debian/experimental
+
+commit 63665d0
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Mar 3 21:25:56 2015 +0100
+
+    Updated de.po for strings of the new memory display
+
+ po/de.po | 2504 +++++++++++++++++++++++++++++-----------------------------
+ 1 file changed, 1270 insertions(+), 1234 deletions(-)
+
+commit 70d1fd5
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Mar 3 21:13:49 2015 +0100
+
+    [cmake] consistent naming of gmo targets
+
+ po/CMakeLists.txt | 89 +++++++++++++++++++++++++--------------------------
+ 1 file changed, 44 insertions(+), 45 deletions(-)
+
+commit dc23652
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Mar 3 20:55:21 2015 +0100
+
+    [cmake] Incorporated new memory monitor enabling
+
+ src/CMakeLists.txt    | 3 ++-
+ src/config.cmake.h.in | 1 +
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+commit 5b326c2
+Merge: af8669e f5ba54f
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Mar 3 20:42:42 2015 +0100
+
+    Merge branch 'icewm-1-3-BRANCH' into debian/experimental
+
+commit f5ba54f
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Mar 3 20:39:59 2015 +0100
+
+    [cmake] Cosmetic fixes
+
+ src/CMakeLists.txt | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+commit 9a13042
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Mar 3 19:16:32 2015 +0100
+
+    [cmake] Fixed sound subsystem selection
+
+ src/CMakeLists.txt    | 11 ++++++-----
+ src/config.cmake.h.in |  6 +++---
+ 2 files changed, 9 insertions(+), 8 deletions(-)
+
+commit b55bf81
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Mar 3 17:36:12 2015 +0100
+
+    [cmake] Added forgoten icesh, made po files optional
+
+ po/CMakeLists.txt  | 2 +-
+ src/CMakeLists.txt | 8 ++++++--
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+commit af8669e
+Merge: 3be2d89 8ca717b
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Mar 3 20:29:21 2015 +0100
+
+    Merge branch 'icewm-1-3-BRANCH' into debian/experimental
+
+commit 8ca717b
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Mar 3 11:46:18 2015 +0100
+
+    [cmake] fix of some installation target locations
+
+ CMakeLists.txt     | 13 ++++++++-----
+ doc/CMakeLists.txt | 12 ++++++------
+ lib/CMakeLists.txt |  7 +++++--
+ po/CMakeLists.txt  |  8 ++++++--
+ 4 files changed, 25 insertions(+), 15 deletions(-)
+
+commit 3be2d89
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Mar 3 19:17:28 2015 +0100
+
+    Fixed lite package building, more plausibility checks
+
+ debian/rules | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+commit 79ba205
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Mar 3 19:16:32 2015 +0100
+
+    [cmake] Fixed sound subsystem selection
+
+ src/CMakeLists.txt    | 11 ++++++-----
+ src/config.cmake.h.in |  6 +++---
+ 2 files changed, 9 insertions(+), 8 deletions(-)
+
+commit bed8d62
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Mar 3 17:36:12 2015 +0100
+
+    [cmake] Added forgoten icesh, made po files optional
+
+ po/CMakeLists.txt  | 2 +-
+ src/CMakeLists.txt | 7 +++++--
+ 2 files changed, 6 insertions(+), 3 deletions(-)
+
+commit 858c8a0
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Mar 3 11:47:12 2015 +0100
+
+    Move to cmake build system
+
+ debian/rules | 75 ++++++++++++++++----------------------------------------
+ 1 file changed, 21 insertions(+), 54 deletions(-)
+
+commit 632fc0e
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Mar 3 11:46:18 2015 +0100
+
+    [cmake] fix of some installation target locations
+
+ CMakeLists.txt     | 13 ++++++++-----
+ doc/CMakeLists.txt | 12 ++++++------
+ lib/CMakeLists.txt |  7 +++++--
+ po/CMakeLists.txt  |  8 ++++++--
+ 4 files changed, 25 insertions(+), 15 deletions(-)
+
+commit b8e9eda
+Merge: e6ad7b7 5e2b78e
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Mar 2 19:33:46 2015 +0100
+
+    Merge branch 'icewm-1-3-BRANCH' into debian/experimental
+
+    Conflicts:
+	src/CMakeLists.txt
+
+commit e6ad7b7
+Author: Eduard Bloch <blade@debian.org>
+Date:	Mon Mar 2 15:19:39 2015 +0100
+
+    [cmake] Making installation of icewm-menu-fdo conditional
+
+ src/CMakeLists.txt | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+commit 64f03c4
+Author: Eduard Bloch <blade@debian.org>
+Date:	Mon Mar 2 14:26:02 2015 +0100
+
+    New changelog entry
+
+ debian/changelog | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+commit 5e2b78e
+Author: Eduard Bloch <blade@debian.org>
+Date:	Mon Mar 2 14:26:28 2015 +0100
+
+    [cmake] Fix ENABLE_NLS setting
+
+ src/CMakeLists.txt    | 30 +++++++++++++++++++++---------
+ src/config.cmake.h.in |  1 +
+ 2 files changed, 22 insertions(+), 9 deletions(-)
+
+commit f097f01
+Merge: b4273c8 72fb7b0
+Author: Eduard Bloch <blade@debian.org>
+Date:	Mon Mar 2 13:32:02 2015 +0100
+
+    Merge remote-tracking branch 'bbidulock/icewm-1-3-BRANCH' into
+    debian/experimental
+
+commit 72fb7b0
+Author: Eduard Bloch <blade@debian.org>
+Date:	Mon Mar 2 12:49:03 2015 +0100
+
+    Move the HTML generation to the global target dependency
+
+ doc/CMakeLists.txt | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+commit 05e04d5
+Author: Eduard Bloch <blade@debian.org>
+Date:	Mon Mar 2 12:45:33 2015 +0100
+
+    Remove the broken locale switching when retrieving fallback font
+
+    As suggested by the code comments. It was broken all the time since
+    setlocale is not reentrant (the string buffer is rewritten, original
+    setting gets lost). The point of the code is also not clear; it might
+    save you a second of load time on a PC from the nighties but what for?
+    If you set the locale, you want a font that supports this charset!
+
+ src/yfontcore.cc | 6 ------
+ 1 file changed, 6 deletions(-)
+
+commit 15f6975
+Author: Matthew Ogilvie <mmogilvi_ice@miniinfo.net>
+Date:	Sun Mar 1 21:07:05 2015 -0700
+
+    enable new memory applet by default
+
+    For consistency with other applets.
+
+ src/default.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 06f099f
+Merge: e262a94 24564a9
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Sun Mar 1 14:01:05 2015 -0700
+
+    Merge pull request #21 from Code7R/ftr_cmake_rebased
+
+    Ftr cmake rebased
+
+commit e262a94
+Merge: 7599871 a88d567
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Sun Mar 1 13:56:17 2015 -0700
+
+    Merge pull request #22 from mmogilvi/icewm-1-3-BRANCH
+
+    Add memory status monitor applet.
+
+commit 24564a9 (origin/ftr_cmake_rebased, ftr_cmake_rebased)
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sun Mar 1 21:13:43 2015 +0100
+
+    [cmake] Build translations for the default target, not icewm
+
+ po/CMakeLists.txt | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+commit fdc84ab
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sun Mar 1 21:13:21 2015 +0100
+
+    Restore XINERAMA support with Cmake build system
+
+ src/CMakeLists.txt    | 23 +++++++++++++++++------
+ src/config.cmake.h.in |  2 +-
+ 2 files changed, 18 insertions(+), 7 deletions(-)
+
+commit 2226770
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sun Mar 1 20:34:02 2015 +0100
+
+    Make build/install of icesound/icehelp conditional (not for LITE),
+    minor compiler warning fixes
+
+ src/CMakeLists.txt | 15 +++++++++++++--
+ src/wmswitch.cc    |  5 ++---
+ 2 files changed, 15 insertions(+), 5 deletions(-)
+
+commit a88d567
+Author: Matthew Ogilvie <mmogilvi_ice@miniinfo.net>
+Date:	Fri Feb 17 17:52:11 2012 -0700
+
+    Add memory status monitor applet.
+
+    Similar to the CPU monitor applet.
+
+    Works by parsing /proc/meminfo; other methods (like the sysinfo()
+    system call) are missing things.
+
+ configure.ac	   |   1 +
+ src/Makefile.am   |   4 +
+ src/amemstatus.cc | 260 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/amemstatus.h  |  43 +++++++++
+ src/default.h	   |   8 +-
+ src/themable.h    |  10 ++
+ src/wmtaskbar.cc  |  10 ++
+ src/wmtaskbar.h   |   6 ++
+ 8 files changed, 341 insertions(+), 1 deletion(-)
+
+commit 1041f0b
+Author: Eduard Bloch <blade@debian.org>
+Date:	Thu Feb 26 17:59:55 2015 +0100
+
+    Added some user instructions for cmake build system
+
+ INSTALL.cmakebuild | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+commit 675f034
+Author: Eduard Bloch <blade@debian.org>
+Date:	Fri Feb 20 23:18:31 2015 +0100
+
+    Experimental cmake build system
+
+ CMakeLists.txt        |  51 +++++++
+ doc/CMakeLists.txt    |  29 ++++
+ lib/CMakeLists.txt    |  10 ++
+ po/CMakeLists.txt     |  63 ++++++++
+ src/CMakeLists.txt    | 365 ++++++++++++++++++++++++++++++++++++++++++++++
+ src/config.cmake.h.in | 153 +++++++++++++++++++
+ 6 files changed, 671 insertions(+)
+
+commit 7599871
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sun Feb 22 17:01:22 2015 +0100
+
+    globit.c makes use of GNUisms (asprintf, glob_pattern_p), make that code
+    conditional and fix unsafe code
+
+ configure.ac	 | 2 +-
+ src/Makefile.am | 2 +-
+ src/globit.cc	 | 7 +++++++
+ src/yinput.cc	 | 7 ++++---
+ 4 files changed, 13 insertions(+), 5 deletions(-)
+
+commit 3482884
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sun Feb 22 16:59:57 2015 +0100
+
+    globit.c: fix some implicite old style C casting
+
+ src/globit.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+commit 1476522
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sun Feb 22 16:12:29 2015 +0100
+
+    ifdef instead of if on CONFIG_APPLET_CPU_STATUS
+
+ src/wmtaskbar.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 5ea28bf
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sun Feb 22 16:11:34 2015 +0100
+
+    icehelpcc: Fix const correctness on char pointers
+
+ src/icehelp.cc | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+commit 779223a
+Author: Eduard Bloch <blade@debian.org>
+Date:	Fri Feb 20 23:16:59 2015 +0100
+
+    Little modifications to make the code compilable with weird option
+    settings like no taskbar and not lite
+
+ src/appnames.h  |  4 ++++
+ src/wmabout.cc  |  4 +++-
+ src/wmapp.cc	 |  4 ++++
+ src/wmclient.cc | 15 ++++++++++++++-
+ src/wmframe.cc  | 33 ++++++++++++++++++++++++++++++---
+ src/wmmgr.cc	 |  7 +++++--
+ src/ymsgbox.cc  |  4 +++-
+ src/ywindow.cc  |  2 +-
+ src/yxtray.cc	 |  4 +++-
+ 9 files changed, 67 insertions(+), 10 deletions(-)
+
+commit b4273c8
+Author: Eduard Bloch <blade@debian.org>
+Date:	Fri Feb 20 23:16:59 2015 +0100
+
+    Little modifications to make the code compilable with weird option
+    settings like no taskbar and not lite
+
+ src/appnames.h  |  4 ++++
+ src/wmabout.cc  |  4 +++-
+ src/wmapp.cc	 |  4 ++++
+ src/wmclient.cc | 15 ++++++++++++++-
+ src/wmframe.cc  | 33 ++++++++++++++++++++++++++++++---
+ src/wmmgr.cc	 |  7 +++++--
+ src/ymsgbox.cc  |  4 +++-
+ src/ywindow.cc  |  2 +-
+ src/yxtray.cc	 |  4 +++-
+ 9 files changed, 67 insertions(+), 10 deletions(-)
+
+commit 3eae584 (tag: debian/1.3.8+githubmod+20150214+d373d98-2)
+Author: Eduard Bloch <blade@debian.org>
+Date:	Fri Feb 20 17:48:33 2015 +0100
+
+    Finalize revision -2
+
+ debian/changelog | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+commit a024614
+Author: Eduard Bloch <blade@debian.org>
+Date:	Fri Feb 20 17:31:31 2015 +0100
+
+    Avoid manpage link conflicts
+
+ debian/rules | 3 +++
+ 1 file changed, 3 insertions(+)
+
+commit 5f9b527
+Author: Eduard Bloch <blade@debian.org>
+Date:	Fri Feb 20 17:12:02 2015 +0100
+
+    Pass 0 not NULL as signalfd flags
+
+ src/yapp.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 03f6d1e
+Author: Eduard Bloch <blade@debian.org>
+Date:	Fri Feb 20 17:12:02 2015 +0100
+
+    Pass 0 not NULL as signalfd flags
+
+ src/yapp.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 3a6b03b
+Author: Eduard Bloch <blade@debian.org>
+Date:	Fri Feb 20 08:37:53 2015 +0100
+
+    Various bug fixing of Debian packaging, not building irrelevant data
+    in lite
+
+ debian/changelog      |  8 ++++++++
+ debian/control        |  3 ++-
+ debian/icewm.postinst |  2 +-
+ debian/rules	       | 18 +++++++++++-------
+ 4 files changed, 22 insertions(+), 9 deletions(-)
+
+commit 678721e (tag: debian/1.3.8+githubmod+20150214+d373d98-1)
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sun Feb 15 18:40:21 2015 +0100
+
+    Packaging changes
+
+ debian/FAQ/IceWM-FAQ-1.html  |  62 -----------
+ debian/FAQ/IceWM-FAQ-10.html | 146 -------------------------
+ debian/FAQ/IceWM-FAQ-11.html | 218 -------------------------------------
+ debian/FAQ/IceWM-FAQ-12.html | 229 ---------------------------------------
+ debian/FAQ/IceWM-FAQ-13.html | 153 --------------------------
+ debian/FAQ/IceWM-FAQ-14.html |  24 ----
+ debian/FAQ/IceWM-FAQ-15.html |  64 -----------
+ debian/FAQ/IceWM-FAQ-2.html  |  90 ---------------
+ debian/FAQ/IceWM-FAQ-3.html  | 225 --------------------------------------
+ debian/FAQ/IceWM-FAQ-4.html  | 201 ----------------------------------
+ debian/FAQ/IceWM-FAQ-5.html  | 212 ------------------------------------
+ debian/FAQ/IceWM-FAQ-6.html  | 103 ------------------
+ debian/FAQ/IceWM-FAQ-7.html  | 181 -------------------------------
+ debian/FAQ/IceWM-FAQ-8.html  | 211 ------------------------------------
+ debian/FAQ/IceWM-FAQ-9.html  | 223 --------------------------------------
+ debian/FAQ/IceWM-FAQ.html    | 175 ------------------------------
+ debian/changelog	      |  12 +-
+ debian/control		      |   2 +-
+ debian/icewm-common.docs     |   1 -
+ debian/rules		      |  19 +++-
+ debian/source/format	      |   2 +-
+ debian/source/options	      |   2 +
+ 22 files changed, 28 insertions(+), 2527 deletions(-)
+
+commit 89e6a98
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sun Feb 15 18:16:02 2015 +0100
+
+    Updating ChangeLog for a new Debian snapshot
+
+ ChangeLog | 287 +++++++++++++++++++++++-----------------------------------
+ 1 file changed, 112 insertions(+), 175 deletions(-)
+
+commit 60fcb4d
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sun Feb 15 12:45:16 2015 +0100
 
     Misc
 
  debian/gbp.conf |  4 ++--
- debian/rules    | 10 +++++-----
+ debian/rules	 | 10 +++++-----
  2 files changed, 7 insertions(+), 7 deletions(-)
 
 commit 12441c4
 Merge: 43e76b0 d46fea3
 Author: Eduard Bloch <blade@debian.org>
-Date:   Sun Feb 15 11:41:23 2015 +0100
+Date:	Sun Feb 15 11:41:23 2015 +0100
 
     Merge remote-tracking branch 'bbidulock/icewm-1-3-BRANCH' into
     debian/experimental
 
 commit 43e76b0
 Author: Eduard Bloch <blade@debian.org>
-Date:   Sat Feb 14 17:31:43 2015 +0100
+Date:	Sat Feb 14 17:31:43 2015 +0100
 
     Fix file manpage symlink, move it to the icewm-common package
 
  debian/changelog | 3 ++-
- debian/rules     | 2 +-
+ debian/rules	  | 2 +-
  2 files changed, 3 insertions(+), 2 deletions(-)
 
-commit d46fea3 (bbidulock/icewm-1-3-BRANCH, icewm-1-3-BRANCH)
+commit d46fea3
 Author: Eduard Bloch <blade@debian.org>
-Date:   Fri Feb 13 17:26:32 2015 +0100
+Date:	Fri Feb 13 17:26:32 2015 +0100
 
     Add workarounds for older glib versions
 
@@ -39,17 +645,17 @@ Date:   Fri Feb 13 17:26:32 2015 +0100
 
 commit 48180fa
 Author: Eduard Bloch <blade@debian.org>
-Date:   Sat Feb 14 12:06:24 2015 +0100
+Date:	Sat Feb 14 12:06:24 2015 +0100
 
     Use dh_fixperms
 
  debian/changelog | 6 ++++++
- debian/rules     | 2 +-
+ debian/rules	  | 2 +-
  2 files changed, 7 insertions(+), 1 deletion(-)
 
 commit 57abfae (tag: debian/1.3.8+githubmod+20150213.2+d373d98)
 Author: Eduard Bloch <blade@debian.org>
-Date:   Fri Feb 13 18:28:20 2015 +0100
+Date:	Fri Feb 13 18:28:20 2015 +0100
 
     New experimental version
 
@@ -58,18 +664,18 @@ Date:   Fri Feb 13 18:28:20 2015 +0100
 
 commit 95902a7
 Author: Eduard Bloch <blade@debian.org>
-Date:   Fri Feb 13 18:21:18 2015 +0100
+Date:	Fri Feb 13 18:21:18 2015 +0100
 
     FTBFS fixes
 
  debian/changelog | 7 +++++++
  debian/control   | 2 +-
- debian/rules     | 5 ++++-
+ debian/rules	  | 5 ++++-
  3 files changed, 12 insertions(+), 2 deletions(-)
 
 commit 626f61c
 Author: Eduard Bloch <blade@debian.org>
-Date:   Fri Feb 13 17:26:32 2015 +0100
+Date:	Fri Feb 13 17:26:32 2015 +0100
 
     Add workarounds for older glib versions
 
@@ -78,7 +684,7 @@ Date:   Fri Feb 13 17:26:32 2015 +0100
 
 commit 3f2f33f (tag: debian/1.3.8+githubmod+20150213.1+d373d98)
 Author: Eduard Bloch <blade@debian.org>
-Date:   Fri Feb 13 16:18:26 2015 +0100
+Date:	Fri Feb 13 16:18:26 2015 +0100
 
     NEWS file update
 
@@ -87,22 +693,22 @@ Date:   Fri Feb 13 16:18:26 2015 +0100
 
 commit c40934b
 Author: Eduard Bloch <blade@debian.org>
-Date:   Fri Feb 13 15:47:05 2015 +0100
+Date:	Fri Feb 13 15:47:05 2015 +0100
 
     Misc. fixes
 
- README.md                                 | 4 ++--
- configure.ac                              | 6 +++---
- debian/NEWS                               | 2 +-
- debian/control                            | 2 +-
+ README.md				   | 4 ++--
+ configure.ac				   | 6 +++---
+ debian/NEWS				   | 2 +-
+ debian/control				   | 2 +-
  debian/icewm-common.doc-base.icewm-faq    | 2 +-
  debian/icewm-common.doc-base.icewm-manual | 2 +-
- debian/rules                              | 7 +++++--
+ debian/rules				   | 7 +++++--
  7 files changed, 14 insertions(+), 11 deletions(-)
 
 commit 44aad33
 Author: Eduard Bloch <blade@debian.org>
-Date:   Fri Feb 13 15:40:58 2015 +0100
+Date:	Fri Feb 13 15:40:58 2015 +0100
 
     Keep the extra changelog in the Debian branch for consistency reasons,
     even if auto-generated
@@ -110,23 +716,23 @@ Date:   Fri Feb 13 15:40:58 2015 +0100
  ChangeLog | 2971 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  1 file changed, 2971 insertions(+)
 
-commit d00e077 (origin/debian/experimental)
+commit d00e077
 Author: Eduard Bloch <blade@debian.org>
-Date:   Fri Feb 13 15:32:18 2015 +0100
+Date:	Fri Feb 13 15:32:18 2015 +0100
 
     Fixed installation of HTMLs and the second changelog
 
- debian/README.Debian     | 31 ++++++++++++++++++-------------
- debian/changelog         | 16 +++++-----------
- debian/control           | 13 +++----------
+ debian/README.Debian	  | 31 ++++++++++++++++++-------------
+ debian/changelog	  | 16 +++++-----------
+ debian/control		  | 13 +++----------
  debian/icewm-common.docs |  1 +
- debian/rules             | 18 ++++++++++--------
+ debian/rules		  | 18 ++++++++++--------
  5 files changed, 37 insertions(+), 42 deletions(-)
 
 commit 9e20c29
 Merge: cd4c0f7 d373d98
 Author: Eduard Bloch <blade@debian.org>
-Date:   Fri Feb 13 13:44:16 2015 +0100
+Date:	Fri Feb 13 13:44:16 2015 +0100
 
     Merge branch 'icewm-1-3-BRANCH' into debian/experimental
 
@@ -167,7 +773,7 @@ Date:   Fri Feb 13 13:44:16 2015 +0100
 	po/zh_CN.po
 	po/zh_TW.po
 
-commit d373d98 (origin/icewm-1-3-BRANCH, origin/HEAD)
+commit d373d98
 Author: Eduard Bloch <blade@debian.org>
 Date:	Fri Feb 13 00:09:34 2015 +0100
 
@@ -2177,732 +2783,3 @@ Date:	Tue Jun 17 18:26:19 2014 -0600
 
     Conflicts:
 	src/wmmgr.cc
-
-commit de013e7
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Mon Jun 16 06:35:36 2014 -0600
-
-    add upstream comments
-
- CHANGES | 4 ++++
- 1 file changed, 4 insertions(+)
-
-commit d87a0ff
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Mon Jun 16 06:34:56 2014 -0600
-
-    qt5 fix
-
- src/wmmgr.cc | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-commit 65a8e05
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Mon Jun 16 06:33:46 2014 -0600
-
-    handle oversized icons from GTK3
-
- src/wmframe.cc | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-commit 80cb47b
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Mon Jun 16 06:32:31 2014 -0600
-
-    handle arguments better
-
- src/base.h    | 10 ++--------
- src/gnome2.cc |  5 ++---
- src/misc.cc   | 36 ++++++++++++++++++++++++++++++++++++
- src/wmapp.cc  | 15 ++++++++++-----
- src/ysmapp.cc |  6 ++++--
- src/yxapp.cc  |  6 ++++--
- 6 files changed, 58 insertions(+), 20 deletions(-)
-
-commit 23ed55b
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Mon Jun 16 06:26:38 2014 -0600
-
-    test skipping of taskbar
-
- src/testnetwmhints.cc | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-commit 4561c05
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Mon Jun 16 06:24:11 2014 -0600
-
-    correct build when gnome2 libraries are present
-
- configure.ac	 | 2 +-
- src/Makefile.am | 2 +-
- src/gnome2.cc	 | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-commit 746c2cd
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Mon Jun 16 06:13:42 2014 -0600
-
-    use marko's approach to keysyms
-
- src/aaddressbar.cc |  2 +-
- src/movesize.cc    |  6 +++---
- src/wmapp.cc	    |  4 ++--
- src/wmdialog.cc    |  2 +-
- src/wmmgr.cc	    |  6 +++---
- src/wmprog.cc	    |  2 +-
- src/wmswitch.cc    |  4 ++--
- src/wmwinlist.cc   |  2 +-
- src/ybutton.cc     |  2 +-
- src/ydialog.cc     |  3 ++-
- src/yinput.cc	    |  4 ++--
- src/ykey.h	    |  1 +
- src/ylistbox.cc    |  2 +-
- src/ymenu.cc	    |  3 +--
- src/yscrollbar.cc  |  2 +-
- src/ywindow.cc     | 11 +++++++++--
- src/ywindow.h	    |  2 ++
- 17 files changed, 34 insertions(+), 24 deletions(-)
-
-commit 47b2f98
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Mon Jun 16 06:03:48 2014 -0600
-
-    minor build corrections and cosmetics
-
- COPYING	   | 7 +++++++
- src/amailbox.cc   | 3 ++-
- src/base.h	   | 6 ++++++
- src/decorate.cc   | 2 +-
- src/icewmhint.cc  | 2 ++
- src/testlocale.cc | 8 +++++++-
- src/wmclient.cc   | 1 -
- src/yaction.h	   | 2 ++
- src/ycmdline.h    | 2 +-
- src/ypopup.h	   | 2 ++
- src/yscrollbar.h  | 2 ++
- src/ytimer.h	   | 1 +
- 12 files changed, 33 insertions(+), 5 deletions(-)
-
-commit 8eda773
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Mon Jun 16 05:53:20 2014 -0600
-
-    added time fuziness
-
- doc/icewm.sgml    |  1 +
- src/aclock.cc	   |  1 +
- src/apppstatus.cc |  2 +-
- src/default.h	   |  1 +
- src/yapp.cc	   | 89 ++++++++++++++++++++++++++++++++++++++++++++-------
- src/yapp.h	   |  3 ++
- src/yprefs.h	   |  1 +
- src/ytimer.cc	   | 43 +++++++++++++++++++++++--
- src/ytimer.h	   | 10 ++++--
- 9 files changed, 132 insertions(+), 19 deletions(-)
-
-commit 0ad9812
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Mon Jun 16 05:43:14 2014 -0600
-
-    FreeBSD build corrections
-
- src/aapm.cc | 18 +++++++++---------
- src/aapm.h  |	4 ++--
- 2 files changed, 11 insertions(+), 11 deletions(-)
-
-commit 0e68b01
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Mon Jun 16 05:38:58 2014 -0600
-
-    spelling correction
-
- lib/themes/yellowmotif/default.theme | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit f68379b
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Mon Jun 16 05:37:48 2014 -0600
-
-    correct taskbar start.xpm
-
- lib/taskbar/start.xpm | 57 ++++++++++++++++++++++++++++-------------------
- 1 file changed, 34 insertions(+), 23 deletions(-)
-
-commit 486990e
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Mon Jun 16 05:36:25 2014 -0600
-
-    add xpms missed by cvs to git conversion
-
- lib/Makefile.am		       |   3 +
- lib/taskbar/collapse.xpm	       |  21 ++
- lib/taskbar/expand.xpm		       |  21 ++
- lib/themes/Infadel2/taskbar/start.xpm | 349 ++++++++++++++++++++++++++++++
- 4 files changed, 394 insertions(+)
-
-commit 5e86611
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Mon Jun 16 05:30:24 2014 -0600
-
-    fix gcc-4.9.0 compiler warning
-
- configure.ac | 2 +-
- src/wmmgr.h  | 8 +++++++-
- 2 files changed, 8 insertions(+), 2 deletions(-)
-
-commit f5918b4
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Mon Jun 16 05:22:27 2014 -0600
-
-    add maintainer configure script
-
- configure.sh | 42 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
-
-commit ff33970
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Wed Jun 4 00:56:50 2014 -0600
-
-    Applied archlinux icewm-1.3.8-remain_power.patch
-
-    - original patch from Tobias Mueller
-
- src/aapm.cc | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
-
-commit 83844bf
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sat May 24 05:09:52 2014 -0600
-
-    make icetray reload style when _ICEWM_ACTION received
-
- src/icetray.cc | 10 +++++++++-
- src/yxtray.cc	|  3 +++
- 2 files changed, 12 insertions(+), 1 deletion(-)
-
-commit 93c9fe9
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Fri May 23 00:21:23 2014 -0600
-
-    correct documentation link
-
- configure.ac | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-commit 10b610e
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Thu May 15 07:12:30 2014 -0600
-
-    also set backing store to NotUseful before reparenting client
-
- src/wmframe.cc | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-commit 3a2740f
-Author: Jeff Woods <klaatu@fnordco.com>
-Date:	Wed May 7 12:57:24 2014 -0700
-
-    Give nice names to the .desktop files, because display managers that
-    use the name property show both icewm-session and icewm as just
-    "icewm."
-
-    Now they should show up as "IceWM Session" and "IceWM", respectively.
-
- lib/icewm-session.desktop | 2 +-
- lib/icewm.desktop	   | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-commit 64779a4
-Author: Jeff Woods <klaatu@fnordco.com>
-Date:	Thu Apr 10 16:42:47 2014 -0700
-
-    Reverted old flashblock fix because it stops Qt5 apps from creating
-    windows, because Qt5 embeds every window.
-
- src/wmmgr.cc | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
-
-commit a6299df
-Author: Jeff Woods <klaatu@fnordco.com>
-Date:	Thu Apr 10 15:40:26 2014 -0700
-
-    Fixed (I think) a double free or corruption bug in acpustatus.cc
-
- src/acpustatus.cc | 2 --
- 1 file changed, 2 deletions(-)
-
-commit 0adac77
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Thu May 1 21:14:59 2014 -0600
-
-    _NET_WM_NAME was including a terminating null
-
-     - this freaked out libwnck into thinking that it was an invalid
-       UTF-8 name
-
- configure.ac | 4 ++--
- src/wmapp.cc | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-commit 0afde06
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sun Apr 20 22:39:14 2014 -0600
-
-    one last memory leak
-
-     - xft fonts are leaking badly but I don't think that
-       I can fix that given the poor icewm reference pointer
-       model
-
-     - there is also an icon leak and a a configuration string
-       leak that I can't find a way to fix
-
- src/wmapp.cc	 | 4 ++++
- src/yconfig.cc  | 4 ++--
- src/yfontxft.cc | 1 +
- 3 files changed, 7 insertions(+), 2 deletions(-)
-
-commit 6111e7e
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sun Apr 20 21:34:07 2014 -0600
-
-    another memory leak
-
- src/acpustatus.cc | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
-
-commit 352c8c3
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sun Apr 20 21:28:08 2014 -0600
-
-    more memory leaks
-
- src/aworkspaces.cc | 2 ++
- 1 file changed, 2 insertions(+)
-
-commit 5dc7fdf
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sun Apr 20 21:23:21 2014 -0600
-
-    another memory leak
-
- src/wmclient.cc | 2 ++
- 1 file changed, 2 insertions(+)
-
-commit 332a8c6
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sun Apr 20 21:13:42 2014 -0600
-
-    two more memory leaks
-
- src/yconfig.cc | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-commit 086bd4a
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sun Apr 20 21:04:13 2014 -0600
-
-    more valgrind memory leaks
-
- src/yurl.cc | 1 +
- 1 file changed, 1 insertion(+)
-
-commit f5ed2b2
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sun Apr 20 21:00:04 2014 -0600
-
-    another memory leak
-
- src/wmmgr.cc | 1 +
- 1 file changed, 1 insertion(+)
-
-commit 32cfd72
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sun Apr 20 20:56:04 2014 -0600
-
-    fixing more memory leaks from valgrind
-
- src/wmmgr.cc | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
-
-commit 153b1cd
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sun Apr 20 19:53:27 2014 -0600
-
-    started fixing memory leaks using valgrind
-
- src/ypaths.cc	| 12 +++++++++++-
- src/ypaths.h	|  2 +-
- src/ywindow.cc |  5 +++++
- 3 files changed, 17 insertions(+), 2 deletions(-)
-
-commit 8fd0253
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sat Apr 19 16:11:46 2014 -0600
-
-    correct memory bugs revealed using valgrind
-
- src/wmframe.cc | 8 +++++++-
- src/wmmgr.cc	| 1 +
- src/ywindow.cc | 3 +++
- 3 files changed, 11 insertions(+), 1 deletion(-)
-
-commit 2e2be45
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Fri Dec 20 19:16:12 2013 -0700
-
-    tell autopoint to use latest gettext version
-
-    - fixes issue #5
-
- autogen.sh | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-commit 211aacd
-Merge: 68ece27 1a9603f
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Fri Dec 20 15:32:22 2013 -0700
-
-    Merge branch 'icewm-1-3-BRANCH' of https://github.com/bbidulock/icewm
-    into icewm-1-3-BRANCH
-
-commit 68ece27
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Fri Dec 20 15:31:32 2013 -0700
-
-    fix issue #5 drop gettext to 0.18
-
- configure.ac | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 201ddf2
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Fri Dec 20 15:30:01 2013 -0700
-
-    correct separate directory build
-
- lib/Makefile.am | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 1a9603f
-Author: DeltaResero <deltaresero@zoho.com>
-Date:	Fri Dec 20 14:30:23 2013 -0400
-
-    Remove PKG_INSTALLDIR
-
-    PKG_INSTALLDIR not present in pkg-config < 0.27 and it wasn't implemented
-    here yet anyway
-
- configure.ac | 1 -
- 1 file changed, 1 deletion(-)
-
-commit e585dc3
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Wed Dec 18 22:34:57 2013 -0700
-
-    put .desktop files in xsessions for window managers
-
- lib/Makefile.am | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-commit b27532e
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Wed Dec 18 22:04:26 2013 -0700
-
-    remove remaining warnings -D_FORTIFY_SOURCE=2
-
- src/icesound.cc |  4 +++-
- src/icewmbg.cc  |  3 ++-
- src/wmconfig.cc | 20 +++++++++++++++-----
- src/wmmgr.cc	 |  6 ++++--
- src/wmprog.cc	 | 11 +++++++++--
- 5 files changed, 33 insertions(+), 11 deletions(-)
-
-commit c984cb5
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Wed Dec 18 20:35:20 2013 -0700
-
-    get rid of some complier warnings
-
- src/WinMgr.h	 | 2 +-
- src/misc.cc	 | 6 ++----
- src/wmframe.cc  | 2 +-
- src/wmmgr.cc	 | 2 +-
- src/wmoption.cc | 2 +-
- src/yapp.cc	 | 8 ++++----
- src/yconfig.cc  | 2 +-
- 7 files changed, 11 insertions(+), 13 deletions(-)
-
-commit 4099278
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Wed Dec 18 14:43:59 2013 -0700
-
-    reverse linkage order for asneeded linking
-
- configure.ac	 | 22 ++++++++++----------
- src/Makefile.am | 60 +++++++++++++++++++----------------------------------
- 2 files changed, 32 insertions(+), 50 deletions(-)
-
-commit c0c420f
-Author: Pacho Ramos <pacho@gentoo.org>
-Date:	Wed Dec 18 15:01:55 2013 -0400
-
-    icewm-toolbar
-
- lib/toolbar.in | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-commit bf52562
-Author: Pacho Ramos <pacho@gentoo.org>
-Date:	Wed Dec 18 15:01:05 2013 -0400
-
-    icewm-keys
-
- lib/keys.in | 31 ++++++++++++-------------------
- 1 file changed, 12 insertions(+), 19 deletions(-)
-
-commit eea3004
-Author: DeltaResero <deltaresero@zoho.com>
-Date:	Wed Dec 18 14:59:16 2013 -0400
-
-    Change mailCommand and mailClassHint defaults
-
-    Author: Gilboa Davara
-
- src/default.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-commit ec548b4
-Author: DeltaResero <deltaresero@zoho.com>
-Date:	Wed Dec 18 14:57:03 2013 -0400
-
-    Fix menu icon size bug
-
-    From the Fedora Linux repository
-
- src/yicon.cc	  | 4 ++++
- src/yicon.h	  | 1 +
- src/ymenu.cc	  | 8 ++++----
- src/ymenuitem.cc | 6 +++---
- 4 files changed, 12 insertions(+), 7 deletions(-)
-
-commit 8a591b9
-Author: DeltaResero <deltaresero@zoho.com>
-Date:	Wed Dec 18 14:54:44 2013 -0400
-
-    Fix GCC compiler warning in wmapp.cc
-
- src/wmapp.cc | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 07b52b4
-Author: DeltaResero <deltaresero@zoho.com>
-Date:	Wed Dec 18 14:53:28 2013 -0400
-
-    configurenotify
-
-    From the Fedora Linux repository
-
- src/decorate.cc | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-commit 2845d32
-Author: DeltaResero <deltaresero@zoho.com>
-Date:	Wed Dec 18 14:47:19 2013 -0400
-
-    Fix define type for WinWorkspaceInvalid
-
- src/WinMgr.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit ac860b8
-Author: DeltaResero <deltaresero@zoho.com>
-Date:	Wed Dec 18 14:46:12 2013 -0400
-
-    Minor README.md tweaking
-
-    I seem to have missing the fact that installation will require root access
-    (or sudo)
-    Everything else here is just minor capitalization fixes
-
- README.md | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-commit 3a37a6c
-Author: DeltaResero <deltaresero@zoho.com>
-Date:	Wed Dec 18 14:41:45 2013 -0400
-
-    Fix memory leak in icehelp.cc
-
-    Originally mentioned here:
-    https://bugzilla.novell.com/show_bug.cgi?id=546806
-    Memory leaks should be fixed even if it's right before the program exits.
-    It's not professional and it's bad practice to rely on the operating system
-    as not all will free it.  Maybe I'm missing something, but I think it's
-    'better to be safe than sorry' is the way I see it.
-    Also see here:
-    http://stackoverflow.com/questions/273209/are-memory-leaks-ever-ok
-
- src/icehelp.cc | 1 +
- 1 file changed, 1 insertion(+)
-
-commit fbaa764
-Author: DeltaResero <deltaresero@zoho.com>
-Date:	Wed Dec 18 14:34:38 2013 -0400
-
-    Add ignoreUrgentHint to winoptions
-
-    Author: CJ
-    Patch is from: http://sourceforge.net/p/icewm/patches/218/
-    As mentioned on Sourceforge, this works, but there is a slightly better
-    way of doing this
-
- src/wmframe.cc  | 17 ++++++++++++++---
- src/wmframe.h	 |  3 ++-
- src/wmoption.cc |  1 +
- 3 files changed, 17 insertions(+), 4 deletions(-)
-
-commit 12ee299
-Author: DeltaResero <deltaresero@zoho.com>
-Date:	Wed Dec 18 14:32:04 2013 -0400
-
-    Fix disappearing system tray icons
-
- src/yxtray.cc | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit ab9cf47
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Wed Dec 18 06:57:51 2013 -0700
-
-    more ignores
-
- .gitignore | 3 +++
- 1 file changed, 3 insertions(+)
-
-commit 0d415eb
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Wed Dec 18 06:56:18 2013 -0700
-
-    readd po/POTFILES.in
-
- po/POTFILES.in | 104 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 104 insertions(+)
-
-commit 9688880
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Wed Dec 18 06:28:05 2013 -0700
-
-    missing ifdef WMSPEC_HINTS
-
- src/wmtaskbar.cc | 4 ++++
- src/wmtaskbar.h  | 2 ++
- 2 files changed, 6 insertions(+)
-
-commit 3484047
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Wed Dec 18 06:26:50 2013 -0700
-
-    converted to use automake
-
- .gitignore			|   41 +-
- Makefile.am			|   20 +
- Makefile.in			|  144 ---
- autogen.sh			|   72 +-
- config.guess			| 1325 ---------------------
- config.sub			| 1460 -----------------------
- configure.ac			| 1179 ++++++------------
- doc/Makefile			|   13 -
- doc/Makefile.am		|   37 +
- doc/{icewm.1.man => icewm.man} |    0
- install-sh			|  251 ----
- lib/Makefile.am		|  320 +++++
- po/LINGUAS			|   35 +
- po/Makefile.in			|   90 --
- po/Makevars			|   53 +
- po/POTFILES.in			|   49 -
- po/be.po			| 2162 ++++++++++++++++++---------------
- po/bg.po			| 2146 ++++++++++++++++++---------------
- po/ca.po			| 2165 ++++++++++++++++++---------------
- po/cs.po			| 2299 +++++++++++++++++++----------------
- po/da.po			| 2165 ++++++++++++++++++---------------
- po/de.po			| 2147 ++++++++++++++++++---------------
- po/el.po			| 1849 ++++++++++++++++-------------
- po/en.po			| 1746 +++++++++++++++------------
- po/es.po			| 2211 +++++++++++++++++++---------------
- po/fi.po			| 2186 +++++++++++++++++++---------------
- po/fr.po			| 2145 ++++++++++++++++++---------------
- po/hr.po			| 1919 +++++++++++++++++-------------
- po/hu.po			| 1966 +++++++++++++++++-------------
- po/icewm.pot			| 1264 --------------------
- po/id.po			| 2015 +++++++++++++++++--------------
- po/it.po			| 2278 +++++++++++++++++++----------------
- po/ja.po			| 1843 +++++++++++++++++------------
- po/ko.po			| 2215 +++++++++++++++++++---------------
- po/lt.po			| 2163 ++++++++++++++++++---------------
- po/lv.po			| 2153 ++++++++++++++++++---------------
- po/mk.po			| 2222 +++++++++++++++++++---------------
- po/nb.po			| 2176 +++++++++++++++++++---------------
- po/nl.po			| 2303 ++++++++++++++++++++----------------
- po/no.po			| 1241 ++++++++++---------
- po/pl.po			| 2145 ++++++++++++++++++---------------
- po/pt_BR.po			| 2280 +++++++++++++++++++----------------
- po/ro.po			| 2159 ++++++++++++++++++---------------
- po/ru.po			| 1969 +++++++++++++++++-------------
- po/sk.po			| 2032 +++++++++++++++++--------------
- po/sl.po			| 2270 +++++++++++++++++++----------------
- po/sv.po			| 2102 ++++++++++++++++++--------------
- po/tr.po			| 2211 +++++++++++++++++++---------------
- po/uk.po			| 2066 ++++++++++++++++++--------------
- po/vi.po			| 2176 +++++++++++++++++++---------------
- po/zh_CN.po			| 2179 +++++++++++++++++++---------------
- po/zh_TW.po			| 2186 +++++++++++++++++++---------------
- src/Makefile.am		|  646 ++++++++++
- src/Makefile.in		|  249 ----
- 54 files changed, 42844 insertions(+), 37894 deletions(-)
-
-commit 739622e
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Tue Dec 17 11:52:53 2013 -0700
-
-    corrected po files for ALSA sound
-
- po/be.po	 | 152 ++++++++----------
- po/bg.po	 | 123 ++++++--------
- po/ca.po	 | 121 ++++++--------
- po/cs.po	 | 173 ++++++++------------
- po/da.po	 | 154 ++++++++----------
- po/de.po	 | 142 +++++++---------
- po/el.po	 |  80 ++++-----
- po/en.po	 |  80 ++++-----
- po/es.po	 | 144 +++++++----------
- po/fi.po	 | 134 +++++++---------
- po/fr.po	 | 142 +++++++---------
- po/hr.po	 |  80 ++++-----
- po/hu.po	 |  80 ++++-----
- po/icewm.pot	 | 454 +++++++++++++++++++++++++++-------------------------
- po/id.po	 |  80 ++++-----
- po/it.po	 | 141 +++++++---------
- po/ja.po	 |  80 ++++-----
- po/ko.po	 | 139 +++++++---------
- po/lt.po	 | 138 +++++++---------
- po/lv.po	 | 141 +++++++---------
- po/mk.po	 | 128 ++++++---------
- po/nb.po	 | 138 +++++++---------
- po/nl.po	 | 108 ++++++-------
- po/no.po	 |  96 +++++------
- po/pl.po	 | 139 +++++++---------
- po/pt_BR.po	 | 159 ++++++++----------
- po/ro.po	 | 144 +++++++----------
- po/ru.po	 |  80 ++++-----
- po/sk.po	 |  80 ++++-----
- po/sl.po	 | 144 +++++++----------
- po/sv.po	 | 138 +++++++---------
- po/tr.po	 | 151 ++++++++---------
- po/uk.po	 |  80 ++++-----
- po/vi.po	 | 135 +++++++---------
- po/zh_CN.po	 | 147 ++++++++---------
- po/zh_TW.po	 | 127 +++++++--------
- src/icesound.cc |   2 +-
- 37 files changed, 2079 insertions(+), 2695 deletions(-)
