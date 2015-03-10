@@ -2,7 +2,7 @@ Source: icewm
 Section: x11
 Priority: optional
 Maintainer: Eduard Bloch <blade@debian.org>
-Build-Depends: debhelper (>= 9), libgdk-pixbuf2.0-dev, libxrender-dev, gettext, xfonts-utils, libxft-dev (>> 2.1.1) | libxft2-dev, libesd0-dev, libpng-dev, libsm-dev, libx11-dev, libxext-dev, libxft-dev, libxinerama-dev, libxpm-dev (>= 1:3.5.4.2-3), libxrandr-dev, x11proto-core-dev | x-dev, linuxdoc-tools, libxt-dev, autotools-dev, dpkg-dev (>= 1.16.1~), dh-autoreconf, autopoint, linuxdoc-tools
+Build-Depends: debhelper (>= 9), libgdk-pixbuf2.0-dev, libxrender-dev, gettext, xfonts-utils, libxft-dev (>> 2.1.1) | libxft2-dev, libesd0-dev, libsm-dev, libx11-dev, libxext-dev, libxft-dev, libxinerama-dev, libxrandr-dev, x11proto-core-dev | x-dev, linuxdoc-tools, dpkg-dev (>= 1.16.1~), cmake (>= 2.8.6)
 Build-Conflicts: libttf-dev
 Standards-Version: 3.9.6
 Vcs-Git: https://github.com/Code7R/icewm.git
@@ -51,7 +51,7 @@ Description: wonderful Win95-OS/2-Motif-like window manager
 
 Package: icewm-experimental
 Architecture: any
-Depends: icewm (= ${binary:Version}), icewm-common (= ${binary:Version}), fonts-dejavu-core | ttf-dejavu-core | custom-icewm-font, ${misc:Depends}
+Depends: icewm (= ${binary:Version})
 Provides: x-window-manager
 Description: wonderful Win95-OS/2-Motif-like window manager
  IceWm is a Window Manager for X Window System. It is fast and
