@@ -51,7 +51,7 @@ Description: wonderful Win95-OS/2-Motif-like window manager
 
 Package: icewm-experimental
 Architecture: any
-Depends: icewm (= ${binary:Version})
+Depends: icewm (= ${binary:Version}), icewm-common (= ${binary:Version}), ${misc:Depends}
 Provides: x-window-manager
 Description: wonderful Win95-OS/2-Motif-like window manager
  IceWm is a Window Manager for X Window System. It is fast and
