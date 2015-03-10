@@ -164,10 +164,11 @@ cleancruft:
 	git checkout HEAD -- README.md configure.ac ChangeLog
 
 get-orig-source:
-	lc=`git reflog icewm-1-3-BRANCH | head -n1 | cut -f1 -d" "` && echo $(ORIGVERSION) | grep $$lc
+	lc=`git reflog icewm-1-3-BRANCH | head -n1 | cut -f1 -d" "` && echo "Expected upstream ref: $$lc" && echo $(ORIGVERSION) | grep $$lc
 	git tag upstream/$(ORIGVERSION) icewm-1-3-BRANCH
 	git archive upstream/$(ORIGVERSION) --prefix icewm-$(ORIGVERSION)/ | xz -9 > ../icewm_$(ORIGVERSION).orig.tar.xz
-	test -d ../tarballs && ln icewm_$(ORIGVERSION).orig.tar.xz ../tarballs || true
+	test -d ../tarballs && ln ../icewm_$(ORIGVERSION).orig.tar.xz ../tarballs || true
+	pristine-tar commit ../icewm_$(ORIGVERSION).orig.tar.xz icewm-1-3-BRANCH
 
 update-debian-mod:
 	grep debian .git/HEAD
