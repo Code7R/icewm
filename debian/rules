@@ -102,6 +102,8 @@ install: build
 	#mv $(ICEWM_COMMON)/usr/share/doc/icewm-common/*.html $(ICEWM_COMMON)/usr/share/doc/icewm-common/html/
 	mkdir -p "$(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ"
 	cd $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ && sgml2html $(CURDIR)/debian/FAQ/source/*.sgml
+	sgml2txt $(CURDIR)/debian/FAQ/source/*.sgml && col -bx < IceWM-FAQ.txt > $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ/IceWM-FAQ.txt
+	-rm IceWM-FAQ.txt
 	# and add our bits to fix the font insanity with xft2
 	dh_installexamples -picewm-common $(CURDIR)/debian/examples/preferences.fonts $(CURDIR)/debian/examples/preferences.noClickToFocus $(CURDIR)/debian/examples/focus_mode.noClickToFocus
 	# Remove doc directories since we will add links
@@ -132,7 +134,7 @@ binary-arch: build install
 	dh_installchangelogs -picewm-common CHANGES
 	dh_strip
 	ls -l $(ICEWM_COMMON)/usr/share/man/man1/icewm.1
-	dh_compress
+	dh_compress -XIceWM-FAQ.txt
 	# Install undocumented manpages
 	for v in "" -experimental -lite ; do \
 		mkdir -p debian/icewm$$v/usr/share/man/man1 ; \

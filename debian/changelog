@@ -1,3 +1,9 @@
+icewm (1.3.8+githubmod+20150310+31bfd46-3) UNRELEASED; urgency=low
+
+  * Added the last version of FAQ, added text version (closes: #397231)
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 11 Mar 2015 14:31:52 +0100
+
 icewm (1.3.8+githubmod+20150310+31bfd46-2) unstable; urgency=low
 
   * Adjusting build dependencies (cmake, removed various older ones)

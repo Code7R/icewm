@@ -5,16 +5,16 @@
 <TITLE>IceWM FAQ and Howto
 
 <AUTHOR>
-  Adam Pribyl, <HTMLURL URL="mailto:covex@ahoj.fsik.cvut.cz" NAME="covex@ahoj.fsik.cvut.cz">,
+  Adam Pribyl, <HTMLURL URL="mailto:covex@lowlevel.cz" NAME="covex@lowlevel.cz">,
   <INST>Markus Ackermann, <HTMLURL URL="mailto:maol@gmx.net" NAME="maol@gmx.net">,
   <NEWLINE>
   Josef 'Jupp' Schugt, <HTMLURL URL="mailto:jupp@themes.org" NAME="jupp@themes.org">
 
 
-<DATE>2004/03/01, 22:28 CEST
+<DATE>2005/05/24, 21:11 CEST
 
 <ABSTRACT>
-  This is the FAQ and Howto for the IceWindowManager (IceWM).
+  This is the FAQ and Howto for the IceWM.
   The latest version of this FAQ is available
   at <HTMLURL URL="http://www.icewm.org/FAQ/" NAME="http://www.icewm.org/FAQ/">. At the same site is also <HTMLURL URL="IceWM-FAQ.sgml" NAME="SGML source">.
 </ABSTRACT>
@@ -50,10 +50,11 @@ Usually you can find more explaining answer in following chapers.
 <SECT2>Is there a way to group similar applications in the toolbar when minimized? No.
 <SECT2>How can I disable the taskbar (or toolbar) in IceWM? preferences, ShowTaskBar=0
 <SECT2>Is there any way to have the time and date show in the taskbar? <REF ID="timeformat" name="Yes. man date || strftime">
-<SECT2>Is there a button to minimize all windows?  IceWM > 1.2.13 TaskBarShowShowDesktopButton or use alt+shift+F9.
+<SECT2>Is there a button to minimize all windows?  IceWM > 1.2.13, preferences, TaskBarShowShowDesktopButton=1 or use alt+shift+F9.
 <SECT2>How can I autostart apps at X && IceWM start? Use .Xsession || .xinitrc || .Xclients || <REF ID="startup" name=".icewm/startup.">
 <SECT2>Is it possible to add submenus to the menu? <REF ID="menu" name="Yes. file menu; format: menu name icon {content}.">
-
+<SECT2>How to disable Alt+drag feature? preferences, ClientWindowMouseActions=0
+<SECT2>How is that with WM_CLASS and windowptions? <REF ID="wmclass" name="This doc should reflect correct status.">
 
 <SECT>Introduction
 
@@ -371,11 +372,11 @@ places - the location depends upon the method you used to install
 IceWM.
 
 In a plain vanilla source install, the global version of the files
-will be located in <TT>/usr/local/lib/Xll/icewm/</TT>. If
+will be located in <TT>/usr/local/share/icewm</TT>. If
 you installed the standard RPM, they will be in
-<TT>/usr/X11R6/lib/X11/icewm/</TT> or <TT>/usr/local/share/icewm</TT>. The system wide
+<TT>/usr/X11R6/lib/X11/icewm/</TT> or <TT>/usr/local/lib/Xll/icewm/</TT>. The system wide
 configuration files for the Debian package seem to be in
-<TT>/etc/X11/icewm/</TT>.
+<TT>/etc/X11/icewm/</TT>. Generaly you can try to use <TT>locate icewm</TT> command to find parts of IceWM.
 
 However, if you wish to make a configuration of your own you should
 not edit these global config files but create a subdirectory of your
@@ -405,7 +406,7 @@ You can customize IceWM by editing the following configuration files:
     Controls the behavior of individual applications (as identified
     by the names of their respective windows)
   <TAG><TT>&quot;startup&quot;</TT></TAG>
-    Applications that should be started at IceWM startup.
+    Script or command (must be executable) executed by <TT>icewm-session</TT> on startup
   <TAG><TT>&quot;theme&quot;</TT></TAG>
     IceWM theme path/name. 
   <TAG><TT>&quot;prefoverride&quot;</TT></TAG>
@@ -432,9 +433,54 @@ entry's icon, if a corresponding image is found in IceWM's IconSearchPath.
 And finally <VERB>app -with -options</VERB> is what's going to be started if
 a user chooses this entry.
 
-<P>
 Note that the menu only shows entries which are found in your PATH, IceWM is
 clever enough to omit non-usable entries.
+
+There are also two advanced options <TT>runonce</TT> and 
+<VERB>menuprogreload "title" icon_name timeout program_exec</VERB>
+
+<TT>runonce</TT> is used to start application only once - if its already running do not start it upon
+clicking. Runonce needs some other options - see manual.
+<TT>menuprogreload</TT> is used to created dynamic menus:
+timeout is integer value, it specifies minimum time
+interval (in seconds) between menu reloading. Zero value means
+updating menus every time when user click it.
+
+This is an example by the author of this feature:
+
+<TSCREEN><VERB>
+#!/bin/sh
+#
+# icewm-ps-menu.sh - Process menu for IceWM.
+#
+# Written by Konstantin Korikov.
+#
+# This is test script that generates IceWM menu
+# with running user process list. It uses menuprogreload
+# feature of IceWM menu. To use this script, add followed
+# line to ~/.icewm/menu or  ~/.icewm/toolbar
+#
+#   menuprogreload ps - 0 icewm-ps-menu.sh
+#
+
+if [ $# = 1 ]; then
+        set `ps -p $1 --no-header -o pid,%cpu,%mem,time`
+        echo "prog 'CPU: $2%' - true"
+        echo "prog 'MEM: $3%' - true"
+        echo "prog 'TIME: $4' - true"
+        echo "separator"
+        for i in HUP INT KILL TERM; do
+                echo "prog $i - kill -$i $1"
+        done
+else
+        ps -aU `id -ru` --no-headers -o '%p|%c' |
+        awk -F '|' -v sc="$0" \
+          '{ printf("menuprogreload \"%d %s\" - 0 %s %d\n", $1, $2, sc, $1) }'
+fi
+</VERB></TSCREEN>
+
+Some more can be found in patch 993038 in IceWM patch tracker.
+
 
 <SECT2>preferences
 
@@ -468,17 +514,24 @@ border, menu, titlebar, etc.
 <SECT2>startup<LABEL ID="startup">
 
 <P>
-The <TT>startup</TT> file can list apps you want to start at IceWM startup.
+The <TT>startup</TT> is a script (must be executable) that is executed by 
+<TT>icewm-session</TT> command on startup.
+
 It can look like this:
 <TSCREEN><VERB>
+#!/bin/sh
 idesk& 
 (sleep 2; psi&)&
 </VERB></TSCREEN>
+
 Do not forget to make this file executable
 <TSCREEN><VERB>
-chmod +x startup
+$ chmod +x startup
 </VERB></TSCREEN>
-Note: Do not put shell specification (like #!/bin/bash) on the beginning of the file.
+
+Note: It is recommended to use '#!/bin/sh' as the first line, to use /bin/sh 
+to execute the script.
+
 Also make sure all applications are starting at background (&).
 
 <SECT2>theme<LABEL ID="theme">
@@ -491,7 +544,7 @@ Theme=myfavorittheme/default.theme
 #Theme=myfavorittheme/default.theme
 </VERB></TSCREEN>
 
-# contains theme history. 
+# contains theme history (max. 10 lines). 
 
 <P>
 The <TT>theme</TT> file is changed every time you 
@@ -503,8 +556,8 @@ switch theme in menu and selected theme is therefore used after IceWM restart.
 The <TT>prefoverride</TT> file is new from IceWM 1.2.12. In this file you can
 specify any preference which will override any preference specified by theme or 
 anything else. This is introduced to solve troubles with order of preferences 
-interpretation and give a usr possibility to customize global things he wants to
-have allways same.
+interpretation and give a user possibility to customize global things he wants to
+have allways the same.
 
 
 <SECT>Customizing The Behavior
@@ -696,6 +749,14 @@ Replace <TT>imap</TT> with <TT>pop</TT> or <TT>pop3</TT> if necessary. Be sure t
 permissions on the preferences file so nobody else can get your mail password.
 
 
+<SECT1>How do I disable Alt+mouse drag to move the window to send Alt+mouse to application
+
+<P>
+To send all Alt+key keys to application you can use window option <TT>window_class.fullKeys: 1</TT>
+However the preference you looking is <TT>ClientWindowMouseActions=0</TT>. This disable
+Alt+mouse drag to move window for all IceWM handled windows.
+
+
 <SECT>Control The Look and Behavior Of Applications
 
 <P>
@@ -704,7 +765,7 @@ workspace, have them displayed without a border or titlebar, or put them
 above or under other windows. All this can be accomplished using the
 <TT>winoptions</TT> preferences file, some of it even interactively.
 
-<SECT1>Assign an option to a given application
+<SECT1>Assign an option to a given application<LABEL ID="wmclass">
 
 <P>
 Assigning a particular option (icon, default layer, default
@@ -768,11 +829,31 @@ maximized. Until now, there is no possible entry in your
 <TT>winoptions</TT> file that iconifies or maximizes a
 windows of a given name or class as it is mapped.
 
-
 Fortunately some programs (like Netscape) have a command line option
 to be started iconic and most X program support
 <TT>&quot;-geometry&quot;</TT> to specify a default window size.
 
+<SECT1>How to make windows appear on certain workspace?
+
+<P>
+Either use <TT>winoptions</TT> and define
+
+<TSCREEN><VERB>
+xmms.workspace: 7
+Mozilla.workspace: 9
+</VERB></TSCREEN>
+
+This allways starts xmms on workspace 7 and Mozilla on workspace 9, keep in
+mind, IceWM starts counting at 0. IceWM will switch to the nominated
+workspace on every start of these programs.
+
+Or you can use <TT>icesh</TT>:
+
+<TSCREEN><VERB>
+icesh -class xeyes setWorkspace 0
+</VERB></TSCREEN>
+
+This move xeyes to my workspace 0.
 
 
 <SECT>Using IceWM With The Keyboard
@@ -936,11 +1017,57 @@ will close (you can use <TT>&quot;Ctrl-C&quot;</TT> to abort the
 <TT>sleep</TT> command before that time went by).
 
 
+<SECT1>May I use Win(95) keys with IceWM?
+
+<P>
+Sure you can. Josef Oswald reported:
+
+this is in <TT>.xinitrc</TT>
+<TSCREEN><VERB>
+clear mod4
+keycode 64 = Alt_L
+keycode 113 = Alt_R
+keycode 115 = Meta_L
+keycode 116 = Meta_R
+add Mod4 = Meta_L Meta_R
+</VERB></TSCREEN>
+
+in <TT>.Xmodmap</TT> there is: 
+<TSCREEN><VERB>
+add Mod1 = Alt_L
+add Mod2 = Mode_switch
+keycode 117 = Menu 
+</VERB></TSCREEN>
+
+and then in 
+
+<TT>~/.icewm/preferences</TT>
+
+<TSCREEN><VERB>
+Win95Keys=1 # was 0
+
+# KeySysWinMenu="Shift+Esc"
+</VERB></TSCREEN>
+
+as can be seen I did _not_ enable the above, as I don't like pressing
+two keys. If one wants to use it, it does work.   
+
+On a free workspace the right Win95 opens the list of Workspaces.
+
+Now also in Open-office I can use the right menu key to open the menus in the
+OOo taskbar with the letters for the shortcut I can switch to the desired
+menu without needing to leave the keyboard,  my preferred way of working
+on the pc.
+
+
+
 
 <SECT>Customizing The Look Through Themes
 
 <P>
-IceWM can be customized using a great variety of themes.
+IceWM can be customized using a great variety of themes. You can download them 
+usually as .tar.gz archives on the net. 
+To install themes simply unpack them into your <TT>~/.icewm/themes/</TT> directory.
 
 <SECT1>What image formats can I use with IceWM?
 
@@ -954,7 +1081,7 @@ common image formats including jpeg, gif, png, and tiff.
 
 <P>
 If you provide the appropriate options in your
-<TT>preferences</TT> file and starts <TT>icewmbg</TT>, IceWM will set the 
+<TT>preferences</TT> file and start <TT>icewmbg</TT>, IceWM will set the 
 background color or the background image for you. You can use
 
 <TSCREEN><VERB>
@@ -1293,8 +1420,9 @@ ID="locking" name="Setting the lock command">
 <SECT1>Does IceWM support session management?
 
 <P>
-Of course not. This is where the more complicated desktop environments like
-GNOME, KDE or xfce join the game. IceWM still is only a window manager...
+From 1.2.13 IceWM has some basic session management to manage all its parts.
+But this is where the more complicated desktop environments like
+GNOME, KDE or xfce join the game. IceWM still is mainly a window manager...
 but of course you can always start your favorite apps upon X start-up/login
 using the <TT>.xinitrc</TT> or <TT>.xsession</TT>files. Or use IceWM as the
 window manager instead of the default GNOME/KDE wm.
@@ -1318,10 +1446,31 @@ reason can be, that the theme defines another image or color.
 
 <SECT1>Can I have bigger icons in menu, taskbar, quickswitch etc.?
 
-<P>No. At this time IceWM handles only default sizes of icons. For
-menu and taskbar it is 16x16 pixels, for quickswitch it uses 32x32 pixels.
-There is a patch that enables IceWM to handle different sizes of icons in icewm 
-patch tracker, but it is not fully prepared yet.
+<P>From IceWM 1.2.14 it is possible to specify size of icons in IceWM preferences.
+There are four relevant options:
+<TSCREEN><VERB>
+MenuIconSize=16
+SmallIconSize=16
+LargeIconSize=32
+HugeIconSize=48
+</VERB></TSCREEN>
+These values are default but you can change them to whatever you want.
+<TT>MenuIconSize</TT> specifies size of icons in menu. Three other are used for
+any other icon in IceWM. E.g. <TT>SmallIconSize</TT> is used in taskbar, 
+application frames and window list. <TT>LargeIconSize</TT> is used in quickswitch.
+
+<P>You have to take in mind that when you change size of <TT>SmallIconsSize</TT> 
+then all above described parts will have icons of different size, but taskbar 
+and frames will not change their high accordingly! Also when you specify the size
+that is not available, then icons will be resize - this can cause some disturbance
+mainly when you are using xpm icons.
+
+<P>There is a trick to increase size of taskbar however. Taskbar height is sized according
+size of start button. E.g. for linux if your <TT>linux.xpm</TT> in taskbar 
+folder is 50x32 then your taskbar will be 32 pixels high.
+
+<P>To change the height of frames you have to make theme with higher frames.
+
 
 <SECT1>How can I translate IceWM into my language?
 
@@ -1340,6 +1489,44 @@ into <TT>po</TT> directory under IceWM sources and then configure IceWM
 (<TT>./configure</TT>) and type <TT>make</TT> in <TT>po</TT> directory.
 This creates .mo file, which you can either copy to locale locations
 (e.g. /usr/local/share/locale/cs/LC_MESSAGES) or you can do <TT>make install</TT>.
+
+<SECT1>How to use Xrandr with IceWM?
+
+<P>
+IceWM supports since a few versions the xrandr feature of X11. This can
+very easily be used to define a menu item on your toolbar to change the
+display resolution, provided that you run recent enough versions of both
+X11 and IceWM that supports xrandr. You can run <TT>xrandr -q</TT> to see the
+resolutions supported using your present X configuration (maximum
+resolution and color depth). You can edit this menu fragment when you
+have checked which resolutions work and then you can put it into your
+<TT>./icewm/toolbar</TT> file
+<P>
+<TSCREEN><VERB>
+# IceWM toolbar menu to change the display resolution. 
+# This needs xrandr support from both X11 and Icewm.
+#
+# Xrandr is considered an experimental feature, so your screen may go
+# blank if you have a problem with some resolution setting.
+# It is a good idea to close your other windows before testing.
+#
+# Check your own resolutions with xrandr -q and modify accordingly.
+# This example assumes a default resolution of 1280x1024.
+#
+
+
+menu Resolution redhat-system-settings {
+   prog 1280x1024 1280x1024 xrandr -s 0
+   prog 1152x864  1152x864  xrandr -s 2
+   prog 1024x768  1024x768  xrandr -s 3
+   prog  800x600   800x600  xrandr -s 4
+   prog  640x480   640x480  xrandr -s 5
+}
+</VERB></TSCREEN>
+<P>
+The redhat-system-settings is a bitmap I picked up from my Fedora Core 3
+box, you can put there whatever you want of course.
+
 
 
 <SECT>Example: configuration A-Z
@@ -1831,10 +2018,9 @@ a different lock command.
 IceWM is divided in few separated parts. One of them is <TT>icewmbg</TT>.
 This part takes care of bacground setup. Therefore if you want IceWM to
 take care of desktop background you have to start <TT>icewmbg</TT> at
-IceWM startup. Most common is to use <TT>startup</TT> file of icewm.
+IceWM startup. The proper way is to start <REF ID="icewmsess" name="icewm-session"> in your 
+X startup instead of just icewm.
 See <REF ID="conffiles" name="Configuration">.
-<P>
-You can also use <REF ID="icewmsess" name="icewm-session">.
 
 <SECT1>Icon tray does not work
 
@@ -1846,28 +2032,28 @@ standard used by other applications.
 <SECT1>IceWM does not respect my font settings
 
 <P>
-IceWM uses two ways of font handling.
+IceWM uses two ways of font handling - corefonts OR fonts provided by xfreetype library.
+
 <P>
-X server provided fonts (--enable-corefonts option).
-These fonts can be specified in <TT>preferences</TT> or theme <TT>default.theme</TT> like this:
+These fonts can be specified in <TT>preferences</TT> or theme <TT>default.theme</TT>.
+
+For X server provided fonts (configure --enable-corefonts option) the definition looks like this:
 
 <TSCREEN><VERB>
     ActiveButtonFontName = "-artwiz-snap-regular-r-normal-sans-10-*-*-*-*-*-*-*"
 </VERB></TSCREEN>
 
-Xft (xfreetype) library (default, disable using option --disable-xfreetype).
-Then you have to specify these fonts like this:
+For Xft (xfreetype) library (used by default, disable using option --disable-xfreetype),
+then specification is like this:
 
 <TSCREEN><VERB>
     ActiveButtonFontNameXft = "Snap:size=10,sans-serif:size=12:bold"
 </VERB></TSCREEN>
 
-Where you can define more fonts.
-
 <P>
 To provide correct fonts to Xft you have to specify them in <TT>/etc/fonts/fonts.conf</TT>.
-X server font are either provided by X server itself e.g. <TT>/etc/X11/XF86Config</TT> Section &quot;Files&quot;)
-or by XFS (X Font Server) e.g. <TT>/etc/X11/fs/config</TT>.
+X server font are either provided by X server itself e.g. <TT>/etc/X11/XF86Config</TT> - Section &quot;Files&quot;,
+or by XFS (X Font Server) defined in. <TT>/etc/X11/fs/config</TT>.
 
 
 <SECT>Sources of information
@@ -1956,13 +2142,9 @@ It's not finished and may be rather incomplete. FIXME
   <TAG>URL:</TAG>
     <HTMLURL URL="http://www.icewm.org/FAQ/"
     NAME="http://www.icewm.org/FAQ/">,
-    old: <HTMLURL URL="http://icewm.maol.ch/FAQ/"
-    NAME="http://icewm.maol.ch/FAQ/">
   <TAG>Maintainer:</TAG>
     Adam Pribyl, <HTMLURL URL="mailto:covex@ahoj.fsik.cvut.cz" 
     NAME="covex@ahoj.fsik.cvut.cz">,
-    old: Markus Ackermann, <HTMLURL URL="mailto:maol@gmx.net"
-    NAME="maol@gmx.net">
 </DESCRIP>
 
 <SECT1>mailing lists
@@ -2040,6 +2222,13 @@ This section keeps you informed what parts of this document changed
 recently.
 
 <ITEMIZE>
+	pridat jak udelat backtrace, kompilace s debug apod.
+  <ITEM>
+    Adam Pribyl, menuprogreload, runonce, win95 key usage, MFAQ about WM_CLASS, removed some refs to icewm.moal.ch, xrandr (thnx Tomas Linden), taskbar can only be increased (fix), how to disable alt+mouse
+  <ITEM>
+    Marko Macek, updates to icewm-session / startup / icewmbg (2005-05-24) 
+  <ITEM>
+    Adam Pribyl, alt+drag, winoption .workspace (thnx Oliver Kosmann and Christophe Badoit), font defs explain better, some udates regarding 1.2.14 (2004/06/15)
   <ITEM>
     Adam Pribyl, translation howto, Vadims idesk lnk maker add, minor correction. (2004/03/01)
   <ITEM>
