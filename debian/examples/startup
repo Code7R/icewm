@@ -1,0 +1,26 @@
+#!/bin/sh
+
+/usr/bin/pasystray &
+# can also be run through .desktop autorun code below
+nm-applet &
+
+# change false to true to enable
+if false; then
+
+   # this will run various autostart applets from global and user directories
+   # Be warned, some of that autorun tools heavily modify the look and feel of
+   # many XDG aware applications.
+
+   if test -z "$XDG_CONFIG_DIRS" ; then
+      d="/etc/xdg/autostart $HOME/.config/autostart"
+   else
+      d=`echo $XDG_CONFIG_DIRS | tr : \ `
+   fi
+
+   for dir in $d ; do
+      for x in $dir/*.desktop
+      do
+         icewm-menu-fdo "$x"
+      done
+   done
+fi

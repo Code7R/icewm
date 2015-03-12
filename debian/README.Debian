@@ -26,6 +26,7 @@ Adding missing functionality:
 
 Configuration
 -------------
+
 IceWM is configured using several text files (mainly: preferences, keys,
 toolbar, menu and winoptions).
 These files can be placed under ~/.icewm/ (personal configuration) or
@@ -36,6 +37,24 @@ Sample configuration files with comments are provided under
 /usr/share/icewm/. Just copy the files there to ~/.icewm/ or
 /etc/X11/icewm/ and edit as required. Note that many settings are
 commented out in the sample files (using a leading #).
+
+Autostart of commands and extensions
+------------------------------------
+
+icewm-session (not icewm alone!) can run applications on startup in a safe
+manner, i.e. when all X11 services are configured and icewmtray is ready to
+accept/catch tray icons.
+
+To use this functionality, add a shell script called "startup" to one of the
+configuration folders (see above). It needs to be readable and executable the
+by the user.
+
+The Debian package provides an example in /usr/share/doc/icewm-common/examples/
+that can be copied a config directory (see above). It also contains an example
+of execution of all autorun files installed by XDG aware packages.
+
+There is also a "shutdown" script which is processed in a similar way when
+icewm-session terminates icewm.
 
 General startup hints:
 ---------------------

@@ -1,0 +1,4 @@
+debian/examples/preferences.fonts
+debian/examples/preferences.noClickToFocus
+debian/examples/focus_mode.noClickToFocus
+debian/examples/startup

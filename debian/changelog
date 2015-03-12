@@ -1,6 +1,8 @@
 icewm (1.3.8+githubmod+20150310+31bfd46-3) UNRELEASED; urgency=low
 
   * Added the last version of FAQ, added text version (closes: #397231)
+  * Added an example of a startup file for icewm-session, it also executes
+    the XDG autorun files (closes: #401664)
 
  -- Eduard Bloch <blade@debian.org>  Wed, 11 Mar 2015 14:31:52 +0100
 

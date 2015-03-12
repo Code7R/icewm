@@ -105,7 +105,7 @@ install: build
 	sgml2txt $(CURDIR)/debian/FAQ/source/*.sgml && col -bx < IceWM-FAQ.txt > $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ/IceWM-FAQ.txt
 	-rm IceWM-FAQ.txt
 	# and add our bits to fix the font insanity with xft2
-	dh_installexamples -picewm-common $(CURDIR)/debian/examples/preferences.fonts $(CURDIR)/debian/examples/preferences.noClickToFocus $(CURDIR)/debian/examples/focus_mode.noClickToFocus
+	dh_installexamples
 	# Remove doc directories since we will add links
 	# to icewm-common instead.
 	rm -rf $(ICEWM)/usr/share/doc/icewm
@@ -149,6 +149,7 @@ binary-arch: build install
 	ln -sf icewm.1.gz debian/icewm-experimental/usr/share/man/man1/icesound-experimental.1.gz
 	ln -sf icewm.1.gz debian/icewm-common/usr/share/man/man1/icewm-menu-fdo.1.gz
 	dh_fixperms
+	chmod a+rx,u+w "$(ICEWM_COMMON)/usr/share/doc/icewm-common/examples/startup"
 	# more plausibility checks
 	ls -l $(ICEWM_COMMON)/usr/share/doc/icewm-common/html/icewm-1.html
 	ls -l $(ICEWM_LITE)/usr/bin/icewm-lite
