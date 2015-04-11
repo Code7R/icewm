@@ -1,6 +1,104 @@
-# created with git log -n 200 --abbrev-commit --decorate --stat=76 -M -C|fmt -sct -w80
+-e # created with git log -n 200 --abbrev-commit --decorate --stat=76 -M -C|fmt -sct -w80
 
-commit 52792ec (HEAD, debian/sid)
+commit 7eb9323 (HEAD, debian/sid)
+Merge: 976939d 960629d
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sat Apr 11 18:46:51 2015 +0200
+
+    Merge branch 'icewm-1-3-BRANCH' into debian/sid
+
+commit 960629d (origin/icewm-1-3-BRANCH, origin/HEAD,
+bbidulock/icewm-1-3-BRANCH, icewm-1-3-BRANCH)
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sat Apr 11 18:43:56 2015 +0200
+
+    Added forgotten CONFIG_SHAPED_DECORATIONS option to cmake BS
+
+ src/CMakeLists.txt    | 3 +++
+ src/config.cmake.h.in | 1 +
+ 2 files changed, 4 insertions(+)
+
+commit e97394f
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Mar 30 18:00:13 2015 +0200
+
+    Save some CPU cycles while reading procfs (jump to begin instead of
+    reopening)
+
+ src/acpustatus.cc | 16 ++++++++++++----
+ src/acpustatus.h  |  1 +
+ 2 files changed, 13 insertions(+), 4 deletions(-)
+
+commit 0276b97
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Mar 30 11:21:59 2015 +0200
+
+    Smarter detection of systems with battery (auto-enable APM applet
+    on laptops)
+
+ src/aapm.cc      |  8 ++++++--
+ src/aapm.h       |  4 +++-
+ src/default.h    |  2 ++
+ src/wmtaskbar.cc | 13 ++++++++++++-
+ 4 files changed, 23 insertions(+), 4 deletions(-)
+
+commit 976939d (origin/debian/sid)
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Mar 30 11:21:59 2015 +0200
+
+    Smarter detection of systems with battery (auto-enable APM applet
+    on laptops)
+
+ src/aapm.cc      |  8 ++++++--
+ src/aapm.h       |  4 +++-
+ src/default.h    |  2 ++
+ src/wmtaskbar.cc | 13 ++++++++++++-
+ 4 files changed, 23 insertions(+), 4 deletions(-)
+
+commit 0bcdf73
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Mar 30 10:44:35 2015 +0200
+
+    groff is FAQ build-dep
+
+ debian/changelog | 3 ++-
+ debian/control   | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+commit b59b6eb
+Author: Eduard Bloch <blade@debian.org>
+Date:   Thu Mar 12 13:03:58 2015 +0100
+
+    startup file example and XDG autorun stuff
+
+ debian/README.Debian         | 19 +++++++++++++++++++
+ debian/changelog             |  2 ++
+ debian/examples/startup      | 26 ++++++++++++++++++++++++++
+ debian/icewm-common.examples |  4 ++++
+ debian/rules                 |  3 ++-
+ 5 files changed, 53 insertions(+), 1 deletion(-)
+
+commit 4b57eaf
+Author: Eduard Bloch <blade@debian.org>
+Date:   Wed Mar 11 13:51:14 2015 +0100
+
+    FAQ update, and txt version
+
+ debian/FAQ/source/IceWM-FAQ.sgml | 273 +++++++++++++++++++++++++++++------
+ debian/changelog                 |   6 +
+ debian/rules                     |   4 +-
+ 3 files changed, 240 insertions(+), 43 deletions(-)
+
+commit 0a0aea6 (tag: debian/1.3.8+githubmod+20150310+31bfd46-2)
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Mar 10 14:30:27 2015 +0100
+
+    Updating ChangeLog for a new Debian snapshot
+
+ ChangeLog | 1395 ++++++++++++++++++++++++++-------------------------------
+ 1 file changed, 636 insertions(+), 759 deletions(-)
+
+commit 52792ec
 Author: Eduard Bloch <blade@debian.org>
 Date:   Tue Mar 10 14:28:58 2015 +0100
 
@@ -25,7 +123,7 @@ Date:   Tue Mar 10 14:19:04 2015 +0100
 
     Merge branch 'icewm-1-3-BRANCH' into debian/sid
 
-commit 95cab08 (bbidulock/icewm-1-3-BRANCH, icewm-1-3-BRANCH)
+commit 95cab08
 Author: Eduard Bloch <blade@debian.org>
 Date:   Tue Mar 10 14:16:40 2015 +0100
 
@@ -64,8 +162,7 @@ Date:   Tue Mar 10 11:54:41 2015 +0100
  debian/rules     | 5 +++--
  3 files changed, 7 insertions(+), 6 deletions(-)
 
-commit 31bfd46 (tag: upstream/1.3.8+githubmod+20150310+31bfd46,
-origin/icewm-1-3-BRANCH, origin/HEAD)
+commit 31bfd46 (tag: upstream/1.3.8+githubmod+20150310+31bfd46)
 Author: Eduard Bloch <blade@debian.org>
 Date:   Sun Mar 8 15:01:53 2015 +0100
 
@@ -74,7 +171,7 @@ Date:   Sun Mar 8 15:01:53 2015 +0100
  lib/keys.in | 7 ++++---
  1 file changed, 4 insertions(+), 3 deletions(-)
 
-commit 2910bd9 (origin/debian/experimental, debian/experimental)
+commit 2910bd9 (origin/debian/experimental)
 Author: Eduard Bloch <blade@debian.org>
 Date:   Mon Mar 9 20:11:15 2015 +0100
 
@@ -112,7 +209,7 @@ Date:   Sun Mar 8 15:01:53 2015 +0100
  lib/keys.in | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-commit 20e2bb1
+commit 20e2bb1 (debian/experimental)
 Merge: 83a7026 e223c3e
 Author: Eduard Bloch <blade@debian.org>
 Date:   Wed Mar 4 15:25:13 2015 +0100
@@ -368,7 +465,7 @@ Date:	Sun Mar 1 13:56:17 2015 -0700
 
     Add memory status monitor applet.
 
-commit 24564a9 (origin/ftr_cmake_rebased, ftr_cmake_rebased)
+commit 24564a9
 Author: Eduard Bloch <blade@debian.org>
 Date:	Sun Mar 1 21:13:43 2015 +0100
 
@@ -1041,8 +1138,7 @@ Date:	Sun Feb 8 17:24:23 2015 +0100
  src/wmapp.cc | 7 ++++++-
  1 file changed, 6 insertions(+), 1 deletion(-)
 
-commit 134c083 (origin/ftr_make_icewm-menu-fdo_default,
-ftr_make_icewm-menu-fdo_default)
+commit 134c083 (origin/ftr_make_icewm-menu-fdo_default)
 Author: Eduard Bloch <blade@debian.org>
 Date:	Sun Feb 8 10:45:56 2015 +0100
 
@@ -1067,7 +1163,7 @@ Date:	Sat Feb 7 19:28:46 2015 +0100
 
     Merge branch 'test_ftr_fdo' into debian/experimental
 
-commit d9f5241 (test_ftr_fdo)
+commit d9f5241
 Author: Eduard Bloch <blade@debian.org>
 Date:	Sat Feb 7 19:27:18 2015 +0100
 
@@ -1081,7 +1177,7 @@ Date:	Sat Feb 7 19:27:18 2015 +0100
  debian/rules	    | 71 ++++++++++++++------------------------------------
  6 files changed, 27 insertions(+), 60 deletions(-)
 
-commit 3b106a2
+commit 3b106a2 (home/test_ftr_fdo, test_ftr_fdo)
 Author: Eduard Bloch <blade@debian.org>
 Date:	Sat Feb 7 18:11:52 2015 +0100
 
@@ -1100,7 +1196,7 @@ Date:	Sat Feb 7 17:56:51 2015 +0100
     into test_ftr_fdo
 
 commit c31a61a (origin/ftr_gnomeless_fdo_menu_generator,
-ftr_gnomeless_fdo_menu_generator)
+home/ftr_gnomeless_fdo_menu_generator)
 Author: Eduard Bloch <blade@debian.org>
 Date:	Sat Feb 7 16:17:06 2015 +0100
 
@@ -1254,7 +1350,7 @@ Date:	Sat Feb 7 00:00:52 2015 +0100
  src/fdomenu.cc  | 138 ++++++++++++++++++++++++++++++++++++++++++++++++++++
  3 files changed, 160 insertions(+), 1 deletion(-)
 
-commit c301cc5
+commit c301cc5 (home/debian/experimental)
 Author: Eduard Bloch <blade@debian.org>
 Date:	Thu Feb 5 22:09:13 2015 +0100
 
@@ -1273,7 +1369,7 @@ Date:	Thu Feb 5 21:24:52 2015 +0100
 
     Merge branch 'icewm-1-3-BRANCH' into debian/experimental
 
-commit f202cb6
+commit f202cb6 (home/icewm-1-3-BRANCH)
 Author: Eduard Bloch <blade@debian.org>
 Date:	Thu Feb 5 21:24:06 2015 +0100
 
@@ -1487,7 +1583,7 @@ Date:	Mon Feb 2 23:08:42 2015 +0100
  lib/keys.in | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit 3b6fc2a (ftr_synchronize_icewmtray_and_startup)
+commit 3b6fc2a (home/ftr_synchronize_icewmtray_and_startup)
 Author: Eduard Bloch <blade@debian.org>
 Date:	Mon Feb 2 20:42:56 2015 +0100
 
@@ -1682,7 +1778,8 @@ Date:	Sun Feb 1 17:56:38 2015 +0100
  debian/rules | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-commit 8b25501 (origin/ftr_centralized_usage_of_exeext)
+commit 8b25501 (origin/ftr_centralized_usage_of_exeext,
+ftr_centralized_usage_of_exeext)
 Author: Eduard Bloch <blade@debian.org>
 Date:	Sun Feb 1 14:38:13 2015 +0100
 
@@ -1708,7 +1805,7 @@ Date:	Sun Feb 1 14:08:40 2015 +0100
  debian/rules	  | 11 +++++------
  2 files changed, 6 insertions(+), 7 deletions(-)
 
-commit c16c009
+commit c16c009 (ftr_centralized_usage_of_exeext_fscked)
 Author: Eduard Bloch <blade@debian.org>
 Date:	Sun Feb 1 13:20:14 2015 +0100
 
@@ -1728,7 +1825,7 @@ Date:	Sun Feb 1 13:20:14 2015 +0100
  src/base.h	   | 4 ----
  2 files changed, 1 insertion(+), 5 deletions(-)
 
-commit bdc38fb
+commit bdc38fb (exeext-hack)
 Author: Eduard Bloch <blade@debian.org>
 Date:	Sun Feb 1 11:24:40 2015 +0100
 
@@ -2624,162 +2721,3 @@ Date:	Sun Aug 3 15:33:18 2014 -0600
  src/wmtaskbar.cc |  3 +--
  src/ylocale.cc   | 10 ++++++++--
  3 files changed, 37 insertions(+), 8 deletions(-)
-
-commit eb98744
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sun Aug 3 12:03:55 2014 -0600
-
-    updated po files
-
- po/be.po    | 6 +++---
- po/bg.po    | 6 +++---
- po/ca.po    | 6 +++---
- po/cs.po    | 6 +++---
- po/da.po    | 6 +++---
- po/de.po    | 6 +++---
- po/el.po    | 6 +++---
- po/en.po    | 6 +++---
- po/es.po    | 6 +++---
- po/fi.po    | 6 +++---
- po/fr.po    | 6 +++---
- po/hr.po    | 6 +++---
- po/hu.po    | 6 +++---
- po/id.po    | 6 +++---
- po/it.po    | 6 +++---
- po/ja.po    | 6 +++---
- po/ko.po    | 6 +++---
- po/lt.po    | 6 +++---
- po/lv.po    | 6 +++---
- po/mk.po    | 6 +++---
- po/nb.po    | 6 +++---
- po/nl.po    | 6 +++---
- po/no.po    | 6 +++---
- po/pl.po    | 6 +++---
- po/pt_BR.po | 6 +++---
- po/ro.po    | 6 +++---
- po/ru.po    | 6 +++---
- po/sk.po    | 6 +++---
- po/sl.po    | 6 +++---
- po/sv.po    | 6 +++---
- po/tr.po    | 6 +++---
- po/uk.po    | 6 +++---
- po/vi.po    | 6 +++---
- po/zh_CN.po | 6 +++---
- po/zh_TW.po | 6 +++---
- 35 files changed, 105 insertions(+), 105 deletions(-)
-
-commit e21c117
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Mon Jul 28 11:16:06 2014 -0600
-
-    satisfy gcc 4.9.1
-
- src/WinMgr.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-commit 1484b28
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Mon Jul 28 11:01:38 2014 -0600
-
-    added missing Type= key
-
- lib/icewm-session.desktop | 1 +
- lib/icewm.desktop	   | 0
- 2 files changed, 1 insertion(+)
-
-commit 769d19a
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Thu Jul 17 01:15:40 2014 -0600
-
-    do not let sent events stop proxying button events
-
- src/wmmgr.cc | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
-
-commit 7788792
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sat Jul 12 17:32:53 2014 -0600
-
-    forgot to intern _XA_NET_WM_STATE_FOCUSED atom
-
- configure.ac | 4 ++--
- src/yxapp.cc | 1 +
- 2 files changed, 3 insertions(+), 2 deletions(-)
-
-commit 6279368
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sat Jul 12 17:05:13 2014 -0600
-
-    update po file line numbers
-
- po/be.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/bg.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/ca.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/cs.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/da.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/de.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/el.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/en.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/es.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/fi.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/fr.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/hr.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/hu.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/id.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/it.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/ja.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/ko.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/lt.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/lv.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/mk.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/nb.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/nl.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/no.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/pl.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/pt_BR.po | 236 ++++++++++++++++++++++++++++----------------------------
- po/ro.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/ru.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/sk.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/sl.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/sv.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/tr.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/uk.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/vi.po    | 236 ++++++++++++++++++++++++++++----------------------------
- po/zh_CN.po | 236 ++++++++++++++++++++++++++++----------------------------
- po/zh_TW.po | 236 ++++++++++++++++++++++++++++----------------------------
- 35 files changed, 4130 insertions(+), 4130 deletions(-)
-
-commit f0ae702
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sat Jul 12 17:04:38 2014 -0600
-
-    add full support for _NET_WM_STATE_FOCUSED
-
- COMPLIANCE	 | 2 +-
- src/WinMgr.h	 | 5 ++++-
- src/wmapp.cc	 | 2 +-
- src/wmclient.cc | 4 ++++
- src/wmframe.cc  | 2 ++
- src/wmmgr.h	 | 1 +
- src/yxapp.cc	 | 1 +
- 7 files changed, 14 insertions(+), 3 deletions(-)
-
-commit da79fae
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sat Jun 28 17:00:38 2014 -0600
-
-    correct instructions in README (fixes issue 6)
-
- README.md | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-commit 95f91cb
-Merge: de013e7 3a2740f
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Tue Jun 17 18:26:19 2014 -0600
-
-    Merge branch 'icewm-1-3-BRANCH' of https://github.com/mrbrainsample/icewm
-    into icewm-1-3-BRANCH
-
-    Conflicts:
-	src/wmmgr.cc
