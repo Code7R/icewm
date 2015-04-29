@@ -5,12 +5,6 @@
 # (re)install icewm.
 #
 prog Terminal xterm x-terminal-emulator -ls
-prog xterm xterm xterm -ls
-#prog rxvt xterm rxvt -ls -bg black -cr green -fg white -C -fn 9x15 -sl 500
-prog rxvt xterm rxvt -rv -C -fn 9x15 -sl 500
-prog fte fte fte
-prog NEdit nedit nedit
-#prog Mozilla mozilla mozilla
 prog "Iceweasel" iceweasel iceweasel
 prog XChat xchat xchat
 prog Gimp /usr/share/gimp/2.0/images/wilber-icon.png gimp
@@ -18,7 +12,7 @@ separator
 menu Applications folder {
     menu Editors folder {
         prog fte fte fte
-	prog vim vim gvim 
+        prog vim vim gvim 
         prog xemacs xemacs xemacs
         prog NEdit nedit nedit
         prog xedit xedit xedit
@@ -28,23 +22,23 @@ menu Applications folder {
         prog Mutt mutt x-terminal-emulator -e mutt
     }
     menu "WWW Browsers" folder {
-        prog Netscape netscape netscape
-        prog Mozilla mozilla mozilla
         prog "Iceweasel" iceweasel iceweasel
-        prog Galeon galeon galeon
+        prog Konqueror konqueror konqueror
+        prog Chromium chromium chromium
         prog w3m lynx x-terminal-emulator -e w3m
-        prog Links lynx x-terminal-emulator -e links
+        prog Links2 lynx x-terminal-emulator -e links2
     }
     menu Graphics folder {
         prog Gimp gimp gimp
-        prog XV xv xv
-        prog XPaint xpaint xpaint
+        prog Geeqie geeqie geeqie
+        prog Dia dia dia
         prog XFig xfig xfig
     }
     menu Development folder {
         prog ddd ddd ddd
+        prog Eclipse eclipse eclipse
     }
-    prog "Acrobat Reader" pdf acroread
+    prog "Evince" evince evince
     prog "DVI Previewer" xdvi xdvi
     prog "Ghostview" ghostview gv
     prog "xfm" xfm xfm
@@ -55,7 +49,7 @@ menu Games folder {
     prog Xboard xboard xboard
     prog XGalaga xgalaga xgal
     prog XDemineur xdemineur xdemineur
-    prog ppracer /usr/share/pixmaps/ppracer.xpm /usr/games/ppracer
+    prog Kobo Deluxe kobo-icon /usr/games/kobodl
 }
 menu System folder {
     prog "Control Panel" redhat control-panel
