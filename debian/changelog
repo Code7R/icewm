@@ -1,11 +1,23 @@
-icewm (1.3.8+githubmod+20150310+31bfd46-3) UNRELEASED; urgency=low
+icewm (1.3.8+githubmod+20150412+960629d-2) UNRELEASED; urgency=low
 
-  * Added the last version of FAQ, added text version (closes: #397231)
+  * WIP
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 31 May 2015 12:49:19 +0200
+
+icewm (1.3.8+githubmod+20150412+960629d-1) unstable; urgency=low
+
+  * New upstream snapshot
+    + fixes shaped decorations (closes: #782087)
+  * Added the last version of FAQ, added text version (closes: #397231) and
+    groff Build-Dependency to generate it
   * Added an example of a startup file for icewm-session, it also executes
     the XDG autorun files (closes: #401664)
   * Little cleanup and update of the default menu configuration
+  * Added a README to configuration directory in /etc, explaining the absence
+    of the config file copies there. This also silences a dpkg warning on
+    partial package removal (closes: #781069)
 
- -- Eduard Bloch <blade@debian.org>  Wed, 11 Mar 2015 14:31:52 +0100
+ -- Eduard Bloch <blade@debian.org>  Sun, 12 Apr 2015 00:06:37 +0200
 
 icewm (1.3.8+githubmod+20150310+31bfd46-2) unstable; urgency=low
 
