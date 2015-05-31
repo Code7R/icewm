@@ -1,3 +1,9 @@
+icewm (1.3.8+githubmod+20150412+960629d-1~bpo8+1) UNRELEASED-wheezy-backports-sloppy; urgency=low
+
+  * Straight backport to Wheezy
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 31 May 2015 12:53:56 +0200
+
 icewm (1.3.8+githubmod+20150412+960629d-1) unstable; urgency=low
 
   * New upstream snapshot
