@@ -178,7 +178,7 @@ get-orig-source:
 
 update-debian-mod:
 	grep debian .git/HEAD
-	sh autogen.sh
+	DEVBRANCH=icewm-1-3-BRANCH NOAC=1 sh autogen.sh
 	git commit ChangeLog -m "Updating ChangeLog for a new Debian snapshot"
 	# don't care
 	git checkout HEAD -- README.md configure.ac
