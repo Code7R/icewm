@@ -90,6 +90,7 @@ CHECK_FUNCTION_EXISTS(basename HAVE_BASENAME)
 CHECK_FUNCTION_EXISTS(sysctlbyname HAVE_SYSCTLBYNAME)
 CHECK_FUNCTION_EXISTS(getloadavg HAVE_GETLOADAVG)
 CHECK_FUNCTION_EXISTS(asprintf HAVE_ASPRINTF)
+CHECK_FUNCTION_EXISTS(wordexp HAVE_WORDEXP)
 
 CHECK_LIBRARY_EXISTS (X11 XInternAtoms "" HAVE_XINTERNATOMS)
 
@@ -369,6 +370,16 @@ SET_TARGET_PROPERTIES(icewmtray${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_CO
 TARGET_LINK_LIBRARIES(icewmtray${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS} ${pixbuf_LDFLAGS} ${xinerama_LDFLAGS} ${nls_LIBS} ${EXTRA_LIBS})
 
 INSTALL(TARGETS icewm${EXEEXT} icesh${EXEEXT} icewm-session${EXEEXT} icewmhint${EXEEXT} icewmbg${EXEEXT} icewmtray${EXEEXT} DESTINATION ${BINDIR})
+
+# that bit might be disabled by the user
+if(NOT CROSSCOMPILE)
+ADD_CUSTOM_COMMAND(OUTPUT preferences
+			COMMAND ./genpref${EXEEXT} > preferences
+			DEPENDS genpref${EXEEXT}
+			WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+		ADD_CUSTOM_TARGET(genprefconfig DEPENDS preferences ALL)
+INSTALL(FILES ${CMAKE_BINARY_DIR}/preferences DESTINATION ${DOCDIR})
+endif()
 
 #######################################
 # print information and some warnings #

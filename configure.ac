@@ -2,14 +2,14 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([icewm],[1.3.9.110],[http://github.com/bbidulock/icewm])
+AC_INIT([icewm],[1.3.10],[http://github.com/bbidulock/icewm])
 AC_CONFIG_SRCDIR([src/ysmapp.cc])
 AC_CONFIG_AUX_DIR([scripts])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_TARGET
 
-DATE='2015-02-13'
+DATE='2015-07-02'
 AC_SUBST([DATE])
 
 APPLICATIONS='icewm icewm-session icesh icewmhint icewmbg icewmtray'
@@ -43,7 +43,7 @@ LT_LANG([C++])
 AC_PROG_LIBTOOL
 AC_SUBST([LIBTOOL_DEPS])
 
-AM_GNU_GETTEXT_VERSION([0.19.3])
+AM_GNU_GETTEXT_VERSION([0.19.4])
 AM_GNU_GETTEXT([external])
 
 AC_ARG_ENABLE([i18n],
@@ -102,7 +102,7 @@ if test x$cross_compling != xyes ; then :; AC_FUNC_MALLOC fi
 AC_FUNC_MMAP
 if test x$cross_compling != xyes ; then :; AC_FUNC_REALLOC fi
 AC_FUNC_STRNLEN
-AC_CHECK_FUNCS([dup2 getcwd gethostbyname gethostname gettimeofday mblen memchr memmove memset mkdir nl_langinfo putenv select setlocale socket strcasecmp strchr strcspn strdup strerror strncasecmp strrchr strspn strstr strtol sysinfo uname abort])
+AC_CHECK_FUNCS([dup2 getcwd gethostbyname gethostname gettimeofday mblen memchr memmove memset mkdir nl_langinfo putenv select setlocale socket strcasecmp strchr strcspn strdup strerror strncasecmp strrchr strspn strstr strtol sysinfo uname abort wordexp])
 AC_CHECK_FUNCS([gettimeofday putenv select socket strtol strtoul basename])
 AC_CHECK_FUNCS([sysctlbyname asprintf])
 AC_CHECK_FUNC([getloadavg],[AC_DEFINE([HAVE_GETLOADAVG2], 1, [getloadavg() is available])])
