@@ -1,6 +1,24 @@
 -e # created with git log -n 200 --abbrev-commit --decorate --stat=76 -M -C|fmt -sct -w80
 
-commit ef464e6 (bbidulock/icewm-1-3-BRANCH, icewm-1-3-BRANCH)
+commit 4cda2e8 (bbidulock/icewm-1-3-BRANCH, icewm-1-3-BRANCH)
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sun Aug 16 16:33:16 2015 +0200
+
+    Fix preferences file generation, now as explicite post-build command
+
+ src/CMakeLists.txt | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+commit 2a230bc
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sun Aug 16 10:45:00 2015 +0200
+
+    Install pregenerated html files to HTMLDIR via cmake (issue #33)
+
+ doc/CMakeLists.txt | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
+
+commit ef464e6
 Author: Eduard Bloch <blade@debian.org>
 Date:   Fri Aug 14 22:59:58 2015 +0200
 
@@ -2782,21 +2800,3 @@ Date:	Wed Dec 18 14:34:38 2013 -0400
  src/wmframe.h	 |  3 ++-
  src/wmoption.cc |  1 +
  3 files changed, 17 insertions(+), 4 deletions(-)
-
-commit 12ee299
-Author: DeltaResero <deltaresero@zoho.com>
-Date:	Wed Dec 18 14:32:04 2013 -0400
-
-    Fix disappearing system tray icons
-
- src/yxtray.cc | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit ab9cf47
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Wed Dec 18 06:57:51 2013 -0700
-
-    more ignores
-
- .gitignore | 3 +++
- 1 file changed, 3 insertions(+)
