@@ -165,7 +165,7 @@ binary:	binary-indep binary-arch
 
 cleancruft:
 	git clean -fdx -e .cproject -e .project -e .settings
-	git checkout HEAD -- README.md configure.ac ChangeLog
+	git checkout HEAD -- README.md configure.ac configure.in ChangeLog
 
 # builds a snapshot of the upstream branch after some plausibility checks
 get-orig-source:
