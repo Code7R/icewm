@@ -2,7 +2,7 @@ icewm (1.3.8+githubmod+20150815+2a230bc-1) unstable; urgency=low
 
   * New upstream snapshot (github version 1.3.10+)
 
- -- Eduard Bloch <blade@debian.org>  Sun, 16 Aug 2015 12:29:19 +0200
+ -- Eduard Bloch <blade@debian.org>  Sun, 16 Aug 2015 19:57:50 +0200
 
 icewm (1.3.8+githubmod+20150412+960629d-1) unstable; urgency=low
 
