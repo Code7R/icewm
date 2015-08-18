@@ -1,8 +1,9 @@
-icewm (1.3.8+githubmod++20150818+4cda2e8-1) unstable; urgency=medium
+icewm (1.3.8+githubmod+20150818+4cda2e8-1) unstable; urgency=medium
 
   * New upstream snapshot (github version 1.3.10+)
     + Reverted the unconditional setting of Java focus hack that seems to
       cause more harm than good (closes: #782088)
+  * Little cleanup and update of the default menu configuration
 
  -- Eduard Bloch <blade@debian.org>  Tue, 18 Aug 2015 10:32:09 +0200
 
@@ -14,7 +15,6 @@ icewm (1.3.8+githubmod+20150412+960629d-1) unstable; urgency=low
     groff Build-Dependency to generate it
   * Added an example of a startup file for icewm-session, it also executes
     the XDG autorun files (closes: #401664)
-  * Little cleanup and update of the default menu configuration
   * Added a README to configuration directory in /etc, explaining the absence
     of the config file copies there. This also silences a dpkg warning on
     partial package removal (closes: #781069)

@@ -12,7 +12,7 @@ separator
 menu Applications folder {
     menu Editors folder {
         prog fte fte fte
-        prog vim vim gvim 
+        prog vim vim gvim
         prog xemacs xemacs xemacs
         prog NEdit nedit nedit
         prog xedit xedit xedit

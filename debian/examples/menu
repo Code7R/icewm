@@ -2,6 +2,6 @@
 #
 # It's meant to be installed into $HOME/.icewm and it included
 # the system menu additional to some custom content.
-# 
+#
 prog Eclipse eclipse /opt/eclipse/eclipse
 include /usr/share/icewm/menu
