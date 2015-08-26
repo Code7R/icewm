@@ -1,8 +1,17 @@
-icewm (1.3.8+githubmod+20150412+960629d-1~bpo8+1) UNRELEASED-wheezy-backports-sloppy; urgency=low
+icewm (1.3.8+githubmod+20150818+ad97152-1~bpo8+1) jessie-backports; urgency=low
 
-  * Straight backport to Wheezy
+  * Straight backport to Jessie
 
- -- Eduard Bloch <blade@debian.org>  Sun, 31 May 2015 12:53:56 +0200
+ -- Eduard Bloch <blade@debian.org>  Wed, 26 Aug 2015 22:01:15 +0200
+
+icewm (1.3.8+githubmod+20150818+ad97152-1) unstable; urgency=medium
+
+  * New upstream snapshot (github version 1.3.10+)
+    + Reverted the unconditional setting of Java focus hack that seems to
+      cause more harm than good (closes: #782088)
+  * Little cleanup and update of the default menu configuration
+
+ -- Eduard Bloch <blade@debian.org>  Tue, 18 Aug 2015 11:37:45 +0200
 
 icewm (1.3.8+githubmod+20150412+960629d-1) unstable; urgency=low
 

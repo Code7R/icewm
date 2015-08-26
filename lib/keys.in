@@ -26,5 +26,5 @@ key "XF86AudioLowerVolume"		amixer sset PCM 5%-
 key "XF86AudioRaiseVolume"		amixer sset PCM 5%+
 key "XF86AudioMute"			amixer sset PCM 0%
 key "XF86HomePage"			sensible-browser about:blank
-key "XF86Search"			sensible-browser http://www.google.com
+key "XF86Search"			sensible-browser http://www.duckduckgo.com
 key "XF86Eject"				eject

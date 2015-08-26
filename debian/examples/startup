@@ -4,6 +4,9 @@
 # can also be run through .desktop autorun code below
 nm-applet &
 
+# preheat filesystem cache for more responsive menu
+ionice -c Idle icewm-menu-fdo > /dev/null &
+
 # change false to true to enable
 if false; then
 
