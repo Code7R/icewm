@@ -1,3 +1,9 @@
+icewm (1.3.8+githubmod+20150818+ad97152-2) UNRELEASED; urgency=medium
+
+  * Fix...798698 copyright 
+
+ -- Eduard Bloch <blade@debian.org>  Mon, 14 Sep 2015 20:15:57 +0200
+
 icewm (1.3.8+githubmod+20150818+ad97152-1) unstable; urgency=medium
 
   * New upstream snapshot (github version 1.3.10+)
