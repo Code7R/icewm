@@ -1,8 +1,13 @@
-icewm (1.3.8+githubmod+20150818+ad97152-2) UNRELEASED; urgency=medium
+icewm (1.3.8+githubmod+20150914+fa3fdef-1) unstable; urgency=low
 
-  * Fix...798698 copyright 
+  * New upstream snapshot
+    + restores Xinerama on platforms that were affected by #799009
+  * Partial redesign of debian/rules to use dh sequencing
+  * Apart from icewm-common package, making sure not to keep directories with
+    regular files in /usr/share/doc (especially to not shadow the copyright
+    file, closes: #798698)
 
- -- Eduard Bloch <blade@debian.org>  Mon, 14 Sep 2015 20:15:57 +0200
+ -- Eduard Bloch <blade@debian.org>  Mon, 14 Sep 2015 23:51:44 +0200
 
 icewm (1.3.8+githubmod+20150818+ad97152-1) unstable; urgency=medium
 
