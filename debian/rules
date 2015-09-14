@@ -85,7 +85,7 @@ override_dh_auto_install:
 	cd debian ; for x in icewm icewm-lite icewm-experimental ; do mkdir -p $$x/usr/share/lintian/overrides ; cp $$x.lintian $$x/usr/share/lintian/overrides/$$x ; done	
 
 override_dh_auto_clean:
-	rm -rf $(BDIR)-lite $(BDIR)-normal
+	rm -rf $(BDIR)-lite $(BDIR)-normal IceWM-FAQ.txt configure.in
 	# the variants are just symlinks
 	rm -f debian/icewm-*.postinst debian/icewm-*.prerm
 
