@@ -16,7 +16,7 @@ ifeq (linux,$(DEB_TARGET_ARCH_OS))
 	 CXXFLAGS += -DUSE_SIGNALFD
 endif
 
-cmakecmd = cmake $(CURDIR) -DICEHELPIDX=/usr/share/doc/icewm-common/html/icewm.html -DCFGDIR=/etc/X11/icewm -DPREFIX=/usr -DVERSION=$(ORIGVERSION) -DDOCDIR=$(DOCDIR) -DEXTRA_LIBS="-lsupc++"
+cmakecmd = cmake $(CURDIR) -DICEHELPIDX=/usr/share/doc/icewm-common/html/icewm.html -DCFGDIR=/etc/X11/icewm -DCMAKE_INSTALL_PREFIX=/usr -DVERSION=$(ORIGVERSION) -DDOCDIR=$(DOCDIR) -DEXTRA_LIBS="-lsupc++"
 
 ICEWM_COMMON=$(CURDIR)/debian/icewm-common
 ICEWM=$(CURDIR)/debian/icewm
