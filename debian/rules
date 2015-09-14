@@ -58,6 +58,8 @@ override_dh_install:
 		rm -rf debian/icewm$$v/usr/share/doc/icewm$$v ; \
 		ln -sf icewm-common debian/icewm$$v/usr/share/doc/icewm$$v ; done
 	sed -e 's,icewm-session,icewm-session-lite,g;s,^Name\(.*\),Name\1 [lite],' < lib/icewm-session.desktop > $(ICEWM_LITE)/usr/share/xsessions/IceWM-Lite.desktop
+	# XXX: find out why some settings are not gettint defaults if the file is not present, like WorkspaceNames
+	cp $(ICEWM_COMMON)/usr/share/doc/icewm-common/preferences $(ICEWM_COMMON)/usr/share/icewm/
 	# Install Debian custom files
 	install -m 644 $(ICONS)/mutt*.xpm $(ICEWM_COMMON)/usr/share/icewm/icons
 	install -m 644 $(ICONS)/mozilla*.xpm $(ICEWM_COMMON)/usr/share/icewm/icons
