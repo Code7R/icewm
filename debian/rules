@@ -51,9 +51,11 @@ override_dh_auto_build:
 override_dh_auto_install:
 	$(MAKE) -C $(BDIR)-lite install DESTDIR=$(CURDIR)/debian/tmp
 	$(MAKE) -C $(BDIR)-normal install DESTDIR=$(CURDIR)/debian/tmp
+
+override_dh_install:
 	dh_install
 	for v in "" -experimental -lite ; do \
-		rm -r debian/icewm$$v/usr/share/doc/icewm$$v ; \
+		rm -rf debian/icewm$$v/usr/share/doc/icewm$$v ; \
 		ln -sf icewm-common debian/icewm$$v/usr/share/doc/icewm$$v ; done
 	sed -e 's,icewm-session,icewm-session-lite,g;s,^Name\(.*\),Name\1 [lite],' < lib/icewm-session.desktop > $(ICEWM_LITE)/usr/share/xsessions/IceWM-Lite.desktop
 	# Install Debian custom files
