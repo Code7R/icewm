@@ -1,3 +1,27 @@
+icewm (1.3.8+githubmod+20150914+fa3fdef-2~bpo8+1) unstable; urgency=low
+
+  * Jessie backport update
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 23 Sep 2015 19:35:39 +0200
+
+icewm (1.3.8+githubmod+20150914+fa3fdef-2) unstable; urgency=medium
+
+  * Restored /usr/share/icewm/preferences - some icewm settings don't get
+    their defaults if the file is not present anywhere
+
+ -- Eduard Bloch <blade@debian.org>  Tue, 15 Sep 2015 00:46:46 +0200
+
+icewm (1.3.8+githubmod+20150914+fa3fdef-1) unstable; urgency=low
+
+  * New upstream snapshot
+    + restores Xinerama on platforms that were affected by #799009
+  * Partial redesign of debian/rules to use dh sequencing
+  * Apart from icewm-common package, making sure not to keep directories with
+    regular files in /usr/share/doc (especially to not shadow the copyright
+    file, closes: #798698)
+
+ -- Eduard Bloch <blade@debian.org>  Mon, 14 Sep 2015 23:51:44 +0200
+
 icewm (1.3.8+githubmod+20150818+ad97152-1~bpo8+1) jessie-backports; urgency=low
 
   * Straight backport to Jessie

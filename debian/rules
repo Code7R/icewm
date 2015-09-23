@@ -2,21 +2,21 @@
 # -*- makefile -*-
 # debian/rules for icewm
 
-SHELL=/bin/bash
-
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
 include /usr/share/dpkg/architecture.mk
 -include /usr/share/quilt/quilt.make
 
-ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
-	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
-	MAKEFLAGS += -j$(NUMJOBS)
-	export MAKEFLAGS
+MAKEFLAGS += VERBOSE=1
+export MAKEFLAGS
+
+CXXFLAGS += $(CPPFLAGS) -DXTERMCMD=x-terminal-emulator -Wall -Wextra
+ifeq (linux,$(DEB_TARGET_ARCH_OS))
+	 CXXFLAGS += -DUSE_SIGNALFD
 endif
 
-MAKEFLAGS += VERBOSE=1
+cmakecmd = cmake $(CURDIR) -DICEHELPIDX=/usr/share/doc/icewm-common/html/icewm.html -DCFGDIR=/etc/X11/icewm -DCMAKE_INSTALL_PREFIX=/usr -DVERSION=$(ORIGVERSION) -DDOCDIR=$(DOCDIR) -DEXTRA_LIBS="-lsupc++"
 
 ICEWM_COMMON=$(CURDIR)/debian/icewm-common
 ICEWM=$(CURDIR)/debian/icewm
@@ -24,144 +24,84 @@ ICEWM_LITE=$(CURDIR)/debian/icewm-lite
 ICEWM_EXP=$(CURDIR)/debian/icewm-experimental
 DOCDIR=/usr/share/doc/icewm-common
 BDIR=builddir
-
 ICONS=$(CURDIR)/debian/icons
 FDO=$(CURDIR)/debian/fdo
 CUSTOM=$(CURDIR)/debian/custom
 
 # DEBVERSION=$(shell dpkg-parsechangelog -SVersion)
 # that one also works with wheezy
-DEBVERSION=$(shell dpkg-parsechangelog |grep ^Version | sed -e s,Version:.,,)
-ORIGVERSION=$(shell echo $(DEBVERSION) | sed -e 's,-[^-]*$$,,' )
+DEBVERSION := $(shell dpkg-parsechangelog |grep ^Version | sed -e s,Version:.,,)
+ORIGVERSION := $(shell echo $(DEBVERSION) | sed -e 's,-[^-]*$$,,' )
 
-CXXFLAGS += $(CPPFLAGS) -DXTERMCMD=x-terminal-emulator -Wall -Wextra
-ifeq (linux,$(DEB_TARGET_ARCH_OS))
-	 CXXFLAGS += -DUSE_SIGNALFD
-endif
-cmakecmd = cmake .. -DICEHELPIDX=/usr/share/doc/icewm-common/html/icewm.html -DCFGDIR=/etc/X11/icewm -DPREFIX=/usr -DVERSION=$(ORIGVERSION) -DEXTRA_LIBS="-lsupc++"
 
-#CXXFLAGS += -flto
-#cmakecmd+= -DEXTRA_LIBS="-flto -lsupc++"
+#!/usr/bin/make -f
+%:
+	dh $@ --parallel
 
-build-lite: stamp-build-lite
-stamp-build-lite:
-	mkdir -p $(BDIR)-lite
+override_dh_auto_configure:
+	mkdir -p $(BDIR)-lite $(BDIR)-normal
 	cd $(BDIR)-lite && $(cmakecmd) -DLITE=on -DEXEEXT=-lite -DCONFIG_XFREETYPE=off -DCONFIG_COREFONTS=on -DXINERAMA=on -DCONFIG_XRANDR=off -DCONFIG_TASKBAR=off -DCONFIG_FDO_MENUS=off -DSKIP_TRANSLATIONS=on
-	$(MAKE) -C $(BDIR)-lite
-	touch $@
-
-build-normal: stamp-build-normal
-stamp-build-normal:
-	mkdir -p $(BDIR)-normal
 	cd $(BDIR)-normal && $(cmakecmd) -DCONFIG_XRANDR=on -DCONFIG_GUIEVENTS=on
+
+override_dh_auto_build:
+	$(MAKE) -C $(BDIR)-lite
 	$(MAKE) -C $(BDIR)-normal
-	touch $@
+	cd debian && for x in -lite -experimental ; do cp -lf icewm.postinst icewm$$x.postinst ; cp -lf icewm.prerm icewm$$x.prerm ; done
 
-build: build-arch build-indep
-build-arch: build-normal build-lite
-build-indep: build-normal build-lite
+override_dh_auto_install:
+	$(MAKE) -C $(BDIR)-lite install DESTDIR=$(CURDIR)/debian/tmp
+	$(MAKE) -C $(BDIR)-normal install DESTDIR=$(CURDIR)/debian/tmp
 
-clean:
-	dh_testdir
-	dh_testroot
-	rm -rf $(BDIR)*
-	$(MAKE) -C po clean ||true
-	rm -f stamp* *stamp config.guess config.sub Makefile config.log src/config.h
-	rm -f po/*.mo po/*.gmo
-	dh_clean
-
-install: build
-	dh_testdir
-	dh_testroot
-	dh_prep
-	dh_installdirs
-	$(MAKE) -C $(BDIR)-normal install DESTDIR=$(ICEWM)
-	$(MAKE) -C $(BDIR)-lite install DESTDIR=$(ICEWM_LITE)
-	rm -rf $(ICEWM_LITE)/usr/{bin/*gnome*,share/{doc/*icewm*,locale,man,icewm}}
-	mkdir -p $(ICEWM_COMMON)/usr/bin
-	mv $(ICEWM)/usr/share $(ICEWM_COMMON)/usr/
-	# get just one file back and drop non-session version
-	mkdir -p $(ICEWM)/usr/share/xsessions
-	mv $(ICEWM_COMMON)/usr/share/xsessions/icewm-session.desktop $(ICEWM)/usr/share/xsessions
-	rm -rf $(ICEWM_COMMON)/usr/share/xsessions/*.desktop
-	# XXX: fix the session file name and contents
-	rm $(ICEWM_LITE)/usr/share/xsessions/*desktop
+override_dh_install:
+	dh_install
+	for v in "" -experimental -lite ; do \
+		rm -rf debian/icewm$$v/usr/share/doc/icewm$$v ; \
+		ln -sf icewm-common debian/icewm$$v/usr/share/doc/icewm$$v ; done
 	sed -e 's,icewm-session,icewm-session-lite,g;s,^Name\(.*\),Name\1 [lite],' < lib/icewm-session.desktop > $(ICEWM_LITE)/usr/share/xsessions/IceWM-Lite.desktop
+	# XXX: find out why some settings are not gettint defaults if the file is not present, like WorkspaceNames
+	cp $(ICEWM_COMMON)/usr/share/doc/icewm-common/preferences $(ICEWM_COMMON)/usr/share/icewm/
 	# Install Debian custom files
-	install -m 644 $(ICONS)/{mutt,mozilla,icewm}*.xpm $(ICEWM_COMMON)/usr/share/icewm/icons
+	install -m 644 $(ICONS)/mutt*.xpm $(ICEWM_COMMON)/usr/share/icewm/icons
+	install -m 644 $(ICONS)/mozilla*.xpm $(ICEWM_COMMON)/usr/share/icewm/icons
+	install -m 644 $(ICONS)/icewm*.xpm $(ICEWM_COMMON)/usr/share/icewm/icons
 	-mv $(ICEWM_COMMON)/usr/share/icewm/taskbar/icewm.xpm  $(ICEWM_COMMON)/usr/share/icewm/taskbar/icewm.orig.xpm
 	install -m 644 $(ICONS)/debian.xpm $(ICEWM_COMMON)/usr/share/icewm/taskbar/icewm.xpm
 	mkdir -p $(ICEWM_COMMON)/usr/bin $(ICEWM_COMMON)/etc/X11/icewm
 	install -m 644 $(CUSTOM)/toolbar $(CUSTOM)/menu $(ICEWM_COMMON)/usr/share/icewm
 	install -m 644 debian/README.cfg $(ICEWM_COMMON)/usr/share/icewm/README
-	$(BDIR)-normal/genpref > $(ICEWM_COMMON)/usr/share/icewm/preferences
-	# Move files in the right package directory
-	mv $(ICEWM)/usr/bin/*gnome* $(ICEWM_COMMON)/usr/share/icewm/
-	mv $(ICEWM)/usr/bin/icewm-menu* $(ICEWM_COMMON)/usr/bin
-	rm -rf $(ICEWM_COMMON)/usr/share/applications/*desktop
-	# Install documentation
-	#mv $(ICEWM_COMMON)/usr/share/doc/icewm-common/*.html $(ICEWM_COMMON)/usr/share/doc/icewm-common/html/
+	# Extra docs
 	mkdir -p "$(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ"
 	cd $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ && sgml2html $(CURDIR)/debian/FAQ/source/*.sgml
 	sgml2txt $(CURDIR)/debian/FAQ/source/*.sgml && col -bx < IceWM-FAQ.txt > $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ/IceWM-FAQ.txt
-	-rm IceWM-FAQ.txt
-	# and add our bits to fix the font insanity with xft2
-	dh_installexamples
-	# Remove doc directories since we will add links
-	# to icewm-common instead.
-	rm -rf $(ICEWM)/usr/share/doc/icewm
-	## icewm-experimental ########################################
-# making -experimental compat symlinks
-	cd  $(ICEWM_EXP)/usr/bin && for x in icewm-session icewm icewmhint icehelp icewmtray icewmbg icesh icesound ; do ln -s $$x $$x-experimental ; done
-	#; ln -sf genpref genpref-experimental
-	# Remove doc directories since we will add links
-	# to icewm-common instead.
-	rm -rf $(ICEWM_EXP)/usr/share/doc/icewm-experimental
-	cd debian ; for x in icewm icewm-lite icewm-experimental ; do mkdir -p $$x/usr/share/lintian/overrides ; cp $$x.lintian $$x/usr/share/lintian/overrides/$$x ; done
-
-binary-indep:
-
-binary-arch: build install
-	dh_testdir
-	dh_testroot
-	cd debian ; for x in -lite -experimental ; do cp -lf icewm.postinst icewm$$x.postinst ; cp -lf icewm.prerm icewm$$x.prerm ; done
-	#rm -r $(ICEWM_LITE)/usr/share/doc/icewm-lite $(ICEWM_EXP)/usr/share/doc/icewm-experimental
-	dh_link -picewm usr/share/doc/icewm-common usr/share/doc/icewm
-	dh_link -picewm-lite usr/share/doc/icewm-common usr/share/doc/icewm-lite
-	dh_link -picewm-experimental usr/share/doc/icewm-common usr/share/doc/icewm-experimental
-	dh_installdocs
-	dh_installmenu
-	dh_icons
-	dh_installchangelogs -picewm-common CHANGES
-	dh_strip
-	ls -l $(ICEWM_COMMON)/usr/share/man/man1/icewm.1
-	dh_compress -XIceWM-FAQ.txt
+	# making -experimental compat symlinks
+	for x in icewm-session icewm icewmhint icehelp icewmtray icewmbg icesh icesound ; do ln -s $$x $(ICEWM_EXP)/usr/bin/$$x-experimental ; done
 	# Install undocumented manpages
 	for v in "" -experimental -lite ; do \
 		mkdir -p debian/icewm$$v/usr/share/man/man1 ; \
 			for f in icewm icehelp icewmbg icewmhint icesh icewmtray icewm-session ; do \
-				ln -sf icewm.1.gz debian/icewm$$v/usr/share/man/man1/$$f$$v.1.gz ; \
+				test "$$f$$v.1.gz" = icewm.1.gz || ln -s icewm.1.gz debian/icewm$$v/usr/share/man/man1/$$f$$v.1.gz ; \
 		done ; \
 	done
-	# is delivered via common
-	rm debian/icewm/usr/share/man/man1/icewm.*
 	# only where needed
 	ln -sf icewm.1.gz debian/icewm/usr/share/man/man1/icesound.1.gz
 	ln -sf icewm.1.gz debian/icewm-experimental/usr/share/man/man1/icesound-experimental.1.gz
 	ln -sf icewm.1.gz debian/icewm-common/usr/share/man/man1/icewm-menu-fdo.1.gz
+	cd debian ; for x in icewm icewm-lite icewm-experimental ; do mkdir -p $$x/usr/share/lintian/overrides ; cp $$x.lintian $$x/usr/share/lintian/overrides/$$x ; done	
+
+override_dh_auto_clean:
+	rm -rf $(BDIR)-lite $(BDIR)-normal IceWM-FAQ.txt configure.in
+	# the variants are just symlinks
+	rm -f debian/icewm-*.postinst debian/icewm-*.prerm
+
+override_dh_installchangelogs:
+	dh_installchangelogs -picewm-common CHANGES
+
+override_dh_fixperms:
 	dh_fixperms
 	chmod a+rx,u+w "$(ICEWM_COMMON)/usr/share/doc/icewm-common/examples/startup"
-	# more plausibility checks
-	ls -l $(ICEWM_COMMON)/usr/share/doc/icewm-common/html/icewm-1.html
-	ls -l $(ICEWM_LITE)/usr/bin/icewm-lite
-	ls -l $(ICEWM_LITE)/usr/bin/icewmbg-lite
-	dh_installdeb
-	dh_shlibdeps
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
 
-binary:	binary-indep binary-arch
+override_dh_compress:
+	dh_compress
 
 cleancruft:
 	git clean -fdx -e .cproject -e .project -e .settings
@@ -185,5 +125,3 @@ update-debian-mod:
 	git commit ChangeLog -m "Updating ChangeLog for a new Debian snapshot"
 	# don't care
 	git checkout HEAD -- README.md configure.ac
-
-.PHONY: binary binary-arch binary-indep clean install

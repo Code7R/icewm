@@ -30,11 +30,6 @@ _*
 *.xz
 
 #
-# Debian directory (make deb-pkg)
-#
-/debian/
-
-#
 # git files that we don't want to ignore even it they are dot-files
 #
 !.gitignore
