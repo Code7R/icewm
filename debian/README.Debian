@@ -8,7 +8,7 @@ Adding missing functionality:
    Install xscreensaver package!
 
  * Enabling Shutdown, Reboot and Suspend actions:
-   I) Install systemd-sysv and start using systemd
+   I) Install systemd-sysv and policykit-1 and start using systemd
    or
    II)
    a) Install sudo
@@ -154,4 +154,4 @@ exec /usr/bin/icewm-session
 #exec icewm
 ---
 
- -- Eduard Bloch <blade@debian.org>, Fri, 13 Feb 2015 13:26:42 +0100
+ -- Eduard Bloch <blade@debian.org>, Wed, 23 Sep 2015 20:59:07 +0200
