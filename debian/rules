@@ -2,6 +2,9 @@
 # -*- makefile -*-
 # debian/rules for icewm
 
+%:
+	dh $@ --parallel
+
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
@@ -30,9 +33,6 @@ CUSTOM=$(CURDIR)/debian/custom
 DEBVERSION := $(shell dpkg-parsechangelog |grep ^Version | sed -e s,Version:.,,)
 ORIGVERSION := $(shell echo $(DEBVERSION) | sed -e 's,-[^-]*$$,,' )
 
-%:
-	dh $@ --parallel
-
 config_lite:
 	mkdir -p $(BDIR)-lite
 	cd $(BDIR)-lite && $(cmakecmd) -DLITE=on -DEXEEXT=-lite -DCONFIG_XFREETYPE=off -DCONFIG_COREFONTS=on -DXINERAMA=on -DCONFIG_XRANDR=off -DCONFIG_TASKBAR=off -DCONFIG_FDO_MENUS=off -DSKIP_TRANSLATIONS=on
@@ -41,15 +41,12 @@ config_normal:
 	mkdir -p $(BDIR)-normal
 	cd $(BDIR)-normal && $(cmakecmd) -DCONFIG_XRANDR=on -DCONFIG_GUIEVENTS=on
 
-override_dh_auto_configure: config_normal config_lite
+override_dh_auto_configure:
+	$(MAKE) -f debian/rules -j2 config_normal config_lite
 
-build_lite:
-	$(MAKE) -C $(BDIR)-lite
-
-build_normal:
-	$(MAKE) -C $(BDIR)-normal
-
-override_dh_auto_build: build_normal build_lite
+override_dh_auto_build:
+	dh_auto_build -- -C $(BDIR)-lite
+	dh_auto_build -- -C $(BDIR)-normal
 	cd debian && for x in -lite -experimental ; do cp -lf icewm.postinst icewm$$x.postinst ; cp -lf icewm.prerm icewm$$x.prerm ; done
 
 override_dh_auto_install:
@@ -63,7 +60,7 @@ override_dh_install:
 		ln -sf icewm-common debian/icewm$$v/usr/share/doc/icewm$$v ; done
 	sed -e 's,icewm-session,icewm-session-lite,g;s,^Name\(.*\),Name\1 [lite],' < lib/icewm-session.desktop > $(ICEWM_LITE)/usr/share/xsessions/IceWM-Lite.desktop
 	# XXX: find out why some settings are not gettint defaults if the file is not present, like WorkspaceNames
-	cp $(ICEWM_COMMON)/usr/share/doc/icewm-common/preferences $(ICEWM_COMMON)/usr/share/icewm/
+	#cp $(ICEWM_COMMON)/usr/share/doc/icewm-common/preferences $(ICEWM_COMMON)/usr/share/icewm/
 	# Install Debian custom files
 	install -m 644 $(ICONS)/mutt*.xpm $(ICEWM_COMMON)/usr/share/icewm/icons
 	install -m 644 $(ICONS)/mozilla*.xpm $(ICEWM_COMMON)/usr/share/icewm/icons
