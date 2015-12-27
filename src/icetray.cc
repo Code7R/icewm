@@ -243,7 +243,6 @@ int main(int argc, char **argv) {
           debug = 1;
 #endif
     }
-#endif
 
     return stapp.mainLoop();
 }
