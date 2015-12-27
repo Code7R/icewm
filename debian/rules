@@ -33,14 +33,23 @@ ORIGVERSION := $(shell echo $(DEBVERSION) | sed -e 's,-[^-]*$$,,' )
 %:
 	dh $@ --parallel
 
-override_dh_auto_configure:
-	mkdir -p $(BDIR)-lite $(BDIR)-normal
+config_lite:
+	mkdir -p $(BDIR)-lite
 	cd $(BDIR)-lite && $(cmakecmd) -DLITE=on -DEXEEXT=-lite -DCONFIG_XFREETYPE=off -DCONFIG_COREFONTS=on -DXINERAMA=on -DCONFIG_XRANDR=off -DCONFIG_TASKBAR=off -DCONFIG_FDO_MENUS=off -DSKIP_TRANSLATIONS=on
+
+config_normal:
+	mkdir -p $(BDIR)-normal
 	cd $(BDIR)-normal && $(cmakecmd) -DCONFIG_XRANDR=on -DCONFIG_GUIEVENTS=on
 
-override_dh_auto_build:
+override_dh_auto_configure: config_normal config_lite
+
+build_lite:
 	$(MAKE) -C $(BDIR)-lite
+
+build_normal:
 	$(MAKE) -C $(BDIR)-normal
+
+override_dh_auto_build: build_normal build_lite
 	cd debian && for x in -lite -experimental ; do cp -lf icewm.postinst icewm$$x.postinst ; cp -lf icewm.prerm icewm$$x.prerm ; done
 
 override_dh_auto_install:
