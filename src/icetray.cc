@@ -241,6 +241,7 @@ int main(int argc, char **argv) {
 #ifdef DEBUG
        if(argv[i] && 0 == strcmp("--debug", argv[i]))
           debug = 1;
+#endif
     }
 #endif
 
