@@ -7,16 +7,16 @@ DATE="`date -uI`"
 [ -f ./VERSION ] && . ./VERSION
 
 if [ -x "`which git 2>/dev/null`" -a -d .git ]; then
-	DATE=$(git log $DEVBRANCH --date=iso|grep '^Date:'|head -1|awk '{print$2}')
-	VERSION=$(git describe $DEVBRANCH --tags|sed 's,^[^0-9]*,,;s,[-_],.,g;s,\.g.*$,,')
+	DATE=$(git log --date=iso|grep '^Date:'|head -1|awk '{print$2}')
+	VERSION=$(git describe --tags|sed 's,^[^0-9]*,,;s,[-_],.,g;s,\.g.*$,,')
 	(
 	   echo -e "# created with git log -n 200 --abbrev-commit --decorate --stat=76 -M -C|fmt -sct -w80\n"
-	   git log $DEVBRANCH -n 200 --abbrev-commit --decorate --stat=76 -M -C|fmt -sct -w80
+	   git log -n 200 --abbrev-commit --decorate --stat=76 -M -C|fmt -sct -w80
 	)>ChangeLog
 	(
 	   echo "$PACKAGE -- authors file.  $DATE"
 	   echo ""
-	   git log $DEVBRANCH | grep '^Author:'|awk '{if(!authors[$0]){print$0;authors[$0]=1;}}'|tac
+	   git log|grep '^Author:'|awk '{if(!authors[$0]){print$0;authors[$0]=1;}}'|tac
 	)>THANKS
 fi
 
@@ -24,8 +24,6 @@ GTVERSION=`gettext --version|head -1|awk '{print$NF}'|sed -r 's,(^[^\.]*\.[^\.]*
 
 cp -f configure.ac configure.in
 
-if test -z "$NOAC"
-then	
 sed <configure.in >configure.ac -r \
 	-e "s:AC_INIT\([[]$PACKAGE[]],[[][^]]*[]]:AC_INIT([$PACKAGE],[$VERSION]:
 	    s:AC_REVISION\([[][^]]*[]]\):AC_REVISION([$VERSION]):
@@ -33,7 +31,6 @@ sed <configure.in >configure.ac -r \
 	    s:^AM_GNU_GETTEXT_VERSION.*:AM_GNU_GETTEXT_VERSION([$GTVERSION]):"
 
 rm -f configure.in
-fi
 
 subst="s:@PACKAGE@:$PACKAGE:g
        s:@VERSION@:$VERSION:g
@@ -49,8 +46,7 @@ subst="s:%%PACKAGE%%:$PACKAGE:g
 sed -r -e "$subst" icewm.spec.in >icewm.spec
 sed -r -e "$subst" icewm.lsm.in >icewm.lsm
 
-if test -z "$NOAC"
-then	
+echo -e "PACKAGE=$PACKAGE\nVERSION=$VERSION" >VERSION
+
 autoreconf -iv
-fi
 

@@ -124,6 +124,10 @@ series
 cscope.*
 ncscope.*
 
+# ctags/etags files
+tags
+TAGS
+
 # gnu global files
 GPATH
 GRTAGS

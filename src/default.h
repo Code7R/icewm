@@ -50,6 +50,8 @@ XIV(bool, taskBarShowWindows,                   true)
 XIV(bool, taskBarShowShowDesktopButton,         true)
 
 XIV(int, taskBarButtonWidthDivisor,             3)
+XIV(int, taskBarWidthPercentage,                100)
+XSV(const char *, taskBarJustify,               "left")
 #ifdef CONFIG_TRAY
 XIV(bool, taskBarShowTray,                      true)
 XIV(bool, trayShowAllWindows,                   true)
@@ -61,6 +63,7 @@ XIV(bool, taskBarAutoHide,                      false)
 XIV(bool, taskBarFullscreenAutoShow,            true)
 XIV(bool, taskBarDoubleHeight,                  false)
 XIV(bool, taskBarWorkspacesLeft,                true)
+XIV(bool, taskBarWorkspacesTop,                 false)
 XIV(bool, pagerShowPreview,                     false)
 XIV(bool, pagerShowWindowIcons,                 true)
 XIV(bool, pagerShowMinimized,                   true)
@@ -214,7 +217,7 @@ XSV(const char *, fmtDate,                      "%Y-%m-%d %H:%M:%S %z %B %A")
 cfoption icewm_preferences[] = {
     OBV("ClickToFocus",                         &clickFocus,                    "Focus windows by clicking"),
     OBV("FocusOnAppRaise",                      &focusOnAppRaise,               "Focus windows when application requests to raise"),
-    OBV("RequestFocusOnAppRaise",                      &requestFocusOnAppRaise,               "Request focus (flashing in taskbar) when application requests raise"),
+    OBV("RequestFocusOnAppRaise",               &requestFocusOnAppRaise,        "Request focus (flashing in taskbar) when application requests raise"),
     OBV("RaiseOnFocus",                         &raiseOnFocus,                  "Raise windows when focused"),
     OBV("FocusOnClickClient",                   &focusOnClickClient,            "Focus window when client area clicked"),
     OBV("RaiseOnClickClient",                   &raiseOnClickClient,            "Raise window when client area clicked"),
@@ -242,12 +245,9 @@ cfoption icewm_preferences[] = {
     OBV("ShowMoveSizeStatus",                   &showMoveSizeStatus,            "Show position status window during move/resize"),
     OBV("ShowWorkspaceStatus",                  &workspaceSwitchStatus,         "Show name of current workspace while switching"),
     OBV("MinimizeToDesktop",                    &minimizeToDesktop,             "Display mini-icons on desktop for minimized windows"),
-    OBV("MiniIconsPlaceHorizontal",             &miniIconsPlaceHorizontal,
-"Place the mini-icons horizontal instead of vertical"),
-    OBV("MiniIconsRightToLeft",                 &miniIconsRightToLeft,
-"Place new mini-icons from right to left"),
-    OBV("MiniIconsBottomToTop",                 &miniIconsBottomToTop,
-"Place new mini-icons from bottom to top"),
+    OBV("MiniIconsPlaceHorizontal",             &miniIconsPlaceHorizontal,      "Place the mini-icons horizontal instead of vertical"),
+    OBV("MiniIconsRightToLeft",                 &miniIconsRightToLeft,          "Place new mini-icons from right to left"),
+    OBV("MiniIconsBottomToTop",                 &miniIconsBottomToTop,          "Place new mini-icons from bottom to top"),
     OBV("StrongPointerFocus",                   &strongPointerFocus,            "Always maintain focus under mouse window (makes some keyboard support non-functional or unreliable"),
     OBV("OpaqueMove",                           &opaqueMove,                    "Opaque window move"),
     OBV("OpaqueResize",                         &opaqueResize,                  "Opaque window resize"),
@@ -260,7 +260,7 @@ cfoption icewm_preferences[] = {
     OBV("AutoRaise",                            &autoRaise,                     "Auto raise windows after delay"),
     OBV("DelayPointerFocus",                    &delayPointerFocus,             "Delay pointer focusing when mouse moves"),
     OBV("Win95Keys",                            &win95keys,                     "Support win95 keyboard keys (Penguin/Meta/Win_L,R shows menu)"),
-    OBV("ModSuperIsCtrlAlt",                     &modSuperIsCtrlAlt,            "Treat Super/Win modifier as Ctrl+Alt"),
+    OBV("ModSuperIsCtrlAlt",                    &modSuperIsCtrlAlt,             "Treat Super/Win modifier as Ctrl+Alt"),
     OBV("UseMouseWheel",                        &useMouseWheel,                 "Support mouse wheel"),
     OBV("ShowPopupsAbovePointer",               &showPopupsAbovePointer,        "Show popup menus above mouse pointer"),
     OBV("ReplayMenuCancelClick",                &replayMenuCancelClick,         "Send the clicks outside menus to target window"),
@@ -307,7 +307,7 @@ cfoption icewm_preferences[] = {
     OBV("TaskBarShowTray",                      &taskBarShowTray,               "Show windows in the tray"),
     OBV("TrayShowAllWindows",                   &trayShowAllWindows,            "Show windows from all workspaces on tray"),
 #endif
-    OBV("TaskBarShowTransientWindows",                &taskBarShowTransientWindows,         "Show transient (dialogs, ...) windows on task bar"),
+    OBV("TaskBarShowTransientWindows",          &taskBarShowTransientWindows,   "Show transient (dialogs, ...) windows on task bar"),
     OBV("TaskBarShowAllWindows",                &taskBarShowAllWindows,         "Show windows from all workspaces on task bar"),
     OBV("TaskBarShowWindowIcons",               &taskBarShowWindowIcons,        "Show icons of windows on the task bar"),
     OBV("TaskBarShowStartMenu",                 &taskBarShowStartMenu,          "Show 'Start' menu on task bar"),
@@ -322,6 +322,7 @@ cfoption icewm_preferences[] = {
     OBV("TaskBarShowCollapseButton",            &taskBarShowCollapseButton,     "Show a button to collapse the taskbar"),
     OBV("TaskBarDoubleHeight",                  &taskBarDoubleHeight,           "Use double-height task bar"),
     OBV("TaskBarWorkspacesLeft",                &taskBarWorkspacesLeft,         "Place workspace pager on left, not right"),
+    OBV("TaskBarWorkspacesTop",                 &taskBarWorkspacesTop,          "Place workspace pager on top row when using dual-height taskbar"),
     OBV("PagerShowPreview",                     &pagerShowPreview,              "Show a mini desktop preview on each workspace button"),
     OBV("PagerShowWindowIcons",                 &pagerShowWindowIcons,          "Draw window icons inside large enough preview windows on pager (if PagerShowPreview=1)"),
     OBV("PagerShowMinimized",                   &pagerShowMinimized,            "Draw even minimized windows as unfilled rectangles (if PagerShowPreview=1)"),
@@ -395,6 +396,8 @@ cfoption icewm_preferences[] = {
     OIV("TaskBarNetSamples",                    &taskBarNetSamples, 2, 1000,    "Width of Net Monitor"),
     OIV("TaskBarNetDelay",                      &taskBarNetDelay, 10, (60*60*1000),    "Delay between Net Monitor samples in ms"),
     OIV("TaskbarButtonWidthDivisor",            &taskBarButtonWidthDivisor, 1, 25, "default number of tasks in taskbar"),
+    OIV("TaskBarWidthPercentage",               &taskBarWidthPercentage, 0, 100, "Task bar width as percentage of the screen width"),
+    OSV("TaskBarJustify",                       &taskBarJustify, "Taskbar justify left, right or center"),
     OIV("TaskBarApmGraphWidth",                 &taskBarApmGraphWidth, 1, 1000,  "Width of APM Monitor"), // hatred
 #endif
 

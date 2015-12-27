@@ -6,4 +6,3 @@
 #
 prog Terminal /usr/share/icons/gnome/16x16/apps/terminal.png x-terminal-emulator
 prog "Web browser" /usr/share/icewm/icons/mozilla_16x16.xpm sensible-browser about:blank
-
