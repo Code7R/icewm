@@ -1,48 +1,4 @@
-# created with git log -n 200 --abbrev-commit --decorate --stat=76 -M -C|fmt -sct -w80
-
-commit 2123d0b (HEAD -> debian/sid)
-Merge: ae4290f a1a26b9
-Author: Eduard Bloch <blade@debian.org>
-Date:   Sun Dec 27 21:47:12 2015 +0100
-
-    Merge branch 'icewm-1-3-BRANCH' into debian/sid
-
 commit a1a26b9 (icewm-1-3-BRANCH)
-Author: Eduard Bloch <blade@debian.org>
-Date:   Sun Dec 27 21:25:07 2015 +0100
-
-    CLI --debug switch for icewmtray
-
- src/icetray.cc | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-commit ae4290f
-Author: Eduard Bloch <blade@debian.org>
-Date:   Sun Dec 27 21:40:10 2015 +0100
-
-    New upstream snapshot and simplify version number
-
- debian/changelog | 6 ++++++
- debian/rules     | 2 +-
- 2 files changed, 7 insertions(+), 1 deletion(-)
-
-commit 632c2c5
-Merge: 15be792 2e80dc9
-Author: Eduard Bloch <blade@debian.org>
-Date:   Sun Dec 27 21:31:06 2015 +0100
-
-    Merge branch 'icewm-1-3-BRANCH' into debian/sid
-
-commit 15be792
-Author: Eduard Bloch <blade@debian.org>
-Date:   Sun Dec 27 21:26:55 2015 +0100
-
-    Updating ChangeLog for a new Debian snapshot
-
- ChangeLog | 4337 +++++++++++++++++++++++++++++----------------------------
- 1 file changed, 2209 insertions(+), 2128 deletions(-)
-
-commit 2e80dc9 (tag: upstream/1.3.8+mod+20151227)
 Author: Eduard Bloch <blade@debian.org>
 Date:   Sun Dec 27 21:25:07 2015 +0100
 
@@ -59,15 +15,6 @@ Date:   Sun Dec 27 11:21:51 2015 -0700
     Merge pull request #62 from Code7R/ftr_preconfigure_iconPath
 
     Preconfigure iconPath in popular FOSS environments
-
-commit 5d38c03
-Author: Eduard Bloch <blade@debian.org>
-Date:   Sun Dec 27 12:19:55 2015 +0100
-
-    Stop usage of the old gimp icon
-
- debian/custom/menu | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
 commit 803668d (origin/ftr_preconfigure_iconPath, ftr_preconfigure_iconPath)
 Author: Eduard Bloch <blade@debian.org>
@@ -1047,15 +994,6 @@ Date:	Sat Oct 17 15:35:29 2015 -0600
  VERSION | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit 6bb3b03
-Author: Eduard Bloch <blade@debian.org>
-Date:	Wed Sep 23 20:59:26 2015 +0200
-
-    Add a note about policykit requirement
-
- debian/README.Debian | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
 commit d490895 (tag: 1.3.11)
 Author: Brian Bidulock <bidulock@openss7.org>
 Date:	Fri Sep 18 19:37:08 2015 -0600
@@ -1111,61 +1049,6 @@ Date:	Fri Sep 18 19:24:19 2015 -0600
  configure.ac | 6 +++---
  2 files changed, 5 insertions(+), 5 deletions(-)
 
-commit 530830d (tag: debian/1.3.8+githubmod+20150914+fa3fdef-2)
-Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Sep 15 00:50:57 2015 +0200
-
-    Partial revert of preferences file dropping
-
- debian/README.cfg | 13 +++++--------
- debian/changelog  |  7 +++++++
- debian/rules	   |  2 ++
- 3 files changed, 14 insertions(+), 8 deletions(-)
-
-commit 55b3738 (tag: debian/1.3.8+githubmod+20150914+fa3fdef-1,
-origin/debian/sid)
-Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Sep 15 00:13:36 2015 +0200
-
-    Make sure to run extra code after dh_install
-
- debian/rules | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-commit 6eb281d
-Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Sep 15 00:00:24 2015 +0200
-
-    Clean some intermediate files
-
- debian/rules | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit a27f988
-Merge: 945b3a8 fa3fdef
-Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Sep 15 00:00:02 2015 +0200
-
-    Merge branch 'icewm-1-3-BRANCH' into debian/sid
-
-commit 945b3a8
-Author: Eduard Bloch <blade@debian.org>
-Date:	Mon Sep 14 23:57:26 2015 +0200
-
-    Here be the first September version
-
- debian/changelog | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
-
-commit da2b7a0
-Author: Eduard Bloch <blade@debian.org>
-Date:	Mon Sep 14 23:56:53 2015 +0200
-
-    Updating ChangeLog for a new Debian snapshot
-
- ChangeLog | 131 +++++++++++++++++++++++++++-------------------------------
- 1 file changed, 62 insertions(+), 69 deletions(-)
-
 commit fa3fdef (tag: upstream/1.3.8+githubmod+20150914+fa3fdef)
 Author: Eduard Bloch <blade@debian.org>
 Date:	Mon Sep 14 23:42:44 2015 +0200
@@ -1179,38 +1062,6 @@ Date:	Mon Sep 14 23:42:44 2015 +0200
  INSTALL.cmakebuild |  2 ++
  src/CMakeLists.txt |  2 +-
  3 files changed, 8 insertions(+), 6 deletions(-)
-
-commit 0a3f591
-Author: Eduard Bloch <blade@debian.org>
-Date:	Mon Sep 14 23:40:49 2015 +0200
-
-    Use the new prefix variable
-
- debian/rules | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 67e0174
-Author: Eduard Bloch <blade@debian.org>
-Date:	Mon Sep 14 22:16:56 2015 +0200
-
-    Restructured debian/rules for better dh integration
-
- debian/README.cfg	     |	13 ++--
- debian/changelog	     |	 6 ++
- debian/icewm-common.install |	 6 ++
- debian/icewm-lite.install   |	 1 +
- debian/icewm.install	     |	10 +++
- debian/rules		     | 160 ++++++++++++----------------------------
- 6 files changed, 78 insertions(+), 118 deletions(-)
-
-commit 7409a1d
-Author: Eduard Bloch <blade@debian.org>
-Date:	Mon Sep 14 22:15:03 2015 +0200
-
-    Don't ignore debian/, I work there
-
- .gitignore | 5 -----
- 1 file changed, 5 deletions(-)
 
 commit 04d6e2f
 Author: Brian Bidulock <bidulock@openss7.org>
@@ -1236,15 +1087,6 @@ Date:	Fri Aug 21 15:29:02 2015 +0200
  src/config.cmake.h.in | 1 +
  1 file changed, 1 insertion(+)
 
-commit 5331e8a (tag: debian/1.3.8+githubmod+20150818+ad97152-1)
-Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Aug 18 11:43:02 2015 +0200
-
-    Fixed upstream branch versioning
-
- debian/changelog | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
 commit ad97152 (tag: upstream/1.3.8+githubmod+20150818+ad97152,
 origin/icewm-1-3-BRANCH, origin/HEAD, foo)
 Author: Eduard Bloch <blade@debian.org>
@@ -1254,73 +1096,6 @@ Date:	Wed Jul 8 13:13:17 2015 +0200
 
  lib/keys.in | 1 +
  1 file changed, 1 insertion(+)
-
-commit e0e3005
-Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Aug 18 11:19:46 2015 +0200
-
-    Fixed incorrect version setting, moved the incorrectly applied local change
-
- debian/changelog     | 4 ++--
- debian/custom/menu   | 2 +-
- debian/examples/menu | 2 +-
- debian/rules	      | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
-
-commit 7959fbf
-Merge: 0a980d7 d7a5afd
-Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Aug 18 11:11:30 2015 +0200
-
-    Merge branch 'debian/sid' of https://github.com/Code7R/icewm into
-    debian/sid
-
-commit d7a5afd (tag: debian/1.3.8+githubmod++20150818+4cda2e8-1)
-Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Aug 18 10:39:25 2015 +0200
-
-    Update the changelog for a new snapshot
-
-    And added a helper to repeat this
-
- debian/changelog | 6 ++++--
- debian/rules	  | 3 +++
- 2 files changed, 7 insertions(+), 2 deletions(-)
-
-commit 9086d68
-Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Aug 16 20:34:23 2015 +0200
-
-    Update upstream revision, drop configure.in too when making snapshot
-
- debian/changelog | 2 +-
- debian/rules	  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-commit ffc2e80
-Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Aug 16 20:25:48 2015 +0200
-
-    Updating ChangeLog for a new Debian snapshot
-
- ChangeLog | 38 +++++++++++++++++++-------------------
- 1 file changed, 19 insertions(+), 19 deletions(-)
-
-commit ab0afc2
-Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Aug 16 19:58:00 2015 +0200
-
-    Date fix
-
- debian/changelog | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 70ba877
-Merge: dafbc10 4cda2e8
-Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Aug 16 16:41:50 2015 +0200
-
-    Merge branch 'icewm-1-3-BRANCH' into debian/sid
 
 commit 4cda2e8 (tag: upstream/1.3.8+githubmod+20150815+4cda2e8, tag:
 upstream/1.3.8+githubmod++20150818+4cda2e8)
@@ -1332,22 +1107,6 @@ Date:	Sun Aug 16 16:33:16 2015 +0200
  src/CMakeLists.txt | 10 ++++------
  1 file changed, 4 insertions(+), 6 deletions(-)
 
-commit dafbc10
-Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Aug 16 14:08:37 2015 +0200
-
-    Here be 1.3.10+
-
- debian/changelog | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-commit 18eab25
-Merge: 0d9d8b1 2a230bc
-Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Aug 16 12:17:06 2015 +0200
-
-    Merge branch 'icewm-1-3-BRANCH' into debian/sid
-
 commit 2a230bc
 Author: Eduard Bloch <blade@debian.org>
 Date:	Sun Aug 16 10:45:00 2015 +0200
@@ -1356,26 +1115,6 @@ Date:	Sun Aug 16 10:45:00 2015 +0200
 
  doc/CMakeLists.txt | 22 +++++++++++++---------
  1 file changed, 13 insertions(+), 9 deletions(-)
-
-commit 0d9d8b1
-Author: Eduard Bloch <blade@debian.org>
-Date:	Sat Aug 15 16:28:16 2015 +0200
-
-    Fixed the Debian source updater to check only the relevant branch and
-    exclude useless update of autoconf files
-
- autogen.sh   | 14 ++++++++++----
- debian/rules |  2 +-
- 2 files changed, 11 insertions(+), 5 deletions(-)
-
-commit d47131b
-Author: Eduard Bloch <blade@debian.org>
-Date:	Sat Aug 15 16:12:15 2015 +0200
-
-    Updating ChangeLog for a new Debian snapshot
-
- ChangeLog | 2863 +++++++++++++++++++++++++++++----------------------------
- 1 file changed, 1471 insertions(+), 1392 deletions(-)
 
 commit ef464e6
 Author: Eduard Bloch <blade@debian.org>
@@ -1716,57 +1455,6 @@ Date:	Thu Jul 2 16:25:20 2015 +0200
  src/mstring.h	    | 18 ++++++++++++++++++
  5 files changed, 77 insertions(+), 2 deletions(-)
 
-commit 0a980d7
-Merge: 21dda36 da7082a
-Author: Eduard Bloch <blade@debian.org>
-Date:	Sun May 31 12:49:33 2015 +0200
-
-    Merge branch 'debian/sid' of https://github.com/Code7R/icewm into
-    debian/sid
-
-    Conflicts:
-	debian/changelog
-
-commit 21dda36
-Author: Eduard Bloch <blade@debian.org>
-Date:	Wed Apr 29 17:24:55 2015 +0200
-
-    Little menu update
-
- debian/changelog	      |  1 +
- debian/custom/menu	      | 24 +++++++++---------------
- debian/examples/menu	      |  7 +++++++
- debian/icewm-common.examples |  1 +
- lib/keys.in		      |  2 +-
- 5 files changed, 19 insertions(+), 16 deletions(-)
-
-commit da7082a (tag: debian/1.3.8+githubmod+20150412+960629d-1)
-Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Apr 12 00:08:25 2015 +0200
-
-    Preparing new release, minor packaging fixes
-
- debian/README.cfg | 18 ++++++++++++++++++
- debian/changelog  |  9 +++++++--
- debian/rules	   |  7 +++++--
- 3 files changed, 30 insertions(+), 4 deletions(-)
-
-commit 70cf870
-Author: Eduard Bloch <blade@debian.org>
-Date:	Sat Apr 11 23:49:06 2015 +0200
-
-    Sync fork's extra ChangeLog
-
- ChangeLog | 294 +++++++++++++++++++++++-----------------------------------
- 1 file changed, 116 insertions(+), 178 deletions(-)
-
-commit 7eb9323
-Merge: 976939d 960629d
-Author: Eduard Bloch <blade@debian.org>
-Date:	Sat Apr 11 18:46:51 2015 +0200
-
-    Merge branch 'icewm-1-3-BRANCH' into debian/sid
-
 commit 960629d (tag: upstream/1.3.8+githubmod+20150412+960629d)
 Author: Eduard Bloch <blade@debian.org>
 Date:	Sat Apr 11 18:43:56 2015 +0200
@@ -1801,96 +1489,6 @@ Date:	Mon Mar 30 11:21:59 2015 +0200
  src/wmtaskbar.cc | 13 ++++++++++++-
  4 files changed, 23 insertions(+), 4 deletions(-)
 
-commit 976939d
-Author: Eduard Bloch <blade@debian.org>
-Date:	Mon Mar 30 11:21:59 2015 +0200
-
-    Smarter detection of systems with battery (auto-enable APM applet
-    on laptops)
-
- src/aapm.cc	  |  8 ++++++--
- src/aapm.h	  |  4 +++-
- src/default.h	  |  2 ++
- src/wmtaskbar.cc | 13 ++++++++++++-
- 4 files changed, 23 insertions(+), 4 deletions(-)
-
-commit 0bcdf73
-Author: Eduard Bloch <blade@debian.org>
-Date:	Mon Mar 30 10:44:35 2015 +0200
-
-    groff is FAQ build-dep
-
- debian/changelog | 3 ++-
- debian/control   | 2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
-
-commit 2392693
-Author: Eduard Bloch <blade@debian.org>
-Date:	Mon Mar 16 17:54:45 2015 +0100
-
-    Another little tweak
-
- debian/examples/startup | 3 +++
- 1 file changed, 3 insertions(+)
-
-commit b59b6eb
-Author: Eduard Bloch <blade@debian.org>
-Date:	Thu Mar 12 13:03:58 2015 +0100
-
-    startup file example and XDG autorun stuff
-
- debian/README.Debian	      | 19 +++++++++++++++++++
- debian/changelog	      |  2 ++
- debian/examples/startup      | 26 ++++++++++++++++++++++++++
- debian/icewm-common.examples |  4 ++++
- debian/rules		      |  3 ++-
- 5 files changed, 53 insertions(+), 1 deletion(-)
-
-commit 4b57eaf
-Author: Eduard Bloch <blade@debian.org>
-Date:	Wed Mar 11 13:51:14 2015 +0100
-
-    FAQ update, and txt version
-
- debian/FAQ/source/IceWM-FAQ.sgml | 273 +++++++++++++++++++++++++++++------
- debian/changelog		  |   6 +
- debian/rules			  |   4 +-
- 3 files changed, 240 insertions(+), 43 deletions(-)
-
-commit 0a0aea6 (tag: debian/1.3.8+githubmod+20150310+31bfd46-2)
-Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Mar 10 14:30:27 2015 +0100
-
-    Updating ChangeLog for a new Debian snapshot
-
- ChangeLog | 1395 ++++++++++++++++++++++++++-------------------------------
- 1 file changed, 636 insertions(+), 759 deletions(-)
-
-commit 52792ec
-Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Mar 10 14:28:58 2015 +0100
-
-    Updated the list of contributors
-
- debian/copyright | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-commit 35eff62
-Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Mar 10 14:23:10 2015 +0100
-
-    Making Lintian happy
-
- debian/control | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 53e8a96
-Merge: 641fe26 95cab08
-Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Mar 10 14:19:04 2015 +0100
-
-    Merge branch 'icewm-1-3-BRANCH' into debian/sid
-
 commit 95cab08
 Author: Eduard Bloch <blade@debian.org>
 Date:	Tue Mar 10 14:16:40 2015 +0100
@@ -1899,36 +1497,6 @@ Date:	Tue Mar 10 14:16:40 2015 +0100
 
  src/globit.cc | 3 +++
  1 file changed, 3 insertions(+)
-
-commit 641fe26
-Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Mar 10 14:15:58 2015 +0100
-
-    Build-Dep cleanup
-
- debian/control | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 0ac0155
-Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Mar 10 13:03:11 2015 +0100
-
-    Fixing build deps, stripped all the autoconf foo
-
- debian/changelog | 6 ++++++
- debian/control   | 4 ++--
- 2 files changed, 8 insertions(+), 2 deletions(-)
-
-commit 0c105fc (tag: debian/1.3.8+githubmod+20150310+31bfd46-1)
-Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Mar 10 11:54:41 2015 +0100
-
-    Moving to Sid, improve orig tarball export
-
- debian/changelog | 6 +++---
- debian/gbp.conf  | 2 +-
- debian/rules	  | 5 +++--
- 3 files changed, 7 insertions(+), 6 deletions(-)
 
 commit 31bfd46 (tag: upstream/1.3.8+githubmod+20150310+31bfd46)
 Author: Eduard Bloch <blade@debian.org>
@@ -1939,52 +1507,6 @@ Date:	Sun Mar 8 15:01:53 2015 +0100
  lib/keys.in | 7 ++++---
  1 file changed, 4 insertions(+), 3 deletions(-)
 
-commit 2910bd9 (origin/debian/experimental, debian/experimental)
-Author: Eduard Bloch <blade@debian.org>
-Date:	Mon Mar 9 20:11:15 2015 +0100
-
-    Changelog update
-
- debian/changelog | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-commit a5352d8
-Author: Eduard Bloch <blade@debian.org>
-Date:	Mon Mar 9 19:59:10 2015 +0100
-
-    Various bugfixing, removing of old conffiles
-
- debian/README.Debian	     | 14 ++++++++++++++
- debian/changelog	     |	9 +++++++--
- debian/icewm-common.preinst | 15 +++++++++++++--
- 3 files changed, 34 insertions(+), 4 deletions(-)
-
-commit 2396c2d
-Author: Eduard Bloch <blade@debian.org>
-Date:	Mon Mar 9 19:58:51 2015 +0100
-
-    Better version checking and tagging when making upstream snapshots
-
- debian/rules | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-commit 0579224
-Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Mar 8 15:01:53 2015 +0100
-
-    Also react to the sleep key found on Compaq keyboard(s)
-
- lib/keys.in | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-commit 20e2bb1
-Merge: 83a7026 e223c3e
-Author: Eduard Bloch <blade@debian.org>
-Date:	Wed Mar 4 15:25:13 2015 +0100
-
-    Merge remote-tracking branch 'bbidulock/icewm-1-3-BRANCH' into
-    debian/experimental
-
 commit e223c3e (tag: upstream/1.3.8+githubmod+20150304+e223c3e)
 Author: Eduard Bloch <blade@debian.org>
 Date:	Wed Mar 4 15:08:19 2015 +0100
@@ -1993,13 +1515,6 @@ Date:	Wed Mar 4 15:08:19 2015 +0100
 
  INSTALL.cmakebuild | 9 ++++++++-
  1 file changed, 8 insertions(+), 1 deletion(-)
-
-commit 83a7026
-Merge: 5b326c2 63665d0
-Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Mar 3 21:27:20 2015 +0100
-
-    Merge branch 'icewm-1-3-BRANCH' into debian/experimental
 
 commit 63665d0
 Author: Eduard Bloch <blade@debian.org>
@@ -2028,13 +1543,6 @@ Date:	Tue Mar 3 20:55:21 2015 +0100
  src/CMakeLists.txt    | 3 ++-
  src/config.cmake.h.in | 1 +
  2 files changed, 3 insertions(+), 1 deletion(-)
-
-commit 5b326c2
-Merge: af8669e f5ba54f
-Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Mar 3 20:42:42 2015 +0100
-
-    Merge branch 'icewm-1-3-BRANCH' into debian/experimental
 
 commit f5ba54f
 Author: Eduard Bloch <blade@debian.org>
@@ -2065,13 +1573,6 @@ Date:	Tue Mar 3 17:36:12 2015 +0100
  src/CMakeLists.txt | 8 ++++++--
  2 files changed, 7 insertions(+), 3 deletions(-)
 
-commit af8669e
-Merge: 3be2d89 8ca717b
-Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Mar 3 20:29:21 2015 +0100
-
-    Merge branch 'icewm-1-3-BRANCH' into debian/experimental
-
 commit 8ca717b
 Author: Eduard Bloch <blade@debian.org>
 Date:	Tue Mar 3 11:46:18 2015 +0100
@@ -2084,84 +1585,6 @@ Date:	Tue Mar 3 11:46:18 2015 +0100
  po/CMakeLists.txt  |  8 ++++++--
  4 files changed, 25 insertions(+), 15 deletions(-)
 
-commit 3be2d89
-Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Mar 3 19:17:28 2015 +0100
-
-    Fixed lite package building, more plausibility checks
-
- debian/rules | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-commit 79ba205
-Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Mar 3 19:16:32 2015 +0100
-
-    [cmake] Fixed sound subsystem selection
-
- src/CMakeLists.txt    | 11 ++++++-----
- src/config.cmake.h.in |  6 +++---
- 2 files changed, 9 insertions(+), 8 deletions(-)
-
-commit bed8d62
-Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Mar 3 17:36:12 2015 +0100
-
-    [cmake] Added forgoten icesh, made po files optional
-
- po/CMakeLists.txt  | 2 +-
- src/CMakeLists.txt | 7 +++++--
- 2 files changed, 6 insertions(+), 3 deletions(-)
-
-commit 858c8a0
-Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Mar 3 11:47:12 2015 +0100
-
-    Move to cmake build system
-
- debian/rules | 75 ++++++++++++++++----------------------------------------
- 1 file changed, 21 insertions(+), 54 deletions(-)
-
-commit 632fc0e
-Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Mar 3 11:46:18 2015 +0100
-
-    [cmake] fix of some installation target locations
-
- CMakeLists.txt     | 13 ++++++++-----
- doc/CMakeLists.txt | 12 ++++++------
- lib/CMakeLists.txt |  7 +++++--
- po/CMakeLists.txt  |  8 ++++++--
- 4 files changed, 25 insertions(+), 15 deletions(-)
-
-commit b8e9eda
-Merge: e6ad7b7 5e2b78e
-Author: Eduard Bloch <blade@debian.org>
-Date:	Mon Mar 2 19:33:46 2015 +0100
-
-    Merge branch 'icewm-1-3-BRANCH' into debian/experimental
-
-    Conflicts:
-	src/CMakeLists.txt
-
-commit e6ad7b7
-Author: Eduard Bloch <blade@debian.org>
-Date:	Mon Mar 2 15:19:39 2015 +0100
-
-    [cmake] Making installation of icewm-menu-fdo conditional
-
- src/CMakeLists.txt | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-commit 64f03c4
-Author: Eduard Bloch <blade@debian.org>
-Date:	Mon Mar 2 14:26:02 2015 +0100
-
-    New changelog entry
-
- debian/changelog | 7 +++++++
- 1 file changed, 7 insertions(+)
-
 commit 5e2b78e
 Author: Eduard Bloch <blade@debian.org>
 Date:	Mon Mar 2 14:26:28 2015 +0100
@@ -2171,14 +1594,6 @@ Date:	Mon Mar 2 14:26:28 2015 +0100
  src/CMakeLists.txt    | 30 +++++++++++++++++++++---------
  src/config.cmake.h.in |  1 +
  2 files changed, 22 insertions(+), 9 deletions(-)
-
-commit f097f01
-Merge: b4273c8 72fb7b0
-Author: Eduard Bloch <blade@debian.org>
-Date:	Mon Mar 2 13:32:02 2015 +0100
-
-    Merge remote-tracking branch 'bbidulock/icewm-1-3-BRANCH' into
-    debian/experimental
 
 commit 72fb7b0
 Author: Eduard Bloch <blade@debian.org>
@@ -2365,42 +1780,6 @@ Date:	Fri Feb 20 23:16:59 2015 +0100
  src/yxtray.cc	 |  4 +++-
  9 files changed, 67 insertions(+), 10 deletions(-)
 
-commit b4273c8
-Author: Eduard Bloch <blade@debian.org>
-Date:	Fri Feb 20 23:16:59 2015 +0100
-
-    Little modifications to make the code compilable with weird option
-    settings like no taskbar and not lite
-
- src/appnames.h  |  4 ++++
- src/wmabout.cc  |  4 +++-
- src/wmapp.cc	 |  4 ++++
- src/wmclient.cc | 15 ++++++++++++++-
- src/wmframe.cc  | 33 ++++++++++++++++++++++++++++++---
- src/wmmgr.cc	 |  7 +++++--
- src/ymsgbox.cc  |  4 +++-
- src/ywindow.cc  |  2 +-
- src/yxtray.cc	 |  4 +++-
- 9 files changed, 67 insertions(+), 10 deletions(-)
-
-commit 3eae584 (tag: debian/1.3.8+githubmod+20150214+d373d98-2)
-Author: Eduard Bloch <blade@debian.org>
-Date:	Fri Feb 20 17:48:33 2015 +0100
-
-    Finalize revision -2
-
- debian/changelog | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-commit a024614
-Author: Eduard Bloch <blade@debian.org>
-Date:	Fri Feb 20 17:31:31 2015 +0100
-
-    Avoid manpage link conflicts
-
- debian/rules | 3 +++
- 1 file changed, 3 insertions(+)
-
 commit 5f9b527
 Author: Eduard Bloch <blade@debian.org>
 Date:	Fri Feb 20 17:12:02 2015 +0100
@@ -2410,81 +1789,1086 @@ Date:	Fri Feb 20 17:12:02 2015 +0100
  src/yapp.cc | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit 03f6d1e
+commit d46fea3
 Author: Eduard Bloch <blade@debian.org>
-Date:	Fri Feb 20 17:12:02 2015 +0100
+Date:	Fri Feb 13 17:26:32 2015 +0100
 
-    Pass 0 not NULL as signalfd flags
+    Add workarounds for older glib versions
 
- src/yapp.cc | 2 +-
+ src/fdomenu.cc | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+commit d373d98
+Author: Eduard Bloch <blade@debian.org>
+Date:	Fri Feb 13 00:09:34 2015 +0100
+
+    Make CPU info tooltip better understandable
+
+    Inspired by https://bugs.debian.org/628203:
+     * adds hints which value is free ram/swap
+     * hides ACPI temperature if no data is available, adds missing space
+     separator
+
+ po/be.po	   | 14 +++++++-------
+ po/bg.po	   | 14 +++++++-------
+ po/ca.po	   | 14 +++++++-------
+ po/cs.po	   | 14 +++++++-------
+ po/da.po	   | 14 +++++++-------
+ po/de.po	   | 23 ++++++++++-------------
+ po/el.po	   | 14 +++++++-------
+ po/en.po	   | 14 +++++++-------
+ po/es.po	   | 21 ++++++++++-----------
+ po/fi.po	   | 14 +++++++-------
+ po/fr.po	   | 14 +++++++-------
+ po/hr.po	   | 14 +++++++-------
+ po/hu.po	   | 14 +++++++-------
+ po/id.po	   | 14 +++++++-------
+ po/it.po	   | 14 +++++++-------
+ po/ja.po	   | 14 +++++++-------
+ po/ko.po	   | 14 +++++++-------
+ po/lt.po	   | 14 +++++++-------
+ po/lv.po	   | 14 +++++++-------
+ po/mk.po	   | 14 +++++++-------
+ po/nb.po	   | 14 +++++++-------
+ po/nl.po	   | 14 +++++++-------
+ po/no.po	   | 14 +++++++-------
+ po/pl.po	   | 14 +++++++-------
+ po/pt_BR.po	   | 21 ++++++++++-----------
+ po/ro.po	   | 14 +++++++-------
+ po/ru.po	   | 25 +++++++++++--------------
+ po/sk.po	   | 14 +++++++-------
+ po/sl.po	   | 14 +++++++-------
+ po/sv.po	   | 14 +++++++-------
+ po/tr.po	   | 15 +++++++--------
+ po/uk.po	   | 15 +++++++--------
+ po/vi.po	   | 14 +++++++-------
+ po/zh_CN.po	   | 14 +++++++-------
+ po/zh_TW.po	   | 14 +++++++-------
+ src/acpustatus.cc | 14 ++++++++++----
+ 36 files changed, 268 insertions(+), 272 deletions(-)
+
+commit 757a253
+Author: Eduard Bloch <blade@debian.org>
+Date:	Thu Feb 12 22:52:22 2015 +0100
+
+    Fixed the gettext extraction of new submenu titles, fixed build without
+    i18n
+
+ po/be.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/bg.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/ca.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/cs.po	| 145 ++++++++++++++++++++++++++++--------------
+ po/da.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/de.po	| 182 ++++++++++++++++++++++++++++-------------------------
+ po/el.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/en.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/es.po	| 145 ++++++++++++++++++++++++++++--------------
+ po/fi.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/fr.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/hr.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/hu.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/id.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/it.po	| 145 ++++++++++++++++++++++++++++--------------
+ po/ja.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/ko.po	| 145 ++++++++++++++++++++++++++++--------------
+ po/lt.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/lv.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/mk.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/nb.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/nl.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/no.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/pl.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/pt_BR.po	| 145 ++++++++++++++++++++++++++++--------------
+ po/ro.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/ru.po	| 145 ++++++++++++++++++++++++++++--------------
+ po/sk.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/sl.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/sv.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/tr.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/uk.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/vi.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/zh_CN.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/zh_TW.po	| 140 ++++++++++++++++++++++++++++-------------
+ src/fdomenu.cc |  30 ++++-----
+ 36 files changed, 3452 insertions(+), 1550 deletions(-)
+
+commit cb75ba5
+Author: Eduard Bloch <blade@debian.org>
+Date:	Wed Feb 11 22:35:28 2015 +0100
+
+    Added (restored?) hot keys on OK/Cancel confirmation dialog, adapted
+    translation as far as I could understand them
+
+ po/be.po	|  73 ++++------------------------------
+ po/bg.po	|  73 ++++------------------------------
+ po/ca.po	|  73 ++++------------------------------
+ po/cs.po	|  79 ++++++------------------------------
+ po/da.po	|  76 +++++------------------------------
+ po/de.po	| 115 +++++++++++++++++++++++------------------------------
+ po/el.po	|  71 ++++-----------------------------
+ po/en.po	|  68 ++-----------------------------
+ po/es.po	|  78 ++++++------------------------------
+ po/fi.po	|  73 ++++------------------------------
+ po/fr.po	|  73 ++++------------------------------
+ po/hr.po	|  73 ++++------------------------------
+ po/hu.po	|  76 +++++------------------------------
+ po/id.po	|  73 ++++------------------------------
+ po/it.po	|  78 ++++++------------------------------
+ po/ja.po	|  72 ++++-----------------------------
+ po/ko.po	|  77 ++++++-----------------------------
+ po/lt.po	|  73 ++++------------------------------
+ po/lv.po	|  73 ++++------------------------------
+ po/mk.po	|  73 ++++------------------------------
+ po/nb.po	|  73 ++++------------------------------
+ po/nl.po	|  73 ++++------------------------------
+ po/no.po	|  73 ++++------------------------------
+ po/pl.po	|  73 ++++------------------------------
+ po/pt_BR.po	|  78 ++++++------------------------------
+ po/ro.po	|  73 ++++------------------------------
+ po/ru.po	|  78 ++++++------------------------------
+ po/sk.po	|  73 ++++------------------------------
+ po/sl.po	|  73 ++++------------------------------
+ po/sv.po	|  73 ++++------------------------------
+ po/tr.po	|  73 ++++------------------------------
+ po/uk.po	|  72 ++++-----------------------------
+ po/vi.po	|  73 ++++------------------------------
+ po/zh_CN.po	|  72 ++++-----------------------------
+ po/zh_TW.po	|  72 ++++-----------------------------
+ src/ymsgbox.cc |   5 ++-
+ 36 files changed, 349 insertions(+), 2278 deletions(-)
+
+commit 2139fa7
+Merge: 4286790 aecf9a5
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Mon Feb 9 17:28:57 2015 -0700
+
+    Merge pull request #19 from mrbrainsample/icewm-1-3-BRANCH
+
+    Fix icewm-menu-fdo to build without NLS
+
+commit aecf9a5
+Author: Jeff Woods <klaatu@fnordco.com>
+Date:	Mon Feb 9 12:19:07 2015 -0800
+
+    Fix icewm-menu-fdo to build without NLS
+
+ src/fdomenu.cc | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit 4286790
+Merge: 19051fb 134c083
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Sun Feb 8 22:21:12 2015 -0700
+
+    Merge pull request #18 from Code7R/ftr_make_icewm-menu-fdo_default
+
+    Make icewm-menu-fdo the default FDO menu generator
+
+commit 19051fb
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sun Feb 8 20:00:04 2015 +0100
+
+    Try to use internal launching of commands unless they are too complex
+
+ src/fdomenu.cc | 79 +++++++++++++++++++++++++++++++++++-------------------
+ 1 file changed, 51 insertions(+), 28 deletions(-)
+
+commit deca153
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sun Feb 8 17:24:23 2015 +0100
+
+    Make the name of the terminal program customizable via compiler options
+
+ src/wmapp.cc | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+commit 134c083 (origin/ftr_make_icewm-menu-fdo_default,
+ftr_make_icewm-menu-fdo_default)
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sun Feb 8 10:45:56 2015 +0100
+
+    Make icewm-menu-fdo the default FDO menu generator
+
+ lib/menu.in | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+commit c31a61a (origin/ftr_gnomeless_fdo_menu_generator,
+ftr_gnomeless_fdo_menu_generator)
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sat Feb 7 16:17:06 2015 +0100
+
+    Bring in more structure, use GTree to sort and remove dupes
+
+ src/fdomenu.cc | 154 +++++++++++++++++++++++++++++++----------------------
+ 1 file changed, 90 insertions(+), 64 deletions(-)
+
+commit 0222d9e
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sat Feb 7 15:29:44 2015 +0100
+
+    Use a callback to us and glib launch functionality for complicated
+    commands and terminal requirement
+
+ src/fdomenu.cc | 65 +++++++++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 47 insertions(+), 18 deletions(-)
+
+commit c63e58c
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sat Feb 7 13:29:26 2015 +0100
+
+    Fixed automatic inclusion into build sequence
+
+ configure.ac | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+commit a690bdf
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sat Feb 7 13:12:34 2015 +0100
+
+    Memory leak fighting, more menu categories (wine, editors)
+
+ po/be.po	|  34 ++++++++++------
+ po/bg.po	|  34 ++++++++++------
+ po/ca.po	|  34 ++++++++++------
+ po/cs.po	|  34 ++++++++++------
+ po/da.po	|  34 ++++++++++------
+ po/de.po	|  34 ++++++++++------
+ po/el.po	|  34 ++++++++++------
+ po/en.po	|  34 ++++++++++------
+ po/es.po	|  34 ++++++++++------
+ po/fi.po	|  34 ++++++++++------
+ po/fr.po	|  34 ++++++++++------
+ po/hr.po	|  34 ++++++++++------
+ po/hu.po	|  34 ++++++++++------
+ po/id.po	|  34 ++++++++++------
+ po/it.po	|  34 ++++++++++------
+ po/ja.po	|  34 ++++++++++------
+ po/ko.po	|  34 ++++++++++------
+ po/lt.po	|  34 ++++++++++------
+ po/lv.po	|  34 ++++++++++------
+ po/mk.po	|  34 ++++++++++------
+ po/nb.po	|  34 ++++++++++------
+ po/nl.po	|  34 ++++++++++------
+ po/no.po	|  34 ++++++++++------
+ po/pl.po	|  34 ++++++++++------
+ po/pt_BR.po	|  34 ++++++++++------
+ po/ro.po	|  34 ++++++++++------
+ po/ru.po	|  34 ++++++++++------
+ po/sk.po	|  34 ++++++++++------
+ po/sl.po	|  34 ++++++++++------
+ po/sv.po	|  34 ++++++++++------
+ po/tr.po	|  34 ++++++++++------
+ po/uk.po	|  34 ++++++++++------
+ po/vi.po	|  34 ++++++++++------
+ po/zh_CN.po	|  34 ++++++++++------
+ po/zh_TW.po	|  34 ++++++++++------
+ src/fdomenu.cc | 115 +++++++++++++++++++++++++++++++++++++----------------
+ 36 files changed, 816 insertions(+), 489 deletions(-)
+
+commit a30eda6
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sat Feb 7 10:45:44 2015 +0100
+
+    l10n update for fdomenu
+
+ po/be.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/bg.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/ca.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/cs.po    | 53 +++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/da.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/de.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/el.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/en.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/es.po    | 53 +++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/fi.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/fr.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/hr.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/hu.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/id.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/it.po    | 53 +++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/ja.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/ko.po    | 53 +++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/lt.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/lv.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/mk.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/nb.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/nl.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/no.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/pl.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/pt_BR.po | 53 +++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/ro.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/ru.po    | 53 +++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/sk.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/sl.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/sv.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/tr.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/uk.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/vi.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/zh_CN.po | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/zh_TW.po | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ 35 files changed, 1756 insertions(+), 70 deletions(-)
+
+commit f944701
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sat Feb 7 10:45:13 2015 +0100
+
+    Sorting submenues by translateable names
+
+ src/fdomenu.cc | 106 ++++++++++++++++++++++++-----------------------------
+ 1 file changed, 48 insertions(+), 58 deletions(-)
+
+commit aae466d
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sat Feb 7 09:16:50 2015 +0100
+
+    Better recursion control
+
+ src/fdomenu.cc | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
+
+commit 2b817f5
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sat Feb 7 01:36:55 2015 +0100
+
+    Added submenu separation to fdomenu, no sorting yet
+
+ po/POTFILES.in |   1 +
+ src/fdomenu.cc | 114 +++++++++++++++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 111 insertions(+), 4 deletions(-)
+
+commit ecdfca5
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sat Feb 7 00:00:52 2015 +0100
+
+    Added alternative XDG menu generator
+
+ configure.ac	 |  10 ++++
+ src/Makefile.am |  13 ++++-
+ src/fdomenu.cc  | 138 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 160 insertions(+), 1 deletion(-)
+
+commit f202cb6
+Author: Eduard Bloch <blade@debian.org>
+Date:	Thu Feb 5 21:24:06 2015 +0100
+
+    Fix stupid crash of gnome menu when an invalid folder was specified
+
+ src/gnome2.cc | 3 +++
+ 1 file changed, 3 insertions(+)
+
+commit 53a3533
+Author: Eduard Bloch <blade@debian.org>
+Date:	Thu Feb 5 20:14:42 2015 +0100
+
+    Ignore some IDE metadata
+
+ .gitignore | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+commit 27b10d2
+Author: Eduard Bloch <blade@debian.org>
+Date:	Thu Feb 5 20:08:50 2015 +0100
+
+    Experimental mod using signalfd (disabled by default)
+
+    This is something I don't want to enable by default because it's Linux
+    specifics and makes use of kernel feature that are probably not
+    available everywhere.
+
+    It saves some resources for binaries using the YApplication class signal
+    handling: one file descriptor at runtime and approx. 0..700 Bytes code
+    size resp. memory footprint.
+
+    Add -DUSE_SIGNALFD to compiler flags to use it.
+
+ src/yapp.cc | 40 +++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 39 insertions(+), 1 deletion(-)
+
+commit e9a4b85
+Author: Eduard Bloch <blade@debian.org>
+Date:	Thu Feb 5 18:29:57 2015 +0100
+
+    clang was right, those members are not used and bring some risk of
+    programming mistakes
+
+ configure.sh  | 8 --------
+ src/wmtitle.h | 1 -
+ 2 files changed, 9 deletions(-)
+
+commit 208e857
+Author: Eduard Bloch <blade@debian.org>
+Date:	Tue Feb 3 19:48:19 2015 +0100
+
+    Little C++14 related fixes
+
+ src/icesm.cc	| 2 +-
+ src/wmabout.cc | 2 +-
+ src/wmapp.cc	| 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 1eb3312
+Merge: 1c4fec0 139f214
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Tue Feb 3 16:04:26 2015 -0700
+
+    Merge pull request #17 from celeron55/pref_arrange_on_resolution_change
+
+    Add preference to allow disabling "smart" window rearranging when screen
+    size changes
+
+commit 139f214
+Author: Perttu Ahola <celeron55@gmail.com>
+Date:	Tue Feb 3 21:00:56 2015 +0200
+
+    Add preference to allow disabling pre-existing sometimes unwanted behavior:
+    ArrangeWindowsOnScreenSizeChange: Automatically arrange windows when
+    screen size changes
+
+ src/default.h | 2 ++
+ src/wmmgr.cc  | 4 +++-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+commit 1c4fec0
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Mon Feb 2 23:36:02 2015 -0700
+
+    update po files for recent changes
+
+ po/be.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/bg.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/ca.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/cs.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/da.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/de.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/el.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/en.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/es.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/fi.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/fr.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/hr.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/hu.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/id.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/it.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/ja.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/ko.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/lt.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/lv.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/mk.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/nb.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/nl.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/no.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/pl.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/pt_BR.po | 138 ++++++++++++++++++++++++++++----------------------------
+ po/ro.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/ru.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/sk.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/sl.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/sv.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/tr.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/uk.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/vi.po    | 138 ++++++++++++++++++++++++++++----------------------------
+ po/zh_CN.po | 138 ++++++++++++++++++++++++++++----------------------------
+ po/zh_TW.po | 138 ++++++++++++++++++++++++++++----------------------------
+ 35 files changed, 2415 insertions(+), 2415 deletions(-)
+
+commit 0368f9d
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Mon Feb 2 23:28:41 2015 -0700
+
+    add appnames.h to Makefile.am to pass distcheck again
+
+ src/Makefile.am | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 61c8c6f
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Mon Feb 2 23:13:31 2015 -0700
+
+    remove yworker.cc also from POTFILES.in
+
+ po/POTFILES.in | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit 832b633
+Author: Eduard Bloch <blade@debian.org>
+Date:	Mon Feb 2 23:22:06 2015 +0100
+
+    If Linux and SystemD found, try to use that for default shutdown/reboot
+    actions. WLAN interfaces are also more likely to exist nowadays than
+    PPP links.
+
+ src/default.h | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+commit cb35e25
+Author: Eduard Bloch <blade@debian.org>
+Date:	Mon Feb 2 23:08:42 2015 +0100
+
+    Assign suspend-to-ram action through systemd (if active) which is more
+    likely to be available on modern Linux desktops and makes more sense
+    than killing running WM with the "Sleep" button
+
+ lib/keys.in | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit 3a6b03b
+commit 3b6fc2a (ftr_synchronize_icewmtray_and_startup)
 Author: Eduard Bloch <blade@debian.org>
-Date:	Fri Feb 20 08:37:53 2015 +0100
+Date:	Mon Feb 2 20:42:56 2015 +0100
 
-    Various bug fixing of Debian packaging, not building irrelevant data
-    in lite
+    Stronger control of startup sequence in icewm-session, avoids weird
+    effects (like zombie windows) caused by races around icewm vs. icewmtray
+    vs. "startup" script execution
 
- debian/changelog      |  8 ++++++++
- debian/control        |  3 ++-
- debian/icewm.postinst |  2 +-
- debian/rules	       | 18 +++++++++++-------
- 4 files changed, 22 insertions(+), 9 deletions(-)
+ src/icesm.cc	| 19 +++++++++++++++----
+ src/icetray.cc | 13 +++++++++----
+ src/wmapp.cc	|  6 ++++++
+ 3 files changed, 30 insertions(+), 8 deletions(-)
 
-commit 678721e (tag: debian/1.3.8+githubmod+20150214+d373d98-1)
+commit b7443ef
 Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Feb 15 18:40:21 2015 +0100
+Date:	Mon Feb 2 20:32:00 2015 +0100
 
-    Packaging changes
+    Found the "better traceable mess" expected in a previous commit. Added
+    proper checks in callers of YPixmap::replicate(...).
 
- debian/FAQ/IceWM-FAQ-1.html  |  62 -----------
- debian/FAQ/IceWM-FAQ-10.html | 146 -------------------------
- debian/FAQ/IceWM-FAQ-11.html | 218 -------------------------------------
- debian/FAQ/IceWM-FAQ-12.html | 229 ---------------------------------------
- debian/FAQ/IceWM-FAQ-13.html | 153 --------------------------
- debian/FAQ/IceWM-FAQ-14.html |  24 ----
- debian/FAQ/IceWM-FAQ-15.html |  64 -----------
- debian/FAQ/IceWM-FAQ-2.html  |  90 ---------------
- debian/FAQ/IceWM-FAQ-3.html  | 225 --------------------------------------
- debian/FAQ/IceWM-FAQ-4.html  | 201 ----------------------------------
- debian/FAQ/IceWM-FAQ-5.html  | 212 ------------------------------------
- debian/FAQ/IceWM-FAQ-6.html  | 103 ------------------
- debian/FAQ/IceWM-FAQ-7.html  | 181 -------------------------------
- debian/FAQ/IceWM-FAQ-8.html  | 211 ------------------------------------
- debian/FAQ/IceWM-FAQ-9.html  | 223 --------------------------------------
- debian/FAQ/IceWM-FAQ.html    | 175 ------------------------------
- debian/changelog	      |  12 +-
- debian/control		      |   2 +-
- debian/icewm-common.docs     |   1 -
- debian/rules		      |  19 +++-
- debian/source/format	      |   2 +-
- debian/source/options	      |   2 +
- 22 files changed, 28 insertions(+), 2527 deletions(-)
+ src/wmapp.cc | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-commit 89e6a98
+commit 815782d
 Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Feb 15 18:16:02 2015 +0100
+Date:	Mon Feb 2 20:47:36 2015 +0100
 
-    Updating ChangeLog for a new Debian snapshot
+    Moved yworker.{cc,h} out of the build, apparently not used anymore
 
- ChangeLog | 287 +++++++++++++++++++++++-----------------------------------
- 1 file changed, 112 insertions(+), 175 deletions(-)
+ src/Makefile.am	    | 2 --
+ src/{ => attic}/yworker.cc | 0
+ src/{ => attic}/yworker.h  | 0
+ src/yapp.cc		    | 2 ++
+ src/yapp.h		    | 4 ++--
+ 5 files changed, 4 insertions(+), 4 deletions(-)
 
-commit 60fcb4d
+commit 9724ca0
 Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Feb 15 12:45:16 2015 +0100
+Date:	Mon Feb 2 00:18:20 2015 +0100
 
-    Misc
+    Minor improvements after code check with clang++
 
- debian/gbp.conf |  4 ++--
- debian/rules	 | 10 +++++-----
- 2 files changed, 7 insertions(+), 7 deletions(-)
+    Use abort instead of hand-crafted crash trigger where possible
 
-commit 12441c4
-Merge: 43e76b0 d46fea3
+ configure.ac	| 4 ++--
+ src/appnames.h | 5 ++++-
+ src/ascii.h	| 2 +-
+ src/misc.cc	| 4 ++++
+ 4 files changed, 11 insertions(+), 4 deletions(-)
+
+commit 7ec4f52
 Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Feb 15 11:41:23 2015 +0100
+Date:	Sun Feb 1 23:58:13 2015 +0100
 
-    Merge remote-tracking branch 'bbidulock/icewm-1-3-BRANCH' into
-    debian/experimental
+    Optional use of clang for development, work around unknown pragmas
+    (might need a review later)
+
+ configure.sh	| 8 ++++++++
+ src/mstring.cc | 3 +++
+ src/mstring.h	| 3 +++
+ src/upath.cc	| 3 +++
+ src/ypoint.h	| 3 +++
+ 5 files changed, 20 insertions(+)
+
+commit 41a89b5
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sun Feb 1 23:53:50 2015 +0100
+
+    Avoid potential use of unitialized value
+
+ src/aapm.cc | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+commit 06703db
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sun Feb 1 23:33:43 2015 +0100
+
+    this cannot be NULL unless more ugly (and better traceable) mess appears
+
+ src/ypixmap.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit c736225
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sun Feb 1 23:30:12 2015 +0100
+
+    Fix the check of fribidi_log2vis' result (the code looks like it was
+    intended that way, and clang barfs otherwise)
+
+ src/yfontxft.cc | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+commit 292ee4d
+Merge: a7cd43c c16c009
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Sun Feb 1 13:39:09 2015 -0700
+
+    Merge pull request #15 from Code7R/icewm-1-3-BRANCH
+
+    Replaced previous reimplementation of ACOUNT macro
+
+commit a7cd43c
+Merge: 79e1109 8b25501
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Sun Feb 1 13:38:35 2015 -0700
+
+    Merge pull request #16 from Code7R/ftr_centralized_usage_of_exeext
+
+    Unified setting of EXEEXT through Makefile variable only
+
+commit 8b25501 (origin/ftr_centralized_usage_of_exeext)
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sun Feb 1 14:38:13 2015 +0100
+
+    Unified setting of EXEEXT through Makefile variable only
+
+ configure.ac	 | 12 ------------
+ src/Makefile.am |  2 +-
+ src/appnames.h  | 28 ++++++++++++++++++++++++++++
+ src/icesm.cc	 |  1 +
+ src/icewmbg.cc  |  1 +
+ src/themes.cc	 |  1 +
+ src/wmapp.cc	 |  1 +
+ src/wmprog.cc	 |  1 +
+ 8 files changed, 34 insertions(+), 13 deletions(-)
+
+commit c16c009
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sun Feb 1 13:20:14 2015 +0100
+
+    Replaced previous reimplementation of ACOUNT macro
+
+ src/acpustatus.cc | 2 +-
+ src/base.h	   | 4 ----
+ 2 files changed, 1 insertion(+), 5 deletions(-)
+
+commit 79e1109
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Sun Jan 25 17:26:07 2015 -0700
+
+    removed CXXLD precious variable
+
+    - CXXLD does not default properly when explicitly declared precious
+    - to avoid linking libstdc++ when using libsupc++ in EXTRA_FLAGS,
+      use -Wl,--as-needed as shown in configure.sh
+
+ configure.ac | 2 --
+ configure.sh | 3 +--
+ 2 files changed, 1 insertion(+), 4 deletions(-)
+
+commit b999054
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Sun Jan 25 16:04:17 2015 -0700
+
+    do not update dates and version until tarball release
+
+ README.md    | 4 ++--
+ configure.ac | 6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 6c6a3c1
+Merge: 4d54453 efef969
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Sun Jan 25 15:58:40 2015 -0700
+
+    Merge pull request #14 from Code7R/icewm-1-3-BRANCH
+
+    Make linking with -lsupc++ effective (w/o stdlibc++)
+
+commit efef969
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sun Jan 25 22:39:01 2015 +0100
+
+    Language update, merge with some translations from Debian, manual review
+    of some typical format string mismatches
+
+ README.md   |	 6 +--
+ po/be.po    | 121 ++++++++++++++++++++++++++++++++++++++++--
+ po/bg.po    | 138 ++++++++++++++++++++++++++++++++++++++++++++++--
+ po/ca.po    | 129 +++++++++++++++++++++++++++++++++++++++++----
+ po/cs.po    | 153 +++++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/da.po    | 138 +++++++++++++++++++++++++++++++++++++++++++++++-
+ po/de.po    |	20 ++++---
+ po/el.po    |	29 ++++++++--
+ po/en.po    |	 2 +-
+ po/es.po    | 145 +++++++++++++++++++++++++++++++++++++++++++++++++-
+ po/fi.po    | 135 ++++++++++++++++++++++++++++++++++++++++++++++-
+ po/fr.po    | 118 ++++++++++++++++++++++++++++++++++++++++-
+ po/hr.po    |	 9 +++-
+ po/hu.po    |	27 +++++++++-
+ po/id.po    |	53 ++++++++++++++++++-
+ po/it.po    | 136 ++++++++++++++++++++++++++++++++++++++++++++++-
+ po/ja.po    |	 9 +++-
+ po/ko.po    | 133 +++++++++++++++++++++++++++++++++++++++++++++-
+ po/lt.po    | 121 ++++++++++++++++++++++++++++++++++++++++--
+ po/lv.po    | 137 +++++++++++++++++++++++++++++++++++++++++++++++-
+ po/mk.po    | 144 +++++++++++++++++++++++++++++++++++++++++++++++++-
+ po/nb.po    | 119 +++++++++++++++++++++++++++++++++++++++--
+ po/nl.po    | 148 ++++++++++++++++++++++++++++++++++++++++++++++++---
+ po/no.po    |	10 ++--
+ po/pl.po    | 140 +++++++++++++++++++++++++++++++++++++++++++++++--
+ po/pt_BR.po | 160 +++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ po/ro.po    | 130 ++++++++++++++++++++++++++++++++++++++++++---
+ po/sk.po    |	23 ++++++--
+ po/sl.po    | 144 ++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/sv.po    | 119 +++++++++++++++++++++++++++++++++++++++--
+ po/tr.po    | 143 ++++++++++++++++++++++++++++++++++++++++++++++++--
+ po/uk.po    |	23 +++++++-
+ po/vi.po    | 135 ++++++++++++++++++++++++++++++++++++++++++++++-
+ po/zh_CN.po | 133 +++++++++++++++++++++++++++++++++++++++++++++-
+ po/zh_TW.po | 133 ++++++++++++++++++++++++++++++++++++++++++++--
+ 35 files changed, 3348 insertions(+), 115 deletions(-)
+
+commit aa0652f
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sun Jan 25 22:01:41 2015 +0100
+
+    Basic review of Russian translation (incomplete)
+
+ po/ru.po | 104 +++++++++++++++++++++++++++++++++++++++++------------------
+ 1 file changed, 73 insertions(+), 31 deletions(-)
+
+commit 2c82649
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sun Jan 25 21:43:20 2015 +0100
+
+    German translation update and review
+
+ po/de.po | 403 ++++++++++++++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 305 insertions(+), 98 deletions(-)
+
+commit f462658
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sun Jan 25 20:27:00 2015 +0100
+
+    Make linking with -lsupc++ effective (w/o stdlibc++)
+
+    Also fix the sample configure command (it's not in /usr/lib with
+    multiarch setups)
+
+ configure.ac | 8 +++++---
+ configure.sh | 3 ++-
+ 2 files changed, 7 insertions(+), 4 deletions(-)
+
+commit 4d54453
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Sat Jan 24 18:13:03 2015 -0700
+
+    update po files (corrects new CPU Load format)
+
+ po/be.po    | 36 ++++++++++++++++++------------------
+ po/bg.po    | 36 ++++++++++++++++++------------------
+ po/ca.po    | 36 ++++++++++++++++++------------------
+ po/cs.po    | 34 +++++++++++++++++-----------------
+ po/da.po    | 34 +++++++++++++++++-----------------
+ po/de.po    | 36 ++++++++++++++++++------------------
+ po/el.po    | 36 ++++++++++++++++++------------------
+ po/en.po    | 34 +++++++++++++++++-----------------
+ po/es.po    | 38 +++++++++++++++++++-------------------
+ po/fi.po    | 34 +++++++++++++++++-----------------
+ po/fr.po    | 36 ++++++++++++++++++------------------
+ po/hr.po    | 36 ++++++++++++++++++------------------
+ po/hu.po    | 36 ++++++++++++++++++------------------
+ po/id.po    | 34 +++++++++++++++++-----------------
+ po/it.po    | 34 +++++++++++++++++-----------------
+ po/ja.po    | 36 ++++++++++++++++++------------------
+ po/ko.po    | 34 +++++++++++++++++-----------------
+ po/lt.po    | 36 ++++++++++++++++++------------------
+ po/lv.po    | 34 +++++++++++++++++-----------------
+ po/mk.po    | 34 +++++++++++++++++-----------------
+ po/nb.po    | 36 ++++++++++++++++++------------------
+ po/nl.po    | 36 ++++++++++++++++++------------------
+ po/no.po    | 36 ++++++++++++++++++------------------
+ po/pl.po    | 34 +++++++++++++++++-----------------
+ po/pt_BR.po | 34 +++++++++++++++++-----------------
+ po/ro.po    | 36 ++++++++++++++++++------------------
+ po/ru.po    | 36 ++++++++++++++++++------------------
+ po/sk.po    | 34 +++++++++++++++++-----------------
+ po/sl.po    | 36 ++++++++++++++++++------------------
+ po/sv.po    | 36 ++++++++++++++++++------------------
+ po/tr.po    | 36 ++++++++++++++++++------------------
+ po/uk.po    | 36 ++++++++++++++++++------------------
+ po/vi.po    | 34 +++++++++++++++++-----------------
+ po/zh_CN.po | 34 +++++++++++++++++-----------------
+ po/zh_TW.po | 34 +++++++++++++++++-----------------
+ 35 files changed, 616 insertions(+), 616 deletions(-)
+
+commit e47fce4
+Author: Axel Dirla <axel.dirla@arcor.de>
+Date:	Tue Dec 30 16:07:40 2014 +0100
+
+    Tab-Completion for "internal taskbar command line"
+
+    - extracted from icewm_1.3.8-2.0axel1.debdiff
+    - adjusted to change Makefile.am instead of Makefile.in
+
+ src/Makefile.am  |   2 +
+ src/globit.c	  | 296 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/globit.h	  |  14 +++
+ src/yinput.cc	  |  25 +++++
+ src/yinputline.h |   1 +
+ 5 files changed, 338 insertions(+)
+
+commit f36895a
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Sat Jan 24 15:19:46 2015 -0700
+
+    add support for compiling with libsupc++
+
+    - added EXTRA_LIBS precious variable
+    - add EXTRA_LIBS="/usr/lib/libsupc++.a" to static compile
+      against libsupc++
+    - add EXTRA_LIBS="-lsupc++" if you have dynamic libsupc++
+      libraries
+
+ configure.ac | 4 ++++
+ configure.sh | 3 ++-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+commit 8e41348
+Merge: 185692a 7ed50a7
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Sat Jan 24 11:50:28 2015 -0700
+
+    Merge pull request #13 from Code7R/icewm-1-3-BRANCH
+
+    Make more error checking, prevent buffer overflow, fix CPU frequenz
+    reading with vanilla kernel
+
+commit 7ed50a7
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sat Jan 24 15:53:35 2015 +0100
+
+    Build fix with -Werror and without xrandr support
+
+    gotLayout has no effect down there, maybe the code looked different
+    long ago (outer loop?!)
+
+ src/ywindow.cc | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+commit d15d7c9
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sat Jan 24 12:34:39 2015 +0100
+
+    Fix format buffer overflow (Debian bug 765965) and other issues
+
+    Instead of multiple small buffers and string joining on heap, now use
+    one format buffer and track the string lengts while filling it.
+
+    Also fixes reading of cpu frequence which is not available of the sysfs
+    file used in icewm-git fork, now it falls back to the original location
+    if needed.
+
+ src/acpustatus.cc | 98 ++++++++++++++++++++++++++++-----------------------
+ src/base.h	   |  4 +++
+ 2 files changed, 57 insertions(+), 45 deletions(-)
+
+commit 185692a
+Merge: f956e4a acd6a66
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Fri Jan 2 14:48:07 2015 -0700
+
+    Merge pull request #12 from blueness/HAVE_EXECINFO_H
+
+    configure.ac: check for <execinfo.h>
+
+commit acd6a66
+Author: Anthony G. Basile <blueness@gentoo.org>
+Date:	Fri Jan 2 14:52:11 2015 -0500
+
+    configure.ac: check for <execinfo.h>
+
+    Some C standard libraries either don't provide backtrace, or
+    provide it conditionally as is the case with uClibc.  We add
+    a check in configure.ac to see if execinfo.h exists, and if it
+    does not, then we disable show_backtrace() in src/misc.cc.
+
+    Signed-off-by: Anthony G. Basile <blueness@gentoo.org>
+
+ configure.ac | 1 +
+ src/misc.cc  | 4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+commit f956e4a
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Tue Dec 2 02:27:22 2014 -0700
+
+    correct pt_BR.po per bug 918 on sourceforge
+
+     - pt_BR.po file was not in UTF-8, thanks to @elchevive
+     - also, regenerate all po files with new line numbers
+
+ po/be.po    |	28 ++--
+ po/bg.po    |	28 ++--
+ po/ca.po    |	28 ++--
+ po/cs.po    |	28 ++--
+ po/da.po    |	28 ++--
+ po/de.po    |	28 ++--
+ po/el.po    |	28 ++--
+ po/en.po    |	28 ++--
+ po/es.po    |	28 ++--
+ po/fi.po    |	28 ++--
+ po/fr.po    |	28 ++--
+ po/hr.po    |	28 ++--
+ po/hu.po    |	28 ++--
+ po/id.po    |	28 ++--
+ po/it.po    |	28 ++--
+ po/ja.po    |	28 ++--
+ po/ko.po    |	28 ++--
+ po/lt.po    |	28 ++--
+ po/lv.po    |	28 ++--
+ po/mk.po    |	28 ++--
+ po/nb.po    |	28 ++--
+ po/nl.po    |	28 ++--
+ po/no.po    |	28 ++--
+ po/pl.po    |	28 ++--
+ po/pt_BR.po | 404 ++++++++++++++++++++++++++++----------------------------
+ po/ro.po    |	28 ++--
+ po/ru.po    |	28 ++--
+ po/sk.po    |	28 ++--
+ po/sl.po    |	28 ++--
+ po/sv.po    |	28 ++--
+ po/tr.po    |	28 ++--
+ po/uk.po    |	28 ++--
+ po/vi.po    |	28 ++--
+ po/zh_CN.po |	28 ++--
+ po/zh_TW.po |	28 ++--
+ 35 files changed, 677 insertions(+), 679 deletions(-)
+
+commit e5cba49
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Sat Nov 22 03:52:47 2014 -0700
+
+    error in merge, missing ')'
+
+ src/icewmbg.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 3967ea9
+Merge: 79f4158 803d8d9
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Fri Nov 21 09:13:56 2014 -0700
+
+    Merge pull request #11 from scarabeusiv/icewm-1-3-BRANCH
+
+    Various small fixes forwarded from openSUSE
+
+commit 803d8d9
+Author: Tomáš Chvátal <tomas.chvatal@gmail.com>
+Date:	Fri Nov 21 13:34:55 2014 +0100
+
+    default to the solid color background when the given default background
+    pixmap can't be loaded
+
+ src/icewmbg.cc | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+commit 1d6ec17
+Author: Tomáš Chvátal <tomas.chvatal@gmail.com>
+Date:	Fri Nov 21 13:29:05 2014 +0100
+
+    Fix winoptions behaviour
+
+ src/wmframe.cc | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+commit 355db88
+Author: Tomáš Chvátal <tomas.chvatal@gmail.com>
+Date:	Fri Nov 21 13:25:16 2014 +0100
+
+    Fix unaligned access.
+
+ src/wmapp.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit be50c4e
+Author: Tomáš Chvátal <tomas.chvatal@gmail.com>
+Date:	Fri Nov 21 13:22:51 2014 +0100
+
+    Fix counter crash on popmenu.
+
+    Might be needed for YMenu / YPopupWindow all over.
+
+ src/wmframe.cc | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit f07d461
+Author: Tomáš Chvátal <tomas.chvatal@gmail.com>
+Date:	Fri Nov 21 13:18:53 2014 +0100
+
+    Allow config override to fix icewm --config=file
+
+ src/wmapp.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 1211058
+Author: Tomáš Chvátal <tomas.chvatal@gmail.com>
+Date:	Fri Nov 21 13:15:34 2014 +0100
+
+    We always want the translation to be multibyte
+
+ src/ylocale.cc | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+commit 79f4158
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Wed Nov 5 03:56:28 2014 -0700
+
+    remove unused _icewm_deprecated declaration
+
+ src/base.h | 6 ------
+ 1 file changed, 6 deletions(-)
+
+commit 8f73fe6
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Wed Nov 5 03:53:21 2014 -0700
+
+    fix bbkeys link in .in file
+
+ README.md.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 626e0ea
+Merge: 800fc7c 7c153e9
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Wed Nov 5 03:34:18 2014 -0700
+
+    Merge branch 'icewm-1-3-BRANCH' of https://github.com/bbidulock/icewm
+    into icewm-1-3-BRANCH
+
+commit 800fc7c
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:	Wed Nov 5 03:25:44 2014 -0700
+
+    fribidi support (gentoo icewm-1.3.9-fribidi.patch)
+
+      Also fixes several problems with the gentoo patch:
+
+      1) the patch modifies CORE_CFLAGS and CORE_LIBS before they
+	 are first defined, confusing later PKG_CONFIG([CORE], ...)
+	 so I moved it later in configure.ac
+
+      2) the patch uses the deprecated fribidi_log2vis, so I modified
+	 src/yfontxft.cc to disabled deprecated symbols (because I
+	 always test build with -Werror).
+
+      3) the patch ignores the return value of fribidi_log2vis()
+	 causing another warning which -Werror turns into an error.
+	 Changed to "if (fribidi_log2vis(...)) ;" to disable that.
+
+      4) fixed the configure.ac macro check for fribidi to only warn
+	 when the library is not present but the feature has not
+	 been disabled
+
+      5) add fribidi to configure.ac features list shown at end of
+	 ./configure run (added xrandr and xinerama too...)
+
+ configure.ac	 | 17 +++++++++++++++--
+ src/yfontxft.cc | 47 +++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 62 insertions(+), 2 deletions(-)
