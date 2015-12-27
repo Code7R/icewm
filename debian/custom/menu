@@ -7,7 +7,7 @@
 prog Terminal xterm x-terminal-emulator -ls
 prog "Iceweasel" iceweasel iceweasel
 prog XChat xchat xchat
-prog Gimp /usr/share/gimp/2.0/images/wilber-icon.png gimp
+prog Gimp gimp gimp
 separator
 menu Applications folder {
     menu Editors folder {
