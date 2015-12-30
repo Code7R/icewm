@@ -16,8 +16,6 @@ ifeq (linux,$(DEB_TARGET_ARCH_OS))
 	 CXXFLAGS += -DUSE_SIGNALFD
 endif
 
-cmakecmd = cmake $(CURDIR) -DICEHELPIDX=/usr/share/doc/icewm-common/html/icewm.html -DCFGDIR=/etc/X11/icewm -DCMAKE_INSTALL_PREFIX=/usr -DVERSION=$(ORIGVERSION) -DDOCDIR=$(DOCDIR) -DEXTRA_LIBS="-lsupc++" -DCMAKE_VERBOSE_MAKEFILE=ON
-
 ICEWM_COMMON=$(CURDIR)/debian/icewm-common
 ICEWM=$(CURDIR)/debian/icewm
 ICEWM_LITE=$(CURDIR)/debian/icewm-lite
@@ -32,6 +30,8 @@ CUSTOM=$(CURDIR)/debian/custom
 # that one also works with wheezy
 DEBVERSION := $(shell dpkg-parsechangelog |grep ^Version | sed -e s,Version:.,,)
 ORIGVERSION := $(shell echo $(DEBVERSION) | sed -e 's,-[^-]*$$,,' )
+
+cmakecmd = cmake $(CURDIR) -DICEHELPIDX=/usr/share/doc/icewm-common/html/icewm.html -DCFGDIR=/etc/X11/icewm -DCMAKE_INSTALL_PREFIX=/usr -DVERSION=$(ORIGVERSION) -DDOCDIR=$(DOCDIR) -DEXTRA_LIBS="-lsupc++" -DCMAKE_VERBOSE_MAKEFILE=ON
 
 config_lite:
 	mkdir -p $(BDIR)-lite
