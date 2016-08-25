@@ -1,5 +1,38 @@
-commit b0f3a67db86ed6facd70f54848198030bd2dbca9 (bbidulock/icewm-1-3-BRANCH,
-icewm-1-3-BRANCH)
+commit 2c648b9c1139bd7185f54e74ffbe3678a98c045d (origin/icewm-1-3-BRANCH,
+origin/HEAD, icewm-1-3-BRANCH)
+Merge: a1a26b9 17f055c
+Author: Eduard Bloch <blade@debian.org>
+Date:   Thu Aug 25 23:04:06 2016 +0200
+
+    Merge remote-tracking branch 'bbidulock/icewm-1-3-BRANCH' into
+    icewm-1-3-BRANCH
+
+commit 17f055c846bb570b242fab4f1eaeaa3d9f228a87 (bbidulock/icewm-1-3-BRANCH)
+Merge: b0f3a67 5985593
+Author: Brian Bidulock <bidulock@openss7.com>
+Date:   Thu Aug 25 12:09:03 2016 -0600
+
+    Merge pull request #82 from Vogtinator/icewm-1-3-BRANCH
+
+    Start shutdown and reboot commands in background
+
+commit 59855930fbc884bd1b230d6ae8e80266acd7eada
+Author: Fabian Vogt <fvogt@suse.com>
+Date:   Thu Aug 25 17:18:51 2016 +0200
+
+    Start shutdown and reboot commands in background
+
+    When polkit is enabled, systemctl may in turn wait for the
+    graphical password prompt to return. The created window cannot
+    be handled by icewm as it is busy with systemctl.
+    This avoids this deadlock by starting systemctl in background.
+    Fixes #80.
+
+ src/wmmgr.cc | 22 ++++++++++++++++++----
+ src/wmmgr.h  |  1 +
+ 2 files changed, 19 insertions(+), 4 deletions(-)
+
+commit b0f3a67db86ed6facd70f54848198030bd2dbca9
 Author: Hoàng Phạm <pnhoang96@gmail.com>
 Date:   Thu Aug 25 08:19:02 2016 +0000
 
@@ -654,7 +687,7 @@ Date:	Wed Dec 30 16:09:12 2015 +0100
  po/CMakeLists.txt | 11 +++++++----
  1 file changed, 7 insertions(+), 4 deletions(-)
 
-commit d6991694a38da85c4729051ec4fccb9308f38b18
+commit d6991694a38da85c4729051ec4fccb9308f38b18 (origin/ftr_dev_shortcut_cmake)
 Author: Eduard Bloch <blade@debian.org>
 Date:	Wed Dec 30 16:12:13 2015 +0100
 
@@ -663,6 +696,16 @@ Date:	Wed Dec 30 16:12:13 2015 +0100
  INSTALL.cmakebuild | 2 ++
  rebuild.sh	    | 8 ++++++++
  2 files changed, 10 insertions(+)
+
+commit a1a26b9f0a8a18ded09f94a702e7f1f940a0f336 (tag:
+upstream/1.3.8+mod+20151227)
+Author: Eduard Bloch <blade@debian.org>
+Date:	Sun Dec 27 21:25:07 2015 +0100
+
+    CLI --debug switch for icewmtray
+
+ src/icetray.cc | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
 commit ec89b7a2eebd9e7147f24d959b0800e21d77b97e
 Merge: d8b8caa 803668d
@@ -683,6 +726,7 @@ Date:	Sun Dec 27 15:55:03 2015 +0100
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 commit 803668d5ebf7b54b454d913db34ad5bb34e617cc
+(origin/ftr_preconfigure_iconPath)
 Author: Eduard Bloch <blade@debian.org>
 Date:	Sun Dec 27 12:16:23 2015 +0100
 
@@ -1715,7 +1759,8 @@ Date:	Fri Sep 18 19:24:19 2015 -0600
  configure.ac | 6 +++---
  2 files changed, 5 insertions(+), 5 deletions(-)
 
-commit fa3fdefbc9adbf82f51f7a9862387ba405de30de
+commit fa3fdefbc9adbf82f51f7a9862387ba405de30de (tag:
+upstream/1.3.8+githubmod+20150914+fa3fdef)
 Author: Eduard Bloch <blade@debian.org>
 Date:	Mon Sep 14 23:42:44 2015 +0200
 
@@ -1754,8 +1799,7 @@ Date:	Fri Aug 21 15:29:02 2015 +0200
  1 file changed, 1 insertion(+)
 
 commit ad9715226e291dc3d67a19ab82bc36dd08babbfd (tag:
-upstream/1.3.8+githubmod+20150818+ad97152, origin/icewm-1-3-BRANCH,
-origin/HEAD)
+upstream/1.3.8+githubmod+20150818+ad97152)
 Author: Eduard Bloch <blade@debian.org>
 Date:	Wed Jul 8 13:13:17 2015 +0200
 
@@ -2684,108 +2728,3 @@ Date:	Sat Feb 7 15:29:44 2015 +0100
 
  src/fdomenu.cc | 65 +++++++++++++++++++++++++++++++++++++++---------------
  1 file changed, 47 insertions(+), 18 deletions(-)
-
-commit c63e58c2df9c7bb8bfa02fd9f8b8b2727de3a238
-Author: Eduard Bloch <blade@debian.org>
-Date:	Sat Feb 7 13:29:26 2015 +0100
-
-    Fixed automatic inclusion into build sequence
-
- configure.ac | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-commit a690bdfd1731a6fb5f8dbfe3eef0bf7570f62e43
-Author: Eduard Bloch <blade@debian.org>
-Date:	Sat Feb 7 13:12:34 2015 +0100
-
-    Memory leak fighting, more menu categories (wine, editors)
-
- po/be.po	|  34 ++++++++++------
- po/bg.po	|  34 ++++++++++------
- po/ca.po	|  34 ++++++++++------
- po/cs.po	|  34 ++++++++++------
- po/da.po	|  34 ++++++++++------
- po/de.po	|  34 ++++++++++------
- po/el.po	|  34 ++++++++++------
- po/en.po	|  34 ++++++++++------
- po/es.po	|  34 ++++++++++------
- po/fi.po	|  34 ++++++++++------
- po/fr.po	|  34 ++++++++++------
- po/hr.po	|  34 ++++++++++------
- po/hu.po	|  34 ++++++++++------
- po/id.po	|  34 ++++++++++------
- po/it.po	|  34 ++++++++++------
- po/ja.po	|  34 ++++++++++------
- po/ko.po	|  34 ++++++++++------
- po/lt.po	|  34 ++++++++++------
- po/lv.po	|  34 ++++++++++------
- po/mk.po	|  34 ++++++++++------
- po/nb.po	|  34 ++++++++++------
- po/nl.po	|  34 ++++++++++------
- po/no.po	|  34 ++++++++++------
- po/pl.po	|  34 ++++++++++------
- po/pt_BR.po	|  34 ++++++++++------
- po/ro.po	|  34 ++++++++++------
- po/ru.po	|  34 ++++++++++------
- po/sk.po	|  34 ++++++++++------
- po/sl.po	|  34 ++++++++++------
- po/sv.po	|  34 ++++++++++------
- po/tr.po	|  34 ++++++++++------
- po/uk.po	|  34 ++++++++++------
- po/vi.po	|  34 ++++++++++------
- po/zh_CN.po	|  34 ++++++++++------
- po/zh_TW.po	|  34 ++++++++++------
- src/fdomenu.cc | 115 +++++++++++++++++++++++++++++++++++++----------------
- 36 files changed, 816 insertions(+), 489 deletions(-)
-
-commit a30eda68bdc877a8dd0dcf224e057efdd8f262f0
-Author: Eduard Bloch <blade@debian.org>
-Date:	Sat Feb 7 10:45:44 2015 +0100
-
-    l10n update for fdomenu
-
- po/be.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/bg.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/ca.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/cs.po    | 53 +++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/da.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/de.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/el.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/en.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/es.po    | 53 +++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/fi.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/fr.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/hr.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/hu.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/id.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/it.po    | 53 +++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/ja.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/ko.po    | 53 +++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/lt.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/lv.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/mk.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/nb.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/nl.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/no.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/pl.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/pt_BR.po | 53 +++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/ro.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/ru.po    | 53 +++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/sk.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/sl.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/sv.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/tr.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/uk.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/vi.po    | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/zh_CN.po | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- po/zh_TW.po | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- 35 files changed, 1756 insertions(+), 70 deletions(-)
-
-commit f944701a83f26feb8b880952b012cd35baf796a6
-Author: Eduard Bloch <blade@debian.org>
-Date:	Sat Feb 7 10:45:13 2015 +0100
-
-    Sorting submenues by translateable names
-
- src/fdomenu.cc | 106 ++++++++++++++++++++++++-----------------------------
- 1 file changed, 48 insertions(+), 58 deletions(-)
