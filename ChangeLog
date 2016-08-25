@@ -1,5 +1,26 @@
-commit 2c648b9c1139bd7185f54e74ffbe3678a98c045d (origin/icewm-1-3-BRANCH,
+commit adedaf6e8f65809a91847b1e3f09780b49469fdd (origin/icewm-1-3-BRANCH,
 origin/HEAD, icewm-1-3-BRANCH)
+Author: Eduard Bloch <blade@debian.org>
+Date:   Thu Aug 25 21:54:12 2016 +0200
+
+    New menu category Accessibility to fdomenu
+
+ src/fdomenu.cc | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+commit 4836c72f01c134ff34fb56dee501caae13ce3952
+Author: Eduard Bloch <blade@debian.org>
+Date:   Thu Aug 25 22:32:54 2016 +0200
+
+    Added /usr/share/icons/default to icon path
+
+    It seems that there are no compat symlinks (anymore?), now one has to
+    select the category explicitly.
+
+ src/yprefs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 2c648b9c1139bd7185f54e74ffbe3678a98c045d
 Merge: a1a26b9 17f055c
 Author: Eduard Bloch <blade@debian.org>
 Date:   Thu Aug 25 23:04:06 2016 +0200
@@ -2707,24 +2728,3 @@ Date:	Sun Feb 8 10:45:56 2015 +0100
 
  lib/menu.in | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
-
-commit c31a61a2e008ed799fcf5ef2725185d1560bae1e
-(origin/ftr_gnomeless_fdo_menu_generator,
-home/ftr_gnomeless_fdo_menu_generator)
-Author: Eduard Bloch <blade@debian.org>
-Date:	Sat Feb 7 16:17:06 2015 +0100
-
-    Bring in more structure, use GTree to sort and remove dupes
-
- src/fdomenu.cc | 154 +++++++++++++++++++++++++++++++----------------------
- 1 file changed, 90 insertions(+), 64 deletions(-)
-
-commit 0222d9e20c891ca3027254f0ae57d46c6e654586
-Author: Eduard Bloch <blade@debian.org>
-Date:	Sat Feb 7 15:29:44 2015 +0100
-
-    Use a callback to us and glib launch functionality for complicated
-    commands and terminal requirement
-
- src/fdomenu.cc | 65 +++++++++++++++++++++++++++++++++++++++---------------
- 1 file changed, 47 insertions(+), 18 deletions(-)
