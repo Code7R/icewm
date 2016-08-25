@@ -6,7 +6,7 @@
 #
 prog Terminal xterm x-terminal-emulator -ls
 prog "Iceweasel" iceweasel iceweasel
-prog XChat xchat xchat
+prog HexChat hexchat hexchat
 prog Gimp gimp gimp
 separator
 menu Applications folder {

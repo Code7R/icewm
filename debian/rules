@@ -69,6 +69,7 @@ override_dh_install:
 	install -m 644 $(ICONS)/debian.xpm $(ICEWM_COMMON)/usr/share/icewm/taskbar/icewm.xpm
 	mkdir -p $(ICEWM_COMMON)/usr/bin $(ICEWM_COMMON)/etc/X11/icewm
 	install -m 644 $(CUSTOM)/toolbar $(CUSTOM)/menu $(ICEWM_COMMON)/usr/share/icewm
+	if apt-cache show firefox | grep -q pool.main.f ; then sed -e "s,Iceweasel,Firefox,g;s,iceweasel,firefox,g" -i $(ICEWM_COMMON)/usr/share/icewm/menu $(ICEWM_COMMON)/usr/share/icewm/toolbar ; fi
 	install -m 644 debian/README.cfg $(ICEWM_COMMON)/usr/share/icewm/README
 	# Extra docs
 	mkdir -p "$(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ"
@@ -122,5 +123,5 @@ get-orig-source:
 
 update-debian-mod:
 	grep debian .git/HEAD
-	git log icewm-1-3-BRANCH   -n 200 --abbrev-commit --decorate --stat=76 -M -C|fmt -sct -w80 > ChangeLog
+	git log icewm-1-3-BRANCH -n 200 --decorate --stat=76 -M -C|fmt -sct -w80 > ChangeLog
 	git commit ChangeLog -m "Updating ChangeLog for a new Debian snapshot"
