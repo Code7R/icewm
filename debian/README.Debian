@@ -87,7 +87,7 @@ There are at least three factors that modify the size of the fonts:
    /etc/X11/xdm/Xservers, other places for other display managers)
 
  - the DPI setting (again, see above) with runtime manipulation via XRANDR
-   extension. You can use xrandr command wiht --dpi or -fbmm options to tune
+   extension. You can use xrandr command with --dpi or -fbmm options to tune
    that (see manpage). However, xrandr command call can be hardly used in the
    startup script because it's not guaranteed that it will be applied before
    icewm starts.
