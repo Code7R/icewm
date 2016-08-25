@@ -1,13 +1,506 @@
-commit a1a26b9 (icewm-1-3-BRANCH)
+# created with git log --stat=76 -M -C -300|fmt -sct -w80
+
+commit 78c6746bf17e0712e5c93cbc4e5140817a675c9d
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sat Jul 9 21:48:25 2016 -0600
+
+    git hates trailing space
+
+ gennews.sh | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+commit 417567873a29c9bbbb8fd91192631690843306bb
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sat Jul 9 21:38:52 2016 -0600
+
+    simplify distribution
+
+ .gitignore   |     6 +-
+ AUTHORS      |    68 +-
+ ChangeLog    | 16313 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ INSTALL      |   419 +-
+ Makefile.am  |   116 +-
+ NEWS         |  2976 +++++++++-
+ README.md    |     4 +-
+ THANKS       |     7 +
+ VERSION      |     2 +-
+ autogen.sh   |    64 +-
+ configure.ac |    17 +-
+ configure.sh |     4 +
+ dist.sh      |     9 +
+ gennews.sh   |    34 +
+ rebuild.sh   |     5 +-
+ 15 files changed, 19741 insertions(+), 303 deletions(-)
+
+commit 4c9258d51b32e4707e5aea0daf1658edc87fc343
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sat Jul 9 21:38:07 2016 -0600
+
+    update po files
+
+ po/ar.po     |  4 ++--
+ po/be.po     | 18 +++++++++---------
+ po/bg.po     | 18 +++++++++---------
+ po/ca.po     | 18 +++++++++---------
+ po/cs.po     | 18 +++++++++---------
+ po/da.po     | 18 +++++++++---------
+ po/de.po     | 18 +++++++++---------
+ po/el.po     | 18 +++++++++---------
+ po/en.po     | 18 +++++++++---------
+ po/es.po     | 18 +++++++++---------
+ po/fi.po     | 18 +++++++++---------
+ po/fr.po     | 32 ++++++++++++++++----------------
+ po/he.po     |  8 ++++----
+ po/hr.po     | 18 +++++++++---------
+ po/hu.po     | 18 +++++++++---------
+ po/icewm.pot |  6 +++---
+ po/id.po     | 18 +++++++++---------
+ po/it.po     | 18 +++++++++---------
+ po/ja.po     | 18 +++++++++---------
+ po/ko.po     | 47 ++++++++++++++++++++++++++---------------------
+ po/lt.po     | 18 +++++++++---------
+ po/lv.po     | 18 +++++++++---------
+ po/mk.po     | 18 +++++++++---------
+ po/nb.po     | 18 +++++++++---------
+ po/nl.po     | 18 +++++++++---------
+ po/no.po     | 18 +++++++++---------
+ po/pl.po     | 18 +++++++++---------
+ po/pt_BR.po  | 18 +++++++++---------
+ po/ro.po     | 18 +++++++++---------
+ po/ru.po     | 18 +++++++++---------
+ po/sk.po     | 18 +++++++++---------
+ po/sl.po     | 18 +++++++++---------
+ po/sv.po     | 22 +++++++++++-----------
+ po/tr.po     | 18 +++++++++---------
+ po/uk.po     | 18 +++++++++---------
+ po/vi.po     | 18 +++++++++---------
+ po/zh_CN.po  | 22 +++++++++++-----------
+ po/zh_TW.po  | 18 +++++++++---------
+ 38 files changed, 352 insertions(+), 347 deletions(-)
+
+commit 71f7e066797ebe5c1f0f3dfe979c9334bd3ea14b
+Author: openSUSE Weblate <weblate-noreply@opensuse.org>
+Date:   Fri Jul 8 12:58:26 2016 +0000
+
+    Add ar to LINGUAS.
+
+ po/LINGUAS | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 29da99df46bc84d249205aa2e1ea11b680d937b3
+Author: Weblate Admin <weblate-admin@opensuse.org>
+Date:   Fri Jul 8 12:21:18 2016 +0000
+
+    Translated using Weblate (Arabic)
+
+    Currently translated at 100% (0 of 0 strings)
+
+    Created new translation.
+
+ po/ar.po | 1293 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 1293 insertions(+)
+
+commit 077419f73019bafb049f41a40b3201b6e2f06daf
+Author: Stanislav Brabec <sbrabec@suse.com>
+Date:   Fri Jul 8 12:02:16 2016 +0000
+
+    Update .gitignore to allow icewm.pot
+
+ .gitignore | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+commit bee023ea06e7f04fbc118b0c74f275e4f902bc16
+Author: Stanislav Brabec <sbrabec@suse.com>
+Date:   Fri Jul 8 11:56:47 2016 +0000
+
+    Weblate: Add icewm.pot to the git repository
+
+    Add generated file icewm.pot to the repository. It makes possible
+    adding of new languages in Weblate. Exclude it from .gitignore.
+
+ po/icewm.pot | 1294 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 1294 insertions(+)
+
+commit c44e512c1ceb19e9b8584e157401250f0adbc69a
+Author: Dingzhong Chen <wsxy162@gmail.com>
+Date:   Sun Jun 26 18:48:25 2016 +0000
+
+    Translated using Weblate (Chinese (China))
+
+    Currently translated at 86.0% (222 of 258 strings)
+
+ po/zh_CN.po | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+commit f8b747f20e32fcea6eb358426beeaf14e7721d2d
+Author: Jonas Svensson <jonas@ekhorva.se>
+Date:   Thu Jun 16 19:36:43 2016 +0000
+
+    Translated using Weblate (Swedish)
+
+    Currently translated at 94.5% (244 of 258 strings)
+
+ po/sv.po | 33 ++++++++++++++-------------------
+ 1 file changed, 14 insertions(+), 19 deletions(-)
+
+commit 8618cd8ae51df87e6482ea937227b31e3f2e43e8
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Fri Jun 10 13:54:19 2016 -0600
+
+    correction to he.po
+
+ po/he.po | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit c3560c9331e7965ca45ff96cfce2e0dcdfdb5de2
+Author: Stanislav Brabec <sbrabec@suse.com>
+Date:   Mon Jun 6 12:13:29 2016 +0000
+
+    Translated using Weblate (Hebrew)
+
+    Currently translated at 75.1% (194 of 258 strings)
+
+ po/he.po | 140 ++++++++++++++++++++++++++++++-----------------------------
+ 1 file changed, 71 insertions(+), 69 deletions(-)
+
+commit b4422c28310879c5586f5207778ada578c7d5b82
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue May 24 21:33:08 2016 -0600
+
+    correct indentation warnings
+
+ src/fdomenu.cc | 4 ++--
+ src/wmmgr.cc   | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit d9e785e3e59ca0720a4b4f91a4fbe73234f4874b
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue May 24 21:32:09 2016 -0600
+
+    hebrew corrections
+
+ po/he.po | 31 +++++++++++++++----------------
+ 1 file changed, 15 insertions(+), 16 deletions(-)
+
+commit 860916194534289f0730ca4622085b01f8ae84f9
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Fri May 6 07:52:10 2016 +0000
+
+    Translated using Weblate (Hebrew)
+
+    Currently translated at 65.1% (168 of 258 strings)
+
+ po/he.po | 37 +++++++++++++++++++------------------
+ 1 file changed, 19 insertions(+), 18 deletions(-)
+
+commit 268698691faa309353dba15e68d1fb8db1f135f8
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Thu May 5 06:03:32 2016 -0600
+
+    fix for issue #72
+
+ src/icetray.cc | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+commit 2b0df4d31c21f87638545a3baa87662388c0ccce
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue May 3 03:07:20 2016 -0600
+
+    attempted fix for issue #75
+
+ src/wmstatus.cc | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
+
+commit 79c66333090a608fcee8f150f2f8a41274cfec9c
+Merge: 0404cba 7476bdd
+Author: openSUSE Weblate <weblate-noreply@opensuse.org>
+Date:   Mon May 2 14:03:03 2016 +0000
+
+    Merge branch 'icewm-1-3-BRANCH' of github.com:bbidulock/icewm into
+    icewm-1-3-BRANCH
+
+    Conflicts:
+            po/fr.po
+            po/ko.po
+
+commit 7476bdd4d36d0343c9bb1cfd0cfdf5bab8dfcb83
+Merge: 0642e5f 67f88a6
+Author: Brian Bidulock <bidulock@openss7.com>
+Date:   Mon May 2 01:43:57 2016 -0600
+
+    Merge pull request #63 from bedna-KU/bedna-KU-patch-1
+
+    Comment: Show logout submenu to Show logout menu
+
+commit 0642e5f8ee5f4c28ae6ddf7d6f5e86b5fcfacf6b
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun May 1 23:24:08 2016 -0600
+
+    address issue #77 a bit better
+
+ README.md    | 15 ++++++++++++++-
+ README.md.in | 15 ++++++++++++++-
+ 2 files changed, 28 insertions(+), 2 deletions(-)
+
+commit bc7fd6d96fb830c1521c1c536fb1740ba1dc4282
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun May 1 23:02:29 2016 -0600
+
+    attempt fix to issue #75
+
+ src/wmframe.cc | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit 0404cbab69dcad308ed057dc6caf9494f51efbcd
+Author: Yunseok Choi <xein@naver.com>
+Date:   Mon Apr 25 08:06:14 2016 +0000
+
+    Translated using Weblate (Korean)
+
+    Currently translated at 98.0% (253 of 258 strings)
+
+ po/ko.po | 146 ++++++++++++++++++++++++++++++-----------------------------
+ 1 file changed, 74 insertions(+), 72 deletions(-)
+
+commit 717eee456cfb646eca6a6f5088e08012251d2aec
+Author: Benoît Monin <benoit.monin@gmx.fr>
+Date:   Wed Apr 20 18:24:31 2016 +0000
+
+    Translated using Weblate (French)
+
+    Currently translated at 84.4% (218 of 258 strings)
+
+ po/fr.po | 88 +++++++++++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 58 insertions(+), 30 deletions(-)
+
+commit 0f7950a16b4e7412f19a653f6d1986965e612c51
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun May 1 22:32:59 2016 -0600
+
+    updated po files
+
+ po/be.po    |  4 ++--
+ po/bg.po    |  4 ++--
+ po/ca.po    |  4 ++--
+ po/cs.po    |  8 ++++----
+ po/da.po    |  4 ++--
+ po/de.po    |  8 ++++----
+ po/el.po    |  8 ++++----
+ po/en.po    |  4 ++--
+ po/es.po    |  8 ++++----
+ po/fi.po    |  4 ++--
+ po/fr.po    |  4 ++--
+ po/hr.po    |  4 ++--
+ po/hu.po    |  4 ++--
+ po/id.po    |  4 ++--
+ po/it.po    |  4 ++--
+ po/ja.po    |  4 ++--
+ po/ko.po    |  4 ++--
+ po/lt.po    |  4 ++--
+ po/lv.po    |  4 ++--
+ po/mk.po    |  4 ++--
+ po/nb.po    |  4 ++--
+ po/nl.po    |  8 ++++----
+ po/no.po    |  4 ++--
+ po/pl.po    |  4 ++--
+ po/pt_BR.po |  4 ++--
+ po/ro.po    |  4 ++--
+ po/ru.po    | 12 ++++++------
+ po/sk.po    |  4 ++--
+ po/sl.po    |  4 ++--
+ po/sv.po    |  4 ++--
+ po/tr.po    |  4 ++--
+ po/uk.po    |  4 ++--
+ po/vi.po    |  4 ++--
+ po/zh_CN.po |  4 ++--
+ po/zh_TW.po |  4 ++--
+ 35 files changed, 84 insertions(+), 84 deletions(-)
+
+commit 9a6d374e6d4a6db977e799a0b9807d99d42be377
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun May 1 22:32:47 2016 -0600
+
+    added hebrew translations
+
+ po/LINGUAS |    1 +
+ po/he.po   | 1346 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 1347 insertions(+)
+
+commit 69c4e2047d9e9a859a637c5093a32812df103bd3
+Author: Vojtech Zeisek <Vojtech.Zeisek@opensuse.org>
+Date:   Mon Apr 18 09:05:03 2016 +0000
+
+    Translated using Weblate (Czech)
+
+    Currently translated at 100.0% (258 of 258 strings)
+
+ po/cs.po | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+commit b7b6824412c734b1026d1587263fd8f1058db0f5
+Author: Nathan Follens <nthn@unseen.is>
+Date:   Wed Mar 30 12:15:14 2016 +0000
+
+    Translated using Weblate (Dutch)
+
+    Currently translated at 100.0% (258 of 258 strings)
+
+ po/nl.po | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+commit 0217c80a7a6ea46dfdb4a932715635dae0fcf319
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Mar 28 22:14:54 2016 -0600
+
+    fix focus issue #73
+
+    Strangely, this was probably the reason for the Java 7 hack.
+    Perhaps someone can check if this remove ths need for the hack.
+
+ src/wmmgr.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 774d258e0342313a6a11cf62d4133b24d3435722
+Author: Efstathios Iosifidis <eiosifidis@gmail.com>
+Date:   Sun Mar 20 19:37:16 2016 +0000
+
+    Translated using Weblate (Greek)
+
+    Currently translated at 55.0% (142 of 258 strings)
+
+ po/el.po | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+commit b60d6d405d776ab9e0fcd3e0aad76f1976527cb0
+Author: Dmitriy Khanzhin <dmitriy.khanzhin@gmail.com>
+Date:   Thu Feb 25 18:03:49 2016 +0000
+
+    Translated using Weblate (Russian)
+
+    Currently translated at 98.8% (255 of 258 strings)
+
+ po/ru.po | 45 ++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 36 insertions(+), 9 deletions(-)
+
+commit 6943c4f61c5469013be7be23d76a0f69ba0246fc
+Author: Ettore Atalan <atalanttore@googlemail.com>
+Date:   Sat Feb 13 09:03:48 2016 +0000
+
+    Translated using Weblate (German)
+
+    Currently translated at 100.0% (258 of 258 strings)
+
+ po/de.po | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+commit 0d1c1d2206de93cb85c07c428e2340cb7ba6faf8
+Author: jc sl <trcs@gmx.com>
+Date:   Wed Feb 10 20:03:50 2016 +0000
+
+    Translated using Weblate (Spanish)
+
+    Currently translated at 100.0% (258 of 258 strings)
+
+ po/es.po | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+commit 47f97d288702717573800e575105418fbbd3ebea
+Author: jc sl <trcs@gmx.com>
+Date:   Wed Feb 10 19:57:59 2016 +0000
+
+    Translated using Weblate (Spanish)
+
+    Currently translated at 100.0% (258 of 258 strings)
+
+ po/es.po | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+commit b127566dfbdd985cd5632fe3686c77fa7f0d56b3
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Feb 10 11:51:45 2016 -0700
+
+    proper XSession .desktop files
+
+ lib/CMakeLists.txt        |  1 +
+ lib/Makefile.am           |  1 +
+ lib/icewm-session.desktop | 58 ++++++++++++++++++++++++++++++++++++++++---
+ lib/icewm.desktop         | 26 +++++++++++++++++++
+ 4 files changed, 82 insertions(+), 4 deletions(-)
+
+commit d727613816924eeb01f4f3ef1e29767c2fc27ea9
+Merge: a772e67 f484c9d
+Author: Tomáš Chvátal <tomas.chvatal@gmail.com>
+Date:   Wed Feb 10 14:40:40 2016 +0100
+
+    Merge pull request #69 from fcrozat/icewm-1-3-BRANCH
+
+    remove icewm.desktop, it isn't a real xsession file
+
+commit f484c9d4eff75dc2f5127deb7b871688d3288549
+Author: Frederic Crozat <fcrozat@suse.com>
+Date:   Wed Feb 10 14:33:19 2016 +0100
+
+    remove icewm.desktop, it isn't a real xsession file
+
+    Only install one proper xsession file, icewm-session.desktop
+
+ lib/CMakeLists.txt | 1 -
+ lib/Makefile.am    | 1 -
+ lib/icewm.desktop  | 8 --------
+ 3 files changed, 10 deletions(-)
+
+commit a772e672584a11c4fe07707e672fc632ec1fb263
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Jan 10 02:42:42 2016 -0700
+
+    correct MANAGER client message for system tray
+
+    - ICCCM specifies the format of the MANAGER message.
+    - ICEWM was sending the incorrect format for the MANAGER message
+    - it was setting the message_type to _NET_SYSTEM_TRAY_S0 instead of
+      setting it to MANAGER
+    - also the data fields were incorrect
+
+ src/yxtray.cc | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+commit 62ec130be8275d32aa420706447a471088acb94e
+Merge: 8267c77 d699169
+Author: Brian Bidulock <bidulock@openss7.com>
+Date:   Wed Dec 30 18:29:35 2015 -0700
+
+    Merge pull request #65 from Code7R/ftr_dev_shortcut_cmake
+
+    Added a shortcut for local debug builds with Debian-like configuration
+
+commit 8267c773282da378bba22fdbed2facc173c863cf
 Author: Eduard Bloch <blade@debian.org>
 Date:   Sun Dec 27 21:25:07 2015 +0100
 
+    Use released pot file and stop rebuilding it on-the-fly
     CLI --debug switch for icewmtray
+    For reproducible builds, the pot file should not be updated for no good
+    reason and this happens all the time during development. There is also
+    no point in recompiling gmo files all the time after unrelated source
+    changes.
 
+    Instead, the update_pot target will rebuild po/icewm.pot when requested,
+    and translation files will be only built when the pot file exists.
  src/icetray.cc | 9 +++++++--
+ po/CMakeLists.txt | 11 +++++++----
  1 file changed, 7 insertions(+), 2 deletions(-)
 
+commit d6991694a38da85c4729051ec4fccb9308f38b18
+Author: Eduard Bloch <blade@debian.org>
+Date:   Wed Dec 30 16:12:13 2015 +0100
 commit ec89b7a (bbidulock/icewm-1-3-BRANCH)
+    Added a shortcut for local debug builds with Debian-like configuration
+
+ INSTALL.cmakebuild | 2 ++
+ rebuild.sh         | 8 ++++++++
+ 2 files changed, 10 insertions(+)
+
+commit ec89b7a2eebd9e7147f24d959b0800e21d77b97e
 Merge: d8b8caa 803668d
 Author: Brian Bidulock <bidulock@openss7.com>
 Date:   Sun Dec 27 11:21:51 2015 -0700
@@ -16,7 +509,16 @@ Date:   Sun Dec 27 11:21:51 2015 -0700
 
     Preconfigure iconPath in popular FOSS environments
 
+commit 67f88a61feb974a42a9cdc89a0b844f5592425d7
+Author: Mario <kdesi@kdesi.sk>
+Date:   Sun Dec 27 15:55:03 2015 +0100
 commit 803668d (origin/ftr_preconfigure_iconPath, ftr_preconfigure_iconPath)
+    Comment: Show logout submenu to Show logout menu
+
+ src/default.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 803668d5ebf7b54b454d913db34ad5bb34e617cc
 Author: Eduard Bloch <blade@debian.org>
 Date:   Sun Dec 27 12:16:23 2015 +0100
 
@@ -2872,3 +3374,862 @@ Date:	Wed Nov 5 03:25:44 2014 -0700
  configure.ac	 | 17 +++++++++++++++--
  src/yfontxft.cc | 47 +++++++++++++++++++++++++++++++++++++++++++++++
  2 files changed, 62 insertions(+), 2 deletions(-)
+
+commit 7c153e91aa89db296db186437506cd30fd6e8913
+Merge: aa26e30 c9e6358
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sat Sep 27 16:20:02 2014 -0600
+
+    Merge pull request #10 from bedna-KU/patch-1
+
+    Incorrect link on bbkeys
+
+commit c9e6358af9ef93f6c2cbe72101e5c45eacb86d9c
+Author: Mario <kdesi@kdesi.sk>
+Date:   Sat Sep 27 16:42:11 2014 +0200
+
+    Incorrect link on bbkeys
+
+ README.md | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit aa26e30070006f45c75fcc27f6faef6e59d5b182
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Sep 1 04:21:57 2014 -0600
+
+    passes distcheck again
+
+ Makefile.am | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit 41d6b5137e33ec08219d3d92bcb5164a18e8c7fb
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Sep 1 04:10:33 2014 -0600
+
+    po does not depend on pot
+
+ README.md   | 2 +-
+ po/Makevars | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit fc80e4e23361da4230df9db5d1a0b6b25cca80e5
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Sep 1 04:05:27 2014 -0600
+
+    did not mean to delete README.md
+
+ README.md    | 146 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ configure.ac |   2 +-
+ 2 files changed, 147 insertions(+), 1 deletion(-)
+
+commit 9c4b2c874aad85dd97dfe4b3294adcfa104b7af9
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Sep 1 04:00:42 2014 -0600
+
+    do not delete README.md (for github)
+
+ Makefile.am |   2 +-
+ README.md   | 146 --------------------------------------------------------
+ 2 files changed, 1 insertion(+), 147 deletions(-)
+
+commit 3313edc231c3da2e04b68b78967784e06cc797f8
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Sep 1 03:59:12 2014 -0600
+
+    updates for release build
+
+ .gitignore                |     5 +
+ ChangeLog                 | 11613 ----------------------------------------
+ Makefile.am               |    46 +-
+ NEWS                      |   151 +-
+ README.md                 |     4 +-
+ README.md => README.md.in |    12 +-
+ VERSION                   |     2 +-
+ autogen.sh                |    46 +-
+ configure.ac              |     9 +-
+ po/Makevars               |    24 +-
+ po/be.po                  |     2 +-
+ po/bg.po                  |     2 +-
+ po/ca.po                  |     2 +-
+ po/cs.po                  |     2 +-
+ po/da.po                  |     2 +-
+ po/de.po                  |     2 +-
+ po/el.po                  |     2 +-
+ po/en.po                  |     2 +-
+ po/es.po                  |     2 +-
+ po/fi.po                  |     2 +-
+ po/fr.po                  |     2 +-
+ po/hr.po                  |     2 +-
+ po/hu.po                  |     2 +-
+ po/id.po                  |     2 +-
+ po/it.po                  |     2 +-
+ po/ja.po                  |     2 +-
+ po/ko.po                  |     2 +-
+ po/lt.po                  |     2 +-
+ po/lv.po                  |     2 +-
+ po/mk.po                  |     2 +-
+ po/nb.po                  |     2 +-
+ po/nl.po                  |     2 +-
+ po/no.po                  |   186 +-
+ po/pl.po                  |     2 +-
+ po/pt_BR.po               |     2 +-
+ po/ro.po                  |     2 +-
+ po/ru.po                  |     2 +-
+ po/sk.po                  |     2 +-
+ po/sl.po                  |     2 +-
+ po/sv.po                  |     2 +-
+ po/tr.po                  |     2 +-
+ po/uk.po                  |     2 +-
+ po/vi.po                  |     2 +-
+ po/zh_CN.po               |     2 +-
+ po/zh_TW.po               |     2 +-
+ 45 files changed, 374 insertions(+), 11792 deletions(-)
+
+commit 069f01036741f6e08344a83bc0bd2c2457c94cca
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 31 10:35:27 2014 -0600
+
+    tweaks to build to pass distcheck
+
+ Makefile.am     |  4 ++--
+ doc/Makefile.am |  6 +++---
+ lib/Makefile.am | 15 +--------------
+ src/Makefile.am |  1 +
+ 4 files changed, 7 insertions(+), 19 deletions(-)
+
+commit b5adc80ad858c075a806d21661ca81accd04c11f
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 31 09:37:03 2014 -0600
+
+    added maintainer script
+
+ rebuild.sh | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+commit b61e006b773ca8b92e79f58034e6fc618aac3c27
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 31 09:36:45 2014 -0600
+
+    updated po files
+
+ po/be.po    | 2 +-
+ po/bg.po    | 2 +-
+ po/ca.po    | 2 +-
+ po/cs.po    | 2 +-
+ po/da.po    | 2 +-
+ po/de.po    | 2 +-
+ po/el.po    | 2 +-
+ po/en.po    | 2 +-
+ po/es.po    | 2 +-
+ po/fi.po    | 2 +-
+ po/fr.po    | 2 +-
+ po/hr.po    | 2 +-
+ po/hu.po    | 2 +-
+ po/id.po    | 2 +-
+ po/it.po    | 2 +-
+ po/ja.po    | 2 +-
+ po/ko.po    | 2 +-
+ po/lt.po    | 2 +-
+ po/lv.po    | 2 +-
+ po/mk.po    | 2 +-
+ po/nb.po    | 2 +-
+ po/nl.po    | 2 +-
+ po/no.po    | 2 +-
+ po/pl.po    | 2 +-
+ po/pt_BR.po | 2 +-
+ po/ro.po    | 2 +-
+ po/ru.po    | 2 +-
+ po/sk.po    | 2 +-
+ po/sl.po    | 2 +-
+ po/sv.po    | 2 +-
+ po/tr.po    | 2 +-
+ po/uk.po    | 2 +-
+ po/vi.po    | 2 +-
+ po/zh_CN.po | 2 +-
+ po/zh_TW.po | 2 +-
+ 35 files changed, 35 insertions(+), 35 deletions(-)
+
+commit 3aaf36c2bf0dce642c2b13fd8e39a48ec61ce636
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Aug 5 01:12:40 2014 -0600
+
+    update po files
+
+ configure.ac | 2 +-
+ po/be.po     | 2 +-
+ po/bg.po     | 2 +-
+ po/ca.po     | 2 +-
+ po/cs.po     | 2 +-
+ po/da.po     | 2 +-
+ po/de.po     | 2 +-
+ po/el.po     | 2 +-
+ po/en.po     | 2 +-
+ po/es.po     | 2 +-
+ po/fi.po     | 2 +-
+ po/fr.po     | 2 +-
+ po/hr.po     | 2 +-
+ po/hu.po     | 2 +-
+ po/id.po     | 2 +-
+ po/it.po     | 2 +-
+ po/ja.po     | 2 +-
+ po/ko.po     | 2 +-
+ po/lt.po     | 2 +-
+ po/lv.po     | 2 +-
+ po/mk.po     | 2 +-
+ po/nb.po     | 2 +-
+ po/nl.po     | 2 +-
+ po/no.po     | 2 +-
+ po/pl.po     | 2 +-
+ po/pt_BR.po  | 2 +-
+ po/ro.po     | 2 +-
+ po/ru.po     | 2 +-
+ po/sk.po     | 2 +-
+ po/sl.po     | 2 +-
+ po/sv.po     | 2 +-
+ po/tr.po     | 2 +-
+ po/uk.po     | 2 +-
+ po/vi.po     | 2 +-
+ po/zh_CN.po  | 2 +-
+ po/zh_TW.po  | 2 +-
+ 36 files changed, 36 insertions(+), 36 deletions(-)
+
+commit dee09a5d77ef6143afe67b74fbc8c80b5c2ff5ae
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Aug 5 01:09:33 2014 -0600
+
+    Updated es translation
+
+ po/es.po | 162 +++++++++++++++++++++++++++++++----------------------------
+ 1 file changed, 85 insertions(+), 77 deletions(-)
+
+commit 57bb34c3a51c907a73a9b928198a1c7bd723ab74
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 3 15:36:41 2014 -0600
+
+    update po file line numbers again
+
+ po/be.po    | 44 ++++++++++++++++++++++----------------------
+ po/bg.po    | 44 ++++++++++++++++++++++----------------------
+ po/ca.po    | 44 ++++++++++++++++++++++----------------------
+ po/cs.po    | 44 ++++++++++++++++++++++----------------------
+ po/da.po    | 44 ++++++++++++++++++++++----------------------
+ po/de.po    | 44 ++++++++++++++++++++++----------------------
+ po/el.po    | 44 ++++++++++++++++++++++----------------------
+ po/en.po    | 44 ++++++++++++++++++++++----------------------
+ po/es.po    | 44 ++++++++++++++++++++++----------------------
+ po/fi.po    | 44 ++++++++++++++++++++++----------------------
+ po/fr.po    | 44 ++++++++++++++++++++++----------------------
+ po/hr.po    | 44 ++++++++++++++++++++++----------------------
+ po/hu.po    | 44 ++++++++++++++++++++++----------------------
+ po/id.po    | 44 ++++++++++++++++++++++----------------------
+ po/it.po    | 44 ++++++++++++++++++++++----------------------
+ po/ja.po    | 44 ++++++++++++++++++++++----------------------
+ po/ko.po    | 44 ++++++++++++++++++++++----------------------
+ po/lt.po    | 44 ++++++++++++++++++++++----------------------
+ po/lv.po    | 44 ++++++++++++++++++++++----------------------
+ po/mk.po    | 44 ++++++++++++++++++++++----------------------
+ po/nb.po    | 44 ++++++++++++++++++++++----------------------
+ po/nl.po    | 44 ++++++++++++++++++++++----------------------
+ po/no.po    | 44 ++++++++++++++++++++++----------------------
+ po/pl.po    | 44 ++++++++++++++++++++++----------------------
+ po/pt_BR.po | 44 ++++++++++++++++++++++----------------------
+ po/ro.po    | 44 ++++++++++++++++++++++----------------------
+ po/ru.po    | 44 ++++++++++++++++++++++----------------------
+ po/sk.po    | 44 ++++++++++++++++++++++----------------------
+ po/sl.po    | 44 ++++++++++++++++++++++----------------------
+ po/sv.po    | 44 ++++++++++++++++++++++----------------------
+ po/tr.po    | 44 ++++++++++++++++++++++----------------------
+ po/uk.po    | 44 ++++++++++++++++++++++----------------------
+ po/vi.po    | 44 ++++++++++++++++++++++----------------------
+ po/zh_CN.po | 44 ++++++++++++++++++++++----------------------
+ po/zh_TW.po | 44 ++++++++++++++++++++++----------------------
+ 35 files changed, 770 insertions(+), 770 deletions(-)
+
+commit 04dc06efa3699c90f88c37f7290eb6ebe16bc730
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 3 15:33:18 2014 -0600
+
+    turn i18n back on: should fix issue #8
+
+ configure.ac     | 32 ++++++++++++++++++++++++++++----
+ src/wmtaskbar.cc |  3 +--
+ src/ylocale.cc   | 10 ++++++++--
+ 3 files changed, 37 insertions(+), 8 deletions(-)
+
+commit eb98744c024c1da19f54b1d5a92194cabdd49cb1
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 3 12:03:55 2014 -0600
+
+    updated po files
+
+ po/be.po    | 6 +++---
+ po/bg.po    | 6 +++---
+ po/ca.po    | 6 +++---
+ po/cs.po    | 6 +++---
+ po/da.po    | 6 +++---
+ po/de.po    | 6 +++---
+ po/el.po    | 6 +++---
+ po/en.po    | 6 +++---
+ po/es.po    | 6 +++---
+ po/fi.po    | 6 +++---
+ po/fr.po    | 6 +++---
+ po/hr.po    | 6 +++---
+ po/hu.po    | 6 +++---
+ po/id.po    | 6 +++---
+ po/it.po    | 6 +++---
+ po/ja.po    | 6 +++---
+ po/ko.po    | 6 +++---
+ po/lt.po    | 6 +++---
+ po/lv.po    | 6 +++---
+ po/mk.po    | 6 +++---
+ po/nb.po    | 6 +++---
+ po/nl.po    | 6 +++---
+ po/no.po    | 6 +++---
+ po/pl.po    | 6 +++---
+ po/pt_BR.po | 6 +++---
+ po/ro.po    | 6 +++---
+ po/ru.po    | 6 +++---
+ po/sk.po    | 6 +++---
+ po/sl.po    | 6 +++---
+ po/sv.po    | 6 +++---
+ po/tr.po    | 6 +++---
+ po/uk.po    | 6 +++---
+ po/vi.po    | 6 +++---
+ po/zh_CN.po | 6 +++---
+ po/zh_TW.po | 6 +++---
+ 35 files changed, 105 insertions(+), 105 deletions(-)
+
+commit e21c11744b1eede254fc5dc8c596663f5fdc4b20
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Jul 28 11:16:06 2014 -0600
+
+    satisfy gcc 4.9.1
+
+ src/WinMgr.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 1484b2887c1ea89498c3e18e047c4bc6f7dd07af
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Jul 28 11:01:38 2014 -0600
+
+    added missing Type= key
+
+ lib/icewm-session.desktop | 1 +
+ lib/icewm.desktop         | 0
+ 2 files changed, 1 insertion(+)
+
+commit 769d19a85a9579a12983fb8ea56a58939e67eb44
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Thu Jul 17 01:15:40 2014 -0600
+
+    do not let sent events stop proxying button events
+
+ src/wmmgr.cc | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
+commit 7788792c024d337efd25a583ac8488d14c263861
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sat Jul 12 17:32:53 2014 -0600
+
+    forgot to intern _XA_NET_WM_STATE_FOCUSED atom
+
+ configure.ac | 4 ++--
+ src/yxapp.cc | 1 +
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+commit 6279368452c84b65bfb89890f55c9a9fd24a3708
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sat Jul 12 17:05:13 2014 -0600
+
+    update po file line numbers
+
+ po/be.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/bg.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/ca.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/cs.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/da.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/de.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/el.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/en.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/es.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/fi.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/fr.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/hr.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/hu.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/id.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/it.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/ja.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/ko.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/lt.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/lv.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/mk.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/nb.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/nl.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/no.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/pl.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/pt_BR.po | 236 ++++++++++++++++++++++++++++----------------------------
+ po/ro.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/ru.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/sk.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/sl.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/sv.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/tr.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/uk.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/vi.po    | 236 ++++++++++++++++++++++++++++----------------------------
+ po/zh_CN.po | 236 ++++++++++++++++++++++++++++----------------------------
+ po/zh_TW.po | 236 ++++++++++++++++++++++++++++----------------------------
+ 35 files changed, 4130 insertions(+), 4130 deletions(-)
+
+commit f0ae7022e9728ce92511a33e4d179285ca3e2972
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sat Jul 12 17:04:38 2014 -0600
+
+    add full support for _NET_WM_STATE_FOCUSED
+
+ COMPLIANCE      | 2 +-
+ src/WinMgr.h    | 5 ++++-
+ src/wmapp.cc    | 2 +-
+ src/wmclient.cc | 4 ++++
+ src/wmframe.cc  | 2 ++
+ src/wmmgr.h     | 1 +
+ src/yxapp.cc    | 1 +
+ 7 files changed, 14 insertions(+), 3 deletions(-)
+
+commit da79fae9d6482466a8fb9529d38d435eacb0de74
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sat Jun 28 17:00:38 2014 -0600
+
+    correct instructions in README (fixes issue 6)
+
+ README.md | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+commit 95f91cbc7d2f0a65e80138a34bdbdcc68b1f65c3
+Merge: de013e7 3a2740f
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Jun 17 18:26:19 2014 -0600
+
+    Merge branch 'icewm-1-3-BRANCH' of https://github.com/mrbrainsample/icewm
+    into icewm-1-3-BRANCH
+
+    Conflicts:
+            src/wmmgr.cc
+
+commit de013e7e92b0ac7bb23065e95e45286e9e628f4c
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Jun 16 06:35:36 2014 -0600
+
+    add upstream comments
+
+ CHANGES | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+commit d87a0ffb9cd2d021387c0cdaf0cd28c0c5552edc
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Jun 16 06:34:56 2014 -0600
+
+    qt5 fix
+
+ src/wmmgr.cc | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+commit 65a8e056dad2379f275e8bbd63b156e1dff37e8b
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Jun 16 06:33:46 2014 -0600
+
+    handle oversized icons from GTK3
+
+ src/wmframe.cc | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+commit 80cb47bbe806ac418b2da49f328fbecc09b132a6
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Jun 16 06:32:31 2014 -0600
+
+    handle arguments better
+
+ src/base.h    | 10 ++--------
+ src/gnome2.cc |  5 ++---
+ src/misc.cc   | 36 ++++++++++++++++++++++++++++++++++++
+ src/wmapp.cc  | 15 ++++++++++-----
+ src/ysmapp.cc |  6 ++++--
+ src/yxapp.cc  |  6 ++++--
+ 6 files changed, 58 insertions(+), 20 deletions(-)
+
+commit 23ed55b9273050040ba5af31149f506536338d60
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Jun 16 06:26:38 2014 -0600
+
+    test skipping of taskbar
+
+ src/testnetwmhints.cc | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+commit 4561c05c10b35758dd4bcf1e6a488d9975c5ba0d
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Jun 16 06:24:11 2014 -0600
+
+    correct build when gnome2 libraries are present
+
+ configure.ac    | 2 +-
+ src/Makefile.am | 2 +-
+ src/gnome2.cc   | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 746c2cd777893a77d3377c69e2623c756a217833
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Jun 16 06:13:42 2014 -0600
+
+    use marko's approach to keysyms
+
+ src/aaddressbar.cc |  2 +-
+ src/movesize.cc    |  6 +++---
+ src/wmapp.cc       |  4 ++--
+ src/wmdialog.cc    |  2 +-
+ src/wmmgr.cc       |  6 +++---
+ src/wmprog.cc      |  2 +-
+ src/wmswitch.cc    |  4 ++--
+ src/wmwinlist.cc   |  2 +-
+ src/ybutton.cc     |  2 +-
+ src/ydialog.cc     |  3 ++-
+ src/yinput.cc      |  4 ++--
+ src/ykey.h         |  1 +
+ src/ylistbox.cc    |  2 +-
+ src/ymenu.cc       |  3 +--
+ src/yscrollbar.cc  |  2 +-
+ src/ywindow.cc     | 11 +++++++++--
+ src/ywindow.h      |  2 ++
+ 17 files changed, 34 insertions(+), 24 deletions(-)
+
+commit 47b2f988da1e874959d8a1331313b9880d4db1e7
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Jun 16 06:03:48 2014 -0600
+
+    minor build corrections and cosmetics
+
+ COPYING           | 7 +++++++
+ src/amailbox.cc   | 3 ++-
+ src/base.h        | 6 ++++++
+ src/decorate.cc   | 2 +-
+ src/icewmhint.cc  | 2 ++
+ src/testlocale.cc | 8 +++++++-
+ src/wmclient.cc   | 1 -
+ src/yaction.h     | 2 ++
+ src/ycmdline.h    | 2 +-
+ src/ypopup.h      | 2 ++
+ src/yscrollbar.h  | 2 ++
+ src/ytimer.h      | 1 +
+ 12 files changed, 33 insertions(+), 5 deletions(-)
+
+commit 8eda773439a6b501689549516631370d4586b117
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Jun 16 05:53:20 2014 -0600
+
+    added time fuziness
+
+ doc/icewm.sgml    |  1 +
+ src/aclock.cc     |  1 +
+ src/apppstatus.cc |  2 +-
+ src/default.h     |  1 +
+ src/yapp.cc       | 89 ++++++++++++++++++++++++++++++++++++++++++++-------
+ src/yapp.h        |  3 ++
+ src/yprefs.h      |  1 +
+ src/ytimer.cc     | 43 +++++++++++++++++++++++--
+ src/ytimer.h      | 10 ++++--
+ 9 files changed, 132 insertions(+), 19 deletions(-)
+
+commit 0ad9812bc533cdbd512e9e5e3dbaf34e0e8d67ff
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Jun 16 05:43:14 2014 -0600
+
+    FreeBSD build corrections
+
+ src/aapm.cc | 18 +++++++++---------
+ src/aapm.h  |  4 ++--
+ 2 files changed, 11 insertions(+), 11 deletions(-)
+
+commit 0e68b01cf66dc75d239ffd9f7d1896bc5a0efd96
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Jun 16 05:38:58 2014 -0600
+
+    spelling correction
+
+ lib/themes/yellowmotif/default.theme | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit f68379b370854692d85594d28220ec75d68d80ed
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Jun 16 05:37:48 2014 -0600
+
+    correct taskbar start.xpm
+
+ lib/taskbar/start.xpm | 57 ++++++++++++++++++++++++++++-------------------
+ 1 file changed, 34 insertions(+), 23 deletions(-)
+
+commit 486990ef609b15b5aadbdd7ee03b95ee57311fba
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Jun 16 05:36:25 2014 -0600
+
+    add xpms missed by cvs to git conversion
+
+ lib/Makefile.am                       |   3 +
+ lib/taskbar/collapse.xpm              |  21 ++
+ lib/taskbar/expand.xpm                |  21 ++
+ lib/themes/Infadel2/taskbar/start.xpm | 349 ++++++++++++++++++++++++++++++
+ 4 files changed, 394 insertions(+)
+
+commit 5e86611cd059484f6b43a4007c18d353b724d706
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Jun 16 05:30:24 2014 -0600
+
+    fix gcc-4.9.0 compiler warning
+
+ configure.ac | 2 +-
+ src/wmmgr.h  | 8 +++++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+commit f5918b4b10132034148fc6a17b475af26b071805
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Jun 16 05:22:27 2014 -0600
+
+    add maintainer configure script
+
+ configure.sh | 42 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
+
+commit ff33970b2eb94f0a02d0f0c9c7e8214d4bbf1b2e
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Jun 4 00:56:50 2014 -0600
+
+    Applied archlinux icewm-1.3.8-remain_power.patch
+
+    - original patch from Tobias Mueller
+
+ src/aapm.cc | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+commit 83844bfdbd2ff9a310edafb778bb249b17768e2a
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sat May 24 05:09:52 2014 -0600
+
+    make icetray reload style when _ICEWM_ACTION received
+
+ src/icetray.cc | 10 +++++++++-
+ src/yxtray.cc  |  3 +++
+ 2 files changed, 12 insertions(+), 1 deletion(-)
+
+commit 93c9fe9b3f5568db1f68f476b32431f18d4a3d0d
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Fri May 23 00:21:23 2014 -0600
+
+    correct documentation link
+
+ configure.ac | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 10b610e591e0e3b69019cfcada2862482997a7ac
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Thu May 15 07:12:30 2014 -0600
+
+    also set backing store to NotUseful before reparenting client
+
+ src/wmframe.cc | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+commit 3a2740f06b93121704498f2f34a1c01c2405e998
+Author: Jeff Woods <klaatu@fnordco.com>
+Date:   Wed May 7 12:57:24 2014 -0700
+
+    Give nice names to the .desktop files, because display managers that
+    use the name property show both icewm-session and icewm as just
+    "icewm."
+
+    Now they should show up as "IceWM Session" and "IceWM", respectively.
+
+ lib/icewm-session.desktop | 2 +-
+ lib/icewm.desktop         | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 64779a43a83b7259fb028c4ead6143e4c2c4c980
+Author: Jeff Woods <klaatu@fnordco.com>
+Date:   Thu Apr 10 16:42:47 2014 -0700
+
+    Reverted old flashblock fix because it stops Qt5 apps from creating
+    windows, because Qt5 embeds every window.
+
+ src/wmmgr.cc | 27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
+
+commit a6299df6d5b93c982b88aa83dd21185700df2ac7
+Author: Jeff Woods <klaatu@fnordco.com>
+Date:   Thu Apr 10 15:40:26 2014 -0700
+
+    Fixed (I think) a double free or corruption bug in acpustatus.cc
+
+ src/acpustatus.cc | 2 --
+ 1 file changed, 2 deletions(-)
+
+commit 0adac776251421ba5a44a7514e5d4e52a680ab0d
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Thu May 1 21:14:59 2014 -0600
+
+    _NET_WM_NAME was including a terminating null
+
+     - this freaked out libwnck into thinking that it was an invalid
+       UTF-8 name
+
+ configure.ac | 4 ++--
+ src/wmapp.cc | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 0afde06350c2c4069fd3e109c320ff0f1564a5ef
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Apr 20 22:39:14 2014 -0600
+
+    one last memory leak
+
+     - xft fonts are leaking badly but I don't think that
+       I can fix that given the poor icewm reference pointer
+       model
+
+     - there is also an icon leak and a a configuration string
+       leak that I can't find a way to fix
+
+ src/wmapp.cc    | 4 ++++
+ src/yconfig.cc  | 4 ++--
+ src/yfontxft.cc | 1 +
+ 3 files changed, 7 insertions(+), 2 deletions(-)
+
+commit 6111e7ef8b7f44f4168a4ca739cf2d501484a439
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Apr 20 21:34:07 2014 -0600
+
+    another memory leak
+
+ src/acpustatus.cc | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
+
+commit 352c8c3d7d67e0f9075df0e87fa65df25ee9b3fb
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Apr 20 21:28:08 2014 -0600
+
+    more memory leaks
+
+ src/aworkspaces.cc | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit 5dc7fdf85ecd143d3c2b5a8b6fc6bcfe138615a5
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Apr 20 21:23:21 2014 -0600
+
+    another memory leak
+
+ src/wmclient.cc | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit 332a8c6424e1ebc2bb13d187b3f9553f3aab029a
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Apr 20 21:13:42 2014 -0600
+
+    two more memory leaks
+
+ src/yconfig.cc | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit 086bd4a912151edf1ca20ddcaafc4be281173e5a
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Apr 20 21:04:13 2014 -0600
+
+    more valgrind memory leaks
+
+ src/yurl.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit f5ed2b21e57151a31e915ce5795c676b2e67d288
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Apr 20 21:00:04 2014 -0600
+
+    another memory leak
+
+ src/wmmgr.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 32cfd72900f2b77993813b472767349e1a034868
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Apr 20 20:56:04 2014 -0600
+
+    fixing more memory leaks from valgrind
+
+ src/wmmgr.cc | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
+
+commit 153b1cdfe5094c045001e45f44af142661cbca18
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Apr 20 19:53:27 2014 -0600
+
+    started fixing memory leaks using valgrind
+
+ src/ypaths.cc  | 12 +++++++++++-
+ src/ypaths.h   |  2 +-
+ src/ywindow.cc |  5 +++++
+ 3 files changed, 17 insertions(+), 2 deletions(-)
+
+commit 8fd0253a6ac372606a215d6b03092baa20708839
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sat Apr 19 16:11:46 2014 -0600
+
+    correct memory bugs revealed using valgrind
+
+ src/wmframe.cc | 8 +++++++-
+ src/wmmgr.cc   | 1 +
+ src/ywindow.cc | 3 +++
+ 3 files changed, 11 insertions(+), 1 deletion(-)
+
+commit 2e2be4595db4f99c2f8c7a1ce258f8434bd1e07f
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Fri Dec 20 19:16:12 2013 -0700
+
+    tell autopoint to use latest gettext version
+
+    - fixes issue #5
+
+ autogen.sh | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+commit 211aacd5fd6747dbbd17ec243ec72f2a7b1a0cb3
+Merge: 68ece27 1a9603f
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Fri Dec 20 15:32:22 2013 -0700
+
+    Merge branch 'icewm-1-3-BRANCH' of https://github.com/bbidulock/icewm
+    into icewm-1-3-BRANCH
+
+commit 68ece27da1d48cbc78dfb8bd1e2bfbe358bbb316
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Fri Dec 20 15:31:32 2013 -0700
+
+    fix issue #5 drop gettext to 0.18
+
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 201ddf25761130a8d556187ae47e6291345679fa
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Fri Dec 20 15:30:01 2013 -0700
+
+    correct separate directory build
+
+ lib/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 1a9603fd127522338bfca3d1b95ab7469ef30f1f
+Author: DeltaResero <deltaresero@zoho.com>
+Date:   Fri Dec 20 14:30:23 2013 -0400
+
+    Remove PKG_INSTALLDIR
+
+    PKG_INSTALLDIR not present in pkg-config < 0.27 and it wasn't implemented
+    here yet anyway
+
+ configure.ac | 1 -
+ 1 file changed, 1 deletion(-)
