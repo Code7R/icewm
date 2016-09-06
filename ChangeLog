@@ -1,5 +1,60 @@
-commit adedaf6e8f65809a91847b1e3f09780b49469fdd (origin/icewm-1-3-BRANCH,
-origin/HEAD, icewm-1-3-BRANCH)
+commit 1da126a44f0a924a35df9d11044f73d62d29eac3 (bbidulock/icewm-1-3-BRANCH,
+icewm-1-3-BRANCH)
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Sep 5 16:29:13 2016 -0600
+
+    make to work with lightdm
+
+ lib/icewm-session.desktop | 4 ++--
+ lib/icewm.desktop         | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 6035a0b87e4342de35c88dfcb5cd7086591b3ed6
+Merge: d8fbf35 b33326f
+Author: Brian Bidulock <bidulock@openss7.com>
+Date:   Wed Aug 31 12:48:52 2016 -0600
+
+    Merge pull request #64 from Code7R/ftr_fix_tktray_icon
+
+    Ftr fix tktray icon
+
+commit d8fbf3568e51c5b1c6994c4d51ebc8ee9cf305ac
+Merge: 766e552 0e115c6
+Author: Brian Bidulock <bidulock@openss7.com>
+Date:   Wed Aug 31 12:48:21 2016 -0600
+
+    Merge pull request #85 from Code7R/icewm-1-3-BRANCH
+
+    Minor fixes
+
+commit 0e115c6b1de31fb7afcdf4f1fe2d8b638d6bdcc2 (origin/icewm-1-3-BRANCH,
+origin/HEAD)
+Merge: adedaf6 766e552
+Author: Eduard Bloch <blade@debian.org>
+Date:   Wed Aug 31 20:34:23 2016 +0200
+
+    Merge remote-tracking branch 'bbidulock/icewm-1-3-BRANCH' into
+    icewm-1-3-BRANCH
+
+commit 766e552a47a19ba7ab88f76ddfcbae064581d022
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Aug 30 18:16:45 2016 -0600
+
+    add @GartFarlick fd-leak-patch.txt on issue #84
+
+ src/aapm.cc | 26 ++++++++++++++++++--------
+ 1 file changed, 18 insertions(+), 8 deletions(-)
+
+commit bec86c72cc0f501f254d736ca018d8e05e68432c
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Aug 30 18:05:02 2016 -0600
+
+    add debug flags
+
+ configure.sh | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+commit adedaf6e8f65809a91847b1e3f09780b49469fdd
 Author: Eduard Bloch <blade@debian.org>
 Date:   Thu Aug 25 21:54:12 2016 +0200
 
@@ -28,7 +83,7 @@ Date:   Thu Aug 25 23:04:06 2016 +0200
     Merge remote-tracking branch 'bbidulock/icewm-1-3-BRANCH' into
     icewm-1-3-BRANCH
 
-commit 17f055c846bb570b242fab4f1eaeaa3d9f228a87 (bbidulock/icewm-1-3-BRANCH)
+commit 17f055c846bb570b242fab4f1eaeaa3d9f228a87
 Merge: b0f3a67 5985593
 Author: Brian Bidulock <bidulock@openss7.com>
 Date:   Thu Aug 25 12:09:03 2016 -0600
@@ -438,13 +493,13 @@ Date:   Mon May 2 14:03:03 2016 +0000
     icewm-1-3-BRANCH
 
     Conflicts:
-	po/fr.po
-	po/ko.po
+            po/fr.po
+            po/ko.po
 
 commit 7476bdd4d36d0343c9bb1cfd0cfdf5bab8dfcb83
 Merge: 0642e5f 67f88a6
 Author: Brian Bidulock <bidulock@openss7.com>
-Date:	Mon May 2 01:43:57 2016 -0600
+Date:   Mon May 2 01:43:57 2016 -0600
 
     Merge pull request #63 from bedna-KU/bedna-KU-patch-1
 
@@ -452,7 +507,7 @@ Date:	Mon May 2 01:43:57 2016 -0600
 
 commit 0642e5f8ee5f4c28ae6ddf7d6f5e86b5fcfacf6b
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sun May 1 23:24:08 2016 -0600
+Date:   Sun May 1 23:24:08 2016 -0600
 
     address issue #77 a bit better
 
@@ -462,7 +517,7 @@ Date:	Sun May 1 23:24:08 2016 -0600
 
 commit bc7fd6d96fb830c1521c1c536fb1740ba1dc4282
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sun May 1 23:02:29 2016 -0600
+Date:   Sun May 1 23:02:29 2016 -0600
 
     attempt fix to issue #75
 
@@ -471,7 +526,7 @@ Date:	Sun May 1 23:02:29 2016 -0600
 
 commit 0404cbab69dcad308ed057dc6caf9494f51efbcd
 Author: Yunseok Choi <xein@naver.com>
-Date:	Mon Apr 25 08:06:14 2016 +0000
+Date:   Mon Apr 25 08:06:14 2016 +0000
 
     Translated using Weblate (Korean)
 
@@ -482,7 +537,7 @@ Date:	Mon Apr 25 08:06:14 2016 +0000
 
 commit 717eee456cfb646eca6a6f5088e08012251d2aec
 Author: Benoît Monin <benoit.monin@gmx.fr>
-Date:	Wed Apr 20 18:24:31 2016 +0000
+Date:   Wed Apr 20 18:24:31 2016 +0000
 
     Translated using Weblate (French)
 
@@ -493,60 +548,60 @@ Date:	Wed Apr 20 18:24:31 2016 +0000
 
 commit 0f7950a16b4e7412f19a653f6d1986965e612c51
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sun May 1 22:32:59 2016 -0600
+Date:   Sun May 1 22:32:59 2016 -0600
 
     updated po files
 
- po/be.po    |	4 ++--
- po/bg.po    |	4 ++--
- po/ca.po    |	4 ++--
- po/cs.po    |	8 ++++----
- po/da.po    |	4 ++--
- po/de.po    |	8 ++++----
- po/el.po    |	8 ++++----
- po/en.po    |	4 ++--
- po/es.po    |	8 ++++----
- po/fi.po    |	4 ++--
- po/fr.po    |	4 ++--
- po/hr.po    |	4 ++--
- po/hu.po    |	4 ++--
- po/id.po    |	4 ++--
- po/it.po    |	4 ++--
- po/ja.po    |	4 ++--
- po/ko.po    |	4 ++--
- po/lt.po    |	4 ++--
- po/lv.po    |	4 ++--
- po/mk.po    |	4 ++--
- po/nb.po    |	4 ++--
- po/nl.po    |	8 ++++----
- po/no.po    |	4 ++--
- po/pl.po    |	4 ++--
- po/pt_BR.po |	4 ++--
- po/ro.po    |	4 ++--
+ po/be.po    |  4 ++--
+ po/bg.po    |  4 ++--
+ po/ca.po    |  4 ++--
+ po/cs.po    |  8 ++++----
+ po/da.po    |  4 ++--
+ po/de.po    |  8 ++++----
+ po/el.po    |  8 ++++----
+ po/en.po    |  4 ++--
+ po/es.po    |  8 ++++----
+ po/fi.po    |  4 ++--
+ po/fr.po    |  4 ++--
+ po/hr.po    |  4 ++--
+ po/hu.po    |  4 ++--
+ po/id.po    |  4 ++--
+ po/it.po    |  4 ++--
+ po/ja.po    |  4 ++--
+ po/ko.po    |  4 ++--
+ po/lt.po    |  4 ++--
+ po/lv.po    |  4 ++--
+ po/mk.po    |  4 ++--
+ po/nb.po    |  4 ++--
+ po/nl.po    |  8 ++++----
+ po/no.po    |  4 ++--
+ po/pl.po    |  4 ++--
+ po/pt_BR.po |  4 ++--
+ po/ro.po    |  4 ++--
  po/ru.po    | 12 ++++++------
- po/sk.po    |	4 ++--
- po/sl.po    |	4 ++--
- po/sv.po    |	4 ++--
- po/tr.po    |	4 ++--
- po/uk.po    |	4 ++--
- po/vi.po    |	4 ++--
- po/zh_CN.po |	4 ++--
- po/zh_TW.po |	4 ++--
+ po/sk.po    |  4 ++--
+ po/sl.po    |  4 ++--
+ po/sv.po    |  4 ++--
+ po/tr.po    |  4 ++--
+ po/uk.po    |  4 ++--
+ po/vi.po    |  4 ++--
+ po/zh_CN.po |  4 ++--
+ po/zh_TW.po |  4 ++--
  35 files changed, 84 insertions(+), 84 deletions(-)
 
 commit 9a6d374e6d4a6db977e799a0b9807d99d42be377
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sun May 1 22:32:47 2016 -0600
+Date:   Sun May 1 22:32:47 2016 -0600
 
     added hebrew translations
 
- po/LINGUAS |	 1 +
+ po/LINGUAS |    1 +
  po/he.po   | 1346 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  2 files changed, 1347 insertions(+)
 
 commit 69c4e2047d9e9a859a637c5093a32812df103bd3
 Author: Vojtech Zeisek <Vojtech.Zeisek@opensuse.org>
-Date:	Mon Apr 18 09:05:03 2016 +0000
+Date:   Mon Apr 18 09:05:03 2016 +0000
 
     Translated using Weblate (Czech)
 
@@ -557,7 +612,7 @@ Date:	Mon Apr 18 09:05:03 2016 +0000
 
 commit b7b6824412c734b1026d1587263fd8f1058db0f5
 Author: Nathan Follens <nthn@unseen.is>
-Date:	Wed Mar 30 12:15:14 2016 +0000
+Date:   Wed Mar 30 12:15:14 2016 +0000
 
     Translated using Weblate (Dutch)
 
@@ -568,7 +623,7 @@ Date:	Wed Mar 30 12:15:14 2016 +0000
 
 commit 0217c80a7a6ea46dfdb4a932715635dae0fcf319
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Mon Mar 28 22:14:54 2016 -0600
+Date:   Mon Mar 28 22:14:54 2016 -0600
 
     fix focus issue #73
 
@@ -580,7 +635,7 @@ Date:	Mon Mar 28 22:14:54 2016 -0600
 
 commit 774d258e0342313a6a11cf62d4133b24d3435722
 Author: Efstathios Iosifidis <eiosifidis@gmail.com>
-Date:	Sun Mar 20 19:37:16 2016 +0000
+Date:   Sun Mar 20 19:37:16 2016 +0000
 
     Translated using Weblate (Greek)
 
@@ -591,7 +646,7 @@ Date:	Sun Mar 20 19:37:16 2016 +0000
 
 commit b60d6d405d776ab9e0fcd3e0aad76f1976527cb0
 Author: Dmitriy Khanzhin <dmitriy.khanzhin@gmail.com>
-Date:	Thu Feb 25 18:03:49 2016 +0000
+Date:   Thu Feb 25 18:03:49 2016 +0000
 
     Translated using Weblate (Russian)
 
@@ -602,7 +657,7 @@ Date:	Thu Feb 25 18:03:49 2016 +0000
 
 commit 6943c4f61c5469013be7be23d76a0f69ba0246fc
 Author: Ettore Atalan <atalanttore@googlemail.com>
-Date:	Sat Feb 13 09:03:48 2016 +0000
+Date:   Sat Feb 13 09:03:48 2016 +0000
 
     Translated using Weblate (German)
 
@@ -613,7 +668,7 @@ Date:	Sat Feb 13 09:03:48 2016 +0000
 
 commit 0d1c1d2206de93cb85c07c428e2340cb7ba6faf8
 Author: jc sl <trcs@gmx.com>
-Date:	Wed Feb 10 20:03:50 2016 +0000
+Date:   Wed Feb 10 20:03:50 2016 +0000
 
     Translated using Weblate (Spanish)
 
@@ -624,7 +679,7 @@ Date:	Wed Feb 10 20:03:50 2016 +0000
 
 commit 47f97d288702717573800e575105418fbbd3ebea
 Author: jc sl <trcs@gmx.com>
-Date:	Wed Feb 10 19:57:59 2016 +0000
+Date:   Wed Feb 10 19:57:59 2016 +0000
 
     Translated using Weblate (Spanish)
 
@@ -635,20 +690,20 @@ Date:	Wed Feb 10 19:57:59 2016 +0000
 
 commit b127566dfbdd985cd5632fe3686c77fa7f0d56b3
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Wed Feb 10 11:51:45 2016 -0700
+Date:   Wed Feb 10 11:51:45 2016 -0700
 
     proper XSession .desktop files
 
- lib/CMakeLists.txt	   |  1 +
- lib/Makefile.am	   |  1 +
+ lib/CMakeLists.txt        |  1 +
+ lib/Makefile.am           |  1 +
  lib/icewm-session.desktop | 58 ++++++++++++++++++++++++++++++++++++++++---
- lib/icewm.desktop	   | 26 +++++++++++++++++++
+ lib/icewm.desktop         | 26 +++++++++++++++++++
  4 files changed, 82 insertions(+), 4 deletions(-)
 
 commit d727613816924eeb01f4f3ef1e29767c2fc27ea9
 Merge: a772e67 f484c9d
 Author: Tomáš Chvátal <tomas.chvatal@gmail.com>
-Date:	Wed Feb 10 14:40:40 2016 +0100
+Date:   Wed Feb 10 14:40:40 2016 +0100
 
     Merge pull request #69 from fcrozat/icewm-1-3-BRANCH
 
@@ -656,7 +711,7 @@ Date:	Wed Feb 10 14:40:40 2016 +0100
 
 commit f484c9d4eff75dc2f5127deb7b871688d3288549
 Author: Frederic Crozat <fcrozat@suse.com>
-Date:	Wed Feb 10 14:33:19 2016 +0100
+Date:   Wed Feb 10 14:33:19 2016 +0100
 
     remove icewm.desktop, it isn't a real xsession file
 
@@ -669,7 +724,7 @@ Date:	Wed Feb 10 14:33:19 2016 +0100
 
 commit a772e672584a11c4fe07707e672fc632ec1fb263
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sun Jan 10 02:42:42 2016 -0700
+Date:   Sun Jan 10 02:42:42 2016 -0700
 
     correct MANAGER client message for system tray
 
@@ -685,15 +740,15 @@ Date:	Sun Jan 10 02:42:42 2016 -0700
 commit 62ec130be8275d32aa420706447a471088acb94e
 Merge: 8267c77 d699169
 Author: Brian Bidulock <bidulock@openss7.com>
-Date:	Wed Dec 30 18:29:35 2015 -0700
+Date:   Wed Dec 30 18:29:35 2015 -0700
 
     Merge pull request #65 from Code7R/ftr_dev_shortcut_cmake
 
     Added a shortcut for local debug builds with Debian-like configuration
 
-commit 8267c773282da378bba22fdbed2facc173c863cf
+commit 8267c773282da378bba22fdbed2facc173c863cf (temp_123)
 Author: Eduard Bloch <blade@debian.org>
-Date:	Wed Dec 30 16:09:12 2015 +0100
+Date:   Wed Dec 30 16:09:12 2015 +0100
 
     Use released pot file and stop rebuilding it on-the-fly
 
@@ -708,20 +763,34 @@ Date:	Wed Dec 30 16:09:12 2015 +0100
  po/CMakeLists.txt | 11 +++++++----
  1 file changed, 7 insertions(+), 4 deletions(-)
 
-commit d6991694a38da85c4729051ec4fccb9308f38b18 (origin/ftr_dev_shortcut_cmake)
+commit d6991694a38da85c4729051ec4fccb9308f38b18 (origin/ftr_dev_shortcut_cmake,
+ftr_dev_shortcut_cmake)
 Author: Eduard Bloch <blade@debian.org>
-Date:	Wed Dec 30 16:12:13 2015 +0100
+Date:   Wed Dec 30 16:12:13 2015 +0100
 
     Added a shortcut for local debug builds with Debian-like configuration
 
  INSTALL.cmakebuild | 2 ++
- rebuild.sh	    | 8 ++++++++
+ rebuild.sh         | 8 ++++++++
  2 files changed, 10 insertions(+)
+
+commit b33326f954fd874153599bb4ba2e33cc2d4df9ad (origin/ftr_fix_tktray_icon)
+Author: Eduard Bloch <blade@debian.org>
+Date:   Wed Dec 30 14:41:54 2015 +0100
+
+    Retry fetching of window properties with some delay
+
+    This pins an ugly workaround at exactly that scenario where tktray shows
+    buggy behaviour (probably some race, window properties reported with
+    incorrect size when queried too quickly). Fixes #54.
+
+ src/ywindow.cc | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 commit a1a26b9f0a8a18ded09f94a702e7f1f940a0f336 (tag:
 upstream/1.3.8+mod+20151227)
 Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Dec 27 21:25:07 2015 +0100
+Date:   Sun Dec 27 21:25:07 2015 +0100
 
     CLI --debug switch for icewmtray
 
@@ -731,7 +800,7 @@ Date:	Sun Dec 27 21:25:07 2015 +0100
 commit ec89b7a2eebd9e7147f24d959b0800e21d77b97e
 Merge: d8b8caa 803668d
 Author: Brian Bidulock <bidulock@openss7.com>
-Date:	Sun Dec 27 11:21:51 2015 -0700
+Date:   Sun Dec 27 11:21:51 2015 -0700
 
     Merge pull request #62 from Code7R/ftr_preconfigure_iconPath
 
@@ -739,7 +808,7 @@ Date:	Sun Dec 27 11:21:51 2015 -0700
 
 commit 67f88a61feb974a42a9cdc89a0b844f5592425d7
 Author: Mario <kdesi@kdesi.sk>
-Date:	Sun Dec 27 15:55:03 2015 +0100
+Date:   Sun Dec 27 15:55:03 2015 +0100
 
     Comment: Show logout submenu to Show logout menu
 
@@ -747,9 +816,9 @@ Date:	Sun Dec 27 15:55:03 2015 +0100
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 commit 803668d5ebf7b54b454d913db34ad5bb34e617cc
-(origin/ftr_preconfigure_iconPath)
+(origin/ftr_preconfigure_iconPath, ftr_preconfigure_iconPath)
 Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Dec 27 12:16:23 2015 +0100
+Date:   Sun Dec 27 12:16:23 2015 +0100
 
     Little shortcut: set DEBUG define if user started with Debug build type
 
@@ -758,7 +827,7 @@ Date:	Sun Dec 27 12:16:23 2015 +0100
 
 commit 9a53d55011a8c67c25feec136bc4847a23798a8a
 Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Dec 27 11:48:04 2015 +0100
+Date:   Sun Dec 27 11:48:04 2015 +0100
 
     Preconfigure iconPath in popular FOSS environments
 
@@ -768,7 +837,7 @@ Date:	Sun Dec 27 11:48:04 2015 +0100
 commit d8b8caa191e5d9445481bcb029777faae1e00fa8
 Merge: 21929f7 0bead05
 Author: Brian Bidulock <bidulock@openss7.com>
-Date:	Sat Dec 26 17:26:44 2015 -0700
+Date:   Sat Dec 26 17:26:44 2015 -0700
 
     Merge pull request #59 from mrbrainsample/icewm-1-3-BRANCH
 
@@ -776,7 +845,7 @@ Date:	Sat Dec 26 17:26:44 2015 -0700
 
 commit 0bead05d280118d103a6ceb4b37e55cd0ab4f96c
 Author: Jeff Woods <klaatu@fnordco.com>
-Date:	Tue Dec 22 16:47:42 2015 -0800
+Date:   Tue Dec 22 16:47:42 2015 -0800
 
     Fix preferences install for out-of-tree CMake builds
 
@@ -785,7 +854,7 @@ Date:	Tue Dec 22 16:47:42 2015 -0800
 
 commit 21929f7373d7ae5f075e1930a618e23154f7614c
 Author: Eduard Bloch <blade@debian.org>
-Date:	Sat Dec 19 19:13:20 2015 +0100
+Date:   Sat Dec 19 19:13:20 2015 +0100
 
     Don't set optimization options if not specified by the user
 
@@ -797,7 +866,7 @@ Date:	Sat Dec 19 19:13:20 2015 +0100
 
 commit 50808395e1c2dff20abcc8f73586b14a4f850d11
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sun Dec 20 05:28:20 2015 -0700
+Date:   Sun Dec 20 05:28:20 2015 -0700
 
     missing jpg slipped in
 
@@ -807,7 +876,7 @@ Date:	Sun Dec 20 05:28:20 2015 -0700
 commit a9da03287b7c4a3e57fdbabb433af57241927751
 Merge: f9a7e97 fb939b6
 Author: Brian Bidulock <bidulock@openss7.com>
-Date:	Sun Dec 20 05:12:58 2015 -0700
+Date:   Sun Dec 20 05:12:58 2015 -0700
 
     Merge pull request #57 from 150balbes/icewm-1-3-BRANCH
 
@@ -815,55 +884,55 @@ Date:	Sun Dec 20 05:12:58 2015 -0700
 
 commit fb939b6f60024461759e102fc01bbbebe9b16f2d
 Author: Oleg Ivanov <Leo-sp150@yandex.ru>
-Date:	Sun Dec 20 13:42:48 2015 +0300
+Date:   Sun Dec 20 13:42:48 2015 +0300
 
     add new default theme and background
 
-	modified:   icewm.spec.in
-	modified:   lib/Makefile.am
-	new file:   lib/icons/lock_16x16.xpm
-	new file:   lib/icons/lock_32x32.xpm
-	new file:   lib/icons/lock_48x48.xpm
-	new file:   lib/themes/default/closeA.xpm
-	new file:   lib/themes/default/closeI.xpm
-	new file:   lib/themes/default/default.png
-	new file:   lib/themes/default/default.theme
-	new file:   lib/themes/default/depthA.xpm
-	new file:   lib/themes/default/depthI.xpm
-	new file:   lib/themes/default/hideA.xpm
-	new file:   lib/themes/default/hideI.xpm
-	new file:   lib/themes/default/maximizeA.xpm
-	new file:   lib/themes/default/maximizeI.xpm
-	new file:   lib/themes/default/menuButtonA.xpm
-	new file:   lib/themes/default/menuButtonI.xpm
-	new file:   lib/themes/default/minimizeA.xpm
-	new file:   lib/themes/default/minimizeI.xpm
-	new file:   lib/themes/default/restoreA.xpm
-	new file:   lib/themes/default/restoreI.xpm
-	new file:   lib/themes/default/rolldownA.xpm
-	new file:   lib/themes/default/rolldownI.xpm
-	new file:   lib/themes/default/rollupA.xpm
-	new file:   lib/themes/default/rollupI.xpm
-	modified:   src/CMakeLists.txt
-	modified:   src/default.h
-	modified:   src/icewmbg_prefs.h
-	modified:   src/themable.h
-	modified:   src/yicon.cc
-	modified:   src/yprefs.h
+            modified:   icewm.spec.in
+            modified:   lib/Makefile.am
+            new file:   lib/icons/lock_16x16.xpm
+            new file:   lib/icons/lock_32x32.xpm
+            new file:   lib/icons/lock_48x48.xpm
+            new file:   lib/themes/default/closeA.xpm
+            new file:   lib/themes/default/closeI.xpm
+            new file:   lib/themes/default/default.png
+            new file:   lib/themes/default/default.theme
+            new file:   lib/themes/default/depthA.xpm
+            new file:   lib/themes/default/depthI.xpm
+            new file:   lib/themes/default/hideA.xpm
+            new file:   lib/themes/default/hideI.xpm
+            new file:   lib/themes/default/maximizeA.xpm
+            new file:   lib/themes/default/maximizeI.xpm
+            new file:   lib/themes/default/menuButtonA.xpm
+            new file:   lib/themes/default/menuButtonI.xpm
+            new file:   lib/themes/default/minimizeA.xpm
+            new file:   lib/themes/default/minimizeI.xpm
+            new file:   lib/themes/default/restoreA.xpm
+            new file:   lib/themes/default/restoreI.xpm
+            new file:   lib/themes/default/rolldownA.xpm
+            new file:   lib/themes/default/rolldownI.xpm
+            new file:   lib/themes/default/rollupA.xpm
+            new file:   lib/themes/default/rollupI.xpm
+            modified:   src/CMakeLists.txt
+            modified:   src/default.h
+            modified:   src/icewmbg_prefs.h
+            modified:   src/themable.h
+            modified:   src/yicon.cc
+            modified:   src/yprefs.h
 
- icewm.spec.in			    |	7 +-
- lib/Makefile.am		    |  27 +++-
- lib/icons/lock_16x16.xpm	    |  22 +++
- lib/icons/lock_32x32.xpm	    | 210 +++++++++++++++++++++++++
- lib/icons/lock_48x48.xpm	    | 272 +++++++++++++++++++++++++++++++++
- lib/themes/default/closeA.xpm	    |  54 +++++++
- lib/themes/default/closeI.xpm	    |  54 +++++++
+ icewm.spec.in                      |   7 +-
+ lib/Makefile.am                    |  27 +++-
+ lib/icons/lock_16x16.xpm           |  22 +++
+ lib/icons/lock_32x32.xpm           | 210 +++++++++++++++++++++++++
+ lib/icons/lock_48x48.xpm           | 272 +++++++++++++++++++++++++++++++++
+ lib/themes/default/closeA.xpm      |  54 +++++++
+ lib/themes/default/closeI.xpm      |  54 +++++++
  lib/themes/default/default.png     | Bin 0 -> 228287 bytes
  lib/themes/default/default.theme   |  52 +++++++
- lib/themes/default/depthA.xpm	    |  51 +++++++
- lib/themes/default/depthI.xpm	    |  51 +++++++
- lib/themes/default/hideA.xpm	    |  50 ++++++
- lib/themes/default/hideI.xpm	    |  50 ++++++
+ lib/themes/default/depthA.xpm      |  51 +++++++
+ lib/themes/default/depthI.xpm      |  51 +++++++
+ lib/themes/default/hideA.xpm       |  50 ++++++
+ lib/themes/default/hideI.xpm       |  50 ++++++
  lib/themes/default/maximizeA.xpm   |  54 +++++++
  lib/themes/default/maximizeI.xpm   |  54 +++++++
  lib/themes/default/menuButtonA.xpm |  56 +++++++
@@ -876,18 +945,18 @@ Date:	Sun Dec 20 13:42:48 2015 +0300
  lib/themes/default/rolldownI.xpm   |  50 ++++++
  lib/themes/default/rollupA.xpm     |  50 ++++++
  lib/themes/default/rollupI.xpm     |  50 ++++++
- src/CMakeLists.txt		    |	2 +-
- src/default.h			    |  15 +-
- src/icewmbg_prefs.h		    |	2 +-
- src/themable.h			    |	6 +-
- src/yicon.cc			    |  20 +++
- src/yprefs.h			    |	2 +-
+ src/CMakeLists.txt                 |   2 +-
+ src/default.h                      |  15 +-
+ src/icewmbg_prefs.h                |   2 +-
+ src/themable.h                     |   6 +-
+ src/yicon.cc                       |  20 +++
+ src/yprefs.h                       |   2 +-
  31 files changed, 1565 insertions(+), 18 deletions(-)
 
 commit f9a7e97c81c4271e19957d47f927829b40f1a30a
 Merge: ba62ba1 33e8488
 Author: Brian Bidulock <bidulock@openss7.com>
-Date:	Sat Dec 19 04:44:17 2015 -0700
+Date:   Sat Dec 19 04:44:17 2015 -0700
 
     Merge pull request #56 from 150balbes/icewm-1-3-BRANCH
 
@@ -895,13 +964,13 @@ Date:	Sat Dec 19 04:44:17 2015 -0700
 
 commit 33e84881c6883502d920f04bb98a5216a8f81b50
 Author: Oleg Ivanov <Leo-sp150@yandex.ru>
-Date:	Sat Dec 19 11:52:19 2015 +0300
+Date:   Sat Dec 19 11:52:19 2015 +0300
 
     add support for applets MEMO in themes Infadel2 icedesert
 
-	modified:   lib/themes/Infadel2/Ergonomic.theme
-	modified:   lib/themes/Infadel2/Overloaded.theme
-	modified:   lib/themes/icedesert/default.theme
+            modified:   lib/themes/Infadel2/Ergonomic.theme
+            modified:   lib/themes/Infadel2/Overloaded.theme
+            modified:   lib/themes/icedesert/default.theme
 
  lib/themes/Infadel2/Ergonomic.theme  | 5 ++++-
  lib/themes/Infadel2/Overloaded.theme | 5 ++++-
@@ -910,35 +979,35 @@ Date:	Sat Dec 19 11:52:19 2015 +0300
 
 commit 0efdf3a70ca076beec11e9f7b22c875ec7578c18
 Author: Oleg Ivanov <Leo-sp150@yandex.ru>
-Date:	Sat Dec 19 11:46:42 2015 +0300
+Date:   Sat Dec 19 11:46:42 2015 +0300
 
     merge
 
- CMakeLists.txt			      |   1 +
- icewm.spec.in			      |   4 +-
- lib/Makefile.am		      |   3 -
- lib/icons/lock_16x16.xpm	      |  22 ---
- lib/icons/lock_32x32.xpm	      | 210 ------------------------
- lib/icons/lock_48x48.xpm	      | 272 -------------------------------
+ CMakeLists.txt                       |   1 +
+ icewm.spec.in                        |   4 +-
+ lib/Makefile.am                      |   3 -
+ lib/icons/lock_16x16.xpm             |  22 ---
+ lib/icons/lock_32x32.xpm             | 210 ------------------------
+ lib/icons/lock_48x48.xpm             | 272 -------------------------------
  lib/themes/Infadel2/Ergonomic.theme  |   9 -
  lib/themes/Infadel2/Overloaded.theme |   9 -
  lib/themes/icedesert/default.theme   |   6 -
- src/CMakeLists.txt		      |  10 +-
- src/Makefile.am		      |   9 +
- src/default.h			      |  13 +-
- src/icehelp.cc			      |   2 +-
- src/iceicon.cc			      |   2 +-
- src/icewmbg_prefs.h		      |   2 +-
- src/themable.h			      |   6 +-
- src/wmapp.cc			      | 127 +++------------
- src/wmapp.h			      |   6 -
- src/yconfig.h			      |  16 +-
- src/yicon.cc			      |  20 ---
+ src/CMakeLists.txt                   |  10 +-
+ src/Makefile.am                      |   9 +
+ src/default.h                        |  13 +-
+ src/icehelp.cc                       |   2 +-
+ src/iceicon.cc                       |   2 +-
+ src/icewmbg_prefs.h                  |   2 +-
+ src/themable.h                       |   6 +-
+ src/wmapp.cc                         | 127 +++------------
+ src/wmapp.h                          |   6 -
+ src/yconfig.h                        |  16 +-
+ src/yicon.cc                         |  20 ---
  20 files changed, 64 insertions(+), 685 deletions(-)
 
 commit ba62ba101fa39e6d1488f1823eeab530aceaaa01
 Author: Eduard Bloch <blade@debian.org>
-Date:	Fri Dec 18 18:52:43 2015 +0100
+Date:   Fri Dec 18 18:52:43 2015 +0100
 
     Ensure proper order of include paths in the cmake build
 
@@ -948,7 +1017,7 @@ Date:	Fri Dec 18 18:52:43 2015 +0100
 
 commit 0e4ce18ecda2d83f8efd377af3c33ef24662cf2e
 Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Dec 8 22:19:29 2015 +0100
+Date:   Tue Dec 8 22:19:29 2015 +0100
 
     Workaround for some IDEs that keep binary outputs in a custom location
 
@@ -957,51 +1026,51 @@ Date:	Tue Dec 8 22:19:29 2015 +0100
 
 commit a5a460c20b157af823c939ffcc457cb635df209b
 Author: Oleg Ivanov <Leo-sp150@yandex.ru>
-Date:	Thu Dec 17 14:43:13 2015 +0300
+Date:   Thu Dec 17 14:43:13 2015 +0300
 
      Changes to be committed:
-	modified:   NEWS
-	modified:   README.md
-	modified:   VERSION
-	modified:   autogen.sh
-	modified:   configure.ac
-	modified:   po/be.po
-	modified:   po/bg.po
-	modified:   po/ca.po
-	modified:   po/cs.po
-	modified:   po/da.po
-	modified:   po/de.po
-	modified:   po/el.po
-	modified:   po/en.po
-	modified:   po/es.po
-	modified:   po/fi.po
-	modified:   po/fr.po
-	modified:   po/hr.po
-	modified:   po/hu.po
-	modified:   po/id.po
-	modified:   po/it.po
-	modified:   po/ja.po
-	modified:   po/ko.po
-	modified:   po/lt.po
-	modified:   po/lv.po
-	modified:   po/mk.po
-	modified:   po/nb.po
-	modified:   po/nl.po
-	modified:   po/no.po
-	modified:   po/pl.po
-	modified:   po/pt_BR.po
-	modified:   po/ro.po
-	modified:   po/ru.po
-	modified:   po/sk.po
-	modified:   po/sl.po
-	modified:   po/sv.po
-	modified:   po/tr.po
-	modified:   po/uk.po
-	modified:   po/vi.po
-	modified:   po/zh_CN.po
-	modified:   po/zh_TW.po
+            modified:   NEWS
+            modified:   README.md
+            modified:   VERSION
+            modified:   autogen.sh
+            modified:   configure.ac
+            modified:   po/be.po
+            modified:   po/bg.po
+            modified:   po/ca.po
+            modified:   po/cs.po
+            modified:   po/da.po
+            modified:   po/de.po
+            modified:   po/el.po
+            modified:   po/en.po
+            modified:   po/es.po
+            modified:   po/fi.po
+            modified:   po/fr.po
+            modified:   po/hr.po
+            modified:   po/hu.po
+            modified:   po/id.po
+            modified:   po/it.po
+            modified:   po/ja.po
+            modified:   po/ko.po
+            modified:   po/lt.po
+            modified:   po/lv.po
+            modified:   po/mk.po
+            modified:   po/nb.po
+            modified:   po/nl.po
+            modified:   po/no.po
+            modified:   po/pl.po
+            modified:   po/pt_BR.po
+            modified:   po/ro.po
+            modified:   po/ru.po
+            modified:   po/sk.po
+            modified:   po/sl.po
+            modified:   po/sv.po
+            modified:   po/tr.po
+            modified:   po/uk.po
+            modified:   po/vi.po
+            modified:   po/zh_CN.po
+            modified:   po/zh_TW.po
 
- NEWS	      | 56 +++++++++++++++++++++++++++++++++++++-------------------
+ NEWS         | 56 +++++++++++++++++++++++++++++++++++++-------------------
  README.md    |  4 ++--
  VERSION      |  2 +-
  autogen.sh   |  2 ++
@@ -1045,11 +1114,11 @@ Date:	Thu Dec 17 14:43:13 2015 +0300
 
 commit b3bd2200b1aa772f8e3471ce73574d3ce95501ce (tag: 1.3.12)
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Wed Dec 16 18:17:06 2015 -0700
+Date:   Wed Dec 16 18:17:06 2015 -0700
 
     update release files
 
- NEWS	      | 56 +++++++++++++++++++++++++++++++++++++-------------------
+ NEWS         | 56 +++++++++++++++++++++++++++++++++++++-------------------
  README.md    |  4 ++--
  VERSION      |  2 +-
  configure.ac |  6 +++---
@@ -1092,50 +1161,50 @@ Date:	Wed Dec 16 18:17:06 2015 -0700
 
 commit ce5f1abe16a3d7f8c820ebf98ef002ac45eb178e
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Wed Dec 16 18:08:12 2015 -0700
+Date:   Wed Dec 16 18:08:12 2015 -0700
 
     update po files for release
 
- po/be.po    |	2 +-
- po/bg.po    |	2 +-
- po/ca.po    |	2 +-
- po/cs.po    |	2 +-
- po/da.po    |	2 +-
- po/de.po    |	2 +-
- po/el.po    |	2 +-
- po/en.po    |	2 +-
- po/es.po    |	6 +++---
- po/fi.po    |	2 +-
- po/fr.po    |	2 +-
- po/hr.po    |	2 +-
- po/hu.po    |	2 +-
- po/id.po    |	2 +-
- po/it.po    |	2 +-
- po/ja.po    |	2 +-
- po/ko.po    |	2 +-
- po/lt.po    |	2 +-
- po/lv.po    |	2 +-
- po/mk.po    |	2 +-
- po/nb.po    |	2 +-
- po/nl.po    |	2 +-
- po/no.po    |	2 +-
- po/pl.po    |	2 +-
- po/pt_BR.po |	2 +-
- po/ro.po    |	2 +-
- po/ru.po    |	2 +-
- po/sk.po    |	2 +-
- po/sl.po    |	2 +-
- po/sv.po    |	6 +++---
- po/tr.po    |	2 +-
+ po/be.po    |  2 +-
+ po/bg.po    |  2 +-
+ po/ca.po    |  2 +-
+ po/cs.po    |  2 +-
+ po/da.po    |  2 +-
+ po/de.po    |  2 +-
+ po/el.po    |  2 +-
+ po/en.po    |  2 +-
+ po/es.po    |  6 +++---
+ po/fi.po    |  2 +-
+ po/fr.po    |  2 +-
+ po/hr.po    |  2 +-
+ po/hu.po    |  2 +-
+ po/id.po    |  2 +-
+ po/it.po    |  2 +-
+ po/ja.po    |  2 +-
+ po/ko.po    |  2 +-
+ po/lt.po    |  2 +-
+ po/lv.po    |  2 +-
+ po/mk.po    |  2 +-
+ po/nb.po    |  2 +-
+ po/nl.po    |  2 +-
+ po/no.po    |  2 +-
+ po/pl.po    |  2 +-
+ po/pt_BR.po |  2 +-
+ po/ro.po    |  2 +-
+ po/ru.po    |  2 +-
+ po/sk.po    |  2 +-
+ po/sl.po    |  2 +-
+ po/sv.po    |  6 +++---
+ po/tr.po    |  2 +-
  po/uk.po    | 18 +++++++++---------
- po/vi.po    |	2 +-
- po/zh_CN.po |	2 +-
- po/zh_TW.po |	2 +-
+ po/vi.po    |  2 +-
+ po/zh_CN.po |  2 +-
+ po/zh_TW.po |  2 +-
  35 files changed, 47 insertions(+), 47 deletions(-)
 
 commit 4bf283de3cb76d739df3f4240d1f090ebb558ce7
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Wed Dec 16 18:07:17 2015 -0700
+Date:   Wed Dec 16 18:07:17 2015 -0700
 
     be sure to update VERSION file
 
@@ -1144,48 +1213,48 @@ Date:	Wed Dec 16 18:07:17 2015 -0700
 
 commit 386a68e6dee90a57fd4da9a663afd43d4a4556e8
 Author: Oleg Ivanov <Leo-sp150@yandex.ru>
-Date:	Thu Dec 10 11:41:06 2015 +0300
+Date:   Thu Dec 10 11:41:06 2015 +0300
 
     del icewm-session, edit src, add icons
 
      Changes to be committed:
-	modified:   icewm.spec.in
-	modified:   lib/Makefile.am
-	new file:   lib/icons/lock_16x16.xpm
-	new file:   lib/icons/lock_32x32.xpm
-	new file:   lib/icons/lock_48x48.xpm
-	modified:   src/Makefile.am
-	modified:   src/default.h
-	modified:   src/icehelp.cc
-	modified:   src/iceicon.cc
-	modified:   src/icewmbg_prefs.h
-	modified:   src/themable.h
-	modified:   src/wmapp.cc
-	modified:   src/wmapp.h
-	modified:   src/yconfig.h
-	modified:   src/yicon.cc
+            modified:   icewm.spec.in
+            modified:   lib/Makefile.am
+            new file:   lib/icons/lock_16x16.xpm
+            new file:   lib/icons/lock_32x32.xpm
+            new file:   lib/icons/lock_48x48.xpm
+            modified:   src/Makefile.am
+            modified:   src/default.h
+            modified:   src/icehelp.cc
+            modified:   src/iceicon.cc
+            modified:   src/icewmbg_prefs.h
+            modified:   src/themable.h
+            modified:   src/wmapp.cc
+            modified:   src/wmapp.h
+            modified:   src/yconfig.h
+            modified:   src/yicon.cc
 
- icewm.spec.in		  |   4 +-
- lib/Makefile.am	  |   3 +
+ icewm.spec.in            |   4 +-
+ lib/Makefile.am          |   3 +
  lib/icons/lock_16x16.xpm |  22 ++++
  lib/icons/lock_32x32.xpm | 210 +++++++++++++++++++++++++++++++++
  lib/icons/lock_48x48.xpm | 272 +++++++++++++++++++++++++++++++++++++++++++
- src/Makefile.am	  |   9 --
- src/default.h		  |  13 +--
- src/icehelp.cc		  |   2 +-
- src/iceicon.cc		  |   2 +-
- src/icewmbg_prefs.h	  |   2 +-
- src/themable.h		  |   6 +-
- src/wmapp.cc		  | 127 ++++++++++++++++----
- src/wmapp.h		  |   6 +
- src/yconfig.h		  |  16 +--
- src/yicon.cc		  |  20 ++++
+ src/Makefile.am          |   9 --
+ src/default.h            |  13 +--
+ src/icehelp.cc           |   2 +-
+ src/iceicon.cc           |   2 +-
+ src/icewmbg_prefs.h      |   2 +-
+ src/themable.h           |   6 +-
+ src/wmapp.cc             | 127 ++++++++++++++++----
+ src/wmapp.h              |   6 +
+ src/yconfig.h            |  16 +--
+ src/yicon.cc             |  20 ++++
  15 files changed, 657 insertions(+), 57 deletions(-)
 
 commit 7a9ee08c1f23a5681782c19c1b5ef199a7a6da8b
 Merge: 903fd26 7d98d36
 Author: Oleg Ivanov <Leo-sp150@yandex.ru>
-Date:	Tue Dec 8 16:50:59 2015 +0300
+Date:   Tue Dec 8 16:50:59 2015 +0300
 
     Merge branch 'icewm-1-3-BRANCH' of https://github.com/150balbes/icewm
     into icewm-1-3-BRANCH
@@ -1194,7 +1263,7 @@ Date:	Tue Dec 8 16:50:59 2015 +0300
 
 commit 903fd2689a578ba1d6e41ff9f6a9b50e99f10441
 Author: Oleg Ivanov <Leo-sp150@yandex.ru>
-Date:	Tue Dec 8 16:31:43 2015 +0300
+Date:   Tue Dec 8 16:31:43 2015 +0300
 
     add baground and suport MEMO aplet for defaults themes
 
@@ -1206,7 +1275,7 @@ Date:	Tue Dec 8 16:31:43 2015 +0300
 commit 7d98d36ca4f0b63192c922abbbee902304fb0f3e
 Merge: 3de4e26 aef74ea
 Author: 150balbes <olepp@yandex.ru>
-Date:	Sun Dec 6 18:35:26 2015 +0300
+Date:   Sun Dec 6 18:35:26 2015 +0300
 
     Merge pull request #1 from bbidulock/icewm-1-3-BRANCH
 
@@ -1214,7 +1283,7 @@ Date:	Sun Dec 6 18:35:26 2015 +0300
 
 commit aef74ea0d8ca706fdf95fbc1aa7bb72566721ada
 Author: Jonas Svensson <jonas@ekhorva.se>
-Date:	Sun Dec 6 01:12:21 2015 +0000
+Date:   Sun Dec 6 01:12:21 2015 +0000
 
     Translated using Weblate (Swedish)
 
@@ -1226,7 +1295,7 @@ Date:	Sun Dec 6 01:12:21 2015 +0000
 commit 3de4e261f421aacaa240397e95319adf15873109
 Merge: ee40cac a174f39
 Author: openSUSE Weblate <weblate-noreply@opensuse.org>
-Date:	Sun Nov 22 07:02:39 2015 +0000
+Date:   Sun Nov 22 07:02:39 2015 +0000
 
     Merge remote-tracking branch 'origin/icewm-1-3-BRANCH' into
     icewm-1-3-BRANCH
@@ -1234,7 +1303,7 @@ Date:	Sun Nov 22 07:02:39 2015 +0000
 commit a174f39aae718942e5553e26c9c70752c773412e
 Merge: 53f39b6 a5aeb1b
 Author: Brian Bidulock <bidulock@openss7.com>
-Date:	Sun Nov 22 00:02:34 2015 -0700
+Date:   Sun Nov 22 00:02:34 2015 -0700
 
     Merge pull request #45 from williex/icewm-1-3-BRANCH
 
@@ -1243,14 +1312,14 @@ Date:	Sun Nov 22 00:02:34 2015 -0700
 commit ee40cac4e059695c9605d0098a193764b344a508
 Merge: ced4e7d 53f39b6
 Author: openSUSE Weblate <weblate-noreply@opensuse.org>
-Date:	Sat Nov 21 23:14:31 2015 +0000
+Date:   Sat Nov 21 23:14:31 2015 +0000
 
     Merge remote-tracking branch 'origin/icewm-1-3-BRANCH' into
     icewm-1-3-BRANCH
 
 commit 53f39b6bad48a85fdcf2c821efe9f4dbe2ce5f8d
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sat Nov 21 16:14:20 2015 -0700
+Date:   Sat Nov 21 16:14:20 2015 -0700
 
     updated NEWS file
 
@@ -1259,7 +1328,7 @@ Date:	Sat Nov 21 16:14:20 2015 -0700
 
 commit ced4e7d3b5b13915d48f19646620e37193ac2e3e
 Author: Andriy Bandura <andriykopanytsia@gmail.com>
-Date:	Fri Nov 20 07:43:19 2015 +0000
+Date:   Fri Nov 20 07:43:19 2015 +0000
 
     Translated using Weblate (Ukrainian)
 
@@ -1270,7 +1339,7 @@ Date:	Fri Nov 20 07:43:19 2015 +0000
 
 commit ec2d775787ba369f7b2f62d0429c469152b582e0
 Author: jc sl <trcs@gmx.com>
-Date:	Thu Nov 19 00:02:24 2015 +0000
+Date:   Thu Nov 19 00:02:24 2015 +0000
 
     Translated using Weblate (Spanish)
 
@@ -1281,50 +1350,50 @@ Date:	Thu Nov 19 00:02:24 2015 +0000
 
 commit 2797a44074fa6f8089ef088e3ff5c1caeea8830b
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Wed Nov 18 04:45:01 2015 -0700
+Date:   Wed Nov 18 04:45:01 2015 -0700
 
     updated po files
 
- po/be.po    |	 2 +-
- po/bg.po    |	 2 +-
- po/ca.po    |	22 +++++-----
- po/cs.po    |	10 ++---
- po/da.po    |	 2 +-
- po/de.po    |	 2 +-
- po/el.po    |	 2 +-
- po/en.po    |	 2 +-
- po/es.po    |	 2 +-
- po/fi.po    |	 2 +-
- po/fr.po    |	 2 +-
- po/hr.po    |	 2 +-
- po/hu.po    |	 2 +-
- po/id.po    |	 2 +-
- po/it.po    |	 2 +-
+ po/be.po    |   2 +-
+ po/bg.po    |   2 +-
+ po/ca.po    |  22 +++++-----
+ po/cs.po    |  10 ++---
+ po/da.po    |   2 +-
+ po/de.po    |   2 +-
+ po/el.po    |   2 +-
+ po/en.po    |   2 +-
+ po/es.po    |   2 +-
+ po/fi.po    |   2 +-
+ po/fr.po    |   2 +-
+ po/hr.po    |   2 +-
+ po/hu.po    |   2 +-
+ po/id.po    |   2 +-
+ po/it.po    |   2 +-
  po/ja.po    | 130 ++++++++++++++++++++++++++++++++++++++------------------
- po/ko.po    |	 2 +-
- po/lt.po    |	13 +++---
- po/lv.po    |	 2 +-
- po/mk.po    |	 2 +-
- po/nb.po    |	 2 +-
- po/nl.po    |	 6 +--
- po/no.po    |	 2 +-
- po/pl.po    |	 2 +-
- po/pt_BR.po |	 6 +--
- po/ro.po    |	 2 +-
- po/ru.po    |	10 ++---
- po/sk.po    |	18 ++++----
- po/sl.po    |	 2 +-
- po/sv.po    |	 2 +-
- po/tr.po    |	 2 +-
- po/uk.po    |	10 ++---
- po/vi.po    |	 2 +-
- po/zh_CN.po |	 2 +-
- po/zh_TW.po |	 2 +-
+ po/ko.po    |   2 +-
+ po/lt.po    |  13 +++---
+ po/lv.po    |   2 +-
+ po/mk.po    |   2 +-
+ po/nb.po    |   2 +-
+ po/nl.po    |   6 +--
+ po/no.po    |   2 +-
+ po/pl.po    |   2 +-
+ po/pt_BR.po |   6 +--
+ po/ro.po    |   2 +-
+ po/ru.po    |  10 ++---
+ po/sk.po    |  18 ++++----
+ po/sl.po    |   2 +-
+ po/sv.po    |   2 +-
+ po/tr.po    |   2 +-
+ po/uk.po    |  10 ++---
+ po/vi.po    |   2 +-
+ po/zh_CN.po |   2 +-
+ po/zh_TW.po |   2 +-
  35 files changed, 163 insertions(+), 114 deletions(-)
 
 commit 9b9ff7096f932f781c944896709812175df4b92c
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Wed Nov 18 04:26:58 2015 -0700
+Date:   Wed Nov 18 04:26:58 2015 -0700
 
     add tags files to ignore
 
@@ -1334,7 +1403,7 @@ Date:	Wed Nov 18 04:26:58 2015 -0700
 commit a0a78221075b8dcf940f84c7b2e1fa849eae6850
 Merge: 08576b9 427aab5
 Author: Code7R <Code7R@users.noreply.github.com>
-Date:	Wed Nov 18 08:55:39 2015 +0100
+Date:   Wed Nov 18 08:55:39 2015 +0100
 
     Merge pull request #48 from mrbrainsample/icewm-1-3-BRANCH
 
@@ -1342,7 +1411,7 @@ Date:	Wed Nov 18 08:55:39 2015 +0100
 
 commit 427aab54424f544fc8bab9d1a3b1d3fd3add1a9b
 Author: Jeff Woods <klaatu@fnordco.com>
-Date:	Mon Nov 16 17:23:41 2015 -0800
+Date:   Mon Nov 16 17:23:41 2015 -0800
 
     Change preferences install dir to LIBDIR for cmake
 
@@ -1355,14 +1424,14 @@ Date:	Mon Nov 16 17:23:41 2015 -0800
 commit 08576b905fcca7f460a0f05ff9ec3b24f12f81be
 Merge: b38621f c3aad20
 Author: openSUSE Weblate <weblate-noreply@opensuse.org>
-Date:	Mon Nov 16 16:42:36 2015 +0000
+Date:   Mon Nov 16 16:42:36 2015 +0000
 
     Merge remote-tracking branch 'origin/icewm-1-3-BRANCH' into
     icewm-1-3-BRANCH
 
 commit c3aad2093000e6d18e6ddfbfe2c37bf6baa56540
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sun Nov 15 16:24:56 2015 -0700
+Date:   Sun Nov 15 16:24:56 2015 -0700
 
     update sgml a little bit
 
@@ -1372,7 +1441,7 @@ Date:	Sun Nov 15 16:24:56 2015 -0700
 commit f37b47bdd489c5cea20c0321325d458cb14f10cb
 Merge: d36cfd6 a206895
 Author: Brian Bidulock <bidulock@openss7.com>
-Date:	Sun Nov 15 16:23:43 2015 -0700
+Date:   Sun Nov 15 16:23:43 2015 -0700
 
     Merge pull request #46 from PetteriAimonen/feature_taskBarWorkspacesTop
 
@@ -1380,7 +1449,7 @@ Date:	Sun Nov 15 16:23:43 2015 -0700
 
 commit d36cfd6f7606126543f9c8ccb0c0faaf2eead59d
 Author: Petteri Aimonen <jpa@git.mail.kapsi.fi>
-Date:	Sun Nov 15 11:14:04 2015 +0200
+Date:   Sun Nov 15 11:14:04 2015 +0200
 
     Update _NET_CLIENT_LIST_STACKING when changing windows.
 
@@ -1389,7 +1458,7 @@ Date:	Sun Nov 15 11:14:04 2015 +0200
 
 commit a206895f57994c85a2b6c7de311d9d51caa97085
 Author: Petteri Aimonen <jpa@git.mail.kapsi.fi>
-Date:	Sun Nov 15 10:51:49 2015 +0200
+Date:   Sun Nov 15 10:51:49 2015 +0200
 
     Add taskBarWorkspacesTop option.
 
@@ -1397,13 +1466,13 @@ Date:	Sun Nov 15 10:51:49 2015 +0200
     using double height taskbar, thus leaving more space for the window
     list on the bottom row.
 
- src/default.h	  | 2 ++
+ src/default.h    | 2 ++
  src/wmtaskbar.cc | 2 +-
  2 files changed, 3 insertions(+), 1 deletion(-)
 
 commit b38621ff9396bc98f414d2284d448e2cd7b58893
 Author: Ferdinand Galko <galko.ferdinand@gmail.com>
-Date:	Thu Nov 12 18:53:29 2015 +0000
+Date:   Thu Nov 12 18:53:29 2015 +0000
 
     Translated using Weblate (Slovak)
 
@@ -1414,7 +1483,7 @@ Date:	Thu Nov 12 18:53:29 2015 +0000
 
 commit 597f0c7ebc503f69467cf253425f95a62e32bf52
 Author: Ferdinand Galko <galko.ferdinand@gmail.com>
-Date:	Tue Nov 10 17:30:05 2015 +0000
+Date:   Tue Nov 10 17:30:05 2015 +0000
 
     Translated using Weblate (Slovak)
 
@@ -1425,7 +1494,7 @@ Date:	Tue Nov 10 17:30:05 2015 +0000
 
 commit e25a7aeb50853ec68588e8dbf2f7b59cabadb28d
 Author: Ferdinand Galko <galko.ferdinand@gmail.com>
-Date:	Sun Nov 8 18:46:47 2015 +0000
+Date:   Sun Nov 8 18:46:47 2015 +0000
 
     Translated using Weblate (Slovak)
 
@@ -1436,7 +1505,7 @@ Date:	Sun Nov 8 18:46:47 2015 +0000
 
 commit ac2da9fe4ff11319e576c4cbd7ca3ad3d1b04484
 Author: Vojtech Zeisek <Vojtech.Zeisek@opensuse.org>
-Date:	Thu Nov 5 09:52:52 2015 +0000
+Date:   Thu Nov 5 09:52:52 2015 +0000
 
     Translated using Weblate (Czech)
 
@@ -1447,7 +1516,7 @@ Date:	Thu Nov 5 09:52:52 2015 +0000
 
 commit aea3e08deca7c4292402f40fe65e373258dfea28
 Author: Vojtech Zeisek <Vojtech.Zeisek@opensuse.org>
-Date:	Thu Nov 5 09:44:05 2015 +0000
+Date:   Thu Nov 5 09:44:05 2015 +0000
 
     Translated using Weblate (Czech)
 
@@ -1458,7 +1527,7 @@ Date:	Thu Nov 5 09:44:05 2015 +0000
 
 commit 50898904aac51803cf8e5b3d79be09c4caaf7e06
 Author: Andriy Bandura <andriykopanytsia@gmail.com>
-Date:	Thu Nov 5 06:57:47 2015 +0000
+Date:   Thu Nov 5 06:57:47 2015 +0000
 
     Translated using Weblate (Ukrainian)
 
@@ -1469,7 +1538,7 @@ Date:	Thu Nov 5 06:57:47 2015 +0000
 
 commit c7a75bac6f07a0afa74665615b8a0d5d6c9bd761
 Author: Freek de Kruijf <freek@opensuse.org>
-Date:	Wed Nov 4 23:10:48 2015 +0000
+Date:   Wed Nov 4 23:10:48 2015 +0000
 
     Translated using Weblate (Dutch)
 
@@ -1480,7 +1549,7 @@ Date:	Wed Nov 4 23:10:48 2015 +0000
 
 commit f29568b0aa0c280416f7b94643ec3584785fda93
 Author: Freek de Kruijf <freek@opensuse.org>
-Date:	Wed Nov 4 23:08:23 2015 +0000
+Date:   Wed Nov 4 23:08:23 2015 +0000
 
     Translated using Weblate (Dutch)
 
@@ -1491,7 +1560,7 @@ Date:	Wed Nov 4 23:08:23 2015 +0000
 
 commit 7c8d0ccc770487292ed3284533faa091de5878fc
 Author: Ferdinand Galko <galko.ferdinand@gmail.com>
-Date:	Wed Nov 4 16:38:25 2015 +0000
+Date:   Wed Nov 4 16:38:25 2015 +0000
 
     Translated using Weblate (Slovak)
 
@@ -1502,7 +1571,7 @@ Date:	Wed Nov 4 16:38:25 2015 +0000
 
 commit 4dcd5c21575478e2382ba667ac1853bd4dc3840b
 Author: Freek de Kruijf <freek@opensuse.org>
-Date:	Wed Nov 4 12:39:37 2015 +0000
+Date:   Wed Nov 4 12:39:37 2015 +0000
 
     Translated using Weblate (Dutch)
 
@@ -1513,7 +1582,7 @@ Date:	Wed Nov 4 12:39:37 2015 +0000
 
 commit b061c4fe38b935832f1135b195c68b41870551e4
 Author: Luiz Fernando Ranghetti <elchevive68@gmail.com>
-Date:	Tue Nov 3 22:25:43 2015 +0000
+Date:   Tue Nov 3 22:25:43 2015 +0000
 
     Translated using Weblate (Portuguese (Brazil))
 
@@ -1524,7 +1593,7 @@ Date:	Tue Nov 3 22:25:43 2015 +0000
 
 commit 9819f444e3e39daec958cf4c402c9233369dd6e8
 Author: David Medina <medipas@gmail.com>
-Date:	Tue Nov 3 18:04:58 2015 +0000
+Date:   Tue Nov 3 18:04:58 2015 +0000
 
     Translated using Weblate (Catalan)
 
@@ -1535,7 +1604,7 @@ Date:	Tue Nov 3 18:04:58 2015 +0000
 
 commit 41124c3811a72b20f809de68c30a53b2b20fe513
 Author: David Medina <medipas@gmail.com>
-Date:	Tue Nov 3 17:17:52 2015 +0000
+Date:   Tue Nov 3 17:17:52 2015 +0000
 
     Translated using Weblate (Catalan)
 
@@ -1546,7 +1615,7 @@ Date:	Tue Nov 3 17:17:52 2015 +0000
 
 commit 16d3a14c59a3c85e9c1d42173475710634341f6b
 Author: Alex Minton <alex239@gmail.com>
-Date:	Mon Nov 2 17:13:04 2015 +0000
+Date:   Mon Nov 2 17:13:04 2015 +0000
 
     Translated using Weblate (Russian)
 
@@ -1557,17 +1626,17 @@ Date:	Mon Nov 2 17:13:04 2015 +0000
 
 commit a5aeb1bad924e34ff347556fe507a84c2a82cc36
 Author: w <w@vm>
-Date:	Mon Nov 2 09:33:33 2015 +0100
+Date:   Mon Nov 2 09:33:33 2015 +0100
 
     Enable variable taskbar width
 
- src/default.h	  | 4 ++++
+ src/default.h    | 4 ++++
  src/wmtaskbar.cc | 6 +++++-
  2 files changed, 9 insertions(+), 1 deletion(-)
 
 commit ff757c144eb6887d83047109f08ea67da922cc1a
 Author: Yasuhiko Kamata <belphegor@belbel.or.jp>
-Date:	Sat Oct 31 01:42:51 2015 +0000
+Date:   Sat Oct 31 01:42:51 2015 +0000
 
     Translated using Weblate (Japanese)
 
@@ -1578,7 +1647,7 @@ Date:	Sat Oct 31 01:42:51 2015 +0000
 
 commit c393c27a72a905faa20a9501e950ff19caac985a
 Author: Ronan Chagas <ronisbr@gmail.com>
-Date:	Fri Oct 30 14:39:43 2015 +0000
+Date:   Fri Oct 30 14:39:43 2015 +0000
 
     Translated using Weblate (Portuguese (Brazil))
 
@@ -1589,7 +1658,7 @@ Date:	Fri Oct 30 14:39:43 2015 +0000
 
 commit 74c0b992b81d7bffd428f1b474e2854ca9144a9f
 Author: David Medina <medipas@gmail.com>
-Date:	Fri Oct 30 14:49:17 2015 +0000
+Date:   Fri Oct 30 14:49:17 2015 +0000
 
     Translated using Weblate (Catalan)
 
@@ -1600,7 +1669,7 @@ Date:	Fri Oct 30 14:49:17 2015 +0000
 
 commit 1d2f592a5a2047bc07b8227a57f88c3a5451b199
 Author: Ronan Chagas <ronisbr@gmail.com>
-Date:	Fri Oct 30 14:39:24 2015 +0000
+Date:   Fri Oct 30 14:39:24 2015 +0000
 
     Translated using Weblate (Portuguese (Brazil))
 
@@ -1611,7 +1680,7 @@ Date:	Fri Oct 30 14:39:24 2015 +0000
 
 commit f3157554260308f93c17d4d21c2c7573c70fce78
 Author: Andriy Bandura <andriykopanytsia@gmail.com>
-Date:	Fri Oct 30 10:17:06 2015 +0000
+Date:   Fri Oct 30 10:17:06 2015 +0000
 
     Translated using Weblate (Ukrainian)
 
@@ -1622,7 +1691,7 @@ Date:	Fri Oct 30 10:17:06 2015 +0000
 
 commit 1daab308f5cef57f647efcb3c941f0af6aa20e36
 Author: David Medina <medipas@gmail.com>
-Date:	Thu Oct 29 15:53:12 2015 +0000
+Date:   Thu Oct 29 15:53:12 2015 +0000
 
     Translated using Weblate (Catalan)
 
@@ -1633,7 +1702,7 @@ Date:	Thu Oct 29 15:53:12 2015 +0000
 
 commit 9edfb45bb631d6d832df69742bc36de39406e5d4
 Author: Ondřej Súkup <mimi.vx@gmail.com>
-Date:	Wed Oct 28 20:47:22 2015 +0000
+Date:   Wed Oct 28 20:47:22 2015 +0000
 
     Translated using Weblate (Czech)
 
@@ -1644,7 +1713,7 @@ Date:	Wed Oct 28 20:47:22 2015 +0000
 
 commit 3b7c92ee5025be01626d7a656d141529edcc7b17
 Author: David Medina <medipas@gmail.com>
-Date:	Wed Oct 28 18:07:15 2015 +0000
+Date:   Wed Oct 28 18:07:15 2015 +0000
 
     Translated using Weblate (Catalan)
 
@@ -1655,7 +1724,7 @@ Date:	Wed Oct 28 18:07:15 2015 +0000
 
 commit 737830e968a096a51dac650342fd3c4e28cc09b8
 Author: Ondřej Súkup <mimi.vx@gmail.com>
-Date:	Wed Oct 28 20:45:52 2015 +0000
+Date:   Wed Oct 28 20:45:52 2015 +0000
 
     Translated using Weblate (Czech)
 
@@ -1666,7 +1735,7 @@ Date:	Wed Oct 28 20:45:52 2015 +0000
 
 commit 3325fdfac2c2e699b323db1c2ffc71130593384f
 Author: Mindaugas Baranauskas <opensuse.lietuviu.kalba@gmail.com>
-Date:	Tue Oct 27 21:13:02 2015 +0000
+Date:   Tue Oct 27 21:13:02 2015 +0000
 
     Translated using Weblate (Lithuanian)
 
@@ -1677,7 +1746,7 @@ Date:	Tue Oct 27 21:13:02 2015 +0000
 
 commit 68ca8237286ca3c8067a75b9d1bd9fad062f7fa5
 Author: David Medina <medipas@gmail.com>
-Date:	Tue Oct 27 18:40:52 2015 +0000
+Date:   Tue Oct 27 18:40:52 2015 +0000
 
     Translated using Weblate (Catalan)
 
@@ -1689,7 +1758,7 @@ Date:	Tue Oct 27 18:40:52 2015 +0000
 commit c3d433bc431ceedfe1df24e615fb24481fc4c878
 Merge: fee3222 10d820d
 Author: Brian Bidulock <bidulock@openss7.com>
-Date:	Mon Oct 26 04:13:16 2015 -0600
+Date:   Mon Oct 26 04:13:16 2015 -0600
 
     Merge pull request #43 from scarabeusiv/icewm-1-3-BRANCH
 
@@ -1697,7 +1766,7 @@ Date:	Mon Oct 26 04:13:16 2015 -0600
 
 commit 10d820de45d17fb974ff3e9186ad6c6a59ec5a7f
 Author: Sorokin Alexei <sor.alexei@meowr.ru>
-Date:	Mon Oct 26 09:47:47 2015 +0100
+Date:   Mon Oct 26 09:47:47 2015 +0100
 
     Fix fdo search to not hang on large usr
 
@@ -1706,7 +1775,7 @@ Date:	Mon Oct 26 09:47:47 2015 +0100
 
 commit da7449114f96d648c719d48476bcec172629a980
 Author: Sorokin Alexei <sor.alexei@meowr.ru>
-Date:	Mon Oct 26 09:43:47 2015 +0100
+Date:   Mon Oct 26 09:43:47 2015 +0100
 
     Use generic icons in toolbar to avoid gnome-icon-theme requirement
 
@@ -1715,7 +1784,7 @@ Date:	Mon Oct 26 09:43:47 2015 +0100
 
 commit fee3222a2c2a30e9ec75fb4f04880b00481756e9
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sat Oct 17 15:35:29 2015 -0600
+Date:   Sat Oct 17 15:35:29 2015 -0600
 
     fix issue #40 missed update of VERSION
 
@@ -1727,7 +1796,7 @@ Date:	Sat Oct 17 15:35:29 2015 -0600
 
 commit d49089599ca120b270d4660f6519ff478095326b (tag: 1.3.11)
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Fri Sep 18 19:37:08 2015 -0600
+Date:   Fri Sep 18 19:37:08 2015 -0600
 
     final release updates for 1.3.11 release
 
@@ -1772,7 +1841,7 @@ Date:	Fri Sep 18 19:37:08 2015 -0600
 
 commit b794281976e4cfeabe0f9c95625907163086165c
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Fri Sep 18 19:24:19 2015 -0600
+Date:   Fri Sep 18 19:24:19 2015 -0600
 
     updates for release 1.3.11
 
@@ -1783,7 +1852,7 @@ Date:	Fri Sep 18 19:24:19 2015 -0600
 commit fa3fdefbc9adbf82f51f7a9862387ba405de30de (tag:
 upstream/1.3.8+githubmod+20150914+fa3fdef)
 Author: Eduard Bloch <blade@debian.org>
-Date:	Mon Sep 14 23:42:44 2015 +0200
+Date:   Mon Sep 14 23:42:44 2015 +0200
 
     Using CMAKE_INSTALL_PREFIX variable instead of PREFIX
 
@@ -1797,7 +1866,7 @@ Date:	Mon Sep 14 23:42:44 2015 +0200
 
 commit 04d6e2f757a550549c7cfa887bf07fcb8bf637c2
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sun Sep 13 15:42:24 2015 -0600
+Date:   Sun Sep 13 15:42:24 2015 -0600
 
     updates to handle gettext 0.19.5.1
 
@@ -1812,7 +1881,7 @@ Date:	Sun Sep 13 15:42:24 2015 -0600
 
 commit ad6d8c918ae3f68870775aaf840333b1c12cd784
 Author: Eduard Bloch <blade@debian.org>
-Date:	Fri Aug 21 15:29:02 2015 +0200
+Date:   Fri Aug 21 15:29:02 2015 +0200
 
     Fixed support of wordexp in the env hack with cmake build
 
@@ -1820,9 +1889,9 @@ Date:	Fri Aug 21 15:29:02 2015 +0200
  1 file changed, 1 insertion(+)
 
 commit ad9715226e291dc3d67a19ab82bc36dd08babbfd (tag:
-upstream/1.3.8+githubmod+20150818+ad97152)
+upstream/1.3.8+githubmod+20150818+ad97152, foo)
 Author: Eduard Bloch <blade@debian.org>
-Date:	Wed Jul 8 13:13:17 2015 +0200
+Date:   Wed Jul 8 13:13:17 2015 +0200
 
     Default key binding for calculator call
 
@@ -1833,7 +1902,7 @@ commit 4cda2e8c697ea57dfd9532b8041c1d8baa1d902f
 (tag: upstream/1.3.8+githubmod+20150815+4cda2e8, tag:
 upstream/1.3.8+githubmod++20150818+4cda2e8)
 Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Aug 16 16:33:16 2015 +0200
+Date:   Sun Aug 16 16:33:16 2015 +0200
 
     Fix preferences file generation, now as explicite post-build command
 
@@ -1842,7 +1911,7 @@ Date:	Sun Aug 16 16:33:16 2015 +0200
 
 commit 2a230bc0011a0173f937e5fbe24adaefa2ba5c7b
 Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Aug 16 10:45:00 2015 +0200
+Date:   Sun Aug 16 10:45:00 2015 +0200
 
     Install pregenerated html files to HTMLDIR via cmake (issue #33)
 
@@ -1851,7 +1920,7 @@ Date:	Sun Aug 16 10:45:00 2015 +0200
 
 commit ef464e630cb57b86b01c487e4dc7816efb158187
 Author: Eduard Bloch <blade@debian.org>
-Date:	Fri Aug 14 22:59:58 2015 +0200
+Date:   Fri Aug 14 22:59:58 2015 +0200
 
     Enabled automated generation of the preferences file
 
@@ -1862,7 +1931,7 @@ Date:	Fri Aug 14 22:59:58 2015 +0200
 commit dfce182d916a87e7647f3a40e9a5685ad4761e0b
 Merge: ac6e40a 45ea260
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Wed Jul 22 13:46:48 2015 -0600
+Date:   Wed Jul 22 13:46:48 2015 -0600
 
     Merge pull request #36 from wshallum/icewm-1-3-BRANCH
 
@@ -1870,7 +1939,7 @@ Date:	Wed Jul 22 13:46:48 2015 -0600
 
 commit 45ea2606c76e02619ab60808aa622b3d2c4da157
 Author: William <william@shallum.net>
-Date:	Wed Jul 22 22:56:44 2015 +0800
+Date:   Wed Jul 22 22:56:44 2015 +0800
 
     Fix GetFullWindowProperty for huge icons on 64bit (e.g. Firefox)
 
@@ -1885,7 +1954,7 @@ Date:	Wed Jul 22 22:56:44 2015 +0800
 
 commit ac6e40a14fb31bb1d149f4aa7fc765a2c4ca696a
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sun Jul 12 21:32:20 2015 -0600
+Date:   Sun Jul 12 21:32:20 2015 -0600
 
     distribute html docs per issue #33
 
@@ -1895,7 +1964,7 @@ Date:	Sun Jul 12 21:32:20 2015 -0600
 commit caf3dc7989804e86e31b077d6a3b7c03443c2b21
 Merge: 0c42fed ecb26ba
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sun Jul 12 20:58:50 2015 -0600
+Date:   Sun Jul 12 20:58:50 2015 -0600
 
     Merge pull request #34 from rezso/patch-1
 
@@ -1903,7 +1972,7 @@ Date:	Sun Jul 12 20:58:50 2015 -0600
 
 commit ecb26bae4faa1df0ee1ebc87c3c78561d7e7f444
 Author: rezso <rezso@rezso.net>
-Date:	Sat Jul 11 18:11:57 2015 +0200
+Date:   Sat Jul 11 18:11:57 2015 +0200
 
     suppress cmake dev warnings
 
@@ -1918,29 +1987,29 @@ Date:	Sat Jul 11 18:11:57 2015 +0200
 
       For input:
 
-	'
-	  /* __IBMCPP__ = VRP */
-	# define @PREFIX@COMPILER_VERSION_MAJOR @MACRO_DEC@(__IBMCPP__/100)
-	# define @PREFIX@COMPILER_VERSION_MINOR @MACRO_DEC@(__IBMCPP__/10 % 10)
-	# define @PREFIX@COMPILER_VERSION_PATCH @MACRO_DEC@(__IBMCPP__
-	% 10)'
+        '
+          /* __IBMCPP__ = VRP */
+        # define @PREFIX@COMPILER_VERSION_MAJOR @MACRO_DEC@(__IBMCPP__/100)
+        # define @PREFIX@COMPILER_VERSION_MINOR @MACRO_DEC@(__IBMCPP__/10 % 10)
+        # define @PREFIX@COMPILER_VERSION_PATCH @MACRO_DEC@(__IBMCPP__
+        % 10)'
 
       the old evaluation rules produce:
 
-	'
-	  /* __IBMCPP__ = VRP */
-	# define /usrCOMPILER_VERSION_MAJOR @MACRO_DEC@(__IBMCPP__/100)
-	# define /usrCOMPILER_VERSION_MINOR @MACRO_DEC@(__IBMCPP__/10 % 10)
-	# define /usrCOMPILER_VERSION_PATCH @MACRO_DEC@(__IBMCPP__    % 10)'
+        '
+          /* __IBMCPP__ = VRP */
+        # define /usrCOMPILER_VERSION_MAJOR @MACRO_DEC@(__IBMCPP__/100)
+        # define /usrCOMPILER_VERSION_MINOR @MACRO_DEC@(__IBMCPP__/10 % 10)
+        # define /usrCOMPILER_VERSION_PATCH @MACRO_DEC@(__IBMCPP__    % 10)'
 
       but the new evaluation rules produce:
 
-	'
-	  /* __IBMCPP__ = VRP */
-	# define @PREFIX@COMPILER_VERSION_MAJOR @MACRO_DEC@(__IBMCPP__/100)
-	# define @PREFIX@COMPILER_VERSION_MINOR @MACRO_DEC@(__IBMCPP__/10 % 10)
-	# define @PREFIX@COMPILER_VERSION_PATCH @MACRO_DEC@(__IBMCPP__
-	% 10)'
+        '
+          /* __IBMCPP__ = VRP */
+        # define @PREFIX@COMPILER_VERSION_MAJOR @MACRO_DEC@(__IBMCPP__/100)
+        # define @PREFIX@COMPILER_VERSION_MINOR @MACRO_DEC@(__IBMCPP__/10 % 10)
+        # define @PREFIX@COMPILER_VERSION_PATCH @MACRO_DEC@(__IBMCPP__
+        % 10)'
 
       Using the old result for compatibility since the policy is not set.
     Call Stack (most recent call first):
@@ -1964,7 +2033,7 @@ Date:	Sat Jul 11 18:11:57 2015 +0200
 
 commit 0c42fed070d364528dc4a08c80a547d8a9a8cafc
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Fri Jul 10 18:12:42 2015 -0600
+Date:   Fri Jul 10 18:12:42 2015 -0600
 
     set ActivateJava7FocusHack to 0: close issue #20
 
@@ -1973,7 +2042,7 @@ Date:	Fri Jul 10 18:12:42 2015 -0600
 
 commit 172a667610a5e224f82a32566ca340187852a313
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Fri Jul 10 18:04:26 2015 -0600
+Date:   Fri Jul 10 18:04:26 2015 -0600
 
     attempted fix for issue #31
 
@@ -1984,7 +2053,7 @@ Date:	Fri Jul 10 18:04:26 2015 -0600
 commit 6c3c08ed5d4d24826cf7ddb9de1c219ad539916e
 Merge: 9c044df dda0593
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Fri Jul 10 16:24:41 2015 -0600
+Date:   Fri Jul 10 16:24:41 2015 -0600
 
     Merge pull request #32 from rezso/icewm-1-3-BRANCH
 
@@ -1992,7 +2061,7 @@ Date:	Fri Jul 10 16:24:41 2015 -0600
 
 commit dda05935961bc1b789e06a4e6a639e6500238faa
 Author: rezso <rezso@rezso.net>
-Date:	Fri Jul 10 23:54:02 2015 +0200
+Date:   Fri Jul 10 23:54:02 2015 +0200
 
     update hu.po
 
@@ -2002,7 +2071,7 @@ Date:	Fri Jul 10 23:54:02 2015 +0200
 commit 9c044df38b7268286927bbbb390523e936c98013
 Merge: 956b8d7 927a9a8
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Wed Jul 8 13:51:43 2015 -0600
+Date:   Wed Jul 8 13:51:43 2015 -0600
 
     Merge pull request #29 from rezso/icewm-1-3-BRANCH
 
@@ -2010,7 +2079,7 @@ Date:	Wed Jul 8 13:51:43 2015 -0600
 
 commit 927a9a81a3a80af9a336b732753809b6f344cc85
 Author: rezso <rezso@rezso.net>
-Date:	Wed Jul 8 21:21:40 2015 +0200
+Date:   Wed Jul 8 21:21:40 2015 +0200
 
     fix themes
 
@@ -2028,7 +2097,7 @@ Date:	Wed Jul 8 21:21:40 2015 +0200
 
 commit 956b8d73e7c0a5a4bf14af9a25d93f5cb6644e93 (tag: 1.3.10)
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Thu Jul 2 19:48:23 2015 -0600
+Date:   Thu Jul 2 19:48:23 2015 -0600
 
     update NEWS file for release
 
@@ -2037,7 +2106,7 @@ Date:	Thu Jul 2 19:48:23 2015 -0600
 
 commit 90c14cea92f84c6b3faaea97f8bd10e7dce7466d
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Thu Jul 2 19:39:06 2015 -0600
+Date:   Thu Jul 2 19:39:06 2015 -0600
 
     update release files and retag
 
@@ -2082,7 +2151,7 @@ Date:	Thu Jul 2 19:39:06 2015 -0600
 
 commit c19d434ec9f614cb647526f80c6427730e1744b3
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Thu Jul 2 19:38:45 2015 -0600
+Date:   Thu Jul 2 19:38:45 2015 -0600
 
     always use backing store
 
@@ -2091,54 +2160,54 @@ Date:	Thu Jul 2 19:38:45 2015 -0600
 
 commit 159eedc28c1dbd93edc36c871407235a53d5d900
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Thu Jul 2 19:28:00 2015 -0600
+Date:   Thu Jul 2 19:28:00 2015 -0600
 
     update release files and tag for release
 
- Makefile.am	 |    4 +-
- README.md	 |    4 +-
- configure.ac	 |    6 +-
- po/be.po	 |  146 ++--
- po/bg.po	 |  146 ++--
- po/ca.po	 |  146 ++--
- po/cs.po	 |  146 ++--
- po/da.po	 |  146 ++--
- po/de.po	 | 2257 +++++++++++++++++++++++++--------------------------
- po/el.po	 |  146 ++--
- po/en.po	 |  146 ++--
- po/es.po	 |  147 ++--
- po/fi.po	 |  146 ++--
- po/fr.po	 |  146 ++--
- po/hr.po	 |  146 ++--
- po/hu.po	 |  146 ++--
- po/id.po	 |  146 ++--
- po/it.po	 |  146 ++--
- po/ja.po	 |  146 ++--
- po/ko.po	 |  146 ++--
- po/lt.po	 |  146 ++--
- po/lv.po	 |  146 ++--
- po/mk.po	 |  146 ++--
- po/nb.po	 |  146 ++--
- po/nl.po	 |  146 ++--
- po/no.po	 |  146 ++--
- po/pl.po	 |  146 ++--
- po/pt_BR.po	 |  147 ++--
- po/ro.po	 |  146 ++--
- po/ru.po	 |  151 ++--
- po/sk.po	 |  146 ++--
- po/sl.po	 |  146 ++--
- po/sv.po	 |  146 ++--
- po/tr.po	 |  147 ++--
- po/uk.po	 |  147 ++--
- po/vi.po	 |  146 ++--
- po/zh_CN.po	 |  146 ++--
- po/zh_TW.po	 |  146 ++--
+ Makefile.am     |    4 +-
+ README.md       |    4 +-
+ configure.ac    |    6 +-
+ po/be.po        |  146 ++--
+ po/bg.po        |  146 ++--
+ po/ca.po        |  146 ++--
+ po/cs.po        |  146 ++--
+ po/da.po        |  146 ++--
+ po/de.po        | 2257 +++++++++++++++++++++++++--------------------------
+ po/el.po        |  146 ++--
+ po/en.po        |  146 ++--
+ po/es.po        |  147 ++--
+ po/fi.po        |  146 ++--
+ po/fr.po        |  146 ++--
+ po/hr.po        |  146 ++--
+ po/hu.po        |  146 ++--
+ po/id.po        |  146 ++--
+ po/it.po        |  146 ++--
+ po/ja.po        |  146 ++--
+ po/ko.po        |  146 ++--
+ po/lt.po        |  146 ++--
+ po/lv.po        |  146 ++--
+ po/mk.po        |  146 ++--
+ po/nb.po        |  146 ++--
+ po/nl.po        |  146 ++--
+ po/no.po        |  146 ++--
+ po/pl.po        |  146 ++--
+ po/pt_BR.po     |  147 ++--
+ po/ro.po        |  146 ++--
+ po/ru.po        |  151 ++--
+ po/sk.po        |  146 ++--
+ po/sl.po        |  146 ++--
+ po/sv.po        |  146 ++--
+ po/tr.po        |  147 ++--
+ po/uk.po        |  147 ++--
+ po/vi.po        |  146 ++--
+ po/zh_CN.po     |  146 ++--
+ po/zh_TW.po     |  146 ++--
  src/Makefile.am |    3 +-
  39 files changed, 3624 insertions(+), 3623 deletions(-)
 
 commit 17d0f81cf473b41559a7f0720da0dd0d0395a55d
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Thu Jul 2 12:36:31 2015 -0600
+Date:   Thu Jul 2 12:36:31 2015 -0600
 
     add cmake files to distribution
 
@@ -2147,7 +2216,7 @@ Date:	Thu Jul 2 12:36:31 2015 -0600
 
 commit db4d8c84caec7ed356fe666465133f7fe0619f4f
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Thu Jul 2 12:34:16 2015 -0600
+Date:   Thu Jul 2 12:34:16 2015 -0600
 
     added missing ignore file
 
@@ -2157,7 +2226,7 @@ Date:	Thu Jul 2 12:34:16 2015 -0600
 commit dc76830ae50b86675c452519626de78fd743f075
 Merge: f003485 55751a9
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Thu Jul 2 12:32:26 2015 -0600
+Date:   Thu Jul 2 12:32:26 2015 -0600
 
     Merge pull request #27 from Code7R/ftr_icewm_env_hack
 
@@ -2165,7 +2234,7 @@ Date:	Thu Jul 2 12:32:26 2015 -0600
 
 commit f003485c07fca9290726d977622c87af33f8f619
 Author: Eduard Bloch <blade@debian.org>
-Date:	Thu Jul 2 20:19:49 2015 +0200
+Date:   Thu Jul 2 20:19:49 2015 +0200
 
     Increase interface name lenght limit on Linux
 
@@ -2175,24 +2244,23 @@ Date:	Thu Jul 2 20:19:49 2015 +0200
  src/apppstatus.cc | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit 55751a934a08c073dd334e78085c94c6883f681a (origin/ftr_icewm_env_hack,
-ftr_icewm_env_hack)
+commit 55751a934a08c073dd334e78085c94c6883f681a (origin/ftr_icewm_env_hack)
 Author: Eduard Bloch <blade@debian.org>
-Date:	Thu Jul 2 16:25:20 2015 +0200
+Date:   Thu Jul 2 16:25:20 2015 +0200
 
     Experimental feature: add custom environment variables from an extra file
 
- configure.ac	    |  2 +-
+ configure.ac       |  2 +-
  doc/icewm.sgml     | 16 ++++++++++++++++
  src/CMakeLists.txt |  1 +
- src/icesm.cc	    | 42 +++++++++++++++++++++++++++++++++++++++++-
- src/mstring.h	    | 18 ++++++++++++++++++
+ src/icesm.cc       | 42 +++++++++++++++++++++++++++++++++++++++++-
+ src/mstring.h      | 18 ++++++++++++++++++
  5 files changed, 77 insertions(+), 2 deletions(-)
 
 commit 960629df263fb00f53b7582591b8338f25b1ca73 (tag:
 upstream/1.3.8+githubmod+20150412+960629d)
 Author: Eduard Bloch <blade@debian.org>
-Date:	Sat Apr 11 18:43:56 2015 +0200
+Date:   Sat Apr 11 18:43:56 2015 +0200
 
     Added forgotten CONFIG_SHAPED_DECORATIONS option to cmake BS
 
@@ -2202,7 +2270,7 @@ Date:	Sat Apr 11 18:43:56 2015 +0200
 
 commit e97394f45dc4f259cc2e41b13b400a33e741ab73
 Author: Eduard Bloch <blade@debian.org>
-Date:	Mon Mar 30 18:00:13 2015 +0200
+Date:   Mon Mar 30 18:00:13 2015 +0200
 
     Save some CPU cycles while reading procfs (jump to begin instead of
     reopening)
@@ -2213,20 +2281,20 @@ Date:	Mon Mar 30 18:00:13 2015 +0200
 
 commit 0276b97b9ead247ca1bb6c3986da4d68daae6c84
 Author: Eduard Bloch <blade@debian.org>
-Date:	Mon Mar 30 11:21:59 2015 +0200
+Date:   Mon Mar 30 11:21:59 2015 +0200
 
     Smarter detection of systems with battery (auto-enable APM applet
     on laptops)
 
- src/aapm.cc	  |  8 ++++++--
- src/aapm.h	  |  4 +++-
- src/default.h	  |  2 ++
+ src/aapm.cc      |  8 ++++++--
+ src/aapm.h       |  4 +++-
+ src/default.h    |  2 ++
  src/wmtaskbar.cc | 13 ++++++++++++-
  4 files changed, 23 insertions(+), 4 deletions(-)
 
 commit 95cab084032395b3a6fce34457c4714a5096348f
 Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Mar 10 14:16:40 2015 +0100
+Date:   Tue Mar 10 14:16:40 2015 +0100
 
     Fix build failure with GCC <= 4.7
 
@@ -2236,7 +2304,7 @@ Date:	Tue Mar 10 14:16:40 2015 +0100
 commit 31bfd461a7ccfc271f6829a84fb5665380d5c5bc (tag:
 upstream/1.3.8+githubmod+20150310+31bfd46)
 Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Mar 8 15:01:53 2015 +0100
+Date:   Sun Mar 8 15:01:53 2015 +0100
 
     Also react to the sleep key found on Compaq keyboards
 
@@ -2246,7 +2314,7 @@ Date:	Sun Mar 8 15:01:53 2015 +0100
 commit e223c3e38d615eeaf05921e925841785ae1fb6c3 (tag:
 upstream/1.3.8+githubmod+20150304+e223c3e)
 Author: Eduard Bloch <blade@debian.org>
-Date:	Wed Mar 4 15:08:19 2015 +0100
+Date:   Wed Mar 4 15:08:19 2015 +0100
 
     More cmake usage information for integrators
 
@@ -2255,7 +2323,7 @@ Date:	Wed Mar 4 15:08:19 2015 +0100
 
 commit 63665d0619cc0c9d1b1dcf0e182d25789f760ef4
 Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Mar 3 21:25:56 2015 +0100
+Date:   Tue Mar 3 21:25:56 2015 +0100
 
     Updated de.po for strings of the new memory display
 
@@ -2264,7 +2332,7 @@ Date:	Tue Mar 3 21:25:56 2015 +0100
 
 commit 70d1fd51cd9bb177198787f4992569429500f3de
 Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Mar 3 21:13:49 2015 +0100
+Date:   Tue Mar 3 21:13:49 2015 +0100
 
     [cmake] consistent naming of gmo targets
 
@@ -2273,7 +2341,7 @@ Date:	Tue Mar 3 21:13:49 2015 +0100
 
 commit dc2365206fb775b2a3e72757d640cc61eb70e35f
 Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Mar 3 20:55:21 2015 +0100
+Date:   Tue Mar 3 20:55:21 2015 +0100
 
     [cmake] Incorporated new memory monitor enabling
 
@@ -2283,7 +2351,7 @@ Date:	Tue Mar 3 20:55:21 2015 +0100
 
 commit f5ba54fe2598fe0a261872c88c98673fdf5ecd94
 Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Mar 3 20:39:59 2015 +0100
+Date:   Tue Mar 3 20:39:59 2015 +0100
 
     [cmake] Cosmetic fixes
 
@@ -2292,7 +2360,7 @@ Date:	Tue Mar 3 20:39:59 2015 +0100
 
 commit 9a13042aed0a2f89453e39a9a1f3633bffcb06e0
 Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Mar 3 19:16:32 2015 +0100
+Date:   Tue Mar 3 19:16:32 2015 +0100
 
     [cmake] Fixed sound subsystem selection
 
@@ -2302,7 +2370,7 @@ Date:	Tue Mar 3 19:16:32 2015 +0100
 
 commit b55bf81d029684493d298882671fd090eef8ba63
 Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Mar 3 17:36:12 2015 +0100
+Date:   Tue Mar 3 17:36:12 2015 +0100
 
     [cmake] Added forgoten icesh, made po files optional
 
@@ -2312,7 +2380,7 @@ Date:	Tue Mar 3 17:36:12 2015 +0100
 
 commit 8ca717b2cd556fd916fcb065660077eac7eb1341
 Author: Eduard Bloch <blade@debian.org>
-Date:	Tue Mar 3 11:46:18 2015 +0100
+Date:   Tue Mar 3 11:46:18 2015 +0100
 
     [cmake] fix of some installation target locations
 
@@ -2324,7 +2392,7 @@ Date:	Tue Mar 3 11:46:18 2015 +0100
 
 commit 5e2b78e772e638a85e16e034185ec1abea831262
 Author: Eduard Bloch <blade@debian.org>
-Date:	Mon Mar 2 14:26:28 2015 +0100
+Date:   Mon Mar 2 14:26:28 2015 +0100
 
     [cmake] Fix ENABLE_NLS setting
 
@@ -2334,7 +2402,7 @@ Date:	Mon Mar 2 14:26:28 2015 +0100
 
 commit 72fb7b02f2a36290f122202ba925c4a3acaf16de
 Author: Eduard Bloch <blade@debian.org>
-Date:	Mon Mar 2 12:49:03 2015 +0100
+Date:   Mon Mar 2 12:49:03 2015 +0100
 
     Move the HTML generation to the global target dependency
 
@@ -2343,7 +2411,7 @@ Date:	Mon Mar 2 12:49:03 2015 +0100
 
 commit 05e04d551d23e8ef02bb6031f3296767ea4c86ae
 Author: Eduard Bloch <blade@debian.org>
-Date:	Mon Mar 2 12:45:33 2015 +0100
+Date:   Mon Mar 2 12:45:33 2015 +0100
 
     Remove the broken locale switching when retrieving fallback font
 
@@ -2358,7 +2426,7 @@ Date:	Mon Mar 2 12:45:33 2015 +0100
 
 commit 15f6975ccef17609f48d80ecb7b2a55d0cab38b7
 Author: Matthew Ogilvie <mmogilvi_ice@miniinfo.net>
-Date:	Sun Mar 1 21:07:05 2015 -0700
+Date:   Sun Mar 1 21:07:05 2015 -0700
 
     enable new memory applet by default
 
@@ -2370,7 +2438,7 @@ Date:	Sun Mar 1 21:07:05 2015 -0700
 commit 06f099fbb3a64c812c6576be5fe8c682f8fab5ca
 Merge: e262a94 24564a9
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sun Mar 1 14:01:05 2015 -0700
+Date:   Sun Mar 1 14:01:05 2015 -0700
 
     Merge pull request #21 from Code7R/ftr_cmake_rebased
 
@@ -2379,15 +2447,15 @@ Date:	Sun Mar 1 14:01:05 2015 -0700
 commit e262a94f0899c73b045eb10ea58d92e6ca2c8939
 Merge: 7599871 a88d567
 Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sun Mar 1 13:56:17 2015 -0700
+Date:   Sun Mar 1 13:56:17 2015 -0700
 
     Merge pull request #22 from mmogilvi/icewm-1-3-BRANCH
 
     Add memory status monitor applet.
 
-commit 24564a975eb30b786fac3cd7b9b15cec79d85809
+commit 24564a975eb30b786fac3cd7b9b15cec79d85809 (ftr_cmake_rebased)
 Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Mar 1 21:13:43 2015 +0100
+Date:   Sun Mar 1 21:13:43 2015 +0100
 
     [cmake] Build translations for the default target, not icewm
 
@@ -2396,7 +2464,7 @@ Date:	Sun Mar 1 21:13:43 2015 +0100
 
 commit fdc84ab9d9795435376f352e62a474134fcfebc9
 Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Mar 1 21:13:21 2015 +0100
+Date:   Sun Mar 1 21:13:21 2015 +0100
 
     Restore XINERAMA support with Cmake build system
 
@@ -2406,7 +2474,7 @@ Date:	Sun Mar 1 21:13:21 2015 +0100
 
 commit 222677099150c645488d0717ef55d9e0ab09c9a1
 Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Mar 1 20:34:02 2015 +0100
+Date:   Sun Mar 1 20:34:02 2015 +0100
 
     Make build/install of icesound/icehelp conditional (not for LITE),
     minor compiler warning fixes
@@ -2417,7 +2485,7 @@ Date:	Sun Mar 1 20:34:02 2015 +0100
 
 commit a88d567e49cd0cf018dc9f90bb92731dd8f353ce
 Author: Matthew Ogilvie <mmogilvi_ice@miniinfo.net>
-Date:	Fri Feb 17 17:52:11 2012 -0700
+Date:   Fri Feb 17 17:52:11 2012 -0700
 
     Add memory status monitor applet.
 
@@ -2426,11 +2494,11 @@ Date:	Fri Feb 17 17:52:11 2012 -0700
     Works by parsing /proc/meminfo; other methods (like the sysinfo()
     system call) are missing things.
 
- configure.ac	   |   1 +
+ configure.ac      |   1 +
  src/Makefile.am   |   4 +
  src/amemstatus.cc | 260 ++++++++++++++++++++++++++++++++++++++++++++++++++
  src/amemstatus.h  |  43 +++++++++
- src/default.h	   |   8 +-
+ src/default.h     |   8 +-
  src/themable.h    |  10 ++
  src/wmtaskbar.cc  |  10 ++
  src/wmtaskbar.h   |   6 ++
@@ -2438,7 +2506,7 @@ Date:	Fri Feb 17 17:52:11 2012 -0700
 
 commit 1041f0b07b88bebb9de82dd2bcd1371defb69dc7
 Author: Eduard Bloch <blade@debian.org>
-Date:	Thu Feb 26 17:59:55 2015 +0100
+Date:   Thu Feb 26 17:59:55 2015 +0100
 
     Added some user instructions for cmake build system
 
@@ -2447,7 +2515,7 @@ Date:	Thu Feb 26 17:59:55 2015 +0100
 
 commit 675f0349fd33483921798430ff5e20c70dca76fe
 Author: Eduard Bloch <blade@debian.org>
-Date:	Fri Feb 20 23:18:31 2015 +0100
+Date:   Fri Feb 20 23:18:31 2015 +0100
 
     Experimental cmake build system
 
@@ -2461,20 +2529,20 @@ Date:	Fri Feb 20 23:18:31 2015 +0100
 
 commit 759987111936515efbdbb4eaeb4d653805ea3fe1
 Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Feb 22 17:01:22 2015 +0100
+Date:   Sun Feb 22 17:01:22 2015 +0100
 
     globit.c makes use of GNUisms (asprintf, glob_pattern_p), make that code
     conditional and fix unsafe code
 
- configure.ac	 | 2 +-
+ configure.ac    | 2 +-
  src/Makefile.am | 2 +-
- src/globit.cc	 | 7 +++++++
- src/yinput.cc	 | 7 ++++---
+ src/globit.cc   | 7 +++++++
+ src/yinput.cc   | 7 ++++---
  4 files changed, 13 insertions(+), 5 deletions(-)
 
 commit 3482884c2ab08c0e1a595c734c1dd579444d046e
 Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Feb 22 16:59:57 2015 +0100
+Date:   Sun Feb 22 16:59:57 2015 +0100
 
     globit.c: fix some implicite old style C casting
 
@@ -2483,7 +2551,7 @@ Date:	Sun Feb 22 16:59:57 2015 +0100
 
 commit 1476522efeb7b78fad46777fb6cc902f680031fc
 Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Feb 22 16:12:29 2015 +0100
+Date:   Sun Feb 22 16:12:29 2015 +0100
 
     ifdef instead of if on CONFIG_APPLET_CPU_STATUS
 
@@ -2492,7 +2560,7 @@ Date:	Sun Feb 22 16:12:29 2015 +0100
 
 commit 5ea28bfa9cb67e91fb6d4f179544aa0119558524
 Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Feb 22 16:11:34 2015 +0100
+Date:   Sun Feb 22 16:11:34 2015 +0100
 
     icehelpcc: Fix const correctness on char pointers
 
@@ -2501,25 +2569,25 @@ Date:	Sun Feb 22 16:11:34 2015 +0100
 
 commit 779223a487df12cc846d423a206e5a0b0e5b2ffb
 Author: Eduard Bloch <blade@debian.org>
-Date:	Fri Feb 20 23:16:59 2015 +0100
+Date:   Fri Feb 20 23:16:59 2015 +0100
 
     Little modifications to make the code compilable with weird option
     settings like no taskbar and not lite
 
  src/appnames.h  |  4 ++++
  src/wmabout.cc  |  4 +++-
- src/wmapp.cc	 |  4 ++++
+ src/wmapp.cc    |  4 ++++
  src/wmclient.cc | 15 ++++++++++++++-
  src/wmframe.cc  | 33 ++++++++++++++++++++++++++++++---
- src/wmmgr.cc	 |  7 +++++--
+ src/wmmgr.cc    |  7 +++++--
  src/ymsgbox.cc  |  4 +++-
  src/ywindow.cc  |  2 +-
- src/yxtray.cc	 |  4 +++-
+ src/yxtray.cc   |  4 +++-
  9 files changed, 67 insertions(+), 10 deletions(-)
 
 commit 5f9b5270b6e64f0bfd239e69e57acfbcb876870f
 Author: Eduard Bloch <blade@debian.org>
-Date:	Fri Feb 20 17:12:02 2015 +0100
+Date:   Fri Feb 20 17:12:02 2015 +0100
 
     Pass 0 not NULL as signalfd flags
 
@@ -2528,7 +2596,7 @@ Date:	Fri Feb 20 17:12:02 2015 +0100
 
 commit d46fea3b4c1c85c95647077a401ad6ef82d92079
 Author: Eduard Bloch <blade@debian.org>
-Date:	Fri Feb 13 17:26:32 2015 +0100
+Date:   Fri Feb 13 17:26:32 2015 +0100
 
     Add workarounds for older glib versions
 
@@ -2537,7 +2605,7 @@ Date:	Fri Feb 13 17:26:32 2015 +0100
 
 commit d373d98bacda4157725b6cc245d085324d778af3
 Author: Eduard Bloch <blade@debian.org>
-Date:	Fri Feb 13 00:09:34 2015 +0100
+Date:   Fri Feb 13 00:09:34 2015 +0100
 
     Make CPU info tooltip better understandable
 
@@ -2546,185 +2614,85 @@ Date:	Fri Feb 13 00:09:34 2015 +0100
      * hides ACPI temperature if no data is available, adds missing space
      separator
 
- po/be.po	   | 14 +++++++-------
- po/bg.po	   | 14 +++++++-------
- po/ca.po	   | 14 +++++++-------
- po/cs.po	   | 14 +++++++-------
- po/da.po	   | 14 +++++++-------
- po/de.po	   | 23 ++++++++++-------------
- po/el.po	   | 14 +++++++-------
- po/en.po	   | 14 +++++++-------
- po/es.po	   | 21 ++++++++++-----------
- po/fi.po	   | 14 +++++++-------
- po/fr.po	   | 14 +++++++-------
- po/hr.po	   | 14 +++++++-------
- po/hu.po	   | 14 +++++++-------
- po/id.po	   | 14 +++++++-------
- po/it.po	   | 14 +++++++-------
- po/ja.po	   | 14 +++++++-------
- po/ko.po	   | 14 +++++++-------
- po/lt.po	   | 14 +++++++-------
- po/lv.po	   | 14 +++++++-------
- po/mk.po	   | 14 +++++++-------
- po/nb.po	   | 14 +++++++-------
- po/nl.po	   | 14 +++++++-------
- po/no.po	   | 14 +++++++-------
- po/pl.po	   | 14 +++++++-------
- po/pt_BR.po	   | 21 ++++++++++-----------
- po/ro.po	   | 14 +++++++-------
- po/ru.po	   | 25 +++++++++++--------------
- po/sk.po	   | 14 +++++++-------
- po/sl.po	   | 14 +++++++-------
- po/sv.po	   | 14 +++++++-------
- po/tr.po	   | 15 +++++++--------
- po/uk.po	   | 15 +++++++--------
- po/vi.po	   | 14 +++++++-------
- po/zh_CN.po	   | 14 +++++++-------
- po/zh_TW.po	   | 14 +++++++-------
+ po/be.po          | 14 +++++++-------
+ po/bg.po          | 14 +++++++-------
+ po/ca.po          | 14 +++++++-------
+ po/cs.po          | 14 +++++++-------
+ po/da.po          | 14 +++++++-------
+ po/de.po          | 23 ++++++++++-------------
+ po/el.po          | 14 +++++++-------
+ po/en.po          | 14 +++++++-------
+ po/es.po          | 21 ++++++++++-----------
+ po/fi.po          | 14 +++++++-------
+ po/fr.po          | 14 +++++++-------
+ po/hr.po          | 14 +++++++-------
+ po/hu.po          | 14 +++++++-------
+ po/id.po          | 14 +++++++-------
+ po/it.po          | 14 +++++++-------
+ po/ja.po          | 14 +++++++-------
+ po/ko.po          | 14 +++++++-------
+ po/lt.po          | 14 +++++++-------
+ po/lv.po          | 14 +++++++-------
+ po/mk.po          | 14 +++++++-------
+ po/nb.po          | 14 +++++++-------
+ po/nl.po          | 14 +++++++-------
+ po/no.po          | 14 +++++++-------
+ po/pl.po          | 14 +++++++-------
+ po/pt_BR.po       | 21 ++++++++++-----------
+ po/ro.po          | 14 +++++++-------
+ po/ru.po          | 25 +++++++++++--------------
+ po/sk.po          | 14 +++++++-------
+ po/sl.po          | 14 +++++++-------
+ po/sv.po          | 14 +++++++-------
+ po/tr.po          | 15 +++++++--------
+ po/uk.po          | 15 +++++++--------
+ po/vi.po          | 14 +++++++-------
+ po/zh_CN.po       | 14 +++++++-------
+ po/zh_TW.po       | 14 +++++++-------
  src/acpustatus.cc | 14 ++++++++++----
  36 files changed, 268 insertions(+), 272 deletions(-)
 
 commit 757a25395a7c3b3adeecfa0dec5d1104cc7f5a00
 Author: Eduard Bloch <blade@debian.org>
-Date:	Thu Feb 12 22:52:22 2015 +0100
+Date:   Thu Feb 12 22:52:22 2015 +0100
 
     Fixed the gettext extraction of new submenu titles, fixed build without
     i18n
 
- po/be.po	| 140 ++++++++++++++++++++++++++++-------------
- po/bg.po	| 140 ++++++++++++++++++++++++++++-------------
- po/ca.po	| 140 ++++++++++++++++++++++++++++-------------
- po/cs.po	| 145 ++++++++++++++++++++++++++++--------------
- po/da.po	| 140 ++++++++++++++++++++++++++++-------------
- po/de.po	| 182 ++++++++++++++++++++++++++++-------------------------
- po/el.po	| 140 ++++++++++++++++++++++++++++-------------
- po/en.po	| 140 ++++++++++++++++++++++++++++-------------
- po/es.po	| 145 ++++++++++++++++++++++++++++--------------
- po/fi.po	| 140 ++++++++++++++++++++++++++++-------------
- po/fr.po	| 140 ++++++++++++++++++++++++++++-------------
- po/hr.po	| 140 ++++++++++++++++++++++++++++-------------
- po/hu.po	| 140 ++++++++++++++++++++++++++++-------------
- po/id.po	| 140 ++++++++++++++++++++++++++++-------------
- po/it.po	| 145 ++++++++++++++++++++++++++++--------------
- po/ja.po	| 140 ++++++++++++++++++++++++++++-------------
- po/ko.po	| 145 ++++++++++++++++++++++++++++--------------
- po/lt.po	| 140 ++++++++++++++++++++++++++++-------------
- po/lv.po	| 140 ++++++++++++++++++++++++++++-------------
- po/mk.po	| 140 ++++++++++++++++++++++++++++-------------
- po/nb.po	| 140 ++++++++++++++++++++++++++++-------------
- po/nl.po	| 140 ++++++++++++++++++++++++++++-------------
- po/no.po	| 140 ++++++++++++++++++++++++++++-------------
- po/pl.po	| 140 ++++++++++++++++++++++++++++-------------
- po/pt_BR.po	| 145 ++++++++++++++++++++++++++++--------------
- po/ro.po	| 140 ++++++++++++++++++++++++++++-------------
- po/ru.po	| 145 ++++++++++++++++++++++++++++--------------
- po/sk.po	| 140 ++++++++++++++++++++++++++++-------------
- po/sl.po	| 140 ++++++++++++++++++++++++++++-------------
- po/sv.po	| 140 ++++++++++++++++++++++++++++-------------
- po/tr.po	| 140 ++++++++++++++++++++++++++++-------------
- po/uk.po	| 140 ++++++++++++++++++++++++++++-------------
- po/vi.po	| 140 ++++++++++++++++++++++++++++-------------
- po/zh_CN.po	| 140 ++++++++++++++++++++++++++++-------------
- po/zh_TW.po	| 140 ++++++++++++++++++++++++++++-------------
+ po/be.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/bg.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/ca.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/cs.po       | 145 ++++++++++++++++++++++++++++--------------
+ po/da.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/de.po       | 182 ++++++++++++++++++++++++++++-------------------------
+ po/el.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/en.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/es.po       | 145 ++++++++++++++++++++++++++++--------------
+ po/fi.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/fr.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/hr.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/hu.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/id.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/it.po       | 145 ++++++++++++++++++++++++++++--------------
+ po/ja.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/ko.po       | 145 ++++++++++++++++++++++++++++--------------
+ po/lt.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/lv.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/mk.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/nb.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/nl.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/no.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/pl.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/pt_BR.po    | 145 ++++++++++++++++++++++++++++--------------
+ po/ro.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/ru.po       | 145 ++++++++++++++++++++++++++++--------------
+ po/sk.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/sl.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/sv.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/tr.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/uk.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/vi.po       | 140 ++++++++++++++++++++++++++++-------------
+ po/zh_CN.po    | 140 ++++++++++++++++++++++++++++-------------
+ po/zh_TW.po    | 140 ++++++++++++++++++++++++++++-------------
  src/fdomenu.cc |  30 ++++-----
  36 files changed, 3452 insertions(+), 1550 deletions(-)
-
-commit cb75ba52f3460e243b3c8c51b2587ce6887acf7f
-Author: Eduard Bloch <blade@debian.org>
-Date:	Wed Feb 11 22:35:28 2015 +0100
-
-    Added (restored?) hot keys on OK/Cancel confirmation dialog, adapted
-    translation as far as I could understand them
-
- po/be.po	|  73 ++++------------------------------
- po/bg.po	|  73 ++++------------------------------
- po/ca.po	|  73 ++++------------------------------
- po/cs.po	|  79 ++++++------------------------------
- po/da.po	|  76 +++++------------------------------
- po/de.po	| 115 +++++++++++++++++++++++------------------------------
- po/el.po	|  71 ++++-----------------------------
- po/en.po	|  68 ++-----------------------------
- po/es.po	|  78 ++++++------------------------------
- po/fi.po	|  73 ++++------------------------------
- po/fr.po	|  73 ++++------------------------------
- po/hr.po	|  73 ++++------------------------------
- po/hu.po	|  76 +++++------------------------------
- po/id.po	|  73 ++++------------------------------
- po/it.po	|  78 ++++++------------------------------
- po/ja.po	|  72 ++++-----------------------------
- po/ko.po	|  77 ++++++-----------------------------
- po/lt.po	|  73 ++++------------------------------
- po/lv.po	|  73 ++++------------------------------
- po/mk.po	|  73 ++++------------------------------
- po/nb.po	|  73 ++++------------------------------
- po/nl.po	|  73 ++++------------------------------
- po/no.po	|  73 ++++------------------------------
- po/pl.po	|  73 ++++------------------------------
- po/pt_BR.po	|  78 ++++++------------------------------
- po/ro.po	|  73 ++++------------------------------
- po/ru.po	|  78 ++++++------------------------------
- po/sk.po	|  73 ++++------------------------------
- po/sl.po	|  73 ++++------------------------------
- po/sv.po	|  73 ++++------------------------------
- po/tr.po	|  73 ++++------------------------------
- po/uk.po	|  72 ++++-----------------------------
- po/vi.po	|  73 ++++------------------------------
- po/zh_CN.po	|  72 ++++-----------------------------
- po/zh_TW.po	|  72 ++++-----------------------------
- src/ymsgbox.cc |   5 ++-
- 36 files changed, 349 insertions(+), 2278 deletions(-)
-
-commit 2139fa7c549240e7abb1537d7aa21a2910b85c37
-Merge: 4286790 aecf9a5
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Mon Feb 9 17:28:57 2015 -0700
-
-    Merge pull request #19 from mrbrainsample/icewm-1-3-BRANCH
-
-    Fix icewm-menu-fdo to build without NLS
-
-commit aecf9a5614d818fd513c01b1305859d5e98cd485
-Author: Jeff Woods <klaatu@fnordco.com>
-Date:	Mon Feb 9 12:19:07 2015 -0800
-
-    Fix icewm-menu-fdo to build without NLS
-
- src/fdomenu.cc | 2 ++
- 1 file changed, 2 insertions(+)
-
-commit 4286790287cdc286b92b54d854865ca5ff3328af
-Merge: 19051fb 134c083
-Author: Brian Bidulock <bidulock@openss7.org>
-Date:	Sun Feb 8 22:21:12 2015 -0700
-
-    Merge pull request #18 from Code7R/ftr_make_icewm-menu-fdo_default
-
-    Make icewm-menu-fdo the default FDO menu generator
-
-commit 19051fb17e708f932c6229c93e9a30ec72f222b8
-Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Feb 8 20:00:04 2015 +0100
-
-    Try to use internal launching of commands unless they are too complex
-
- src/fdomenu.cc | 79 +++++++++++++++++++++++++++++++++++-------------------
- 1 file changed, 51 insertions(+), 28 deletions(-)
-
-commit deca15332291674622d8f1468d509355ae36f790
-Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Feb 8 17:24:23 2015 +0100
-
-    Make the name of the terminal program customizable via compiler options
-
- src/wmapp.cc | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-commit 134c083de93321aead6d382698afe7cde4a49200
-(origin/ftr_make_icewm-menu-fdo_default)
-Author: Eduard Bloch <blade@debian.org>
-Date:	Sun Feb 8 10:45:56 2015 +0100
-
-    Make icewm-menu-fdo the default FDO menu generator
-
- lib/menu.in | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
