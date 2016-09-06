@@ -1,3 +1,11 @@
+icewm (1.3.8+mod+20160906-1) unstable; urgency=medium
+
+  * New upstream snapshot
+    + fixes icon display problem in lightdm
+    + fixes potential file handle leak in battery state monitoring
+
+ -- Eduard Bloch <blade@debian.org>  Tue, 06 Sep 2016 20:36:21 +0200
+
 icewm (1.3.8+mod+20160825-1) unstable; urgency=low
 
   * New upstream snapshot (1.3.12+)
