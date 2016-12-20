@@ -7,10 +7,10 @@ msgstr ""
 "Project-Id-Version: Icewm 1.2.0-beta1\n"
 "Report-Msgid-Bugs-To: https://github.com/bbidulock/icewm/issues\n"
 "POT-Creation-Date: 2016-07-09 21:33-0600\n"
-"PO-Revision-Date: 2016-06-16 19:36+0000\n"
-"Last-Translator: Jonas Svensson <jonas@ekhorva.se>\n"
-"Language-Team: Swedish <https://l10n.opensuse.org/projects/icewm/icewm-1-3-"
-"branch/sv/>\n"
+"PO-Revision-Date: 2016-11-04 09:31+0000\n"
+"Last-Translator: Joakim Ganse <joakim.ganse@b-iq.se>\n"
+"Language-Team: Swedish "
+"<https://l10n.opensuse.org/projects/icewm/icewm-1-3-branch/sv/>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -43,7 +43,7 @@ msgstr " - Full"
 #: src/acpustatus.cc:234
 #, c-format
 msgid "CPU Load: %3.2f %3.2f %3.2f, %u"
-msgstr "Processorbelastning: %3.2f %3.2f %3.2f, %u processer."
+msgstr "Processorbelastning: %3.2f %3.2f %3.2f, %u"
 
 #: src/acpustatus.cc:239
 #, c-format
@@ -139,12 +139,12 @@ msgid ""
 "  Caller id:\t"
 msgstr ""
 "\n"
-"  Inkommande samtal:"
+"  Inkommande samtal:\t"
 
 #: src/aworkspaces.cc:155 src/aworkspaces.cc:220 src/aworkspaces.cc:276
 #: src/wmstatus.cc:178
 msgid "Workspace: "
-msgstr "Arbetsyta:"
+msgstr "Arbetsyta: "
 
 #: src/fdomenu.cc:74
 msgid "Settings"
@@ -261,7 +261,7 @@ msgstr "Felaktig sökväg: %s\n"
 
 #: src/icehelp.cc:1342
 msgid "Invalid path: "
-msgstr "Felaktig sökväg:"
+msgstr "Felaktig sökväg: "
 
 #: src/icelist.cc:84
 msgid "List View"
@@ -311,7 +311,7 @@ msgstr "Åtgärden \"%s\" kräver minst %d argument."
 #: src/icesh.cc:194
 #, c-format
 msgid "Invalid expression: `%s'"
-msgstr "Felaktigt uttryck: \"%s\"."
+msgstr "Felaktigt uttryck: \"%s\""
 
 #: src/icesh.cc:316
 #, c-format
@@ -378,42 +378,51 @@ msgid ""
 "  EXPRESSION ::= SYMBOL | EXPRESSION ( `+' | `|' ) SYMBOL\n"
 "\n"
 msgstr ""
-"Användning: %s [FLAGGOR] ÅTGÄRDER\n"
+"Usage: %s [Val] ÅTGÄRDER\n"
 "\n"
-"Flaggor:\n"
-"  -display BILDSKÄRM          Ansluter till X-servern angiven av BILDSKÄRM.\n"
-"                              Skönsvärde: $DISPLAY eller :0.0 om ej satt.\n"
-"  -window FÖNSTERID           Anger vilket fönster som ska hanteras. "
-"Speciella\n"
-"                              värden är \"root\" för skrivbordsytan och "
-"\"focus\"\n"
-"                              för det fönster som har fokus just nu.\n"
-"Åtgärder:\n"
-"  setIconTitle TITEL          Sätt ikontiteln.\n"
-"  setWindowTitle TITEL        Sätt fönstertiteln.\n"
-"  setState MASK LÄGE          Sätt Gnome-fönsterläget till LÄGE.\n"
-"                           Endast de bitar som anges av MASK påverkas.\n"
-"                              LÄGE och MASK är uttryck i domänen\n"
-"                              \"GNOME window state\".\n"
-"  toggleState LÄGE            Växla de bitar i GNOME-fönsterläget som anges "
-"av\n"
-"                              uttrycket LÄGE.\n"
-"  setHints INSTÄLLNINGAR      Sätt GNOME-fönsterinställningarna till\n"
-"                              INSTÄLLNINGAR.\n"
-"  setLayer LAGER           Flyttar fönstret till ett annat GNOME-"
+"Options:\n"
+"  -display DISPLAY            Ansluter till X-servern som anges av DISPLAY.\n"
+"                              Standard: $ DISPLAY eller: 0,0 när inte satt.\n"
+"  -window WINDOW_ID           Anger fönstret att förändra. Särskild\n"
+"                              identifierare är `root\" för rotfönstret och\n"
+"                              `Fokus\" för det valda fönstret som är i "
+"fokus..\n"
+"  -class WM_CLASS             Fönsterhanteringsklass av fönstret/fönstren "
+"att\n"
+"                              förändra. Om WM_CLASS innehåller en punkt "
+"kommer endast\n"
+"                              fönster med exakt samma WM_CLASS att \n"
+"                              väljas. Om det inte finns någon punkt så "
+"kommer fönster\n"
+"                              med samma klass och instans (Dvs. '-name \") "
+"att väljas.\n"
+"\n"
+"Actions:\n"
+"  setIconTitle   TITLE        Anger titel för ikonen.\n"
+"  setWindowTitle TITLE        Anger titel för fönstret.\n"
+"  setGeometry    geometry     Anger fönstergeometri\n"
+"  setState       MASK STATE   Anger GNOME fönsterläge till STATE.\n"
+"                              Endast de delar som är valda enligt MASK "
+"påverkas.\n"
+"                              STATE och MASK  är uttryck för domänen\n"
+"                              `GNOME window state'.\n"
+"  toggleState    STATE        Växla GNOME-fönstrets statusflaggor som anges\n"
+"                              av uttrycket STATE.\n"
+"  setHints       HINTS        Ange GNOME fönstertips till HINTS.\n"
+"  setLayer       LAYER        Flyttar fönstret till ett annat GNOME "
 "fönsterlager.\n"
-"  setWorkspace ARBETSYTA      Flyttar fönstret till en annan arbetsyta. "
+"  setWorkspace   WORKSPACE    Flyttar fönstret till en annan arbetsyta. "
 "Välj\n"
-"                              skrivbodsytan för att byta arbetsyta.\n"
-"  listWorkspaces              Lista namnen på alla arbetsytor.\n"
-"  setTrayOption BRICKINSTÄLLNING\n"
-"                              Sätt inställningarna för IceWM-brickan.\n"
+"                              rotfönstret för att förändra den aktuella "
+"arbetsytan.\n"
+"  listWorkspaces              Listar namnen på alla arbetsytor.\n"
+"  setTrayOption  TRAYOPTION   Ange ledtråd för IceWM lådval.\n"
 "\n"
-"Uttryck:\n"
-"  Uttryck är listor av symboler från en domän sammansatta med \"+\" eller \"|"
-"\":\n"
+"Expressions:\n"
+"  Uttryck är en lista med symboler för en domän sammanlänkade av '+' eller "
+"'|':\n"
 "\n"
-"  UTTRYCK ::= SYMBOL | UTTRYCK ( \"+\" | \"|\" ) SYMBOL\n"
+"  EXPRESSION ::= SYMBOL | EXPRESSION ( `+' | `|' ) SYMBOL\n"
 "\n"
 
 #: src/icesh.cc:608
@@ -434,12 +443,12 @@ msgstr "Inställningar för IceWM-programpanelen"
 
 #: src/icesh.cc:616
 msgid "Usage error: "
-msgstr "Användningsfel:"
+msgstr "Användningsfel: "
 
 #: src/icesh.cc:687
 #, c-format
 msgid "Invalid argument: `%s'."
-msgstr "Felaktigt värde: \"%s\"."
+msgstr "Felaktigt värde: `%s'."
 
 #: src/icesh.cc:696
 msgid "No actions specified."
@@ -458,7 +467,7 @@ msgstr "Felaktig fönsteridentifierare: \"%s\""
 #: src/icesh.cc:896
 #, c-format
 msgid "workspace #%d: `%s'\n"
-msgstr "arbetsyta #%d: \"%s\"\n"
+msgstr "arbetsyta #%d: `%s'\n"
 
 #: src/icesh.cc:914
 #, c-format
@@ -532,7 +541,7 @@ msgid "Overriding previous audio mode `%s'."
 msgstr "Ersätter föregående ljudläge \"%s\"."
 
 #: src/icesound.cc:978
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Usage: %s [OPTION]...\n"
 "\n"
@@ -570,19 +579,19 @@ msgid ""
 "3     Subsystems error (ie cannot connect to server).\n"
 "\n"
 msgstr ""
-"Användning: %s [FLAGGOR] ...\n"
+"Användning: %s [FLAGGOR] …\n"
 "\n"
 "Spelar ljudfiler vid grafiska IceWM-händelser.\n"
 "\n"
 "Flaggor:\n"
 "\n"
-"-d, --display=BILDSKÄRM    Bildskärm som används av IceWM (förval: "
-"$DISPLAY)\n"
+"-d, --display=BILDSKÄRM    Bildskärm som används av IceWM (förval: $DISPLAY)"
+"\n"
 "-s, --sample-dir=KAT       Anger den katalog som innehåller ljudfilerna\n"
 "                           (dvs ~/.icewm/sounds).\n"
 "-i, --interface=MÅL        Anger målgränssnittet för ljudutdata, en av\n"
 "                           ALSA, OSS, YIFF eller ESD\n"
-"-D --device=ENHET          (ALSA OSS) anger den digitala singalprocessorn\n"
+"-D --device=ENHET          (ALSA OSS) anger den digitala signalprocessorn\n"
 "                           (förval (ALSA) default (OSS) /dev/dsp)\n"
 "-S, --server=ADRESS:PORT   (ESD och YIFF) anger server och portnummer\n"
 "                           (förval localhost:16001 för ESD och \n"
@@ -671,6 +680,22 @@ msgid ""
 " center:0 scaled:0 = tiled\n"
 " center:1 scaled:1 = keep aspect ratio\n"
 msgstr ""
+"Användning: icewmbg [ -r | -q ]\n"
+" -r  Starta om icewmbg\n"
+" -q  Avsluta icewmbg\n"
+"Ladda skrivbordets bakgrund enligt inställningsfilen\n"
+" DesktopBackgroundCenter  - Visa bakgrunden centrerad\n"
+" DesktopBackgroundScaled  - Skala bakgrundsbilden\n"
+" SupportSemitransparency  - Stöd för delvis genomskinliga terminalfönster\n"
+" DesktopBackgroundColor   - Bakgrundsfärg\n"
+" DesktopBackgroundImage   - Bakgrundsbild\n"
+" DesktopTransparencyColor - Färg att använda för delvis genomskinliga "
+"fönster\n"
+" DesktopTransparencyImage - Bild att använda för delvis genomskinliga "
+"fönster\n"
+"\n"
+" center:0 scaled:0 = sida vid sida\n"
+" center:1 scaled:1 = behåll bildformatet\n"
 
 #: src/icewmbg.cc:428
 #, c-format
@@ -707,7 +732,7 @@ msgstr "Varning: "
 #: src/movesize.cc:903
 #, c-format
 msgid "Unknown direction in move/resize request: %d"
-msgstr ""
+msgstr "Okänd riktning i flytt/förändring: %d"
 
 #: src/themes.cc:100
 msgid "Default"
@@ -731,7 +756,7 @@ msgstr "Temaförfattare:"
 
 #: src/wmabout.cc:43
 msgid "CodeSet:"
-msgstr ""
+msgstr "Kodning:"
 
 #: src/wmabout.cc:44
 msgid "Language:"
@@ -1074,7 +1099,7 @@ msgstr "_Klicka för fokus"
 
 #: src/wmprog.cc:922
 msgid "_Sloppy mouse focus"
-msgstr ""
+msgstr "_Slarvig musfokus"
 
 #: src/wmprog.cc:927
 msgid "Custo_m"
@@ -1227,7 +1252,7 @@ msgid "Loading of pixmap \"%s\" failed"
 msgstr "Inläsning av bild \"%s\" misslyckades"
 
 #: src/ycursor.cc:160
-#, fuzzy, c-format
+#, c-format
 msgid "Invalid cursor pixmap: \"%s\" contains too much unique colors"
 msgstr "Ogiltig muspekarbild: \"%s\" innehåller för många unika färger"
 
@@ -1269,7 +1294,7 @@ msgstr "Kunde inte läsa in typsnittsuppsättning \"%s\"."
 #: src/yfontcore.cc:126
 #, c-format
 msgid "Missing codesets for fontset \"%s\":"
-msgstr "Kodning saknas för typsnittsuppsättning \"%s\"."
+msgstr "Kodning saknas för typsnitt: \"%s\"."
 
 #: src/yicon.cc:167
 #, c-format
@@ -1328,6 +1353,8 @@ msgstr "Ctrl+A"
 #: src/ylocale.cc:46
 msgid "Locale not supported by C library. Falling back to 'C' locale'."
 msgstr ""
+"Språkvariant som inte stöds av C-biblioteket. Faller tillbaka till 'C' "
+"locale'."
 
 #: src/ylocale.cc:68
 msgid ""
@@ -1352,27 +1379,27 @@ msgstr "_OK"
 #: src/ypaths.cc:144 src/ypaths.cc:171
 #, c-format
 msgid "Image not readable: %s"
-msgstr ""
+msgstr "Bilden är inte läsbar: %s"
 
 #: src/ypaths.cc:149
-#, fuzzy, c-format
+#, c-format
 msgid "Out of memory for image %s"
 msgstr "Slut på minne för bild \"%s\""
 
 #: src/ypaths.cc:156
-#, fuzzy, c-format
+#, c-format
 msgid "Could not find image %s"
-msgstr "Kunde inte hitta bildpunktskarta %s"
+msgstr "Kunde inte hitta bild %s"
 
 #: src/ypaths.cc:175
-#, fuzzy, c-format
+#, c-format
 msgid "Out of memory for image: %s"
 msgstr "Slut på minne för bild \"%s\""
 
 #: src/ypaths.cc:182
-#, fuzzy, c-format
+#, c-format
 msgid "Could not find image: %s"
-msgstr "Kunde inte hitta bildpunktskarta %s"
+msgstr "Kunde inte hitta bild %s"
 
 #: src/ypixbuf.cc:482 src/ypixbuf.cc:668
 #, c-format
