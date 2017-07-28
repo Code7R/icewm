@@ -10,6 +10,8 @@
 #include "binascii.h"
 #include "yapp.h"
 #include "intl.h"
+#include "ascii.h"
+#include "argument.h"
 
 upath findPath(ustring path, int mode, upath name, bool /*path_relative*/) {
 #ifdef __EMX__
@@ -17,7 +19,7 @@ upath findPath(ustring path, int mode, upath name, bool /*path_relative*/) {
         name = name.addExtension(".exe");
 #endif
     if (name.isAbsolute()) { // check for root in XFreeOS/2
-        if (name.fileExists())
+        if (name.fileExists() && name.access(mode) == 0)
             return name;
     } else {
         if (path == null)
@@ -25,6 +27,9 @@ upath findPath(ustring path, int mode, upath name, bool /*path_relative*/) {
 
         ustring s(null), r(null);
         for (s = path; s.splitall(PATHSEP, &s, &r); s = r) {
+            if (s.isEmpty())
+                continue;
+
             upath prog = upath(s).relative(name);
             if (prog.access(mode) == 0)
                 return prog;
@@ -46,124 +51,79 @@ upath findPath(ustring path, int mode, upath name, bool /*path_relative*/) {
 
 #if !defined(NO_CONFIGURE) || !defined(NO_CONFIGURE_MENUS)
 
-static bool appendStr(char **dest, int &bufLen, int &len, char c) {     
-    if (*dest && len + 1 < bufLen) {
-        (*dest)[len++] = c;
-        (*dest)[len] = 0;
-        return true;
-    }
-    if (bufLen == 0) 
-        bufLen = 8;
-    bufLen *= 2;
-    char *d = new char[bufLen];
-    if (d == 0)
-        return false;
-    if (len > 0) 
-        memcpy(d, *dest, len);
-    if (*dest) delete[] *dest;
-    *dest = d;
-    (*dest)[len++] = c;
-    (*dest)[len] = 0;
-    return true;
-}
-
-char *YConfig::getArgument(char **dest, char *p, bool comma) {
-    *dest = new char[1];
-    if (*dest == 0) return 0;
-    **dest = 0;
-    int bufLen = 1;
-    int len = 0;
-    int sq_open = 0;
-    int dq_open = 0;
-    
+char *YConfig::getArgument(Argument *dest, char *source, bool comma) {
+    char *p = source;
     while (*p && (*p == ' ' || *p == '\t'))
         p++;
 
-    len = 0;
-    while (*p && (sq_open ||
-                  dq_open ||
-                  (*p != ' ' && *p != '\t' && *p != '\n' && (!comma ||
-                                                             *p != ','))))
-    {
-       char c = *p++; // get current char and push the pointer to the next
-       if (sq_open) {
-           // single quotes open, pass everything but '
-           if (c == '\'')
-               sq_open = !sq_open;
-           else
-               appendStr(dest, bufLen, len, c);
-       } else if (dq_open) {
-           // double quotes open, pass everything but ". Extra care for \", unescape once.
-           if (c == '"')
-               dq_open = !dq_open;
-           else if (c == '\\' && *p == '"') {
-               appendStr(dest, bufLen, len, '"');
-               p++;
-           }
-           else
-               appendStr(dest, bufLen, len, c);
-       } else {
-           if (c == '"')
-               dq_open = !dq_open;
-           else if (c == '\'')
-               sq_open = !sq_open;
-           else if (c == '\\' && *p != '\n' && *p != '\r') {
-              // add any char protected by backslash and move forward
-              // exception: line ending (unwanted, may do bad things). OTOH, if
-              // the two last checks are disable, it will cause a side effect
-              // (multiline argument parsing with \n after \).
-               appendStr(dest, bufLen, len, *p++);
-           }
-           else
-               appendStr(dest, bufLen, len, c);
-       }
+    dest->reset();
+    for (; *p; p = *p ? 1 + p : p) {
+        if (*p == '\'') {
+            while (*++p && *p != '\'') {
+                *dest += *p;
+            }
+        }
+        else if (*p == '"') {
+            while (*++p && *p != '"') {
+                if (*p == '\\' && p[1] == '"')
+                    ++p;
+                *dest += *p;
+            }
+        }
+        else if (*p == '\\' && p[1] && p[1] != '\n' && p[1] != '\r') {
+            // add any char protected by backslash and move forward
+            // exception: line ending (unwanted, may do bad things).
+            // OTOH, if the two last checks are disable, it will cause a
+            // side effect (multiline argument parsing with \n after \).
+            ++p;
+            *dest += *p;
+        }
+        else if (ASCII::isWhiteSpace(*p) || (*p == ',' && comma))
+            break;
+        else {
+            *dest += *p;
+        }
     }
     return p;
 }
 
 #endif
 
-#ifndef NO_CONFIGURE
-
 // FIXME: P1 - parse keys later, not when loading
-bool parseKey(const char *arg, KeySym *key, unsigned int *mod) {
+bool YConfig::parseKey(const char *arg, KeySym *key, unsigned int *mod) {
     const char *orig_arg = arg;
-
+    static const struct {
+        const char key[7];
+        unsigned char flag;
+    } mods[] = {
+        { "Alt+",   kfAlt   },
+        { "AltGr+", kfAltGr },
+        { "Ctrl+",  kfCtrl  },
+        { "Hyper+", kfHyper },
+        { "Meta+",  kfMeta  },
+        { "Shift+", kfShift },
+        { "Super+", kfSuper },
+    };
     *mod = 0;
-    for (;;) {
-        if (strncmp("Alt+", arg, 4) == 0) {
-            *mod |= kfAlt;
-            arg += 4;
-        } else if (strncmp("Ctrl+", arg, 5) == 0) {
-            *mod |= kfCtrl;
-            arg += 5;
-        } else if (strncmp("Shift+", arg, 6) == 0) {
-            *mod |= kfShift;
-            arg += 6;
-        } else if (strncmp("Meta+", arg, 5) == 0) {
-            *mod |= kfMeta;
-            arg += 5;
-        } else if (strncmp("Super+", arg, 6) == 0) {
-            *mod |= kfSuper;
-            arg += 6;
-        } else if (strncmp("Hyper+", arg, 6) == 0) {
-            *mod |= kfHyper;
-            arg += 6;
-        } else if (strncmp("AltGr+", arg, 6) == 0) {
-            *mod |= kfAltGr;
-            arg += 6;
-        } else
-            break;
+    for (int k = 0; k < (int) ACOUNT(mods); ++k) {
+        for (int i = 0; arg[i] == mods[k].key[i]; ++i) {
+            if (arg[i] == '+') {
+                *mod |= mods[k].flag;
+                arg += i + 1;
+                k = -1;
+                break;
+            }
+        }
     }
+
     if (modSuperIsCtrlAlt && (*mod & kfSuper)) {
         *mod &= ~kfSuper;
         *mod |= kfAlt | kfCtrl;
     }
 
-    if (strcmp(arg, "") == 0) {
+    if (*arg == 0)
         *key = NoSymbol;
-        return true;
-    } else if (strcmp(arg, "Esc") == 0)
+    else if (strcmp(arg, "Esc") == 0)
         *key = XK_Escape;
     else if (strcmp(arg, "Enter") == 0)
         *key = XK_Return;
@@ -173,23 +133,25 @@ bool parseKey(const char *arg, KeySym *key, unsigned int *mod) {
         *key = XK_BackSpace;
     else if (strcmp(arg, "Del") == 0)
         *key = XK_Delete;
-    else if (strlen(arg) == 1 && arg[0] >= 'A' && arg[0] <= 'Z') {
+    else if (ASCII::isUpper(arg[0]) && arg[1] == 0) {
         char s[2];
-        s[0] = (char)(arg[0] - 'A' + 'a');
+        s[0] = ASCII::toLower(arg[0]);
         s[1] = 0;
         *key = XStringToKeysym(s);
     } else {
         *key = XStringToKeysym(arg);
     }
 
-    if (*key == NoSymbol) {
+    if (*key == NoSymbol && *arg) {
         msg(_("Unknown key name %s in %s"), arg, orig_arg);
         return false;
     }
     return true;
 }
 
-char *setOption(cfoption *options, char *name, char *arg, bool append, char *rest) {
+#ifndef NO_CONFIGURE
+
+static char *setOption(cfoption *options, char *name, const char *arg, bool append, char *rest) {
     unsigned int a;
 
     MSG(("SET %s := %s ;", name, arg));
@@ -241,7 +203,7 @@ char *setOption(cfoption *options, char *name, char *arg, bool append, char *res
             if (options[a].v.k.key_value) {
                 WMKey *wk = options[a].v.k.key_value;
 
-                if (parseKey(arg, &wk->key, &wk->mod)) {
+                if (YConfig::parseKey(arg, &wk->key, &wk->mod)) {
                     if (!wk->initial)
                         delete[] (char *)wk->name;
                     wk->name = newstr(arg);
@@ -262,104 +224,69 @@ char *setOption(cfoption *options, char *name, char *arg, bool append, char *res
     return rest;
 }
 
-// parse option name and argument
-// name is string without spaces up to =
-// option is a " quoted string or characters up to next space
-char *parseOption(cfoption *options, char *str) {
+// Parse one option name at 'str' and its argument(s).
+// The name is a string without spaces up to '='.
+// Option is a quoted string or characters up to next space.
+static char *parseOption(cfoption *options, char *str) {
     char name[64];
-    char *argument = 0;
     char *p = str;
-    unsigned int len = 0;
-    bool append = false;
+    size_t len = 0;
 
-    while (*p && *p != '=' && *p != ' ' && *p != '\t' && len < sizeof(name) - 1)
-        p++, len++;
+    while (*p && *p != '=' && ASCII::isWhiteSpace(*p) == false)
+        p++;
+    len = (size_t)(p - str);
 
-    strncpy(name, str, len);
+    while (*p != '\n' && ASCII::isWhiteSpace(*p))
+        p++;
+    if (*p != '=' || len >= sizeof name) {
+        // ignore this line.
+        for (; *p && *p != '\n'; ++p)
+            if (*p == '\\' && p[1])
+                p++;
+        return p;
+    }
+
+    memcpy(name, str, len);
     name[len] = 0;
 
-    while (*p && *p != '=')
-        p++;
-    if (*p != '=')
-        return 0;
-    p++;
-
-    do {
+    Argument argument;
+    for (bool append = false; append == (*p == ',') && *++p; append = true) {
         p = YConfig::getArgument(&argument, p, true);
         if (p == 0)
             break;
 
         p = setOption(options, name, argument, append, p);
-
-        delete[] argument;
-
-        append = true;
-
         if (p == 0)
             return 0;
 
         while (*p && (*p == ' ' || *p == '\t'))
             p++;
-
-        if (*p != ',')
-            break;
-        p++;
-    } while (1);
+    }
 
     return p;
 }
 
-void parseConfiguration(cfoption *options, char *data) {
-    char *p = data;
-
-    while (p && *p) {
-        while (*p == ' ' || *p == '\t' || *p == '\n' || (*p == '\\' && p[1] == '\n'))
+void YConfig::parseConfiguration(cfoption *options, char *data) {
+    for (char *p = data; p && *p; ) {
+        while (ASCII::isWhiteSpace(*p) || (*p == '\\' && p[1] == '\n'))
             p++;
 
-        if (*p != '#')
-            p = parseOption(options, p);
-        else {
-            while (*p && *p != '\n') {
-                if (*p == '\\' && p[1] != 0)
+        if (*p == '#') {
+            while (*++p && *p != '\n')
+                if (*p == '\\' && p[1])
                     p++;
-                p++;
-            }
-        }
+        } else if (*p)
+            p = parseOption(options, p);
     }
 }
 
-void YConfig::loadConfigFile(cfoption *options, upath fileName) {
-    cstring cs(fileName.path());
-    int fd = open(cs.c_str(), O_RDONLY | O_TEXT);
-
-    if (fd == -1)
-        return ;
-
-    struct stat sb;
-
-    if (fstat(fd, &sb) == -1) {
-        close(fd);
-        return;
-    }
-
-    int len = sb.st_size;
-
-    char *buf = new char[len + 1];
-    if (buf == 0) {
-        close(fd);
-        return;
-    }
-
-    if ((len = read(fd, buf, len)) < 0) {
+bool YConfig::loadConfigFile(cfoption *options, upath fileName) {
+    char* buf = load_text_file(cstring(fileName));
+    if (buf) {
+        parseConfiguration(options, buf);
         delete[] buf;
-        close(fd);
-        return;
     }
-
-    buf[len] = 0;
-    close(fd);
-    parseConfiguration(options, buf);
-    delete[] buf;
+    return buf != 0;
 }
 
 void YConfig::freeConfig(cfoption *options) {
@@ -369,19 +296,22 @@ void YConfig::freeConfig(cfoption *options) {
                 delete[] (char *)*options[a].v.s.string_value;
                 *options[a].v.s.string_value = 0;
             }
-            options[a].v.s.initial = false;
         }
     }
 }
 
-bool YConfig::findLoadConfigFile(IApp *app, struct cfoption *options, upath name) {
-    upath configFile = app->findConfigFile(name);
-    bool rc = false;
-    if (configFile != null) {
-        YConfig::loadConfigFile(options, configFile);
-        rc = true;
+bool YConfig::findLoadConfigFile(IApp *app, cfoption *options, upath name) {
+    upath conf = app->findConfigFile(name);
+    return conf.nonempty() && YConfig::loadConfigFile(options, conf);
+}
+
+bool YConfig::findLoadThemeFile(IApp *app, cfoption *options, upath name) {
+    upath conf = app->findConfigFile(name);
+    if (conf.isEmpty() || false == conf.fileExists()) {
+        if (name.getExtension().isEmpty())
+            conf = app->findConfigFile(name + "default.theme");
     }
-    return rc;
+    return conf.nonempty() && YConfig::loadConfigFile(options, conf);
 }
 
 #endif

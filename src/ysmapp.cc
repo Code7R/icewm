@@ -12,27 +12,19 @@
 #include <X11/SM/SMlib.h>
 
 YSMApplication *smapp = 0;
-int IceSMfd = -1;
-IceConn IceSMconn = NULL;
-SmcConn SMconn = NULL;
-char *oldSessionId = NULL;
-char *newSessionId = NULL;
-char *sessionProg;
+static int IceSMfd = -1;
+static IceConn IceSMconn = NULL;
+static SmcConn SMconn = NULL;
+static char *oldSessionId = NULL;
+static char *newSessionId = NULL;
+static char *sessionProg;
 
-char *getsesfile() {
-    static char filename[PATH_MAX] = "";
-
-    if (*filename == '\0') {
-        strcpy(filename, YApplication::getPrivConfDir());
-        mkdir(filename, 0755);
-
-        strcat(filename, "/.session-");
-        strcat(filename, newSessionId);
-
-        MSG(("Storing session in %s", filename));
-    }
-
-    return filename;
+upath getsesfile() {
+    upath path(YApplication::getPrivConfDir());
+    if (false == path.dirExists())
+        path.mkdir(0755);
+    path += mstring("/.session-") + newSessionId;
+    return path;
 }
 
 static void iceWatchFD(IceConn conn,
@@ -53,11 +45,11 @@ static void iceWatchFD(IceConn conn,
     }
 }
 
-void saveYourselfPhase2Proc(SmcConn /*conn*/, SmPointer /*client_data*/) {
+static void saveYourselfPhase2Proc(SmcConn /*conn*/, SmPointer /*client_data*/) {
     smapp->smSaveYourselfPhase2();
 }
 
-void saveYourselfProc(SmcConn /*conn*/,
+static void saveYourselfProc(SmcConn /*conn*/,
                       SmPointer /*client_data*/,
                       int /*save_type*/,
                       Bool shutdown,
@@ -67,15 +59,15 @@ void saveYourselfProc(SmcConn /*conn*/,
     smapp->smSaveYourself(shutdown ? true : false, fast ? true : false);
 }
 
-void shutdownCancelledProc(SmcConn /*conn*/, SmPointer /*client_data*/) {
+static void shutdownCancelledProc(SmcConn /*conn*/, SmPointer /*client_data*/) {
     smapp->smShutdownCancelled();
 }
 
-void saveCompleteProc(SmcConn /*conn*/, SmPointer /*client_data*/) {
+static void saveCompleteProc(SmcConn /*conn*/, SmPointer /*client_data*/) {
     smapp->smSaveComplete();
 }
 
-void dieProc(SmcConn /*conn*/, SmPointer /*client_data*/) {
+static void dieProc(SmcConn /*conn*/, SmPointer /*client_data*/) {
     smapp->smDie();
 }
 
@@ -122,17 +114,17 @@ static void setSMProperties() {
 
     const char *rmprog = "/bin/rm";
     const char *rmarg = "-f";
-    char *sidfile = getsesfile();
+    upath sidfile = getsesfile();
 
     discardVal[0].length = strlen(rmprog);
     discardVal[0].value = (char *)rmprog;
     discardVal[1].length = strlen(rmarg);
     discardVal[1].value = (char *)rmarg;
-    discardVal[2].length = strlen(sidfile);
-    discardVal[2].value = sidfile;
+    discardVal[2].length = sidfile.length();
+    discardVal[2].value = (char *)cstring(sidfile).c_str();
 
     SmcSetProperties(SMconn,
-                     sizeof(props)/sizeof(props[0]),
+                     (int) ACOUNT(props),
                      (SmProp **)&props);
 }
 

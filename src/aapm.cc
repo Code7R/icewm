@@ -19,7 +19,7 @@
 #include "sysdep.h"
 
 #include "aclock.h"
-
+#include "wpixmaps.h"
 #include "yapp.h"
 #include "prefs.h"
 #include "intl.h"
@@ -202,7 +202,7 @@ void YApm::ApmStr(char *s, bool Tool) {
 
 int ignore_directory_entry(struct dirent *de) {
     return
-        !strcmp(de->d_name, ".") || \
+        !strcmp(de->d_name, ".") ||
         !strcmp(de->d_name, "..");
 }
 
@@ -212,38 +212,27 @@ void strcat3(char* dest,
              const char* src3,
              size_t n)
 {
-    if (!dest) return;
-    int len = n;
-    *dest = '\0';
-    len -= 1;
-    if (len < 0) return;
-    strncat(dest, src1, len);
-    len -= strlen(src1);
-    if (len < 0) return;
-    strncat(dest, src2, len);
-    len -= strlen(src2);
-    if (len < 0) return;
-    strncat(dest, src3, len);
+    if (dest) snprintf(dest, n, "%s%s%s", src1, src2, src3);
 }
 
 int YApm::ignore_directory_bat_entry(struct dirent *de) {
     return
-        ignore_directory_entry(de) || \
-        strstr("AC", de->d_name) || \
+        ignore_directory_entry(de) ||
+        strstr(de->d_name, "AC") ||
         (acpiIgnoreBatteries &&
          strstr(acpiIgnoreBatteries, de->d_name));
 }
 
 int YApm::ignore_directory_ac_entry(struct dirent *de) {
     return
-        ignore_directory_entry(de) || \
-        strstr("BAT", de->d_name) || \
+        ignore_directory_entry(de) ||
+        strstr(de->d_name, "BAT") ||
         (acpiIgnoreBatteries &&
          strstr(acpiIgnoreBatteries, de->d_name));
 }
 
 void YApm::AcpiStr(char *s, bool Tool) {
-    char buf[80], buf2[80], bat_info[250];
+    char buf[255], buf2[80], bat_info[250];
     FILE *fd;
     //name of the battery
     char *BATname;
@@ -531,7 +520,7 @@ void YApm::AcpiStr(char *s, bool Tool) {
 }
 
 void YApm::SysStr(char *s, bool Tool) {
-    char buf[80], bat_info[250];
+    char buf[255], bat_info[250];
     FILE *fd;
     //name of the battery
     char *BATname;
@@ -781,7 +770,7 @@ void YApm::PmuStr(char *s, const bool tool_tip)
 
    char line[80];
    int power_present(0);
-   while ( fgets(line, 80, fd) != NULL )
+   while ( fgets(line, ACOUNT(line), fd) != NULL )
    {
       if (strncmp("AC Power", line, strlen("AC Power")) == 0) {
          sscanf(strchr(line, ':')+2, "%d", &power_present);
@@ -797,8 +786,8 @@ void YApm::PmuStr(char *s, const bool tool_tip)
 
    char* s_end = s;
    for (int i=0; i < batteryNum; ++i) {
-      char file_name[20];
-      snprintf(file_name, 20, "/proc/pmu/battery_%d", i);
+      char file_name[30];
+      snprintf(file_name, ACOUNT(file_name), "/proc/pmu/battery_%d", i);
       fd = fopen(file_name, "r");
       if (fd == NULL) {
 	 strcpy(s_end, "Err");
@@ -807,7 +796,7 @@ void YApm::PmuStr(char *s, const bool tool_tip)
       }
 
       int flags=0, rem_time=-1, charge=0, max_charge=0, voltage=0;
-      while ( fgets(line, 80, fd) != NULL )
+      while ( fgets(line, ACOUNT(line), fd) != NULL )
 	if (strncmp("flags", line, strlen("flags")) == 0)
 	  sscanf(strchr(line, ':')+2, "%x", &flags);
         else if (strncmp("time rem.", line, strlen("time rem.")) == 0)
@@ -892,15 +881,14 @@ YApm::YApm(YWindow *aParent, bool autodetect): YWindow(aParent) {
     struct dirent **de;
     int n, i;
     FILE *pmu_info;
-                    char buf[80];
-                    FILE *fd;
+    char buf[300];
+    FILE *fd;
 
     batteryNum = 0;
     acpiACName = 0;
     fCurrentState = 0;
     apmTimer = 0;
-
-    acIsOnLine     = false; // hatred
+    acIsOnLine   = false;
     chargeStatus = 0.0;
 
     //search for acpi info first
@@ -917,26 +905,22 @@ YApm::YApm(YWindow *aParent, bool autodetect): YWindow(aParent) {
         mode = SYSFS;
     if (n > 0) {
         //scan for batteries
-        i = 0;
-        while (i < n && batteryNum < MAX_ACPI_BATTERY_NUM) {
-            if (mode == SYSFS)
-            {
-                    strcat3(buf, "/sys/class/power_supply/", de[i]->d_name, "/online", sizeof(buf));
-                    fd = fopen(buf, "r");
-                    if (fd != NULL) {
-                         fclose(fd);
-                         free(de[i]);
-                         i++;
-                         continue;
-                    }
+        for (i = 0; i < n && batteryNum < MAX_ACPI_BATTERY_NUM; ++i) {
+            if (mode == SYSFS) {
+                strcat3(buf, "/sys/class/power_supply/",
+                        de[i]->d_name, "/online", sizeof(buf));
+                fd = fopen(buf, "r");
+                if (fd != NULL) {
+                     fclose(fd);
+                     free(de[i]);
+                     continue;
+                }
             }
             if (!ignore_directory_bat_entry(de[i])) {
                 //found a battery
                 acpiBatteries[batteryNum] =
                     (bat_info*)malloc(sizeof(bat_info));
-                acpiBatteries[batteryNum]->name =
-                    (char*)calloc(strlen(de[i]->d_name) + 1, sizeof(char));
-                strcpy(acpiBatteries[batteryNum]->name, de[i]->d_name);
+                acpiBatteries[batteryNum]->name = strdup(de[i]->d_name);
                 //initially set as absent, to force reading of
                 //full-capacity value
                 acpiBatteries[batteryNum]->present = BAT_ABSENT;
@@ -944,7 +928,6 @@ YApm::YApm(YWindow *aParent, bool autodetect): YWindow(aParent) {
                 batteryNum++;
             }
             free(de[i]);
-            i++;
         }
         free(de);
 
@@ -954,35 +937,29 @@ YApm::YApm(YWindow *aParent, bool autodetect): YWindow(aParent) {
         else if (mode == SYSFS)
             n = scandir("/sys/class/power_supply", &de, 0, alphasort);
         if (n > 0) {
-            i = 0;
-            while (i < n) {
+            for (i = 0; i < n; ++i) {
                 if (mode == SYSFS) {
-
                     strcat3(buf, "/sys/class/power_supply/", de[i]->d_name, "/online", sizeof(buf));
                     fd = fopen(buf, "r");
                     if (fd != NULL) {
-                        acpiACName = (char*)calloc(strlen(de[i]->d_name) + 1, sizeof(char));
-                        strcpy(acpiACName, de[i]->d_name);
+                        acpiACName = strdup(de[i]->d_name);
                         fclose(fd);
                         break;
                     }
                 } else {
                     if (!ignore_directory_ac_entry(de[i])) {
                         //found an ac_adapter
-                        acpiACName = (char*)calloc(strlen(de[i]->d_name) + 1, sizeof(char));
-                        strcpy(acpiACName, de[i]->d_name);
+                        acpiACName = strdup(de[i]->d_name);
                         break;
                     }
                 }
                 free(de[i]);
-                i++;
             }
             free(de);
         }
         if (!acpiACName) {
             //no ac_adapter was found
-            acpiACName = (char*)malloc(sizeof(char));
-            *acpiACName = '\0';
+            acpiACName = strdup("");
         }
 #else
     int acpifd;
@@ -992,25 +969,24 @@ YApm::YApm(YWindow *aParent, bool autodetect): YWindow(aParent) {
 	mode = ACPI;
 
         //scan for batteries
-        i = 0;
-        while (i < 64 && batteryNum < MAX_ACPI_BATTERY_NUM) {
+	for (i = 0; i < 64 && batteryNum < MAX_ACPI_BATTERY_NUM; ++i) {
 	    union acpi_battery_ioctl_arg battio;
 
 	    battio.unit = i;
 	    if (ioctl(acpifd, ACPIIO_BATT_GET_BATTINFO, &battio) != -1) {
     		acpiBatteries[batteryNum] =
 	            (bat_info*)malloc(sizeof(bat_info));
-	    	asprintf(&acpiBatteries[batteryNum]->name, "Battery%d", i);
+	        acpiBatteries[batteryNum]->name = (char *) malloc(32);
+	        sprintf(acpiBatteries[batteryNum]->name, "Battery%d", i);
 	        //initially set as absent, to force reading of
 	        //full-capacity value
 	        acpiBatteries[batteryNum]->present = BAT_ABSENT;
 	        acpiBatteries[batteryNum]->capacity_full = -1;
 	        batteryNum++;
 	    }
-	    i++;
 	}
 
-	asprintf(&acpiACName, "AC1");
+	acpiACName = strdup("AC1");
 #endif
     } else if ( (pmu_info = fopen("/proc/pmu/info", "r")) != NULL) {
        mode = PMU;
@@ -1193,7 +1169,7 @@ void YApm::paint(Graphics &g, const YRect &/*r*/) {
             if (i < len) {
                 p = getPixmap(fCurrentState[i]);
             } else
-                p = PixSpace;
+                p = ledPixSpace;
 
             if (p != null) {
                 g.drawPixmap(p, x, 0);
@@ -1239,14 +1215,15 @@ ref<YPixmap> YApm::getPixmap(char c) {
     ref<YPixmap> pix;
     switch (c) {
     case '0': case '1': case '2': case '3': case '4':
-    case '5': case '6': case '7': case '8': case '9': pix = PixNum[c - '0']; break;
-    case ' ': pix = PixSpace; break;
-    case ':': pix = PixColon; break;
-    case '.': pix = PixDot; break;
-    case 'P': pix = PixP; break;
-    case 'M': pix = PixM; break;
-    case '/': pix = PixSlash; break;
-    case '%': pix = PixPercent; break;
+    case '5': case '6': case '7': case '8': case '9':
+        pix = ledPixNum[c - '0']; break;
+    case ' ': pix = ledPixSpace; break;
+    case ':': pix = ledPixColon; break;
+    case '.': pix = ledPixDot; break;
+    case 'P': pix = ledPixP; break;
+    case 'M': pix = ledPixM; break;
+    case '/': pix = ledPixSlash; break;
+    case '%': pix = ledPixPercent; break;
     }
 
     return pix;

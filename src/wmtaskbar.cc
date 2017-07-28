@@ -14,6 +14,7 @@
 #include "ypaint.h"
 #include "wmtaskbar.h"
 #include "yprefs.h"
+#include "acpustatus.h"
 
 #include "ymenuitem.h"
 #include "wmmgr.h"
@@ -41,7 +42,7 @@
 #include "yxtray.h"
 #include "prefs.h"
 #include "yicon.h"
-
+#include "wpixmaps.h"
 #include "aapm.h"
 #include "upath.h"
 
@@ -56,95 +57,10 @@ TaskBar *taskBar = 0;
 
 YColor *taskBarBg = 0;
 
-static ref<YImage> startImage;
-static ref<YImage> windowsImage;
-static ref<YImage> showDesktopImage;
-static ref<YImage> collapseImage;
-static ref<YImage> expandImage;
-
-/// TODO #warning "these should be static/elsewhere"
-ref<YPixmap> taskbackPixmap;
-#ifdef CONFIG_GRADIENTS
-ref<YImage> taskbackPixbuf;
-ref<YImage> taskbuttonPixbuf;
-ref<YImage> taskbuttonactivePixbuf;
-ref<YImage> taskbuttonminimizedPixbuf;
-#endif
-
 static void initPixmaps() {
-    upath base("taskbar");
-    ref<YResourcePaths> themedirs = YResourcePaths::subdirs(base, true);
-    ref<YResourcePaths> subdirs = YResourcePaths::subdirs(base);
-
-    /*
-     * that sucks, a neccessary workaround for differering startmenu pixmap
-     * filename. This will be unified and be a forced standard in
-     * icewm-2
-     */
-    startImage = themedirs->loadImage(base, "start.xpm");
-#if 1
-    if (startImage == null || !startImage->valid())
-        startImage = themedirs->loadImage(base, "linux.xpm");
-    if (startImage == null || !startImage->valid())
-        startImage = themedirs->loadImage(base, "icewm.xpm");
-    if (startImage == null || !startImage->valid())
-        startImage = subdirs->loadImage(base, "icewm.xpm");
-    if (startImage == null || !startImage->valid())
-        startImage = subdirs->loadImage(base, "start.xpm");
-#endif
-
-    windowsImage = subdirs->loadImage(base, "windows.xpm");
-    showDesktopImage = subdirs->loadImage(base, "desktop.xpm");
-    collapseImage = subdirs->loadImage(base, "collapse.xpm");
-    expandImage = subdirs->loadImage(base, "expand.xpm");
-
 #ifdef CONFIG_GRADIENTS
-    if (taskbackPixbuf == null)
-        taskbackPixmap = subdirs->loadPixmap(base, "taskbarbg.xpm");
-    if (taskbuttonPixbuf == null)
-        taskbuttonPixmap = subdirs->loadPixmap(base, "taskbuttonbg.xpm");
-    if (taskbuttonactivePixbuf == null)
-        taskbuttonactivePixmap = subdirs->loadPixmap(base, "taskbuttonactive.xpm");
-    if (taskbuttonminimizedPixbuf == null)
-        taskbuttonminimizedPixmap = subdirs->loadPixmap(base, "taskbuttonminimized.xpm");
-#else
-    taskbackPixmap = subdirs->loadPixmap(base, "taskbarbg.xpm");
-    taskbuttonPixmap = subdirs->loadPixmap(base, "taskbuttonbg.xpm");
-    taskbuttonactivePixmap = subdirs->loadPixmap(base, "taskbuttonactive.xpm");
-    taskbuttonminimizedPixmap = subdirs->loadPixmap(base, "taskbuttonminimized.xpm");
-#endif
-
-#ifdef CONFIG_APPLET_MAILBOX
-    base = "mailbox/";
-    subdirs = YResourcePaths::subdirs(base);
-    mailPixmap = subdirs->loadPixmap(base, "mail.xpm");
-    noMailPixmap = subdirs->loadPixmap(base, "nomail.xpm");
-    errMailPixmap = subdirs->loadPixmap(base, "errmail.xpm");
-    unreadMailPixmap = subdirs->loadPixmap(base, "unreadmail.xpm");
-    newMailPixmap = subdirs->loadPixmap(base, "newmail.xpm");
-#endif
-
-#ifdef CONFIG_APPLET_CLOCK
-    base = "ledclock/";
-    subdirs = YResourcePaths::subdirs(base);
-    PixNum[0] = subdirs->loadPixmap(base, "n0.xpm");
-    PixNum[1] = subdirs->loadPixmap(base, "n1.xpm");
-    PixNum[2] = subdirs->loadPixmap(base, "n2.xpm");
-    PixNum[3] = subdirs->loadPixmap(base, "n3.xpm");
-    PixNum[4] = subdirs->loadPixmap(base, "n4.xpm");
-    PixNum[5] = subdirs->loadPixmap(base, "n5.xpm");
-    PixNum[6] = subdirs->loadPixmap(base, "n6.xpm");
-    PixNum[7] = subdirs->loadPixmap(base, "n7.xpm");
-    PixNum[8] = subdirs->loadPixmap(base, "n8.xpm");
-    PixNum[9] = subdirs->loadPixmap(base, "n9.xpm");
-    PixSpace = subdirs->loadPixmap(base, "space.xpm");
-    PixColon = subdirs->loadPixmap(base, "colon.xpm");
-    PixSlash = subdirs->loadPixmap(base, "slash.xpm");
-    PixDot = subdirs->loadPixmap(base, "dot.xpm");
-    PixA = subdirs->loadPixmap(base, "a.xpm");
-    PixP = subdirs->loadPixmap(base, "p.xpm");
-    PixM = subdirs->loadPixmap(base, "m.xpm");
-    PixPercent = subdirs->loadPixmap(base, "percent.xpm");
+    if (taskbarStartImage == null || !taskbarStartImage->valid())
+        taskbarStartImage = taskbarLinuxImage;
 #endif
 }
 
@@ -260,14 +176,20 @@ YFrameClient(aParent, 0) INIT_GRADIENT(fGradient, NULL)
     setWinStateHint(WinStateAllWorkspaces, WinStateAllWorkspaces);
     //!!!setWinStateHint(WinStateDockHorizontal, WinStateDockHorizontal);
 
+#ifdef GNOME1_HINTS
     setWinHintsHint(WinHintsSkipFocus |
                     WinHintsSkipWindowMenu |
                     WinHintsSkipTaskBar);
+#endif
 
+#if defined(GNOME1_HINTS) || defined(WMSPEC_HINTS)
     setWinWorkspaceHint(0);
+#endif
+#ifdef GNOME1_HINTS
     setWinLayerHint((taskBarAutoHide || fFullscreen) ? WinLayerAboveAll :
                     fIsCollapsed ? WinLayerAboveDock :
                     taskBarKeepBelow ? WinLayerBelow : WinLayerDock);
+#endif
     Atom protocols[2] = { 
       _XA_WM_DELETE_WINDOW,
       _XA_WM_TAKE_FOCUS
@@ -298,17 +220,13 @@ YFrameClient(aParent, 0) INIT_GRADIENT(fGradient, NULL)
                         (unsigned char *)&wk, 4);
     }
     {
-        MwmHints mwm;
-
-        memset(&mwm, 0, sizeof(mwm));
-        mwm.flags =
-            MWM_HINTS_FUNCTIONS |
-            MWM_HINTS_DECORATIONS;
-        mwm.functions =
-            MWM_FUNC_MOVE /*|
-            MWM_FUNC_RESIZE*/;
-        mwm.decorations = 0;
-        //MWM_DECOR_BORDER /*|MWM_DECOR_RESIZEH*/;
+        MwmHints mwm =
+        { MWM_HINTS_FUNCTIONS | MWM_HINTS_DECORATIONS
+        , MWM_FUNC_MOVE // | MWM_FUNC_RESIZE
+        , 0 // MWM_DECOR_BORDER | MWM_DECOR_RESIZEH
+        , 0
+        , 0
+        };
 
         setMwmHints(mwm);
     }
@@ -347,47 +265,19 @@ TaskBar::~TaskBar() {
     for (MailBoxStatus ** m(fMailBoxStatus); m && *m; ++m) delete *m;
     delete[] fMailBoxStatus; fMailBoxStatus = 0;
 #endif
-    delete fApplications; fApplications = 0;
 #ifdef CONFIG_WINMENU
     delete fWinList; fWinList = 0;
 #endif
 #ifndef NO_CONFIGURE_MENUS
+    delete fApplications; fApplications = 0;
     delete fObjectBar; fObjectBar = 0;
 #endif
     delete fWorkspaces;
-    taskbackPixmap = null;
-    taskbuttonPixmap = null;
-    taskbuttonactivePixmap = null;
-    taskbuttonminimizedPixmap = null;
-#ifdef CONFIG_GRADIENTS
-    taskbackPixbuf = null;
-    taskbuttonPixbuf = null;
-    taskbuttonactivePixbuf = null;
-    taskbuttonminimizedPixbuf = null;
-#endif
-    startImage = null;
-    windowsImage = null;
-    showDesktopImage = null;;
-#ifdef CONFIG_APPLET_MAILBOX
-    mailPixmap = null;
-    noMailPixmap = null;
-    errMailPixmap = null;
-    unreadMailPixmap = null;
-    newMailPixmap = null;
-#endif
-#ifdef CONFIG_APPLET_CLOCK
-    PixSpace = null;
-    PixSlash = null;
-    PixDot = null;
-    PixA = null;
-    PixP = null;
-    PixM = null;
-    PixColon = null;
-    for (int n = 0; n < 10; n++)
-        PixNum[n] = null;
-#endif
 #ifdef CONFIG_APPLET_APM
     delete fApm; fApm = 0;
+#endif
+#ifdef CONFIG_APPLET_CPU_STATUS
+    delete [] fCPUStatus;
 #endif
 #ifdef HAVE_NET_STATUS
     delete [] fNetStatus;
@@ -447,12 +337,9 @@ void TaskBar::initApplets() {
         fMEMStatus = 0;
 #endif
 #ifdef CONFIG_APPLET_CPU_STATUS
+    fCPUStatus = 0;
     if (taskBarShowCPUStatus)
-        fCPUStatus = new CPUStatus(smActionListener, this, cpustatusShowRamUsage, cpustatusShowSwapUsage,
-																	 cpustatusShowAcpiTemp, cpustatusShowCpuFreq,
-																	 cpustatusShowAcpiTempInGraph);
-    else
-        fCPUStatus = 0;
+        CPUStatus::GetCPUStatus(smActionListener, this, fCPUStatus, cpuCombine);
 #endif
 #ifdef CONFIG_APPLET_NET_STATUS
     fNetStatus = 0;
@@ -463,7 +350,8 @@ void TaskBar::initApplets() {
         int cnt = 0;
 
         for (s = networkDevices; s.splitall(' ', &s, &r); s = r)
-            cnt++;
+            if (s.nonempty())
+                cnt++;
 
         networkDevices = netDevice;
 
@@ -472,6 +360,9 @@ void TaskBar::initApplets() {
             fNetStatus[cnt--] = NULL;
 
             for (s = networkDevices; s.splitall(' ', &s, &r); s = r) {
+                if (s.isEmpty())
+                    continue;
+
                 fNetStatus[cnt--] = new NetStatus(app, smActionListener, s, this, this);
             }
         }
@@ -511,7 +402,7 @@ void TaskBar::initApplets() {
         fCollapseButton = new YButton(this, actionCollapseTaskbar);
         if (fCollapseButton) {
             fCollapseButton->setText(">");
-            fCollapseButton->setImage(collapseImage);
+            fCollapseButton->setImage(taskbarCollapseImage);
             fCollapseButton->setActionListener(this);
         }
     } else
@@ -528,7 +419,8 @@ void TaskBar::initApplets() {
         mstring s(null), r(null);
 
         for (s = mailboxes; s.splitall(' ', &s, &r); s = r)
-            cnt++;
+            if (s.nonempty())
+                cnt++;
 
         if (cnt) {
             fMailBoxStatus = new MailBoxStatus*[cnt + 1];
@@ -536,6 +428,9 @@ void TaskBar::initApplets() {
 
             for (s = mailboxes; s.splitall(' ', &s, &r); s = r)
             {
+                if (s.isEmpty())
+                    continue;
+
                 fMailBoxStatus[cnt--] = new MailBoxStatus(app, smActionListener, s, this);
             }
         } else if (getenv("MAIL")) {
@@ -559,7 +454,7 @@ void TaskBar::initApplets() {
     if (taskBarShowStartMenu) {
         fApplications = new ObjectButton(this, rootMenu);
         fApplications->setActionListener(this);
-        fApplications->setImage(startImage);
+        fApplications->setImage(taskbarStartImage);
         fApplications->setToolTip(_("Favorite applications"));
     } else
         fApplications = 0;
@@ -575,7 +470,7 @@ void TaskBar::initApplets() {
 #ifdef CONFIG_WINMENU
     if (taskBarShowWindowListMenu) {
         fWinList = new ObjectButton(this, windowListMenu);
-        fWinList->setImage(windowsImage);
+        fWinList->setImage(taskbarWindowsImage);
         fWinList->setActionListener(this);
         fWinList->setToolTip(_("Window list menu"));
     } else
@@ -584,7 +479,7 @@ void TaskBar::initApplets() {
     if (taskBarShowShowDesktopButton) {
         fShowDesktop = new ObjectButton(this, actionShowDesktop);
         fShowDesktop->setText("__");
-        fShowDesktop->setImage(showDesktopImage);
+        fShowDesktop->setImage(taskbarShowDesktopImage);
         fShowDesktop->setActionListener(wmActionListener);
         fShowDesktop->setToolTip(_("Show Desktop"));
     }
@@ -617,89 +512,104 @@ void TaskBar::trayChanged() {
     //    updateLayout();
 }
 
-void TaskBar::updateLayout(int &size_w, int &size_h) {
-    struct {
-        YWindow *w;
-        bool left;
-        int row; // 0 = bottom, 1 = top
-        bool show;
-        int pre, post;
-        bool expand;
-    } *wl, wlist[] = {
-#ifndef NO_CONFIGURE_MENUS
-        { fApplications, true, 1, true, 0, 0, true },
-#endif
-        { fShowDesktop, true, 0, true, 0, 0, true },
-#ifdef CONFIG_WINMENU
-        { fWinList, true, 0, true, 0, 0, true},
-#endif
-#ifndef NO_CONFIGURE_MENUS
-        { fObjectBar, true, 1, true, 4, 0, true },
-#endif
-        { fWorkspaces, taskBarWorkspacesLeft, taskBarDoubleHeight && taskBarWorkspacesTop, true, 4, 4, true },
+struct LayoutInfo {
+    YWindow *w;
+    bool left;
+    int row; // 0 = bottom, 1 = top
+    bool show;
+    int pre, post;
+    bool expand;
 
-        { fCollapseButton, false, 0, true, 0, 2, true },
+    LayoutInfo() :
+        w(0), left(false), row(0), show(false), pre(0), post(0), expand(false) {}
+    LayoutInfo(YWindow *_w, bool l, int r, bool s, int p, int o, bool e) :
+        w(_w), left(l), row(r), show(s), pre(p), post(o), expand(e) {}
+};
+
+bool operator==(const LayoutInfo &l1, const LayoutInfo &l2)
+{
+    return memcmp(&l1, &l2, sizeof(LayoutInfo)) == 0;
+}
+
+void TaskBar::updateLayout(int &size_w, int &size_h) {
+    LayoutInfo nw;
+    YArray<LayoutInfo> wlist;
+    wlist.setCapacity(13);
+
+#ifndef NO_CONFIGURE_MENUS
+    nw = LayoutInfo( fApplications, true, 1, true, 0, 0, true );
+    wlist.append(nw);
+#endif
+    nw = LayoutInfo( fShowDesktop, true, 0, true, 0, 0, true );
+    wlist.append(nw);
+#ifdef CONFIG_WINMENU
+    nw = LayoutInfo( fWinList, true, 0, true, 0, 0, true );
+    wlist.append(nw);
+#endif
+#ifndef NO_CONFIGURE_MENUS
+    nw = LayoutInfo( fObjectBar, true, 1, true, 4, 0, true );
+    wlist.append(nw);
+#endif
+    nw = LayoutInfo( fWorkspaces, taskBarWorkspacesLeft, taskBarDoubleHeight && taskBarWorkspacesTop, true, 4, 4, true );
+    wlist.append(nw);
+
+    nw = LayoutInfo( fCollapseButton, false, 0, true, 0, 2, true );
+    wlist.append(nw);
 #ifdef CONFIG_APPLET_CLOCK
-        { fClock, false, 1, true, 2, 2, false },
+    nw = LayoutInfo( fClock, false, 1, true, 2, 2, false );
+    wlist.append(nw);
 #endif
 #ifdef CONFIG_APPLET_MAILBOX
-        { fMailBoxStatus ? fMailBoxStatus[0] : 0, false, 1, true, 1, 1, false },
-/// TODO #warning "a hack"
-        { fMailBoxStatus && fMailBoxStatus[0] ? fMailBoxStatus[1] : 0, false, 1, true, 1, 1, false },
-        { fMailBoxStatus && fMailBoxStatus[0] && fMailBoxStatus[1] ? fMailBoxStatus[2] : 0, false, 1, true, 1, 1, false },
-        { fMailBoxStatus && fMailBoxStatus[0] && fMailBoxStatus[1] && fMailBoxStatus[2] ? fMailBoxStatus[3] : 0, false, 1, true, 1, 1, false },
-        { fMailBoxStatus && fMailBoxStatus[0] && fMailBoxStatus[1] && fMailBoxStatus[2] && fMailBoxStatus[3] ? fMailBoxStatus[4] : 0, false, 1, true, 1, 1, false },
-        { fMailBoxStatus && fMailBoxStatus[0] && fMailBoxStatus[1] && fMailBoxStatus[2] && fMailBoxStatus[3] && fMailBoxStatus[4] ? fMailBoxStatus[5] : 0, false, 1, true, 1, 1, false },
+    for (MailBoxStatus ** m(fMailBoxStatus); m && *m; ++m) {
+        nw = LayoutInfo( *m, false, 1, true, 1, 1, false );
+        wlist.append(nw);
+    }
 #endif
 #ifdef CONFIG_APPLET_CPU_STATUS
-        { fCPUStatus, false, 1, true, 2, 2, false },
+    for (CPUStatus ** c(fCPUStatus); c && *c; ++c) {
+        nw = LayoutInfo( *c, false, 1, true, 2, 2, false );
+        wlist.append(nw);
+    }
 #endif
 #ifdef CONFIG_APPLET_MEM_STATUS
-        { fMEMStatus, false, 1, true, 2, 2, false },
+    nw = LayoutInfo( fMEMStatus, false, 1, true, 2, 2, false );
+    wlist.append(nw);
 #endif
 #ifdef CONFIG_APPLET_NET_STATUS
 #ifdef CONFIG_APPLET_MAILBOX
-        { fNetStatus ? fNetStatus[0] : 0, false, 1, false, 1, 1, false },
-/// TODO #warning "a hack"
-        { fNetStatus && fNetStatus[0] ? fNetStatus[1] : 0, false, 1, false, 1, 1, false },
-        { fNetStatus && fNetStatus[0] && fNetStatus[1] ? fNetStatus[2] : 0, false, 1, false, 1, 1, false },
-        { fNetStatus && fNetStatus[0] && fNetStatus[1] && fNetStatus[2] ? fNetStatus[3] : 0, false, 1, false, 1, 1, false },
-        { fNetStatus && fNetStatus[0] && fNetStatus[1] && fNetStatus[2] && fNetStatus[3] ? fNetStatus[4] : 0, false, 1, false, 1, 1, false },
-        { fNetStatus && fNetStatus[0] && fNetStatus[1] && fNetStatus[2] && fNetStatus[3] && fNetStatus[4] ? fNetStatus[5] : 0, false, 1, false, 1, 1, false },
-        { fNetStatus && fNetStatus[0] && fNetStatus[1] && fNetStatus[2] && fNetStatus[3] && fNetStatus[4] && fNetStatus[5] ? fNetStatus[6] : 0, false, 1, false, 1, 1, false },
-        { fNetStatus && fNetStatus[0] && fNetStatus[1] && fNetStatus[2] && fNetStatus[3] && fNetStatus[4] && fNetStatus[5] && fNetStatus[6] ? fNetStatus[7] : 0, false, 1, false, 1, 1, false },
-        { fNetStatus && fNetStatus[0] && fNetStatus[1] && fNetStatus[2] && fNetStatus[3] && fNetStatus[4] && fNetStatus[5] && fNetStatus[6] && fNetStatus[7] ? fNetStatus[8] : 0, false, 1, false, 1, 1, false },
-        { fNetStatus && fNetStatus[0] && fNetStatus[1] && fNetStatus[2] && fNetStatus[3] && fNetStatus[4] && fNetStatus[5] && fNetStatus[6] && fNetStatus[7] && fNetStatus[8] ? fNetStatus[9] : 0, false, 1, false, 1, 1, false },
-        { fNetStatus && fNetStatus[0] && fNetStatus[1] && fNetStatus[2] && fNetStatus[3] && fNetStatus[4] && fNetStatus[5] && fNetStatus[6] && fNetStatus[7] && fNetStatus[8] && fNetStatus[9] ? fNetStatus[10] : 0, false, 1, false, 1, 1, false },
+    for (NetStatus ** n(fNetStatus); n && *n; ++n) {
+        nw = LayoutInfo( *n, false, 1, false, 2, 2, false );
+        wlist.append(nw);
+    }
 #endif
 #endif
 #ifdef CONFIG_APPLET_APM
-        { fApm, false, 1, true, 0, 2, false },
+    nw = LayoutInfo( fApm, false, 1, true, 0, 2, false );
+    wlist.append(nw);
 #endif
-        { fDesktopTray, false, 1, true, 1, 1, false },
+    nw = LayoutInfo( fDesktopTray, false, 1, true, 1, 1, false );
+    wlist.append(nw);
 #ifdef CONFIG_TRAY
-        { fWindowTray, false, 0, true, 1, 1, true },
+    nw = LayoutInfo( fWindowTray, false, 0, true, 1, 1, true );
+    wlist.append(nw);
 #endif
-    };
-    const int wcount = sizeof(wlist)/sizeof(wlist[0]);
+    const unsigned long wcount = wlist.getCount();
 
     int w = 0;
     int y[2] = { 0, 0 };
     int h[2] = { 0, 0 };
     int left[2] = { 0, 0 };
     int right[2] = { 0, 0 };
-    int i;
+    unsigned long i;
 
-    for (i = 0; wl = wlist + i, i < wcount; i++) {
-        if (!taskBarDoubleHeight)
-            wl->row = 0;
-    }
-
-    for (i = 0; wl = wlist + i, i < wcount; i++) {
-        if (wl->w == 0)
-            continue;
-        if (wl->w->height() > h[wl->row])
-            h[wl->row] = wl->w->height();
+    if (!taskBarDoubleHeight)
+        for (i = 0; i < wcount; i++)
+            wlist[i].row = 0;
+    for (i = 0; i < wcount; i++) {
+        if (!wlist[i].w)
+             continue;
+        if (wlist[i].w->height() > h[wlist[i].row])
+            h[wlist[i].row] = wlist[i].w->height();
     }
 
     {
@@ -734,39 +644,39 @@ void TaskBar::updateLayout(int &size_w, int &size_h) {
 #endif
     }
 
-    for (i = 0; wl = wlist + i, i < wcount; i++) {
-        if (wl->w == 0)
+    for (i = 0; i < wcount; i++) {
+        if (!wlist[i].w)
             continue;
-        if (!wl->show && !wl->w->visible())
+        if (!wlist[i].show && !wlist[i].w->visible())
             continue;
 
         int xx = 0;
         int yy = 0;
-        int ww = wl->w->width();
-        int hh = h[wl->row];
+        int ww = wlist[i].w->width();
+        int hh = h[wlist[i].row];
 
-        if (wl->expand) {
-            yy = y[wl->row];
+        if (wlist[i].expand) {
+            yy = y[wlist[i].row];
         } else {
-            hh = wl->w->height();
-            yy = y[wl->row] + (h[wl->row] - wl->w->height()) / 2;
+            hh = wlist[i].w->height();
+            yy = y[wlist[i].row] + (h[wlist[i].row] - wlist[i].w->height()) / 2;
         }
 
-        if (wl->left) {
-            xx = left[wl->row] + wl->pre;
+        if (wlist[i].left) {
+            xx = left[wlist[i].row] + wlist[i].pre;
 
-            left[wl->row] += ww + wl->pre + wl->post;
+            left[wlist[i].row] += ww + wlist[i].pre + wlist[i].post;
         } else {
-            xx = right[wl->row] - ww - wl->pre;
+            xx = right[wlist[i].row] - ww - wlist[i].pre;
 
-            right[wl->row] -= ww + wl->pre + wl->post;
+            right[wlist[i].row] -= ww + wlist[i].pre + wlist[i].post;
         }
-
-        wl->w->setGeometry(YRect(xx, yy, ww, hh));
-        if (wl->show)
-            wl->w->show();
+        wlist[i].w->setGeometry(YRect(xx, yy, ww, hh));
+        if (wlist[i].show)
+            wlist[i].w->show();
     }
 
+    wlist.clear();
     /* ----------------------------------------------------------------- */
 
     if (taskBarShowWindows) {
@@ -885,23 +795,14 @@ void TaskBar::updateLocation() {
     else
         fEdgeTrigger->hide();
 
-/// TODO #warning "optimize this"
     {
-        MwmHints mwm;
-
-        memset(&mwm, 0, sizeof(mwm));
-        mwm.flags =
-            MWM_HINTS_FUNCTIONS |
-            MWM_HINTS_DECORATIONS;
-        mwm.functions =
-            MWM_FUNC_MOVE /*|
-            MWM_FUNC_RESIZE*/;
-        if (fIsHidden)
-            mwm.decorations = 0;
-        else
-            mwm.decorations = 0;
-        //MWM_DECOR_BORDER /*|
-        //MWM_DECOR_RESIZEH*/;
+        MwmHints mwm =
+        { MWM_HINTS_FUNCTIONS | MWM_HINTS_DECORATIONS
+        , MWM_FUNC_MOVE // | MWM_FUNC_RESIZE
+        , 0 // MWM_DECOR_BORDER | MWM_DECOR_RESIZEH
+        , 0
+        , 0
+        };
 
         XChangeProperty(xapp->display(), handle(),
                         _XATOM_MWM_HINTS, _XATOM_MWM_HINTS,
@@ -1083,6 +984,7 @@ void TaskBar::handleDrag(const XButtonEvent &/*down*/, const XMotionEvent &motio
 }
 
 void TaskBar::popupStartMenu() {
+#ifndef NO_CONFIGURE_MENUS
     if (fApplications) {
         /*requestFocus();
          fApplications->requestFocus();
@@ -1090,6 +992,7 @@ void TaskBar::popupStartMenu() {
         popOut();
         fApplications->popupMenu();
     }
+#endif
 }
 
 void TaskBar::popupWindowListMenu() {
@@ -1139,9 +1042,11 @@ void TaskBar::showBar(bool visible) {
         if (getFrame() == 0)
             manager->mapClient(handle());
         if (getFrame() != 0) {
+#if defined(GNOME1_HINTS) || defined(WMSPEC_HINTS)
             setWinLayerHint((taskBarAutoHide || fFullscreen) ? WinLayerAboveAll :
                             fIsCollapsed ? WinLayerAboveDock :
                             taskBarKeepBelow ? WinLayerBelow : WinLayerDock);
+#endif
             getFrame()->setState(WinStateAllWorkspaces, WinStateAllWorkspaces);
             getFrame()->activate(true);
             updateLocation();
@@ -1157,13 +1062,13 @@ void TaskBar::handleCollapseButton() {
     fIsCollapsed = !fIsCollapsed;
     if (fCollapseButton) {
         fCollapseButton->setText(fIsCollapsed ? "<": ">");
-        fCollapseButton->setImage(fIsCollapsed ? expandImage : collapseImage);
+        fCollapseButton->setImage(fIsCollapsed ? taskbarExpandImage : taskbarCollapseImage);
     }
 
     relayout();
 }
 
-void TaskBar::handlePopDown(YPopupWindow */*popup*/) {
+void TaskBar::handlePopDown(YPopupWindow * /*popup*/) {
 }
 
 void TaskBar::configure(const YRect &r) {

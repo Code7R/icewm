@@ -14,7 +14,7 @@
 #include "ylistbox.h"
 #include "yrect.h"
 #include "yicon.h"
-
+#include "wpixmaps.h"
 #include "yscrollview.h"
 
 #include "yxapp.h"
@@ -390,6 +390,7 @@ bool YListBox::handleKey(const XKeyEvent &key) {
                     selectItem(i, (k == '\\') ? false : true);
                 break;
             }
+            break;
         default:
             if (k < 256) {
                 unsigned char c = ASCII::toUpper((char)k);

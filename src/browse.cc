@@ -16,7 +16,7 @@
 #include "yicon.h"
 #include "sysdep.h"
 #include "base.h"
-#include <dirent.h>
+#include "udir.h"
 
 BrowseMenu::BrowseMenu(
     IApp *app,
@@ -37,55 +37,40 @@ BrowseMenu::~BrowseMenu() {
 void BrowseMenu::updatePopup() {
     struct stat sb;
 
-    if (stat(cstring(fPath.path()).c_str(), &sb) != 0)
+    if (fPath.stat(&sb) != 0)
         removeAll();
     else if (sb.st_mtime > fModTime) {
         fModTime = sb.st_mtime;
 
         removeAll();
 
-        DIR *dir;
-
-        if ((dir = opendir(cstring(fPath.path()).c_str())) != NULL) {
-            struct dirent *de;
-            bool isDir;
-            YMenu *sub;
-
-            while ((de = readdir(dir)) != NULL) {
-                if (de->d_name[0] != '.') {
-                    ustring name(de->d_name);
-                    upath npath(fPath.relative(name));
-
-                    isDir = npath.dirExists();
-
-                    sub = 0;
-                    if (isDir)
-                        sub = new BrowseMenu(app, smActionListener, wmActionListener, npath);
-
-                    DFile *pfile = new DFile(app, name, null, npath);
-                    YMenuItem *item = add(new DObjectMenuItem(pfile));
-                    if (item) {
 #ifndef LITE
-                        static ref<YIcon> file, folder;
-                        if (file == null)
-                            file = YIcon::getIcon("file");
-                        if (folder == null)
-                            folder = YIcon::getIcon("folder");
+        ref<YIcon> file = YIcon::getIcon("file");
+        ref<YIcon> folder = YIcon::getIcon("folder");
 #endif
-                        item->setSubmenu(sub);
+
+        for (adir dir(fPath.string()); dir.next(); ) {
+            ustring entry(dir.entry());
+            upath npath(fPath + entry);
+
+            YMenu *sub = 0;
+            if (npath.dirExists())
+                sub = new BrowseMenu(app, smActionListener, wmActionListener, npath);
+
+            DFile *pfile = new DFile(app, entry, null, npath);
+            YMenuItem *item = add(new DObjectMenuItem(pfile));
+            if (item) {
+                item->setSubmenu(sub);
 #ifndef LITE
-                        if (sub) {
-                            if (folder != null)
-                                item->setIcon(folder);
-                        } else {
-                            if (file != null)
-                                item->setIcon(file);
-                        }
-#endif
-                    }
+                if (sub) {
+                    if (folder != null)
+                        item->setIcon(folder);
+                } else {
+                    if (file != null)
+                        item->setIcon(file);
                 }
+#endif
             }
-            closedir(dir);
         }
     }
 }

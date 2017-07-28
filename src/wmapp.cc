@@ -6,7 +6,6 @@
 #include "config.h"
 
 #include "yfull.h"
-#include "yutil.h"
 #include "atray.h"
 #include "wmapp.h"
 #include "wmaction.h"
@@ -24,6 +23,7 @@
 #include "wmclient.h"
 #include "ymenuitem.h"
 #include "wmsession.h"
+#include "wpixres.h"
 #include "browse.h"
 #include "objmenu.h"
 #include "objbutton.h"
@@ -33,15 +33,14 @@
 #include "prefs.h"
 #include "yimage.h"
 #include "ylocale.h"
-#include <stdio.h>
-#include <sys/resource.h>
 #include "yrect.h"
 #include "yprefs.h"
 #include "yicon.h"
 #include "prefs.h"
 #include "upath.h"
+#include "udir.h"
 #include "appnames.h"
-
+#include "ypointer.h"
 #include "intl.h"
 
 char const *ApplicationName("IceWM");
@@ -52,7 +51,7 @@ static bool restart(false);
 YWMApp *wmapp(NULL);
 YWindowManager *manager(NULL);
 
-upath keysFile;
+static upath keysFile;
 
 Atom XA_IcewmWinOptHint(None);
 Atom XA_ICEWM_FONT_PATH(None);
@@ -93,22 +92,20 @@ YMenu *windowListAllPopup(NULL);
 YMenu *logoutMenu(NULL);
 
 #ifndef NO_CONFIGURE
-static char *configFile(NULL);
-static char *overrideTheme(NULL);
+static const char* configFile;
+static const char* overrideTheme;
 #endif
 
 #ifndef XTERMCMD
 #define XTERMCMD xterm
 #endif
 
-char *configArg(NULL);
+static const char* configArg;
 
-ref<YIcon> defaultAppIcon;
-bool replace_wm = false;
+static ref<YIcon> defaultAppIcon;
 
-// XXX: get rid of this
-extern ref<YPixmap> listbackPixmap;
-extern ref<YImage> listbackPixbuf;
+static bool replace_wm;
+static bool post_preferences;
 
 static Window registerProtocols1(char **argv, int argc) {
     long timestamp = CurrentTime;
@@ -213,7 +210,7 @@ static void registerProtocols2(Window xid) {
         _XA_WIN_WORKSPACE_COUNT,
         _XA_WIN_WORKSPACE_NAMES
     };
-    unsigned int i = sizeof(win_proto) / sizeof(win_proto[0]);
+    unsigned int i = ACOUNT(win_proto);
 
     XChangeProperty(xapp->display(), manager->handle(),
                     _XA_WIN_PROTOCOLS, XA_ATOM, 32,
@@ -332,7 +329,7 @@ static void registerProtocols2(Window xid) {
         _XA_NET_WM_WINDOW_TYPE_UTILITY,
         _XA_NET_WORKAREA
     };
-    unsigned int j = sizeof(net_proto) / sizeof(net_proto[0]);
+    unsigned int j = ACOUNT(net_proto);
 
     XChangeProperty(xapp->display(), manager->handle(),
                     _XA_NET_SUPPORTED, XA_ATOM, 32,
@@ -366,7 +363,7 @@ static void unregisterProtocols() {
                     _XA_WIN_PROTOCOLS);
 }
 
-static void initIconSize() {
+void YWMApp::initIconSize() {
     XIconSize *is;
 
     is = XAllocIconSize();
@@ -383,7 +380,7 @@ static void initIconSize() {
 }
 
 
-static void initAtoms() {
+void YWMApp::initAtoms() {
     XA_IcewmWinOptHint = XInternAtom(xapp->display(), "_ICEWM_WINOPTHINT", False);
     XA_ICEWM_FONT_PATH = XInternAtom(xapp->display(), "ICEWM_FONT_PATH", False);
     _XA_XROOTPMAP_ID = XInternAtom(xapp->display(), "_XROOTPMAP_ID", False);
@@ -484,7 +481,6 @@ static void initFontPath(IApp *app) {
             XSetFontPath(xapp->display(), newFontPath, ndirs + 1);
 
             if (fontPath) XFreeFontPath(fontPath);
-            delete[] fontsdir;
             delete[] newFontPath;
 #endif
         }
@@ -493,357 +489,32 @@ static void initFontPath(IApp *app) {
 }
 
 #ifndef LITE
-static void initIcons() {
+void YWMApp::initIcons() {
     defaultAppIcon = YIcon::getIcon("app");
 }
-static void termIcons() {
+void YWMApp::termIcons() {
     defaultAppIcon = null;
 }
-#endif
-
-static void initPointers() {
-    YWMApp::sizeRightPointer.      load("sizeR.xpm",   XC_right_side);
-    YWMApp::sizeTopRightPointer.   load("sizeTR.xpm",  XC_top_right_corner);
-    YWMApp::sizeTopPointer.        load("sizeT.xpm",   XC_top_side);
-    YWMApp::sizeTopLeftPointer.    load("sizeTL.xpm",  XC_top_left_corner);
-    YWMApp::sizeLeftPointer.       load("sizeL.xpm",   XC_left_side);
-    YWMApp::sizeBottomLeftPointer. load("sizeBL.xpm",  XC_bottom_left_corner);
-    YWMApp::sizeBottomPointer.     load("sizeB.xpm",   XC_bottom_side);
-    YWMApp::sizeBottomRightPointer.load("sizeBR.xpm",  XC_bottom_right_corner);
-    YWMApp::scrollLeftPointer.     load("scrollL.xpm", XC_sb_left_arrow);
-    YWMApp::scrollRightPointer.    load("scrollR.xpm", XC_sb_right_arrow);
-    YWMApp::scrollUpPointer.       load("scrollU.xpm", XC_sb_up_arrow);
-    YWMApp::scrollDownPointer.     load("scrollD.xpm", XC_sb_down_arrow);
-}
-
-#ifdef CONFIG_GRADIENTS
-static bool loadGradient(ref<YResourcePaths> paths,
-                         char const * tag, ref<YImage> &gradient,
-                         char const * name, char const * path = NULL)
-{
-    if (!strcmp(tag, name)) {
-        if (gradient == null)
-            gradient = paths->loadImage(path, name /*, false */);
-        else
-            warn(_("Multiple references for gradient \"%s\""), name);
-
-        return false;
-    }
-
-    return true;
+ref<YIcon> YWMApp::getDefaultAppIcon() {
+    return defaultAppIcon;
 }
 #endif
 
-static void initPixmaps() {
-    ref<YResourcePaths> paths = YResourcePaths::subdirs(null, true);
+void YWMApp::initPointers() {
+    osmart<YCursorLoader> l(YCursor::newLoader());
 
-#ifdef CONFIG_LOOK_PIXMAP
-    if (wmLook == lookPixmap || wmLook == lookMetal || wmLook == lookGtk || wmLook == lookFlat) {
-#ifdef CONFIG_GRADIENTS
-        if (gradients) {
-            for (char const * g(gradients + strspn(gradients, " \t\r\n"));
-                 *g != '\0'; g = strnxt(g, " \t\r\n")) {
-                char const * gradient(newstr(g, " \t\r\n"));
-
-                if (loadGradient(paths, gradient, rgbTitleS[0], "titleIS.xpm") &&
-                    loadGradient(paths, gradient, rgbTitleT[0], "titleIT.xpm") &&
-                    loadGradient(paths, gradient, rgbTitleB[0], "titleIB.xpm") &&
-                    loadGradient(paths, gradient, rgbTitleS[1], "titleAS.xpm") &&
-                    loadGradient(paths, gradient, rgbTitleT[1], "titleAT.xpm") &&
-                    loadGradient(paths, gradient, rgbTitleB[1], "titleAB.xpm") &&
-
-                    loadGradient(paths, gradient, rgbFrameT[0][0], "frameIT.xpm") &&
-                    loadGradient(paths, gradient, rgbFrameL[0][0], "frameIL.xpm") &&
-                    loadGradient(paths, gradient, rgbFrameR[0][0], "frameIR.xpm") &&
-                    loadGradient(paths, gradient, rgbFrameB[0][0], "frameIB.xpm") &&
-                    loadGradient(paths, gradient, rgbFrameT[0][1], "frameAT.xpm") &&
-                    loadGradient(paths, gradient, rgbFrameL[0][1], "frameAL.xpm") &&
-                    loadGradient(paths, gradient, rgbFrameR[0][1], "frameAR.xpm") &&
-                    loadGradient(paths, gradient, rgbFrameB[0][1], "frameAB.xpm") &&
-
-                    loadGradient(paths, gradient, rgbFrameT[1][0], "dframeIT.xpm") &&
-                    loadGradient(paths, gradient, rgbFrameL[1][0], "dframeIL.xpm") &&
-                    loadGradient(paths, gradient, rgbFrameR[1][0], "dframeIR.xpm") &&
-                    loadGradient(paths, gradient, rgbFrameB[1][0], "dframeIB.xpm") &&
-                    loadGradient(paths, gradient, rgbFrameT[1][1], "dframeAT.xpm") &&
-                    loadGradient(paths, gradient, rgbFrameL[1][1], "dframeAL.xpm") &&
-                    loadGradient(paths, gradient, rgbFrameR[1][1], "dframeAR.xpm") &&
-                    loadGradient(paths, gradient, rgbFrameB[1][1], "dframeAB.xpm") &&
-
-#ifdef CONFIG_TASKBAR
-                    loadGradient(paths, gradient, taskbackPixbuf,
-                                 "taskbarbg.xpm", "taskbar/") &&
-                    loadGradient(paths, gradient, taskbuttonPixbuf,
-                                 "taskbuttonbg.xpm", "taskbar/") &&
-                    loadGradient(paths, gradient, taskbuttonactivePixbuf,
-                                 "taskbuttonactive.xpm", "taskbar/") &&
-                    loadGradient(paths, gradient, taskbuttonminimizedPixbuf,
-                                 "taskbuttonminimized.xpm", "taskbar/") &&
-                    loadGradient(paths, gradient, toolbuttonPixbuf,
-                                 "toolbuttonbg.xpm", "taskbar/") &&
-                    loadGradient(paths, gradient, workspacebuttonPixbuf,
-                                 "workspacebuttonbg.xpm", "taskbar/") &&
-                    loadGradient(paths, gradient, workspacebuttonactivePixbuf,
-                                 "workspacebuttonactive.xpm", "taskbar/") &&
-#endif
-
-                    loadGradient(paths, gradient, buttonIPixbuf, "buttonI.xpm") &&
-                    loadGradient(paths, gradient, buttonAPixbuf, "buttonA.xpm") &&
-
-                    loadGradient(paths, gradient, logoutPixbuf, "logoutbg.xpm") &&
-                    loadGradient(paths, gradient, switchbackPixbuf, "switchbg.xpm") &&
-#ifndef LITE
-                    loadGradient(paths, gradient, listbackPixbuf, "listbg.xpm") &&
-#endif
-                    loadGradient(paths, gradient, dialogbackPixbuf, "dialogbg.xpm") &&
-
-                    loadGradient(paths, gradient, menubackPixbuf, "menubg.xpm") &&
-                    loadGradient(paths, gradient, menuselPixbuf, "menusel.xpm") &&
-                    loadGradient(paths, gradient, menusepPixbuf, "menusep.xpm"))
-                    warn(_("Unknown gradient name: %s"), gradient);
-
-                delete[] gradient;
-            }
-
-            delete[] gradients;
-            gradients = NULL;
-        }
-#endif
-
-           closePixmap[0] = paths->loadPixmap(0, "closeI.xpm");
-           depthPixmap[0] = paths->loadPixmap(0, "depthI.xpm");
-        maximizePixmap[0] = paths->loadPixmap(0, "maximizeI.xpm");
-        minimizePixmap[0] = paths->loadPixmap(0, "minimizeI.xpm");
-         restorePixmap[0] = paths->loadPixmap(0, "restoreI.xpm");
-            hidePixmap[0] = paths->loadPixmap(0, "hideI.xpm");
-          rollupPixmap[0] = paths->loadPixmap(0, "rollupI.xpm");
-        rolldownPixmap[0] = paths->loadPixmap(0, "rolldownI.xpm");
-           closePixmap[1] = paths->loadPixmap(0, "closeA.xpm");
-           depthPixmap[1] = paths->loadPixmap(0, "depthA.xpm");
-        maximizePixmap[1] = paths->loadPixmap(0, "maximizeA.xpm");
-        minimizePixmap[1] = paths->loadPixmap(0, "minimizeA.xpm");
-         restorePixmap[1] = paths->loadPixmap(0, "restoreA.xpm");
-            hidePixmap[1] = paths->loadPixmap(0, "hideA.xpm");
-          rollupPixmap[1] = paths->loadPixmap(0, "rollupA.xpm");
-        rolldownPixmap[1] = paths->loadPixmap(0, "rolldownA.xpm");
-
-    if (rolloverTitleButtons) {
-           closePixmap[2] = paths->loadPixmap(0, "closeO.xpm");
-           depthPixmap[2] = paths->loadPixmap(0, "depthO.xpm");
-        maximizePixmap[2] = paths->loadPixmap(0, "maximizeO.xpm");
-        minimizePixmap[2] = paths->loadPixmap(0, "minimizeO.xpm");
-         restorePixmap[2] = paths->loadPixmap(0, "restoreO.xpm");
-            hidePixmap[2] = paths->loadPixmap(0, "hideO.xpm");
-          rollupPixmap[2] = paths->loadPixmap(0, "rollupO.xpm");
-        rolldownPixmap[2] = paths->loadPixmap(0, "rolldownO.xpm");
-    }
-        frameTL[0][0] = paths->loadPixmap(0, "frameITL.xpm");
-        frameTR[0][0] = paths->loadPixmap(0, "frameITR.xpm");
-        frameBL[0][0] = paths->loadPixmap(0, "frameIBL.xpm");
-        frameBR[0][0] = paths->loadPixmap(0, "frameIBR.xpm");
-        frameTL[0][1] = paths->loadPixmap(0, "frameATL.xpm");
-        frameTR[0][1] = paths->loadPixmap(0, "frameATR.xpm");
-        frameBL[0][1] = paths->loadPixmap(0, "frameABL.xpm");
-        frameBR[0][1] = paths->loadPixmap(0, "frameABR.xpm");
-
-        frameTL[1][0] = paths->loadPixmap(0, "dframeITL.xpm");
-        frameTR[1][0] = paths->loadPixmap(0, "dframeITR.xpm");
-        frameBL[1][0] = paths->loadPixmap(0, "dframeIBL.xpm");
-        frameBR[1][0] = paths->loadPixmap(0, "dframeIBR.xpm");
-        frameTL[1][1] = paths->loadPixmap(0, "dframeATL.xpm");
-        frameTR[1][1] = paths->loadPixmap(0, "dframeATR.xpm");
-        frameBL[1][1] = paths->loadPixmap(0, "dframeABL.xpm");
-        frameBR[1][1] = paths->loadPixmap(0, "dframeABR.xpm");
-
-        if (TEST_GRADIENT(rgbFrameT[0][0] == null))
-            frameT[0][0] = paths->loadPixmap(0, "frameIT.xpm");
-        if (TEST_GRADIENT(rgbFrameL[0][0] == null))
-            frameL[0][0] = paths->loadPixmap(0, "frameIL.xpm");
-        if (TEST_GRADIENT( rgbFrameR[0][0] == null))
-            frameR[0][0] = paths->loadPixmap(0, "frameIR.xpm");
-        if (TEST_GRADIENT(rgbFrameB[0][0] == null))
-            frameB[0][0] = paths->loadPixmap(0, "frameIB.xpm");
-        if (TEST_GRADIENT(rgbFrameT[0][1] == null))
-            frameT[0][1] = paths->loadPixmap(0, "frameAT.xpm");
-        if (TEST_GRADIENT(rgbFrameL[0][1] == null))
-            frameL[0][1] = paths->loadPixmap(0, "frameAL.xpm");
-        if (TEST_GRADIENT(rgbFrameR[0][1] == null))
-            frameR[0][1] = paths->loadPixmap(0, "frameAR.xpm");
-        if (TEST_GRADIENT(rgbFrameB[0][1] == null))
-            frameB[0][1] = paths->loadPixmap(0, "frameAB.xpm");
-
-        if (TEST_GRADIENT(rgbFrameT[1][0] == null))
-            frameT[1][0] = paths->loadPixmap(0, "dframeIT.xpm");
-        if (TEST_GRADIENT(rgbFrameL[1][0] == null))
-            frameL[1][0] = paths->loadPixmap(0, "dframeIL.xpm");
-        if (TEST_GRADIENT(rgbFrameR[1][0] == null))
-            frameR[1][0] = paths->loadPixmap(0, "dframeIR.xpm");
-        if (TEST_GRADIENT(rgbFrameB[1][0] == null))
-            frameB[1][0] = paths->loadPixmap(0, "dframeIB.xpm");
-        if (TEST_GRADIENT(rgbFrameT[1][1] == null))
-            frameT[1][1] = paths->loadPixmap(0, "dframeAT.xpm");
-        if (TEST_GRADIENT(rgbFrameL[1][1] == null))
-            frameL[1][1] = paths->loadPixmap(0, "dframeAL.xpm");
-        if (TEST_GRADIENT(rgbFrameR[1][1] == null))
-            frameR[1][1] = paths->loadPixmap(0, "dframeAR.xpm");
-        if (TEST_GRADIENT(rgbFrameB[1][1] == null))
-            frameB[1][1] = paths->loadPixmap(0, "dframeAB.xpm");
-
-        titleJ[0] = paths->loadPixmap(0, "titleIJ.xpm");
-        titleL[0] = paths->loadPixmap(0, "titleIL.xpm");
-        titleP[0] = paths->loadPixmap(0, "titleIP.xpm");
-        titleM[0] = paths->loadPixmap(0, "titleIM.xpm");
-        titleR[0] = paths->loadPixmap(0, "titleIR.xpm");
-        titleQ[0] = paths->loadPixmap(0, "titleIQ.xpm");
-        titleJ[1] = paths->loadPixmap(0, "titleAJ.xpm");
-        titleL[1] = paths->loadPixmap(0, "titleAL.xpm");
-        titleP[1] = paths->loadPixmap(0, "titleAP.xpm");
-        titleM[1] = paths->loadPixmap(0, "titleAM.xpm");
-        titleR[1] = paths->loadPixmap(0, "titleAR.xpm");
-        titleQ[1] = paths->loadPixmap(0, "titleAQ.xpm");
-
-//      if (TEST_GRADIENT(NULL == rgbTitleS[0]))
-            titleS[0] = paths->loadPixmap(0, "titleIS.xpm");
-//      if (TEST_GRADIENT(NULL == rgbTitleT[0]))
-            titleT[0] = paths->loadPixmap(0, "titleIT.xpm");
-//      if (TEST_GRADIENT(NULL == rgbTitleB[0]))
-            titleB[0] = paths->loadPixmap(0, "titleIB.xpm");
-//      if (TEST_GRADIENT(NULL == rgbTitleS[1]))
-            titleS[1] = paths->loadPixmap(0, "titleAS.xpm");
-//      if (TEST_GRADIENT(NULL == rgbTitleT[1]))
-            titleT[1] = paths->loadPixmap(0, "titleAT.xpm");
-//      if (TEST_GRADIENT(NULL == rgbTitleB[1]))
-            titleB[1] = paths->loadPixmap(0, "titleAB.xpm");
-#ifdef CONFIG_SHAPED_DECORATION
-        bool const copyMask(true);
-#else
-        bool const copyMask(false);
-#endif
-
-        for (int a = 0; a <= 1; a++) {
-            for (int b = 0; b <= 1; b++) {
-               if(frameT[a][b]._ptr())
-                  frameT[a][b]->replicate(true, copyMask);
-               if(frameB[a][b]._ptr())
-                  frameB[a][b]->replicate(true, copyMask);
-               if(frameL[a][b]._ptr())
-                  frameL[a][b]->replicate(false, copyMask);
-               if(frameR[a][b]._ptr())
-                  frameR[a][b]->replicate(false, copyMask);
-            }
-            if(titleS[a]._ptr())
-               titleS[a]->replicate(true, copyMask);
-            if(titleT[a]._ptr())
-               titleT[a]->replicate(true, copyMask);
-            if(titleB[a]._ptr())
-               titleB[a]->replicate(true, copyMask);
-        }
-
-        menuButton[0] = paths->loadPixmap(0, "menuButtonI.xpm");
-        menuButton[1] = paths->loadPixmap(0, "menuButtonA.xpm");
-    if (rolloverTitleButtons) {
-        menuButton[2] = paths->loadPixmap(0, "menuButtonO.xpm");
-    }
-    }
-#endif
-    {
-      if (depthPixmap[0]==null)            depthPixmap[0] = paths->loadPixmap(0, "depth.xpm");
-      if (closePixmap[0]==null)            closePixmap[0] = paths->loadPixmap(0, "close.xpm");
-      if (maximizePixmap[0]==null)      maximizePixmap[0] = paths->loadPixmap(0, "maximize.xpm");
-      if (minimizePixmap[0]==null)      minimizePixmap[0] = paths->loadPixmap(0, "minimize.xpm");
-      if (restorePixmap[0]==null)        restorePixmap[0] = paths->loadPixmap(0, "restore.xpm");
-      if (hidePixmap[0]==null)              hidePixmap[0] = paths->loadPixmap(0, "hide.xpm");
-      if (rollupPixmap[0]==null)          rollupPixmap[0] = paths->loadPixmap(0, "rollup.xpm");
-      if (rolldownPixmap[0]==null)      rolldownPixmap[0] = paths->loadPixmap(0, "rolldown.xpm");
-    }
-
-    if (TEST_GRADIENT(logoutPixbuf == null))
-        logoutPixmap = paths->loadPixmap(0, "logoutbg.xpm");
-    if (TEST_GRADIENT(switchbackPixbuf == null))
-        switchbackPixmap = paths->loadPixmap(0, "switchbg.xpm");
-    if (TEST_GRADIENT(menubackPixbuf == null))
-        menubackPixmap = paths->loadPixmap(0, "menubg.xpm");
-    if (TEST_GRADIENT(menuselPixbuf == null))
-        menuselPixmap = paths->loadPixmap(0, "menusel.xpm");
-    if (TEST_GRADIENT(menusepPixbuf == null))
-        menusepPixmap = paths->loadPixmap(0, "menusep.xpm");
-
-#ifndef LITE
-    if (TEST_GRADIENT(listbackPixbuf == null) &&
-        (listbackPixmap = paths->loadPixmap(0, "listbg.xpm")) == null)
-        listbackPixmap = menubackPixmap;
-#endif
-    if (TEST_GRADIENT(dialogbackPixbuf == null) &&
-        (dialogbackPixmap = paths->loadPixmap(0, "dialogbg.xpm")) == null)
-        dialogbackPixmap = menubackPixmap;
-    if (TEST_GRADIENT(buttonIPixbuf == null) &&
-        (buttonIPixmap = paths->loadPixmap(0, "buttonI.xpm")) == null)
-        buttonIPixmap = paths->loadPixmap("taskbar/", "taskbuttonbg.xpm");
-    if (TEST_GRADIENT(buttonAPixbuf == null) &&
-        (buttonAPixmap = paths->loadPixmap(0, "buttonA.xpm")) == null)
-        buttonAPixmap = paths->loadPixmap("taskbar/", "taskbuttonactive.xpm");
-
-#ifdef CONFIG_TASKBAR
-    if (TEST_GRADIENT(toolbuttonPixbuf == null) &&
-        (toolbuttonPixmap =
-         paths->loadPixmap("taskbar/", "toolbuttonbg.xpm")) == null)
-    {
-        IF_CONFIG_GRADIENTS (buttonIPixbuf != null,
-                             toolbuttonPixbuf = buttonIPixbuf)
-        else toolbuttonPixmap = buttonIPixmap;
-    }
-    if (TEST_GRADIENT(workspacebuttonPixbuf == null) &&
-        (workspacebuttonPixmap =
-         paths->loadPixmap("taskbar/", "workspacebuttonbg.xpm")) == null)
-    {
-        IF_CONFIG_GRADIENTS (buttonIPixbuf != null,
-                             workspacebuttonPixbuf = buttonIPixbuf)
-        else workspacebuttonPixmap = buttonIPixmap;
-    }
-    if (TEST_GRADIENT(workspacebuttonactivePixbuf == null) &&
-        (workspacebuttonactivePixmap =
-         paths->loadPixmap("taskbar/", "workspacebuttonactive.xpm")) == null)
-    {
-        IF_CONFIG_GRADIENTS (buttonAPixbuf != null,
-                             workspacebuttonactivePixbuf = buttonAPixbuf)
-        else workspacebuttonactivePixmap = buttonAPixmap;
-    }
-#endif
-
-    if (logoutPixmap != null) {
-        logoutPixmap->replicate(true, false);
-        logoutPixmap->replicate(false, false);
-    }
-    if (switchbackPixmap != null) {
-        switchbackPixmap->replicate(true, false);
-        switchbackPixmap->replicate(false, false);
-    }
-
-    if (menubackPixmap != null) {
-        menubackPixmap->replicate(true, false);
-        menubackPixmap->replicate(false, false);
-    }
-    if (menusepPixmap != null)
-        menusepPixmap->replicate(true, false);
-    if (menuselPixmap != null)
-        menuselPixmap->replicate(true, false);
-
-#ifndef LITE
-    if (listbackPixmap != null) {
-        listbackPixmap->replicate(true, false);
-        listbackPixmap->replicate(false, false);
-    }
-#endif
-
-    if (dialogbackPixmap != null) {
-        dialogbackPixmap->replicate(true, false);
-        dialogbackPixmap->replicate(false, false);
-    }
-
-    if (buttonIPixmap != null)
-        buttonIPixmap->replicate(true, false);
-    if (buttonAPixmap != null)
-        buttonAPixmap->replicate(true, false);
+    sizeRightPointer       = l->load("sizeR.xpm",   XC_right_side);
+    sizeTopRightPointer    = l->load("sizeTR.xpm",  XC_top_right_corner);
+    sizeTopPointer         = l->load("sizeT.xpm",   XC_top_side);
+    sizeTopLeftPointer     = l->load("sizeTL.xpm",  XC_top_left_corner);
+    sizeLeftPointer        = l->load("sizeL.xpm",   XC_left_side);
+    sizeBottomLeftPointer  = l->load("sizeBL.xpm",  XC_bottom_left_corner);
+    sizeBottomPointer      = l->load("sizeB.xpm",   XC_bottom_side);
+    sizeBottomRightPointer = l->load("sizeBR.xpm",  XC_bottom_right_corner);
+    scrollLeftPointer      = l->load("scrollL.xpm", XC_sb_left_arrow);
+    scrollRightPointer     = l->load("scrollR.xpm", XC_sb_right_arrow);
+    scrollUpPointer        = l->load("scrollU.xpm", XC_sb_up_arrow);
+    scrollDownPointer      = l->load("scrollD.xpm", XC_sb_down_arrow);
 }
 
 static void initMenus(
@@ -876,18 +547,40 @@ static void initMenus(
 #endif
             int const oldItemCount = logoutMenu->itemCount();
             if (canLock())
+#ifdef LITE
                 logoutMenu->addItem(_("Lock _Workstation"), -2, null, actionLock);
+#else
+                logoutMenu->addItem(_("Lock _Workstation"), -2, null, actionLock, "lock");
+#endif
             if (canShutdown(true))
+#ifdef LITE
                 logoutMenu->addItem(_("Re_boot"), -2, null, actionReboot);
+#else
+                logoutMenu->addItem(_("Re_boot"), -2, null, actionReboot, "reboot");
+#endif
             if (canShutdown(false))
+#ifdef LITE
                 logoutMenu->addItem(_("Shut_down"), -2, null, actionShutdown);
+#else
+                logoutMenu->addItem(_("Shut_down"), -2, null, actionShutdown, "shutdown");
+#endif
             if (logoutMenu->itemCount() != oldItemCount)
                 logoutMenu->addSeparator();
 
+#ifdef LITE
             logoutMenu->addItem(_("Restart _Icewm"), -2, null, actionRestart);
+#else
+            logoutMenu->addItem(_("Restart _Icewm"), -2, null, actionRestart, "restart");
+#endif
 
             DProgram *restartXTerm =
-                DProgram::newProgram(app, smActionListener, _("Restart _Xterm"), null, true, 0,
+                DProgram::newProgram(app, smActionListener, _("Restart _Xterm"),
+#ifdef LITE
+				null,
+#else
+				(YIcon::getIcon("xterm")),
+#endif
+				true, 0,
                 		QUOTE(XTERMCMD), noargs);
             if (restartXTerm)
                 logoutMenu->add(new DObjectMenuItem(restartXTerm));
@@ -916,7 +609,7 @@ static void initMenus(
     moveMenu->setShared(true);
     for (int w = 0; w < workspaceCount; w++) {
         char s[128];
-        sprintf(s, "%lu. %s", (unsigned long)(w + 1), workspaceNames[w]);
+        snprintf(s, sizeof s, "%lu. %s", (unsigned long)(w + 1), workspaceNames[w]);
         moveMenu->addItem(s, 0, null, workspaceActionMoveTo[w]);
     }
 
@@ -1104,7 +797,7 @@ void YWMApp::setFocusMode(int mode) {
 
     sprintf(s, "FocusMode=%d\n", mode);
 
-    if (setDefault("focus_mode", s) == 0) {
+    if (WMConfig::setDefault("focus_mode", s) == 0) {
         restartClient(0, 0);
     }
 }
@@ -1188,12 +881,11 @@ void YWMApp::actionPerformed(YAction *action, unsigned int /*modifiers*/) {
         if (w && count > 0) {
             manager->setWindows(w, count, actionMinimizeAll);
             manager->setShowingDesktop(true);
-            delete [] w;
         } else {
             manager->undoArrange();
             manager->setShowingDesktop(false);
         }
-
+        delete [] w;
     } else if (action == actionCascade) {
         YFrameWindow **w = 0;
         int count = 0;
@@ -1224,34 +916,35 @@ void YWMApp::actionPerformed(YAction *action, unsigned int /*modifiers*/) {
     }
 }
 
-bool configurationNeeded(true);
-
 YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
     YSMApplication(argc, argv, displayName)
 {
 #ifndef NO_CONFIGURE
+    if (configFile == 0 || *configFile == 0)
+        configFile = "preferences";
+    if (overrideTheme && *overrideTheme)
+        themeName = overrideTheme;
+    else
     {
         cfoption theme_prefs[] = {
             OSV("Theme", &themeName, "Theme name"),
             OK0()
         };
         
-        YConfig::findLoadConfigFile(this, theme_prefs, "preferences");
+        YConfig::findLoadConfigFile(this, theme_prefs, configFile);
         YConfig::findLoadConfigFile(this, theme_prefs, "theme");
     }
-    if (overrideTheme)
-        themeName = newstr(overrideTheme);
 #endif
 
     wmapp = this;
     managerWindow = None;
 
 #ifndef NO_CONFIGURE
-    loadConfiguration(this, configFile ? configFile : "preferences");
+    WMConfig::loadConfiguration(this, configFile);
     if (themeName != 0) {
         MSG(("themeName=%s", themeName));
 
-        loadThemeConfiguration(this, themeName);
+        WMConfig::loadThemeConfiguration(this, themeName);
     }
     {
         cfoption focus_prefs[] = {
@@ -1261,7 +954,7 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
 
         YConfig::findLoadConfigFile(this, focus_prefs, "focus_mode");
     }
-    loadConfiguration(this, "prefoverride");
+    WMConfig::loadConfiguration(this, "prefoverride");
     switch (focusMode) {
     case 0: /* custom */
         break;
@@ -1342,6 +1035,9 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
     initActions();
     initPointers();
 
+    if (post_preferences)
+        WMConfig::print_preferences();
+
     delete desktop;
 
     managerWindow = registerProtocols1(*argv, *argc);
@@ -1357,7 +1053,7 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
     initIcons();
 #endif
     initIconSize();
-    initPixmaps();
+    WPixRes::initPixmaps();
     initMenus(this, this, this);
 
 #ifndef NO_CONFIGURE
@@ -1383,9 +1079,6 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
             case lookMetal:
                 scrollBarWidth = 17;
                 break;
-
-            case lookMAX:
-                break;
         }
     }
 
@@ -1410,9 +1103,6 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
             case lookFlat:
             case lookMetal:
                 scrollBarHeight = scrollBarWidth;
-                break;
-
-            case lookMAX:
                 break;
         }
     }
@@ -1493,32 +1183,7 @@ YWMApp::~YWMApp() {
     delete windowListMenu; windowListMenu = 0;
 #endif
 
-    closePixmap[0] = null;
-    depthPixmap[0] = null;
-    minimizePixmap[0] = null;
-    maximizePixmap[0] = null;
-    restorePixmap[0] = null;
-    hidePixmap[0] = null;
-    rollupPixmap[0] = null;
-    rolldownPixmap[0] = null;
-    menubackPixmap = null;
-    menuselPixmap = null;
-    menusepPixmap = null;
-    switchbackPixmap = null;
-    logoutPixmap = null;
-
-#ifdef CONFIG_GRADIENTS
-    menubackPixbuf = null;
-    menuselPixbuf = null;
-    menusepPixbuf = null;
-#endif
-
-#ifdef CONFIG_TASKBAR
-    if (!showTaskBar) {
-        taskbuttonactivePixmap = null;
-        taskbuttonminimizedPixmap = null;
-    }
-#endif
+    WPixRes::freePixmaps();
 
     //!!!XFreeGC(display(), outlineGC); lazy init in movesize.cc
     //!!!XFreeGC(display(), clipPixmapGC); in ypaint.cc
@@ -1611,25 +1276,18 @@ void YWMApp::afterWindowEvent(XEvent &xev) {
 
 #ifndef NO_CONFIGURE
 
-static void print_version() {
-    puts("IceWM " VERSION ", "
-         "Copyright 1997-2003 Marko Macek,  2001 Mathias Hasselmann");
-
-    exit(0);
-}
-
 static void print_usage(const char *argv0) {
     const char *usage_client_id =
 #ifdef CONFIG_SESSION
-             "  --client-id=ID      Client id to use when contacting session manager.\n";
+             _("  --client-id=ID      Client id to use when contacting session manager.\n");
 #else
              "";
 #endif
     const char *usage_debug =
 #ifdef DEBUG
-             "\n"
+             _("\n"
              "  --debug             Print generic debug messages.\n"
-             "  --debug-z           Print debug messages regarding window stacking.\n";
+             "  --debug-z           Print debug messages regarding window stacking.\n");
 #else
              "";
 #endif
@@ -1643,26 +1301,203 @@ static void print_usage(const char *argv0) {
              "\n"
              "  -c, --config=FILE   Load preferences from FILE.\n"
              "  -t, --theme=FILE    Load theme from FILE.\n"
-             "  -n, --no-configure  Ignore preferences file.\n"
              "\n"
-             "  -v, --version       Prints version information and exits.\n"
+             "  -V, --version       Prints version information and exits.\n"
              "  -h, --help          Prints this usage screen and exits.\n"
              "%s"
              "  --replace           Replace an existing window manager.\n"
              "  --restart           Don't use this: It's an internal flag.\n"
+             "  --configured        Print the compile time configuration.\n"
+             "  --directories       Print the configuration directories.\n"
+             "  -l, --list-themes   Print a list of all available themes.\n"
+             "  --postpreferences   Print preferences after all processing.\n"
              "\n"
              "Environment variables:\n"
-             "  ICEWM_PRIVCFG=PATH  Directory to use for user private configuration files,\n"
+             "  XDG_CONFIG_HOME=PATH  Directory for configuration files,\n"
+             "                      \"$HOME/.config/icewm/\" by default.\n"
+             "  ICEWM_PRIVCFG=PATH  Directory for user configuration files,\n"
              "                      \"$HOME/.icewm/\" by default.\n"
-             "  DISPLAY=NAME        Name of the X server to use, depends on Xlib by default.\n"
-             "  MAIL=URL            Location of your mailbox. If the schema is omitted\n"
-             "                      the local \"file\" schema is assumed.\n"
+             "  DISPLAY=NAME        Name of the X server to use.\n"
+             "  MAIL=URL            Location of your mailbox.\n"
              "\n"
-             "Visit http://www.icewm.org/ for report bugs, "
-             "support requests, comments...\n"),
+             "To report bugs, support requests, comments please visit:\n"
+             "%s\n\n"),
              argv0,
              usage_client_id,
-             usage_debug);
+             usage_debug,
+             PACKAGE_BUGREPORT[0] ? PACKAGE_BUGREPORT :
+             PACKAGE_URL[0] ? PACKAGE_URL :
+             "http://www.icewm.org/");
+    exit(0);
+}
+
+static void print_themes_list() {
+    themeName = 0;
+    ref<YResourcePaths> res(YResourcePaths::subdirs(null, true));
+    for (int i = 0; i < res->getCount(); ++i) {
+        for (sdir dir(res->getPath(i)); dir.next(); ) {
+            upath thmp(dir.path() + dir.entry());
+            if (thmp.dirExists()) {
+                for (sdir thmdir(thmp); thmdir.nextExt(".theme"); ) {
+                    upath theme(thmdir.path() + thmdir.entry());
+                    puts(cstring(theme));
+                }
+            }
+        }
+    }
+    exit(0);
+}
+
+static void print_confdir(const char *name, const char *path) {
+    printf("%s=%s\n", name, path);
+}
+
+static void print_directories(const char *argv0) {
+    printf(_("%s configuration directories:\n"), argv0);
+    print_confdir("XdgConfDir", YApplication::getXdgConfDir().string());
+    print_confdir("PrivConfDir", YApplication::getPrivConfDir().string());
+    print_confdir("CFGDIR", CFGDIR);
+    print_confdir("LIBDIR", LIBDIR);
+    print_confdir("LOCDIR", LOCDIR);
+    print_confdir("DOCDIR", DOCDIR);
+    exit(0);
+}
+
+static void print_configured(const char *argv0) {
+    static const char compile_time_configured_options[] =
+    /* Sorted alphabetically: */
+#ifdef CONFIG_ADDRESSBAR
+    " addressbar"
+#endif
+#ifdef ENABLE_ALSA
+    " alsa"
+#endif
+#ifdef CONFIG_ANTIALIASING
+    " antialiasing"
+#endif
+#ifdef CONFIG_APPLET_APM
+    " apm"
+#endif
+#ifdef CONFIG_APPLET_CLOCK
+    " clock"
+#endif
+#ifdef CONFIG_COREFONTS
+    " corefonts"
+#endif
+#ifdef CONFIG_APPLET_CPU_STATUS
+    " cpu"
+#endif
+#ifdef DEBUG
+    " debug"
+#endif
+#ifdef ENABLE_ESD
+    " esd"
+#endif
+#ifdef WMSPEC_HINTS
+    " ewmh"
+#endif
+#ifdef CONFIG_FDO_MENUS
+    " fdomenus"
+#endif
+#ifdef CONFIG_FRIBIDI
+    " fribidi"
+#endif
+#ifdef CONFIG_GDK_PIXBUF_XLIB
+    " gdkpixbuf"
+#endif
+#ifdef CONFIG_GNOME_MENUS
+    " gnomemenus"
+#endif
+#ifdef GNOME1_HINTS
+    " gnome1hints"
+#endif
+#ifdef CONFIG_GRADIENTS
+    " gradients"
+#endif
+#ifdef CONFIG_GUIEVENTS
+    " guievents"
+#endif
+#ifdef CONFIG_I18N
+    " i18n"
+#endif
+#ifdef LITE
+    " lite"
+#endif
+#ifdef CONFIG_APPLET_MAILBOX
+    " mailbox"
+#endif
+#ifdef CONFIG_APPLET_MEM_STATUS
+    " mem"
+#endif
+#ifdef CONFIG_APPLET_NET_STATUS
+    " net"
+#endif
+#ifdef ENABLE_NLS
+    " nls"
+#endif
+#ifdef NO_CONFIGURE_MENUS
+    " no-confmenu"
+#endif
+#ifdef NO_KEYBIND
+    " no-keybind"
+#endif
+#ifdef X_DISPLAY_MISSING
+    " no-xdisplay"
+#endif
+#ifdef NO_WINDOW_OPTIONS
+    " no-winopt"
+#endif
+#ifdef ENABLE_OSS
+    " oss"
+#endif
+#ifdef CONFIG_PDA
+    " pda"
+#endif
+#ifdef CONFIG_SESSION
+    " session"
+#endif
+#ifdef CONFIG_SHAPE
+    " shape"
+#endif
+#ifdef CONFIG_SHAPED_DECORATION
+    " shapedecorations"
+#endif
+#ifdef CONFIG_TASKBAR
+    " taskbar"
+#endif
+#ifdef CONFIG_TOOLTIP
+    " tooltip"
+#endif
+#ifdef CONFIG_TRAY
+    " tray"
+#endif
+#ifdef CONFIG_UNICODE_SET
+    " unicodeset"
+#endif
+#ifdef CONFIG_WINLIST
+    " winlist"
+#endif
+#ifdef CONFIG_WINMENU
+    " winmenu"
+#endif
+#ifdef CONFIG_WORDEXP
+    " wordexp"
+#endif
+#ifdef CONFIG_XFREETYPE
+    " xfreetype" QUOTE(CONFIG_XFREETYPE)
+#endif
+#ifdef XINERAMA
+    " xinerama"
+#endif
+#ifdef CONFIG_XRANDR
+    " xrandr"
+#endif
+#ifdef ENABLE_YIFF
+    " yiff"
+#endif
+    "\n";
+    printf(_("%s configured options:%s\n"), argv0,
+            compile_time_configured_options);
     exit(0);
 }
 
@@ -1675,35 +1510,45 @@ int main(int argc, char **argv) {
     for (char ** arg = argv + 1; arg < argv + argc; ++arg) {
         if (**arg == '-') {
 #ifdef DEBUG
-            if (IS_LONG_SWITCH("debug"))
+            if (is_long_switch(*arg, "debug"))
                 debug = true;
-            else if (IS_LONG_SWITCH("debug-z"))
+            else if (is_long_switch(*arg, "debug-z"))
                 debug_z = true;
 #endif
 #ifndef NO_CONFIGURE
             char *value;
-            if(GetLongArgument(value, "config", arg, argv+argc)
-            		|| GetShortArgument(value, "c", arg, argv+argc))
+            if (GetLongArgument(value, "config", arg, argv+argc) ||
+               GetShortArgument(value, "c", arg, argv+argc))
             {
-                configArg = newstr(configFile = newstr(value));
+                configArg = configFile = value;
                 continue;
             }
-            else if ( GetLongArgument(value, "theme", arg, argv+argc) ||
-            		GetLongArgument(value, "t", arg, argv+argc))
+            else if (GetLongArgument(value, "theme", arg, argv+argc)
+                 || GetShortArgument(value, "t", arg, argv+argc))
             {
                 overrideTheme = value;
                 continue;
             }
-            else if (IS_LONG_SWITCH("restart"))
+            else if (is_long_switch(*arg, "restart"))
                 restart = true;
-            else if (IS_LONG_SWITCH("replace"))
+            else if (is_long_switch(*arg, "replace"))
                 replace_wm = true;
-            else if (IS_SWITCH("v", "version"))
-                print_version();
-            else if (IS_LONG_SWITCH("notify"))
+            else if (is_long_switch(*arg, "notify"))
                 notify_parent = true;
-            else if (IS_SWITCH("h", "help"))
+            else if (is_long_switch(*arg, "configured"))
+                print_configured(argv[0]);
+            else if (is_long_switch(*arg, "directories"))
+                print_directories(argv[0]);
+            else if (is_switch(*arg, "l", "list-themes"))
+                print_themes_list();
+            else if (is_long_switch(*arg, "postpreferences"))
+                post_preferences = true;
+            else if (is_help_switch(*arg))
                 print_usage(my_basename(argv[0]));
+            else if (is_version_switch(*arg))
+                print_version_exit(VERSION);
+#else
+            check_help_version(*arg, "", VERSION);
 #endif
         }
     }
@@ -1727,7 +1572,7 @@ int main(int argc, char **argv) {
     YIcon::freeIcons();
 #endif
 #ifndef NO_CONFIGURE
-    freeConfiguration();
+    WMConfig::freeConfiguration();
 #endif
 #ifndef NO_WINDOW_OPTIONS
     delete defOptions; defOptions = 0;

@@ -1,6 +1,12 @@
 #ifndef __BASE_H
 #define __BASE_H
 
+#include <stddef.h>
+
+#ifndef __GNUC__
+#define __attribute__(a)
+#endif
+
 /*** Atomar Data Types ********************************************************/
 
 #ifdef NEED_BOOL
@@ -37,17 +43,15 @@ inline T abs(T v) {
 
 /*** String Functions *********************************************************/
 
-#if 1
+/* Prefer this as a safer alternative over strcpy. Return strlen(from). */
+size_t strlcpy(char *dest, const char *from, size_t dest_size);
+/* Prefer this over strcat. Return strlen(dest) + strlen(from). */
+size_t strlcat(char *dest, const char *from, size_t dest_size);
+
 char *newstr(char const *str);
 char *newstr(char const *str, int len);
 char *newstr(char const *str, char const *delim);
 char *cstrJoin(char const *str, ...);
-#endif
-
-#if 0
-bool isempty(char const *str);
-bool isreg(char const *path);
-#endif
 
 #if 0
 /*
@@ -97,10 +101,12 @@ static char const * itoa(T i, bool sign = false) {
 
 /*** Message Functions ********************************************************/
 
-void die(int exitcode, char const *msg, ...);
-void warn(char const *msg, ...);
-void msg(char const *msg, ...);
-void precondition(char const *msg, ...);
+void die(int exitcode, char const *msg, ...) __attribute__((format(printf, 2, 3) ));
+void warn(char const *msg, ...) __attribute__((format(printf, 1, 2) ));
+void fail(char const *msg, ...) __attribute__((format(printf, 1, 2) ));
+void msg(char const *msg, ...) __attribute__((format(printf, 1, 2) ));
+void tlog(char const *msg, ...) __attribute__((format(printf, 1, 2) ));
+void precondition(const char *expr, const char *file, int line);
 void show_backtrace();
 
 #define DEPRECATE(x) \
@@ -133,13 +139,6 @@ char* __XOS2RedirRoot(char const*);
 
 #define ISMASK(w,e,n) (((w) & ~(n)) == (e))
 #define HASMASK(w,e,n) ((((w) & ~(n)) & (e)) == (e))
-
-#if 0
-inline bool strIsEmpty(char const *str) {
-    if (str) while (*str) if (*str++ > ' ') return false;
-    return true;
-}
-#endif
 
 int strpcmp(char const *str, char const *pfx, char const *delim = "=:");
 #if 0
@@ -206,18 +205,37 @@ inline unsigned highbit(T mask) {
     return bit;
 }
 
-/******************************************************************************/
+/*** argc/argv processing *****************************************************/
 
-#if 1
+extern char const *ApplicationName;
 
 bool GetShortArgument(char* &ret, const char *name, char** &argpp, char ** endpp);
 bool GetLongArgument(char* &ret, const char *name, char** &argpp, char ** endpp);
+bool is_short_switch(const char *arg, const char *name);
+bool is_long_switch(const char *arg, const char *name);
+bool is_switch(const char *arg, const char *short_name, const char *long_name);
+bool is_help_switch(const char *arg);
+bool is_version_switch(const char *arg);
+void print_help_exit(const char *help);
+void print_version_exit(const char *version);
+void check_help_version(const char *arg, const char *help, const char *version);
+void check_argv(int argc, char **argv, const char *help, const char *version);
 
-#define IS_SHORT_SWITCH(Name)  (0 == strcmp(*arg, "-" Name))
-#define IS_LONG_SWITCH(Name)   (0 == strcmp(*arg, "--" Name))
-#define IS_SWITCH(Short, Long) (IS_SHORT_SWITCH(Short) || \
-                                IS_LONG_SWITCH(Long))
-#endif
+/*** file handling ************************************************************/
+
+/* read from file descriptor and zero terminate buffer. */
+int read_fd(int fd, char *buf, size_t buflen);
+
+/* read from filename and zero terminate the buffer. */
+int read_file(const char *filename, char *buf, size_t buflen);
+
+/* read all of filedescriptor and return a zero-terminated new[] string. */
+char* load_fd(int fd);
+
+/* read a file as a zero-terminated new[] string. */
+char* load_text_file(const char *filename);
+
+/******************************************************************************/
 
 #include "debug.h"
 

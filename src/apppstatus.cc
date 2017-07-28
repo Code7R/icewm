@@ -193,7 +193,7 @@ void NetStatus::updateToolTip() {
         const char * const caoUnit(niceUnit(cao, rateUnits));
         const char * const caiUnit(niceUnit(cai, rateUnits));
 
-        sprintf(status,
+        snprintf(status, sizeof status,
            /*   _("Interface %s:\n"
                   "  Current rate (in/out):\t%li %s/%li %s\n"
                   "  Current average (in/out):\t%lli %s/%lli %s\n"
@@ -215,7 +215,7 @@ void NetStatus::updateToolTip() {
                 t / 3600, t / 60 % 60, t % 60,
                 *phoneNumber ? _("\n  Caller id:\t") : "", phoneNumber);
     } else {
-        sprintf(status, "%.50s:", netdev.c_str());
+        snprintf(status, sizeof status, "%.50s:", netdev.c_str());
     }
 
     setToolTip(status);
@@ -321,7 +321,7 @@ void NetStatus::paint(Graphics &g, const YRect &/*r*/) {
  * Need read-access on /dev/isdninfo.
  */
 bool NetStatus::isUpIsdn() {
-#ifdef linux
+#ifdef __linux__
     char str[2048];
     char val[5][32];
     char *p = str;
@@ -366,7 +366,7 @@ bool NetStatus::isUpIsdn() {
             sscanf(p, "%s %s %s %s %s", val[0], val[1], val[2], val[3], val[4]);
             for (i = 0; i < 4; i++) {
                 if (strncmp(val[i+1], "?", 1) != 0)
-                    strncpy(phoneNumber, val[i+1], 32);
+                    strlcpy(phoneNumber, val[i+1], sizeof phoneNumber);
             }
         }
 
@@ -390,11 +390,11 @@ bool NetStatus::isUpIsdn() {
         return false;
 #else
     return false;
-#endif // ifdef linux
+#endif // ifdef __linux__
 }
 
 bool NetStatus::isUp() {
-#ifdef linux
+#ifdef __linux__
     if (useIsdn)
         return isUpIsdn();
 #endif
@@ -482,7 +482,7 @@ bool NetStatus::isUp() {
 
 #else
     struct ifreq ifr;
-    fNetDev.copy(ifr.ifr_name, IFNAMSIZ);
+    fNetDev.copyTo(ifr.ifr_name, IFNAMSIZ);
     bool bUp = (ioctl(s, SIOCGIFFLAGS, &ifr) >= 0 && (ifr.ifr_flags & IFF_UP));
     close(s);
     return bUp;
@@ -518,13 +518,13 @@ void NetStatus::getCurrent(long *in, long *out) {
 
     memset(&req, 0, sizeof(req));
 
-#ifdef linux
+#ifdef __linux__
 #undef ifr_name
 #define ifr_name ifr__name
 
     req.stats_ptr = (caddr_t) &req.stats;
 
-#endif // linux
+#endif // __linux__
 
     sprintf(req.ifr_name, PPP_DEVICE);
 
@@ -544,7 +544,7 @@ void NetStatus::getCurrent(long *in, long *out) {
     cur_obytes = 0;
 
 
-#ifdef linux
+#ifdef __linux__
     FILE *fp = fopen("/proc/net/dev", "r");
     if (!fp)
         return ;
@@ -580,7 +580,7 @@ void NetStatus::getCurrent(long *in, long *out) {
         }
     }
     fclose(fp);
-#endif //linux
+#endif //__linux__
 #ifdef __FreeBSD__
     // FreeBSD code by Ronald Klop <ronald@cs.vu.nl>
     struct ifmibdata ifmd;
@@ -620,7 +620,7 @@ void NetStatus::getCurrent(long *in, long *out) {
 
     s = socket(AF_INET, SOCK_DGRAM, 0);
     if (s != -1) {
-	fNetDev.copy(ifdr.ifdr_name, sizeof(ifdr.ifdr_name));
+	fNetDev.copyTo(ifdr.ifdr_name, sizeof(ifdr.ifdr_name));
         if (ioctl(s, SIOCGIFDATA, &ifdr) != -1) {
             cur_ibytes = ifi->ifi_ibytes;
             cur_obytes = ifi->ifi_obytes;
@@ -635,7 +635,7 @@ void NetStatus::getCurrent(long *in, long *out) {
 
     s = socket(AF_INET, SOCK_DGRAM, 0);
     if (s != -1) {
-	fNetDev.copy(ifdr.ifr_name, sizeof(ifdr.ifr_name));
+	fNetDev.copyTo(ifdr.ifr_name, sizeof(ifdr.ifr_name));
         ifdr.ifr_data = (caddr_t) &ifi;
         if (ioctl(s, SIOCGIFDATA, &ifdr) != -1) {
             cur_ibytes = ifi.ifi_ibytes;

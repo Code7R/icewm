@@ -856,7 +856,7 @@ void YFrameClient::handleClientMessage(const XClientMessageEvent &message) {
                 getFrame()->setState(mask,
                                      getFrame()->getState() ^ mask);
         } else {
-            warn("_NET_WM_STATE unknown command: %d", message.data.l[0]);
+            warn("_NET_WM_STATE unknown command: %ld", message.data.l[0]);
         }
 #endif
 #ifdef GNOME1_HINTS
@@ -1041,10 +1041,10 @@ void YFrameClient::setMwmHints(const MwmHints &mwm) {
 void YFrameClient::saveSizeHints()
 {
     memcpy(&savedSizeHints, fSizeHints, sizeof(XSizeHints));
-};
+}
 void YFrameClient::restoreSizeHints() {
     memcpy(fSizeHints, &savedSizeHints, sizeof(XSizeHints));
-};
+}
 
 
 long YFrameClient::mwmFunctions() {
@@ -1327,7 +1327,9 @@ bool YFrameClient::getWinWorkspaceHint(long *workspace) {
     }
     return false;
 }
+#endif
 
+#if defined(GNOME1_HINTS) || defined(WMSPEC_HINTS)
 void YFrameClient::setWinLayerHint(long layer) {
     XChangeProperty(xapp->display(),
                     handle(),
@@ -1336,7 +1338,9 @@ void YFrameClient::setWinLayerHint(long layer) {
                     32, PropModeReplace,
                     (unsigned char *)&layer, 1);
 }
+#endif
 
+#ifdef GNOME1_HINTS
 bool YFrameClient::getWinLayerHint(long *layer) {
     Atom r_type;
     int r_format;
@@ -1858,7 +1862,7 @@ bool YFrameClient::getNetStartupId(unsigned long &time) {
                 _XA_NET_STARTUP_ID))
     {
         if (strstr((char *)id.value, "_TIME") != NULL) {
-            time = atol(strstr((char *)id.value, "_TIME") + 5);
+            time = atol(strstr((char *)id.value, "_TIME") + 5) & 0xffffffff;
             if (time == -1UL)
                 time = -2UL;
             XFree(id.value);
@@ -1890,7 +1894,7 @@ bool YFrameClient::getNetWMUserTime(Window window, unsigned long &time) {
             long *utime = (long *) prop;
 
             MSG(("got user time"));
-            time = utime[0];
+            time = utime[0] & 0xffffffff;
 	    if (time == -1UL)
 		    time = -2UL;
 

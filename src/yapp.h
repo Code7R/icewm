@@ -1,8 +1,6 @@
 #ifndef __YAPP_H
 #define __YAPP_H
 
-#include <signal.h>
-
 #include "ypaths.h"
 #include "upath.h"
 #include "ypoll.h"
@@ -62,9 +60,10 @@ public:
     virtual int waitProgram(int p);
 
     virtual upath findConfigFile(upath relativePath);
-    static const char *getLibDir();
-    static const char *getConfigDir();
-    static const char *getPrivConfDir();
+    static const upath& getLibDir();
+    static const upath& getConfigDir();
+    static const upath& getPrivConfDir();
+    static const upath& getXdgConfDir();
 
     static char const *& Name;
 private:

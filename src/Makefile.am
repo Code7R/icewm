@@ -5,7 +5,6 @@ AM_CXXFLAGS = $(CORE_CFLAGS) $(XSM_CFLAGS) $(IMAGE_CFLAGS) $(AUDIO_CFLAGS) $(GNO
 EXTRA_DIST = \
 	ylibrary.cc \
 	ylibrary.h \
-	ybase.h \
 	ypointer.h \
 	globit.c
 
@@ -43,6 +42,14 @@ bin_PROGRAMS = \
 	icewmbg \
 	icewmtray
 
+AM_INSTALLCHECK_STD_OPTIONS_EXEMPT = \
+	icewm-session \
+	icesh \
+	icewmhint \
+	icewmbg \
+	icewmtray
+
+
 noinst_PROGRAMS = \
 	genpref
 
@@ -65,6 +72,7 @@ endif
 
 if BUILD_HELP
 bin_PROGRAMS += icehelp
+AM_INSTALLCHECK_STD_OPTIONS_EXEMPT += icehelp
 endif
 
 if BUILD_SOUND
@@ -73,10 +81,12 @@ endif
 
 if BUILD_MENU_GNOME2
 bin_PROGRAMS += icewm-menu-gnome2
+AM_INSTALLCHECK_STD_OPTIONS_EXEMPT += icewm-menu-gnome2
 endif
 
 if BUILD_MENU_FDO
 bin_PROGRAMS += icewm-menu-fdo
+AM_INSTALLCHECK_STD_OPTIONS_EXEMPT += icewm-menu-fdo
 endif
 
 libice_la_SOURCES = \
@@ -89,7 +99,6 @@ libice_la_SOURCES = \
 	default.h \
 	prefs.h \
 	ypoll.h \
-	yutil.h \
 	ylib.h \
 	ykey.h \
 	yfull.h \
@@ -100,6 +109,8 @@ libice_la_SOURCES = \
 	mstring.h \
 	upath.cc \
 	upath.h \
+	udir.cc \
+	udir.h \
 	yapp.cc \
 	yapp.h \
 	MwmUtil.h \
@@ -132,6 +143,7 @@ libice_la_SOURCES = \
 	yxembed.cc \
 	yxembed.h \
 	binascii.h \
+	argument.h \
 	yconfig.cc \
 	yconfig.h \
 	yprefs.cc \
@@ -200,6 +212,7 @@ genpref_SOURCES = \
 	themable.h \
 	default.h \
 	genpref.cc
+genpref_LDADD = misc.$(OBJEXT)
 
 icewm_SOURCES = \
 	intl.h \
@@ -218,7 +231,6 @@ icewm_SOURCES = \
 	objbutton.h \
 	WinMgr.h \
 	ypoll.h \
-	yutil.h \
 	ylib.h \
 	ymsgbox.cc \
 	ymsgbox.h \
@@ -257,8 +269,11 @@ icewm_SOURCES = \
 	wmmgr.cc \
 	wmmgr.h \
 	appnames.h \
-	wmapp.cc \
 	guievent.h \
+	wpixmaps.h \
+	wpixres.cc \
+	wpixres.h \
+	wmapp.cc \
 	wmapp.h \
 	wmframe.cc \
 	wmframe.h \
@@ -330,7 +345,7 @@ icewmhint_SOURCES = \
 	base.h \
 	guievent.h \
 	icewmhint.cc
-icewmhint_LDFLAGS = $(CORE_LIBS)
+icewmhint_LDADD = misc.$(OBJEXT) $(CORE_LIBS)
 
 icewmbg_SOURCES = \
 	intl.h \
@@ -368,9 +383,7 @@ icewm_menu_gnome1_SOURCES = \
 	default.h \
 	ylib.h \
 	gnome.cc \
-	ascii.h \
-	ycmdline.cc \
-	ycmdline.h
+	ascii.h
 icewm_menu_gnome1_LDADD = libice.la $(GNOME1_LIBS) $(CORE_LIBS)
 
 icewm_menu_gnome2_SOURCES = \
@@ -382,16 +395,14 @@ icewm_menu_gnome2_SOURCES = \
 	default.h \
 	ylib.h \
 	gnome2.cc \
-	ascii.h \
-	ycmdline.cc \
-	ycmdline.h
+	ascii.h
 icewm_menu_gnome2_LDADD = libice.la $(GNOME2_LIBS) $(CORE_LIBS)
 
 icewm_menu_fdo_SOURCES = \
 	sysdep.h \
 	base.h \
 	fdomenu.cc
-icewm_menu_fdo_LDADD = $(GIO_LIBS)
+icewm_menu_fdo_LDADD = misc.$(OBJEXT) $(GIO_LIBS)
 
 icehelp_SOURCES = \
 	intl.h \
@@ -471,6 +482,7 @@ strtest_SOURCES = \
 	debug.h \
 	sysdep.h \
 	base.h \
+	udir.h \
 	strtest.cc \
 	mstring.h
 strtest_LDADD = libice.la

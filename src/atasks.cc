@@ -12,10 +12,8 @@
 #include "wmmgr.h"
 #include "wmframe.h"
 #include "wmwinlist.h"
+#include "wpixmaps.h"
 #include "yrect.h"
-#include "yicon.h"
-#include "sysdep.h"
-#include <string.h>
 
 static YColor *normalTaskBarAppFg = 0;
 static YColor *normalTaskBarAppBg = 0;

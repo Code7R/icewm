@@ -1,5 +1,6 @@
 #include "config.h"
 #include "base.h"
+#include "intl.h"
 #include "yxapp.h"
 #include "sysdep.h"
 #include "yconfig.h"
@@ -10,12 +11,101 @@
 
 char const *ApplicationName = ICESMEXE;
 
-// the notification of startup step
-unsigned short startup_phase(0); // 0: run tray, 1: run startup script
-
 class SessionManager: public YApplication {
+private:
+    char* trim(char *line) {
+        size_t len = strlen(line);
+        while (len > 0 && isspace((unsigned char) line[len - 1])) {
+            line[--len] = 0;
+        }
+        while (*line && isspace((unsigned char) *line))
+            ++line;
+        return line;
+    }
+
+    bool expand(char *buf, size_t bufsiz) {
+#ifdef HAVE_WORDEXP
+        wordexp_t w;
+        if (wordexp(trim(buf), &w, 0) != 0 || w.we_wordc == 0)
+            return false;
+        size_t len = strlcpy(buf, trim(w.we_wordv[0]), bufsiz);
+        for (size_t k = 1; k < w.we_wordc && len < bufsiz; ++k) {
+            strlcat(buf, " ", bufsiz);
+            len = strlcat(buf, trim(w.we_wordv[k]), bufsiz);
+        }
+        wordfree(&w);
+        if (len >= bufsiz)
+            return false;
+#else
+        char *str = trim(buf);
+        if (str > buf)
+            strlcpy(buf, str, bufsiz);
+#endif
+        if (buf[0] == '#' || buf[0] == '=')
+            buf[0] = 0;
+        return buf[0] != 0;
+    }
+
+    const char *get_help_text() {
+        return _(
+        "  -c, --config=FILE   Let IceWM load preferences from FILE.\n"
+        "  -t, --theme=FILE    Let IceWM load the theme from FILE.\n"
+        "\n"
+        "  --display=NAME      Use NAME to connect to the X server.\n"
+        "  --sync              Synchronize communication with X11 server.\n"
+        );
+    }
+
+    const char *displayArg;
+    const char *configArg;
+    const char *themeArg;
+    bool syncArg;
+
+    void options(int *argc, char ***argv) {
+        displayArg = 0;
+        configArg = 0;
+        themeArg = 0;
+        syncArg = false;
+
+        for (char **arg = 1 + *argv; arg < *argv + *argc; ++arg) {
+            if (**arg == '-') {
+                char *value(0);
+                if (GetLongArgument(value, "display", arg, *argv+*argc)) {
+                    if (value && *value)
+                        displayArg = value;
+                }
+                else if (GetLongArgument(value, "config", arg, *argv+*argc)
+                    ||  GetShortArgument(value, "c", arg, *argv+*argc))
+                {
+                    configArg = value;
+                }
+                else if (GetLongArgument(value, "theme", arg, *argv+*argc)
+                    ||   GetShortArgument(value, "t", arg, *argv+*argc))
+                {
+                    themeArg = value;
+                }
+                else if (is_long_switch(*arg, "sync")) {
+                    syncArg = true;
+                }
+                else if (is_help_switch(*arg)) {
+                    print_help_exit(get_help_text());
+                }
+                else if (is_version_switch(*arg)) {
+                    print_version_exit(VERSION);
+                }
+                else {
+                    warn(_("Unknown option '%s'"), *arg);
+                }
+            }
+        }
+        if (displayArg)
+            setenv("DISPLAY", displayArg, 1);
+    }
+
 public:
     SessionManager(int *argc, char ***argv): YApplication(argc, argv) {
+        options(argc, argv);
+        startup_phase = 0;
         logout = false;
         wm_pid = -1;
         tray_pid = -1;
@@ -23,65 +113,74 @@ public:
         catchSignal(SIGCHLD);
         catchSignal(SIGTERM);
         catchSignal(SIGINT);
-// startup steps notifications
         catchSignal(SIGUSR1);
     }
 
-    void runScript(const char *scriptName, bool asenv=false) {
+    void loadEnv(const char *scriptName) {
         upath scriptFile = YApplication::findConfigFile(scriptName);
-        cstring cs(scriptFile.path());
-        const char *args[] = { cs.c_str(), 0, 0 };
-
-        if(asenv) {
-            FILE *ef = fopen(cs.c_str(), "r");
+        if (scriptFile.nonempty()) {
+            FILE *ef = scriptFile.fopen("r");
             if(!ef)
                 return;
-            tTempBuf scratch(500);
-            if(!scratch)
-                return;
-            scratch.p[499] = 0;
-            while(!feof(ef) && !ferror(ef))
-            {
-                char *line(scratch);
-                if (!fgets(line, 497, ef))
-                    break;
-                for(int tlen = strlen(line)-1; isspace((unsigned)line[tlen]) && tlen; --tlen)
-                    line[tlen] = 0;
-#ifdef HAVE_WORDEXP
-                wordexp_t w;
-                wordexp(line, &w, 0);
-                if(w.we_wordc > 0)
-                    line = w.we_wordv[0];
-#endif
-                while(isspace( (unsigned) *line)) line++;
-                char *ceq = strchr(line, (unsigned) '=');
-                if(ceq) {
-                    *ceq = 0;
-                    setenv(line, ceq+1, 1);
+            char scratch[1024];
+            while (fgets(scratch, sizeof scratch, ef)) {
+                if (expand(scratch, sizeof scratch)) {
+                    char *ceq = strchr(scratch, '=');
+                    if (ceq) {
+                        *ceq = 0;
+                        setenv(trim(scratch), trim(ceq + 1), 1);
+                    }
                 }
-#ifdef HAVE_WORDEXP
-                wordfree(&w);
-#endif
             }
             fclose(ef);
-            return;
         }
+    }
 
-        MSG(("Running session script: %s", cs.c_str()));
-        runProgram(cs.c_str(), args);
+    void runScript(const char *scriptName) {
+        upath scriptFile = YApplication::findConfigFile(scriptName);
+        if (scriptFile.nonempty() && scriptFile.isExecutable()) {
+            const char *cs = scriptFile.string();
+            MSG(("Running session script: %s", cs));
+            runProgram(cs, 0);
+        }
+    }
+
+    void appendOptions(const char *args[], int start, size_t narg) {
+        size_t k = (size_t) start;
+        if (displayArg && k + 2 < narg) {
+            args[k++] = "--display";
+            args[k++] = displayArg;
+        }
+        if (configArg && k + 2 < narg) {
+            args[k++] = "--config";
+            args[k++] = configArg;
+        }
+        if (themeArg && k + 2 < narg) {
+            args[k++] = "--theme";
+            args[k++] = themeArg;
+        }
+        if (syncArg && k + 1 < narg) {
+            args[k++] = "--sync";
+        }
+        if (k < narg) {
+            args[k] = 0;
+        }
     }
 
     void runIcewmbg(bool quit = false) {
-        const char *args[] = { ICEWMBGEXE, 0, 0 };
+        const char *args[12] = { ICEWMBGEXE, 0, 0 };
 
         if (quit) {
             args[1] = "-q";
+        }
+        else {
+            appendOptions(args, 1, ACOUNT(args));
         }
         bg_pid =  runProgram(args[0], args);
     }
 
     void runIcewmtray(bool quit = false) {
-        const char *args[] = { ICEWMTRAYEXE, "--notify", 0 };
+        const char *args[12] = { ICEWMTRAYEXE, "--notify", 0 };
         if (quit) {
             if (tray_pid != -1) {
                 kill(tray_pid, SIGTERM);
@@ -89,12 +188,15 @@ public:
                 waitpid(tray_pid, &status, 0);
             }
             tray_pid = -1;
-        } else
+        }
+        else {
+            appendOptions(args, 2, ACOUNT(args));
             tray_pid = runProgram(args[0], args);
+        }
     }
 
     void runWM(bool quit = false) {
-        const char *args[] = { ICEWMEXE, "--notify", 0 };
+        const char *args[12] = { ICEWMEXE, "--notify", 0 };
         if (quit) {
             if (wm_pid != -1) {
                 kill(wm_pid, SIGTERM);
@@ -103,8 +205,10 @@ public:
             }
             wm_pid = -1;
         }
-        else
+        else {
+            appendOptions(args, 2, ACOUNT(args));
             wm_pid = runProgram(args[0], args);
+        }
     }
 
     void handleSignal(int sig) {
@@ -139,14 +243,15 @@ public:
 
         if (sig == SIGUSR1)
         {
-           if(startup_phase++)
-              runScript("startup");
-           else
+           if (++startup_phase == 1)
               runIcewmtray();
+           else if (startup_phase == 2)
+              runScript("startup");
         }
     }
 
 private:
+    int startup_phase;
     int wm_pid;
     int tray_pid;
     int bg_pid;
@@ -156,7 +261,7 @@ private:
 int main(int argc, char **argv) {
     SessionManager xapp(&argc, &argv);
 
-    xapp.runScript("env", true);
+    xapp.loadEnv("env");
 
     xapp.runIcewmbg();
     xapp.runWM();

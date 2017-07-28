@@ -216,7 +216,7 @@ YCursorPixmap::YCursorPixmap(upath path):
                     warn(_("BUG? Unexpected end of XPM file but Imlib "
                            "was able to parse \"%s\""), cs.c_str());
                 else
-                    warn(_("BUG? Unexpected characted but Imlib "
+                    warn(_("BUG? Unexpected character but Imlib "
                            "was able to parse \"%s\""), cs.c_str());
 
                 fclose(xpm);
@@ -252,17 +252,30 @@ YCursorPixmap::~YCursorPixmap() {
 #endif
 
 YCursor::~YCursor() {
-    if(fOwned && fCursor && xapp)
-        XFreeCursor(xapp->display(), fCursor);
+    unload();
 }
 
-#ifndef LITE
+class MyCursorLoader : public YCursorLoader {
+private:
+    ref<YResourcePaths> paths;
 
+    Cursor load(upath path);
+
+public:
+    MyCursorLoader()
+        : paths(YResourcePaths::subdirs("cursors/"))
+    { }
+
+    virtual Cursor load(upath path, unsigned int fallback);
+};
+
+#ifndef LITE
 static Pixmap createMask(int w, int h) {
     return XCreatePixmap(xapp->display(), desktop->handle(), w, h, 1);
 }
 
-void YCursor::load(upath path) {
+Cursor MyCursorLoader::load(upath path) {
+    Cursor fCursor = None;
     YCursorPixmap pixmap(path);
     
     if (pixmap.isValid()) { // ============ convert coloured pixmap into a bilevel one ===
@@ -302,30 +315,50 @@ void YCursor::load(upath path) {
 
         XFreePixmap(xapp->display(), bilevel);
     }
+    return fCursor;
 }
 #endif
 
-#ifndef LITE
-void YCursor::load(upath name, unsigned int fallback) {
-#else
-void YCursor::load(upath /*name*/, unsigned int fallback) {
-#endif
-    if(fCursor && fOwned)
-        XFreeCursor(xapp->display(), fCursor);
+void YCursor::unload() {
+    if (fOwned) {
+        fOwned = false;
+        if (fCursor) {
+            if (xapp) {
+                XFreeCursor(xapp->display(), fCursor);
+            }
+            fCursor = None;
+        }
+    }
+}
+
+YCursorLoader* YCursor::newLoader() {
+    return new MyCursorLoader();
+}
 
 #ifndef LITE
-    char const *cursors = "cursors/";
-    ref<YResourcePaths> paths = YResourcePaths::subdirs(cursors);
+Cursor MyCursorLoader::load(upath name, unsigned int fallback)
+#else
+Cursor MyCursorLoader::load(upath /*name*/, unsigned int fallback)
+#endif
+{
+    Cursor fCursor = None;
+
+#ifndef LITE
+    upath cursors("cursors/");
 
     for (int i = 0; i < paths->getCount(); i++) {
-        upath path = paths->getPath(i)->joinPath(cursors, name);
-        if (path.fileExists())
-            load(path.path());
+        upath path = paths->getPath(i) + cursors + name;
+        if (path.fileExists()) {
+            if ((fCursor = load(path)) != None) {
+                /* stop when successful */
+                break;
+            }
+        }
     }
 
-    if (fCursor == None)
 #endif    
+    if (fCursor == None)
         fCursor = XCreateFontCursor(xapp->display(), fallback);
         
-    fOwned = true;
+    return fCursor;
 }

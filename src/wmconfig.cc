@@ -27,20 +27,24 @@ char *workspaceNames[MAXWORKSPACES];
 YAction *workspaceActionActivate[MAXWORKSPACES];
 YAction *workspaceActionMoveTo[MAXWORKSPACES];
 
-void loadConfiguration(IApp *app, const char *fileName) {
+void WMConfig::loadConfiguration(IApp *app, const char *fileName) {
 #ifndef NO_CONFIGURE
     YConfig::findLoadConfigFile(app, icewm_preferences, fileName);
     YConfig::findLoadConfigFile(app, icewm_themable_preferences, fileName);
 #endif
 }
 
-void loadThemeConfiguration(IApp *app, const char *themeName) {
+void WMConfig::loadThemeConfiguration(IApp *app, const char *themeName) {
 #ifndef NO_CONFIGURE
-    YConfig::findLoadConfigFile(app, icewm_themable_preferences, upath("themes").child(themeName));
+    bool ok = YConfig::findLoadThemeFile(app,
+                icewm_themable_preferences,
+                upath("themes").child(themeName));
+    if (ok == false)
+        fail(_("Failed to load theme %s"), themeName);
 #endif
 }
 
-void freeConfiguration() {
+void WMConfig::freeConfiguration() {
 #ifndef NO_CONFIGURE
     YConfig::freeConfig(icewm_preferences);
 #endif
@@ -65,109 +69,163 @@ void addWorkspace(const char * /*name*/, const char *value, bool append) {
     workspaceCount++;
 }
 
+static const struct {
+    const char name[8];
+    enum WMLook value;
+} wmLookNames[] = {
+    { "win95",  lookWin95  },
+    { "motif",  lookMotif  },
+    { "warp3",  lookWarp3  },
+    { "warp4",  lookWarp4  },
+    { "nice",   lookNice   },
+    { "pixmap", lookPixmap },
+    { "metal",  lookMetal  },
+    { "gtk",    lookGtk    },
+    { "flat",   lookFlat   },
+};
+
+const char* getLookName(enum WMLook look) {
+    for (size_t k = 0; k < ACOUNT(wmLookNames); ++k) {
+        if (look == wmLookNames[k].value)
+            return wmLookNames[k].name;
+    }
+    return "";
+}
+
+bool getLook(const char *name, const char *arg, enum WMLook *lookPtr) {
+    for (size_t k = 0; k < ACOUNT(wmLookNames); ++k) {
+        if (0 == strcmp(arg, wmLookNames[k].name)) {
+            if (lookPtr) {
+                *lookPtr = wmLookNames[k].value;
+            }
+            return true;
+        }
+    }
+    return false;
+}
+
 #ifndef NO_CONFIGURE
-void setLook(const char * /*name*/, const char *arg, bool) {
-#ifdef CONFIG_LOOK_WARP4
-    if (strcmp(arg, "warp4") == 0)
-        wmLook = lookWarp4;
-    else
-#endif
-#ifdef CONFIG_LOOK_WARP3
-    if (strcmp(arg, "warp3") == 0)
-        wmLook = lookWarp3;
-    else
-#endif
-#ifdef CONFIG_LOOK_WIN95
-    if (strcmp(arg, "win95") == 0)
-        wmLook = lookWin95;
-    else
-#endif
-#ifdef CONFIG_LOOK_MOTIF
-    if (strcmp(arg, "motif") == 0)
-        wmLook = lookMotif;
-    else
-#endif
-#ifdef CONFIG_LOOK_NICE
-    if (strcmp(arg, "nice") == 0)
-        wmLook = lookNice;
-    else
-#endif
-#ifdef CONFIG_LOOK_PIXMAP
-    if (strcmp(arg, "pixmap") == 0)
-        wmLook = lookPixmap;
-    else
-#endif
-#ifdef CONFIG_LOOK_METAL
-    if (strcmp(arg, "metal") == 0)
-        wmLook = lookMetal;
-    else
-#endif
-#ifdef CONFIG_LOOK_FLAT
-    if (strcmp(arg, "flat") == 0)
-        wmLook = lookFlat;
-    else
-#endif
-#ifdef CONFIG_LOOK_GTK
-    if (strcmp(arg, "gtk") == 0)
-        wmLook = lookGtk;
-    else
-#endif
-    {
-        msg(_("Bad Look name"));
+void setLook(const char *name, const char *arg, bool) {
+    enum WMLook look = wmLook;
+    if (getLook(name, arg, &look)) {
+        wmLook = look;
+    } else {
+        msg(_("Unknown value '%s' for option '%s'."), arg, name);
     }
 }
 #endif
 
-int setDefault(const char *basename, const char *config) {
-    const char *confDir = newstr(YApplication::getPrivConfDir());
-    mkdir(confDir, 0777);
-    const char *conf = cstrJoin(confDir, "/", basename, NULL);
-    const char *confNew = cstrJoin(conf, ".new.tmp", NULL);
-    delete[] confDir;
-    int fd = open(confNew, O_RDWR | O_TEXT | O_CREAT | O_TRUNC | O_EXCL, 0666);
-    if(fd == -1)
-    {
-       fprintf(stderr, "Unable to write %s!", confNew);
-       return -1;
+static bool ensureDirectory(const upath& path) {
+    if (path.dirExists())
+        return true;
+    if (path.mkdir() != 0) {
+        fail(_("Unable to create directory %s"), path.string().c_str());
     }
-    const char *buf = config;
-    int len = strlen(buf);
-    int nlen;
-    nlen = write(fd, buf, len);
-    
-    FILE *fdold = fopen(conf, "r");
-    if (fdold) {
-       char *tmpbuf = new char[300];
-       if (tmpbuf) {
-          *tmpbuf = '#';
-          for (int i = 0; i < 10; i++)
-             if (fgets(tmpbuf + 1, 298, fdold)) {
-		int tlen = strlen(tmpbuf);
-		int n, ret;
-		for (n = 0;n < tlen;) {
-		    ret = write(fd, tmpbuf + n, tlen - n);
-		    if (ret == 0 || (ret < 0  && errno != EINTR)) {
-			nlen = -1;
-			break;
-		    }
-		    if (ret > 0)
-			n += ret;
-		}
-	     } else 
-                break;
-          delete[] tmpbuf;
-       }
-       fclose(fdold);
+    return path.dirExists();
+}
+
+static upath getDefaultsFilePath(const pstring& basename) {
+    upath xdg(YApplication::getXdgConfDir());
+    if (xdg.dirExists()) {
+        upath file(xdg + basename);
+        if (file.fileExists())
+            return file;
+    }
+    upath prv(YApplication::getPrivConfDir());
+    if (ensureDirectory(prv)) {
+        return prv + basename;
+    }
+    ensureDirectory(xdg.parent());
+    if (ensureDirectory(xdg)) {
+        return xdg + basename;
+    }
+    return null;
+}
+
+int WMConfig::setDefault(const char *basename, const char *content) {
+    upath confOld(getDefaultsFilePath(basename));
+    if (confOld == null) {
+        return -1; // no directory
+    }
+    upath confNew(confOld.path() + ".new.tmp");
+
+    FILE *fpNew = confNew.fopen("w");
+    if (fpNew) {
+        fputs(content, fpNew);
+        if (content[0] && content[strlen(content)-1] != '\n')
+            fputc('\n', fpNew);
+    }
+    if (fpNew == NULL || fflush(fpNew) || ferror(fpNew)) {
+        fail(_("Unable to write to %s"), confNew.string().c_str());
+        if (fpNew)
+            fclose(fpNew);
+        confNew.remove();
+        return -1;
     }
 
-    close(fd);
-    if (nlen == len) {
-        rename(confNew, conf);
-    } else {
-        remove(confNew);
+    FILE *fpOld = confOld.fopen("r");
+    if (fpOld) {
+        for (int i = 0; i < 10; ++i) {
+            char buf[600] = "#", *line = buf;
+            if (fgets(1 + buf, sizeof buf - 1, fpOld)) {
+                while (line[1] == '#')
+                    ++line;
+                fputs(line, fpNew);
+                if ('\n' != line[strlen(line)-1])
+                    fputc('\n', fpNew);
+            }
+        }
+        fclose(fpOld);
     }
-    delete[] confNew;
-    delete[] conf;
+    fclose(fpNew);
+
+    if (fpOld != 0 || confOld.access() == 0) {
+        confOld.remove();
+    }
+    if (confNew.renameAs(confOld)) {
+        fail(_("Unable to rename %s to %s"),
+                confNew.string().c_str(), confOld.string().c_str());
+        confNew.remove();
+    }
     return 0;
+}
+
+static void print_options(cfoption *options) {
+    for (int i = 0; options[i].type != cfoption::CF_NONE; ++i) {
+        if (options[i].notify) {
+            if (0 == strcmp("Look", options[i].name)) {
+                printf("%s=%s\n", "Look", getLookName(wmLook));
+            }
+            continue;
+        }
+        switch (options[i].type) {
+        case cfoption::CF_BOOL:
+            printf("%s=%d\n", options[i].name, *options[i].v.bool_value);
+            break;
+        case cfoption::CF_INT:
+            printf("%s=%d\n", options[i].name, *options[i].v.i.int_value);
+            break;
+        case cfoption::CF_STR:
+            printf("%s=\"%s\"\n", options[i].name,
+                    options[i].v.s.string_value && *options[i].v.s.string_value
+                    ? *options[i].v.s.string_value : "");
+            break;
+#ifndef NO_KEYBIND
+        case cfoption::CF_KEY:
+            printf("%s=\"%s\"\n", options[i].name,
+                    options[i].v.k.key_value->name);
+            break;
+#endif
+        case cfoption::CF_NONE:
+            break;
+        }
+    }
+}
+
+void WMConfig::print_preferences() {
+#ifndef NO_CONFIGURE
+    print_options(icewm_preferences);
+    print_options(icewm_themable_preferences);
+#endif
 }
 

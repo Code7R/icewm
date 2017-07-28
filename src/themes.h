@@ -5,7 +5,6 @@
 
 #include "objmenu.h"
 #include "obj.h"
-#include <sys/time.h>
 
 class YMenu;
 class YSMListener;
@@ -32,27 +31,26 @@ public:
     void refresh();
 
 private:
-    void findThemes(char const *path, YMenu *container);
+    void findThemes(const upath& path, YMenu *container);
 
     static YMenuItem *newThemeItem(
         IApp *app,
         YSMListener *smActionListener,
-        char const *label,
-        char const *theme,
-        const char *relThemeName);
+        const ustring& label,
+        const ustring& relThemeName);
     
     static void findThemeAlternatives(
         IApp *app,
         YSMListener *smActionListener,
-        char const *path,
-        const char *relName,
+        const upath& path,
+        const ustring& relName,
         YMenuItem *item);
         
     // this solution isn't nice. Saving it globaly somewhere would be
     // much better, we would have a themeCound from the last refresh
     // cycle and update it after menu construction, counting themes that
     // are actually added to menues
-    int countThemes(char const *path);
+    int countThemes(const upath& path);
     int themeCount;
     
     YSMListener *smActionListener;

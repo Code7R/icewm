@@ -99,7 +99,6 @@ class IceSound : public YCommandLine {
 public:
     IceSound(int & argc, char **& argv):
         YCommandLine(argc, argv), dpyname(NULL) {
-            ApplicationName = my_basename(argv[0]);
         }
 
         static void printUsage();
@@ -146,8 +145,8 @@ public:
     char * findSample(int sid)  {
         char basefname[1024];
 
-        strcpy(basefname, gui_events[sid].name);
-        strcat(basefname, ".wav");
+        strlcpy(basefname, gui_events[sid].name, sizeof basefname);
+        strlcat(basefname, ".wav", sizeof basefname);
 
         return findSample(basefname);
     }
@@ -330,7 +329,7 @@ void YALSAAudio::play(int sound) {
             short sbuf[512]; // period_size * channels * snd_pcm_format_width(format)) / 8
             for (int n; (n = sf_readf_short (sf, sbuf, 256)) > 0; ) {
                 if ((err = snd_pcm_writei (playback_handle, sbuf, n) != n)) {
-                    warn ("write to audio interface failed (%s) %d\n",
+                    warn ("write to audio interface failed (%s) %zd\n",
                              snd_strerror (err), sizeof(short));
                     return;
                 }
@@ -350,7 +349,7 @@ int YALSAAudio::init(int & argc, char **& argv) {
 
     // check the device parameter perhaps?
 
-    CATCH(/**/)
+    CATCH(/**/;)
 }
 
 #endif /* ENABLE_ALSA */
@@ -469,7 +468,7 @@ int YOSSAudio::init(int & argc, char **& argv) {
             THROW(3)
         }
 
-    CATCH(/**/)
+    CATCH(/**/;)
 }
 
 /******************************************************************************
@@ -747,7 +746,7 @@ int YY2Audio::init(int & argc, char **& argv) {
      * or other async event occured during initialization. */
     server = con;
 
-    CATCH(/**/)
+    CATCH(/**/;)
 }
 
 /**
@@ -1262,6 +1261,18 @@ void IceSound::chld(int sig) {
 }
 
 int main(int argc, char *argv[]) {
+    ApplicationName = my_basename(argv[0]);
+    for (char **arg = argv + 1; arg < argv + argc; ++arg) {
+        if (**arg == '-') {
+            if (is_help_switch(*arg)) {
+                IceSound::printUsage();
+                exit(1);
+            }
+            if (is_version_switch(*arg)) {
+                print_version_exit(VERSION);
+            }
+        }
+    }
     return IceSound(argc, argv).run();
 }
 

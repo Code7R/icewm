@@ -41,7 +41,7 @@ XIV(int, quickSwitchIBorder,                    2)      // !!!
 XIV(int, quickSwitchSepSize,                    6)      // !!!
 XSV(const char *, titleButtonsLeft,             "s")
 XSV(const char *, titleButtonsRight,            "xmir")
-XSV(const char *, titleButtonsSupported,        "xmis");
+XSV(const char *, titleButtonsSupported,        "xmis")
 XSV(const char *, themeAuthor,                  0)
 XSV(const char *, themeDescription,             0)
 
@@ -144,6 +144,7 @@ XSV(const char *, clrCpuIoWait,                 "rgb:60/00/60")
 XSV(const char *, clrCpuSoftIrq,                "rgb:00/FF/FF")
 XSV(const char *, clrCpuNice,                   "rgb:00/00/FF")
 XSV(const char *, clrCpuIdle,                   "rgb:00/00/00")
+XSV(const char *, clrCpuSteal,                  "rgb:FF/8A/91")
 XSV(const char *, clrCpuTemp,                   "rgb:60/60/C0")
 XSV(const char *, clrMemUser,                   "rgb:40/40/80")
 XSV(const char *, clrMemBuffers,                "rgb:60/60/C0")
@@ -322,6 +323,7 @@ cfoption icewm_themable_preferences[] = {
     OSV("ColorCPUStatusSoftIrq",                &clrCpuSoftIrq,                 "Soft Interrupts on the CPU monitor"),
     OSV("ColorCPUStatusNice",                   &clrCpuNice,                    "Nice load on the CPU monitor"),
     OSV("ColorCPUStatusIdle",                   &clrCpuIdle,                    "Idle (non) load on the CPU monitor, leave empty to force transparency"),
+    OSV("ColorCPUStatusSteal",                  &clrCpuSteal,                   "Involuntary Wait on the CPU monitor"),
     OSV("ColorCPUStatusTemp",                   &clrCpuTemp,                    "Temperature of the CPU"),
 #endif
 #ifdef CONFIG_APPLET_MEM_STATUS

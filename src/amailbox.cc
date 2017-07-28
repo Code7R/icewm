@@ -18,17 +18,11 @@
 #include "base.h"
 #include "prefs.h"
 #include "wmapp.h"
+#include "wpixmaps.h"
 #include <sys/socket.h>
 #include <netdb.h>
 
 static YColor *taskBarBg = 0;
-extern ref<YPixmap> taskbackPixmap;
-
-ref<YPixmap> mailPixmap;
-ref<YPixmap> noMailPixmap;
-ref<YPixmap> errMailPixmap;
-ref<YPixmap> unreadMailPixmap;
-ref<YPixmap> newMailPixmap;
 
 MailCheck::MailCheck(MailBoxStatus *mbx):
     state(IDLE), fMbx(mbx), fLastSize(-1), fLastCount(-1),
@@ -236,7 +230,8 @@ void MailCheck::socketDataRead(char *buf, int len) {
             static char quit[] = "QUIT\r\n";
             MSG(("pop3: quit"));
             //puts(bf);
-            if (sscanf(bf, "+OK %lu %lu", &fCurCount, &fCurSize) != 2) {
+            if (sscanf(bf, "+OK %ld %ld", &fCurCount, &fCurSize) != 2
+                    || fCurCount < 0 || fCurSize < 0) {
                 fCurCount = 0;
                 fCurSize = 0;
             }
@@ -283,8 +278,8 @@ void MailCheck::socketDataRead(char *buf, int len) {
                                    (fURL->path() == null || fURL->path().equals("/")) ? "INBOX" : cstring(fURL->path()).c_str() + 1,
                                    " (UNSEEN)\r\n", NULL));
             char folder[128] = "";
-            if (sscanf(bf, "* STATUS %127s (MESSAGES %lu)",
-                       folder, &fCurCount) != 2) {
+            if (sscanf(bf, "* STATUS %127s (MESSAGES %ld)",
+                       folder, &fCurCount) != 2 || fCurCount < 0) {
                 fCurCount = 0;
             }
             fCurUnseen = 0;
@@ -295,11 +290,11 @@ void MailCheck::socketDataRead(char *buf, int len) {
             MSG(("imap: logout"));
             const char logout[] = "0003 LOGOUT\r\n";
             char folder[128] = "";
-            if (sscanf(bf, "* STATUS %127s (UNSEEN %lu)",
-                       folder, &fCurUnseen) != 2) {
+            if (sscanf(bf, "* STATUS %127s (UNSEEN %ld)",
+                       folder, &fCurUnseen) != 2 || fCurUnseen < 0) {
                 fCurUnseen = 0;
             }
-            sk.write(logout, sizeof(logout)/sizeof(char)-1);
+            sk.write(logout, sizeof(logout) - 1);
             state = WAIT_QUIT;
         } else if (state == WAIT_QUIT) {
             MSG(("imap: done"));
@@ -452,7 +447,7 @@ void MailBoxStatus::mailChecked(MailBoxState mst, long count) {
     else {
         char s[128] = "";
         if (count != -1) {
-            sprintf(s,
+            snprintf(s, sizeof s,
                     count == 1 ?
                     _("%ld mail message.") :
                     _("%ld mail messages."), // too hard to do properly

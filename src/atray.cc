@@ -26,10 +26,8 @@
 #include "wmmgr.h"
 #include "wmframe.h"
 #include "wmwinlist.h"
+#include "wpixmaps.h"
 #include "yrect.h"
-#include "yicon.h"
-
-#include <string.h>
 
 static YColor *taskBarBg = 0;
 static YColor *normalTrayAppFg = 0;

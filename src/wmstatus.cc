@@ -10,8 +10,7 @@
 #ifndef LITE
 #include "yfull.h"
 #include "wmstatus.h"
-#include "wmswitch.h" // !!! remove (for bg pixmap)
-
+#include "wpixmaps.h"
 #include "wmframe.h"
 #include "wmclient.h"
 #include "wmmgr.h"
@@ -30,6 +29,8 @@ ref<YFont> YWindowManagerStatus::statusFont;
 
 MoveSizeStatus *statusMoveSize = 0;
 WorkspaceStatus *statusWorkspace = 0;
+
+template<class T> T non_zero(T x) { return x ? x : 1; }
 
 /******************************************************************************/
 /******************************************************************************/
@@ -117,8 +118,8 @@ void MoveSizeStatus::setStatus(YFrameWindow *frame, const YRect &r) {
     fX = r.x();
     fY = r.y();
     if (sh && (sh->flags & PResizeInc)) {
-        fW = (width - sh->base_width) / (sh->width_inc ?: 1);
-        fH = (height - sh->base_height) / (sh->height_inc ?: 1);
+        fW = (width - sh->base_width) / non_zero(sh->width_inc);
+        fH = (height - sh->base_height) / non_zero(sh->height_inc);
     } else {
         fW = width;
         fH = height;
@@ -132,8 +133,8 @@ void MoveSizeStatus::setStatus(YFrameWindow *frame) {
     fX = frame->x ();//// + frame->borderX ();
     fY = frame->y ();//// + frame->borderY () + frame->titleY ();
     if (sh && (sh->flags & PResizeInc)) {
-        fW = (frame->client()->width() - sh->base_width) / (sh->width_inc ?: 1);
-        fH = (frame->client()->height() - sh->base_height) / (sh->height_inc ?: 1);
+        fW = (frame->client()->width() - sh->base_width) / non_zero(sh->width_inc);
+        fH = (frame->client()->height() - sh->base_height) / non_zero(sh->height_inc);
     } else {
         fW = frame->client()->width();
         fH = frame->client()->height();

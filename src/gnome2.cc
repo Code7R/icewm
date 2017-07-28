@@ -10,6 +10,9 @@
  */
 
 #include "config.h"
+
+char const * ApplicationName = "icewm-menu-gnome2";
+
 #ifdef CONFIG_GNOME_MENUS
 
 #include "ylib.h"
@@ -26,8 +29,6 @@
 #include <libgnome/gnome-desktop-item.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 #include "yarray.h"
-
-char const * ApplicationName = "icewm-menu-gnome2";
 
 class GnomeMenu;
 
@@ -157,8 +158,8 @@ void GnomeMenu::populateMenu(const char *fPath) {
     const int plen = strlen(fPath);
 
     char tmp[256];
-    strcpy(tmp, fPath);
-    strcat(tmp, "/.directory");
+    strlcpy(tmp, fPath, sizeof tmp);
+    strlcat(tmp, "/.directory", sizeof tmp);
 
     if (isDir && !stat(tmp, &sb)) { // looks like kde/gnome1 style
 
@@ -278,8 +279,8 @@ void GnomeMenu::populateMenu(const char *fPath) {
 
             while ((file = readdir(dir)) != NULL) {
                 char fullpath[256];
-                strcpy(fullpath, dirname);
-                strcat(fullpath, file->d_name);
+                strlcpy(fullpath, dirname, sizeof fullpath);
+                strlcat(fullpath, file->d_name, sizeof fullpath);
                 GnomeDesktopItem *ditem =
                     gnome_desktop_item_new_from_file(fullpath,
                                                      (GnomeDesktopItemLoadFlags)0,
@@ -356,8 +357,10 @@ int main(int argc, char **argv) {
     for (char ** arg = argv + 1; arg < argv + argc; ++arg) {
         if (**arg == '-') {
             char *path = 0;
-            if (IS_SWITCH("h", "help"))
+            if (is_help_switch(*arg))
                 break;
+            if (is_version_switch(*arg))
+                print_version_exit(VERSION);
             if (GetLongArgument(path, "open", arg, argv+argc))
                 return runFile(path);
             else if (GetLongArgument(path, "list", arg, argv+argc))

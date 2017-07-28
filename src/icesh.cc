@@ -432,7 +432,7 @@ int WorkspaceInfo::parseWorkspaceName(char const * name) {
         }
 
         if (workspace > count()) {
-            msg(_("Workspace out of range: %d"), workspace);
+            msg(_("Workspace out of range: %ld"), workspace);
             return WinWorkspaceInvalid;
         }
     }
@@ -497,7 +497,7 @@ Window getClientWindow(Window window)
     unsigned int i;
 
     if (!XQueryTree (display, window, &root, &parent, &children, &nchildren)) {
-        warn("XQueryTree failed for window 0x%x", window);
+        warn("XQueryTree failed for window 0x%lx", window);
         return None;
     }
 
@@ -649,7 +649,16 @@ int main(int argc, char **argv) {
 
     char **argp(argv + 1);
     for (char *arg; argp < argv + argc && '-' == *(arg = *argp); ++argp) {
-        if (arg[1] == '-') ++arg;
+        if (is_version_switch(arg)) {
+            print_version_exit(VERSION);
+        }
+        else if (is_help_switch(arg)) {
+            printUsage();
+            THROW(0);
+        }
+        else if (arg[1] == '-') {
+            ++arg;
+        }
 
         size_t sep(strcspn(arg, "=:"));
         char *val(arg[sep] ? arg + sep + 1 : *++argp);
@@ -683,12 +692,9 @@ int main(int argc, char **argv) {
             debug = 1;
             --argp;
 #endif
-        } else if (strcmp(arg, "-?") && strcmp(arg, "-help")) {
+        } else {
             usageError (_("Invalid argument: `%s'."), arg);
             THROW(1);
-        } else {
-            printUsage();
-            THROW(0);
         }
     }
 

@@ -4,7 +4,6 @@
 #include "ywindow.h"
 #include "obj.h"
 #include "objbutton.h"
-#include "ytimer.h"
 
 class WorkspaceButton: public ObjectButton, public YTimerListener {
 public:
@@ -54,13 +53,5 @@ private:
     long fWorkspaceButtonCount;
     void repositionButtons();
 };
-
-extern ref<YPixmap> workspacebuttonPixmap;
-extern ref<YPixmap> workspacebuttonactivePixmap;
-
-#ifdef CONFIG_GRADIENTS
-extern ref<YImage> workspacebuttonPixbuf;
-extern ref<YImage> workspacebuttonactivePixbuf;
-#endif
 
 #endif

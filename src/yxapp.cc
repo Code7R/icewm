@@ -11,6 +11,7 @@
 #include "yprefs.h"
 #include "ypixbuf.h"
 #include "yconfig.h"
+#include "ypointer.h"
 
 #include <sys/resource.h>
 #include <stdlib.h>
@@ -193,42 +194,6 @@ Atom XA_XdndStatus;
 YColor *YColor::black(NULL);
 YColor *YColor::white(NULL);
 
-ref<YPixmap> buttonIPixmap;
-ref<YPixmap> buttonAPixmap;
-
-ref<YPixmap> logoutPixmap;
-ref<YPixmap> switchbackPixmap;
-ref<YPixmap> listbackPixmap;
-ref<YPixmap> dialogbackPixmap;
-
-ref<YPixmap> menubackPixmap;
-ref<YPixmap> menusepPixmap;
-ref<YPixmap> menuselPixmap;
-
-#ifdef CONFIG_GRADIENTS
-ref<YImage> buttonIPixbuf;
-ref<YImage> buttonAPixbuf;
-
-ref<YImage> logoutPixbuf;
-ref<YImage> switchbackPixbuf;
-ref<YImage> listbackPixbuf;
-ref<YImage> dialogbackPixbuf;
-
-ref<YImage> menubackPixbuf;
-ref<YImage> menuselPixbuf;
-ref<YImage> menusepPixbuf;
-#endif
-
-//changed robc
-ref<YPixmap> closePixmap[3];
-ref<YPixmap> minimizePixmap[3];
-ref<YPixmap> maximizePixmap[3];
-ref<YPixmap> restorePixmap[3];
-ref<YPixmap> hidePixmap[3];
-ref<YPixmap> rollupPixmap[3];
-ref<YPixmap> rolldownPixmap[3];
-ref<YPixmap> depthPixmap[3];
-
 #ifdef CONFIG_SHAPE
 int shapesSupported;
 int shapeEventBase, shapeErrorBase;
@@ -325,7 +290,7 @@ private:
 };
 
 
-static void initAtoms() {
+void YXApplication::initAtoms() {
     struct {
         Atom *atom;
         const char *name;
@@ -514,13 +479,14 @@ static void initAtoms() {
 #endif
 }
 
-static void initPointers() {
-    YXApplication::leftPointer.load("left.xpm",  XC_left_ptr);
-    YXApplication::rightPointer.load("right.xpm", XC_right_ptr);
-    YXApplication::movePointer.load("move.xpm",  XC_fleur);
+void YXApplication::initPointers() {
+    osmart<YCursorLoader> l(YCursor::newLoader());
+    leftPointer  = l->load("left.xpm",  XC_left_ptr);
+    rightPointer = l->load("right.xpm", XC_right_ptr);
+    movePointer  = l->load("move.xpm",  XC_fleur);
 }
 
-static void initColors() {
+void YXApplication::initColors() {
     YColor::black = new YColor("rgb:00/00/00");
     YColor::white = new YColor("rgb:FF/FF/FF");
 }
@@ -935,6 +901,13 @@ void YXApplication::setClipboardText(const ustring &data) {
     fClip->setData(s.c_str(), s.c_str_len());
 }
 
+const char* YXApplication::getHelpText() {
+    return _(
+    "  --display=NAME      NAME of the X server to use.\n"
+    "  --sync              Synchronize X11 commands.\n"
+    );
+}
+
 YXApplication::YXApplication(int *argc, char ***argv, const char *displayName):
     YApplication(argc, argv)
 {
@@ -953,23 +926,24 @@ YXApplication::YXApplication(int *argc, char ***argv, const char *displayName):
     for (char ** arg = *argv + 1; arg < *argv + *argc; ++arg) {
         if (**arg == '-') {
             char *value;
-            if (GetLongArgument(value, "display", arg, *argv+*argc))
-            {
-                displayName = value;
-                continue;
+            if (is_help_switch(*arg)) {
+                print_help_exit(getHelpText());
             }
-            else if (IS_LONG_SWITCH("sync"))
+            else if (is_version_switch(*arg)) {
+                print_version_exit(VERSION);
+            }
+            else if (GetLongArgument(value, "display", arg, *argv+*argc)) {
+                displayName = value;
+            }
+            else if (is_long_switch(*arg, "sync"))
                 runSynchronized = true;
         }
     }
 
     if (displayName == 0)
         displayName = getenv("DISPLAY");
-    else {
-        static char disp[256] = "DISPLAY=";
-        strcat(disp, displayName);
-        putenv(disp);
-    }
+    else
+        setenv("DISPLAY", displayName, 1);
 
     if (!(fDisplay = XOpenDisplay(displayName)))
         die(1, _("Can't open display: %s. X must be running and $DISPLAY set."),

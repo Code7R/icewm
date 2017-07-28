@@ -69,13 +69,27 @@ public:
     static YCursor scrollRightPointer;
     static YCursor scrollUpPointer;
     static YCursor scrollDownPointer;
+
+#ifndef LITE
+    static ref<YIcon> getDefaultAppIcon();
+#endif
+
 private:
     YWindowManager *fWindowManager;
     YMsgBox *fLogoutMsgBox;
 
     void runRestart(const char *path, char *const *args);
-private:
+
     Window managerWindow;
+
+    static void initAtoms();
+    static void initPointers();
+#ifndef LITE
+    static void initIcons();
+    static void termIcons();
+#endif
+    static void initIconSize();
+    static void initPixmaps();
 };
 
 #ifdef CONFIG_GUIEVENTS

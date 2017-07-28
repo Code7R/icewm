@@ -1,6 +1,4 @@
 
-#include "upath.h"
-
 #undef XSV
 #undef XFV
 #undef XIV
@@ -118,14 +116,19 @@ struct cfoption {
 #endif
 };
 
+class Argument;
 class IApp;
+class upath;
 
 class YConfig {
 public:
-    static void loadConfigFile(cfoption *options, upath fileName);
+    static bool loadConfigFile(cfoption *options, upath fileName);
     static void freeConfig(cfoption *options);
-    static char *getArgument(char **dest, char *p, bool comma);
-    static bool findLoadConfigFile(IApp *app, struct cfoption *options, upath name);
+    static char *getArgument(Argument *dest, char *p, bool comma = false);
+    static bool findLoadConfigFile(IApp *app, cfoption *options, upath name);
+    static bool findLoadThemeFile(IApp *app, cfoption *options, upath name);
+    static void parseConfiguration(cfoption *options, char *data);
+    static bool parseKey(const char *arg, KeySym *key, unsigned int *mod);
 };
 
 #endif

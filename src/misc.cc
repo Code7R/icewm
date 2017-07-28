@@ -7,19 +7,18 @@
 #include "sysdep.h"
 #include "ylib.h"
 #include "debug.h"
-
+#include "base.h"
 #include "intl.h"
 #include "ref.h"
+#include <time.h>
 
 #ifdef HAVE_LIBGEN_H
 #include <libgen.h>
 #endif
 
-#if defined(linux) && defined(HAVE_EXECINFO_H)
+#if defined(__linux__) && defined(HAVE_EXECINFO_H)
 #include <execinfo.h>
 #endif
-
-extern char const *ApplicationName;
 
 #ifdef DEBUG
 bool debug = false;
@@ -294,6 +293,13 @@ void logEvent(const XEvent &xev) {
 }
 #endif
 
+static void endMsg(const char *msg) {
+    if (*msg == 0 || msg[strlen(msg)-1] != '\n') {
+        fputc('\n', stderr);
+    }
+    fflush(stderr);
+}
+
 void die(int exitcode, char const *msg, ...) {
     fprintf(stderr, "%s: ", ApplicationName);
 
@@ -301,20 +307,14 @@ void die(int exitcode, char const *msg, ...) {
     va_start(ap, msg);
     vfprintf(stderr, msg, ap);
     va_end(ap);
-    fputs("\n", stderr);
-    fflush(stderr);
+    endMsg(msg);
 
     exit(exitcode);
 }
 
-void precondition(char const *msg, ...) {
-    fprintf(stderr, "%s: ", ApplicationName);
-
-    va_list ap;
-    va_start(ap, msg);
-    vfprintf(stderr, msg, ap);
-    va_end(ap);
-    fputs("\n", stderr);
+void precondition(const char *expr, const char *file, int line) {
+    fprintf(stderr, "%s: PRECONDITION FAILED at %s:%d: ( %s )\n",
+            ApplicationName, file, line, expr);
     fflush(stderr);
 
     show_backtrace();
@@ -333,8 +333,19 @@ void warn(char const *msg, ...) {
     va_start(ap, msg);
     vfprintf(stderr, msg, ap);
     va_end(ap);
+    endMsg(msg);
+}
 
-    fputs("\n", stderr);
+void fail(char const *msg, ...) {
+    int errcode = errno;
+    fprintf(stderr, "%s: ", ApplicationName);
+    fputs(_("Warning: "), stderr);
+
+    va_list ap;
+    va_start(ap, msg);
+    vfprintf(stderr, msg, ap);
+    va_end(ap);
+    fprintf(stderr, ": %s\n", strerror(errcode));
     fflush(stderr);
 }
 
@@ -345,8 +356,21 @@ void msg(char const *msg, ...) {
     va_start(ap, msg);
     vfprintf(stderr, msg, ap);
     va_end(ap);
-    fputs("\n", stderr);
-    fflush(stderr);
+    endMsg(msg);
+}
+
+void tlog(char const *msg, ...) {
+    time_t now = time(NULL);
+    struct tm *loc = localtime(&now);
+
+    fprintf(stderr, "%02d:%02d:%02d: %s: ", loc->tm_hour,
+            loc->tm_min, loc->tm_sec, ApplicationName);
+
+    va_list ap;
+    va_start(ap, msg);
+    vfprintf(stderr, msg, ap);
+    va_end(ap);
+    endMsg(msg);
 }
 
 char *cstrJoin(char const *str, ...) {
@@ -423,6 +447,30 @@ void operator delete[](void *p) {
 
 #endif
 
+/* Prefer this as a safer alternative over strcpy. Return strlen(from). */
+size_t strlcpy(char *dest, const char *from, size_t dest_size)
+{
+    const char *in = from;
+    if (dest_size > 0) {
+        char *to = dest;
+        char *const stop = to + dest_size - 1;
+        while (to < stop && *in)
+            *to++ = *in++;
+        *to = '\0';
+    }
+    while (*in) ++in;
+    return in - from;
+}
+
+/* Prefer this over strcat. Return strlen(dest) + strlen(from). */
+size_t strlcat(char *dest, const char *from, size_t dest_size)
+{
+    char *to = dest;
+    char *const stop = to + dest_size - 1;
+    while (to < stop && *to) ++to;
+    return to - dest + strlcpy(to, from, dest_size - (to - dest));
+}
+
 char *newstr(char const *str) {
     return (str != NULL ? newstr(str, strlen(str)) : NULL);
 }
@@ -498,6 +546,77 @@ bool GetLongArgument(char* &ret, const char *name, char** &argpp, char **endpp)
 	return true;
 }
 
+bool is_short_switch(const char *arg, const char *name)
+{
+    return arg && *arg == '-' && 0 == strcmp(arg + 1, name);
+}
+
+bool is_long_switch(const char *arg, const char *name)
+{
+    return arg && *arg == '-' && arg[1] == '-' && 0 == strcmp(arg + 2, name);
+}
+
+bool is_switch(const char *arg, const char *short_name, const char *long_name)
+{
+    return is_short_switch(arg, short_name) || is_long_switch(arg, long_name);
+}
+
+bool is_help_switch(const char *arg)
+{
+    return is_switch(arg, "h", "help") || is_switch(arg, "?", "?");
+}
+
+bool is_version_switch(const char *arg)
+{
+    return is_switch(arg, "V", "version");
+}
+
+void print_help_exit(const char *help)
+{
+    printf(_("Usage: %s [OPTIONS]\n"
+             "Options:\n"
+             "%s"
+             "\n"
+             "  -V, --version       Prints version information and exits.\n"
+             "  -h, --help          Prints this usage screen and exits.\n"
+             "\n"),
+            ApplicationName, help);
+    exit(1);
+}
+
+void print_version_exit(const char *version)
+{
+    printf("%s %s, %s.\n", ApplicationName, version,
+        "Copyright 1997-2003 Marko Macek, 2001 Mathias Hasselmann");
+    exit(1);
+}
+
+void check_help_version(const char *arg, const char *help, const char *version)
+{
+    if (is_help_switch(arg)) {
+        print_help_exit(help);
+    }
+    if (is_version_switch(arg)) {
+        print_version_exit(version);
+    }
+}
+
+void check_argv(int argc, char **argv, const char *help, const char *version)
+{
+    if (ApplicationName == NULL) {
+        ApplicationName = my_basename(argv[0]);
+    }
+    for (char **arg = argv + 1; arg < argv + argc; ++arg) {
+        check_help_version(*arg, (help && *help) ? help :
+                "  --display=NAME      NAME of the X server to use.\n",
+                version);
+
+        char *value(0);
+        if (GetLongArgument(value, "display", arg, argv + argc)) {
+            setenv("DISPLAY", value, 1);
+        }
+    }
+}
 
 #if 0
 
@@ -541,18 +660,97 @@ int strnullcmp(const char *a, const char *b) {
 }
 #endif
 
-bool isreg(char const *path) {
-    struct stat sb;
-    return (stat(path, &sb) == 0 && S_ISREG(sb.st_mode));
-}
-
 void show_backtrace() {
-#if defined(linux) && defined(HAVE_EXECINFO_H)
+#if defined(__linux__) && defined(HAVE_EXECINFO_H)
     void *array[20];
 
     fprintf(stderr, "\nbacktrace:\n");
-    int size = backtrace(array, sizeof array / sizeof array[0]);
+    int size = backtrace(array, ACOUNT(array));
     backtrace_symbols_fd(array, size, 2);
     fprintf(stderr, "end\n");
 #endif
 }
+
+/* read from file descriptor and zero terminate buffer. */
+int read_fd(int fd, char *buf, size_t buflen) {
+    if (fd >= 0 && buf && buflen) {
+        char *ptr = buf;
+        ssize_t got = 0, len = (ssize_t)(buflen - 1);
+        while (len > 0) {
+            if ((got = read(fd, ptr, (size_t) len)) > 0) {
+                ptr += got;
+                len -= got;
+            } else if (got != -1 || errno != EINTR)
+                break;
+        }
+        *ptr = 0;
+        return (ptr > buf) ? (int)(ptr - buf) : (int) got;
+    }
+    return -1;
+}
+
+/* read from filename and zero terminate the buffer. */
+int read_file(const char *filename, char *buf, size_t buflen) {
+    int len = -1, fd = open(filename, O_RDONLY | O_TEXT);
+    if (fd >= 0) {
+        len = read_fd(fd, buf, buflen);
+        close(fd);
+    }
+    return len;
+}
+
+/* read all of filedescriptor and return a zero-terminated new[] string. */
+char* load_fd(int fd) {
+    struct stat st;
+    if (fstat(fd, &st) == 0) {
+        if (S_ISREG(st.st_mode)) {
+            char* buf = new char[st.st_size + 1];
+            if (buf) {
+                int len = read_fd(fd, buf, st.st_size + 1);
+                if (len == st.st_size) {
+                    return buf;
+                }
+                delete[] buf;
+            }
+        } else {
+            size_t offset = 0;
+            size_t bufsiz = 4096;
+            char* buf = new char[bufsiz + 1];
+            while (buf) {
+                int len = read_fd(fd, buf + offset, bufsiz + 1 - offset);
+                if (len <= 0 || offset + len < bufsiz) {
+                    if (len < 0 && offset == 0) {
+                        delete[] buf;
+                        buf = 0;
+                    }
+                    break;
+                }
+                else {
+                    size_t tmpsiz = 2 * bufsiz;
+                    char* tmp = new char[tmpsiz + 1];
+                    if (tmp) {
+                        memcpy(tmp, buf, bufsiz + 1);
+                        offset = bufsiz;
+                        bufsiz = tmpsiz;
+                    }
+                    delete[] buf;
+                    buf = tmp;
+                }
+            }
+            return buf;
+        }
+    }
+    return 0;
+}
+
+/* read a file as a zero-terminated new[] string. */
+char* load_text_file(const char *filename) {
+    char* buf = 0;
+    int fd = open(filename, O_RDONLY | O_TEXT);
+    if (fd >= 0) {
+        buf = load_fd(fd);
+        close(fd);
+    }
+    return buf;
+}
+

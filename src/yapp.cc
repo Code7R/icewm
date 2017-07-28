@@ -11,7 +11,6 @@
 #include "yprefs.h"
 
 #include "sysdep.h"
-#include "sys/resource.h"
 
 #include "intl.h"
 
@@ -31,9 +30,6 @@ static int signalPipe[2] = { 0, 0 };
 static sigset_t oldSignalMask;
 static sigset_t signalMask;
 static int measure_latency = 0;
-
-static const char * libDir = LIBDIR;
-static const char * configDir = CFGDIR;
 
 void YApplication::initSignals() {
     sigemptyset(&signalMask);
@@ -61,13 +57,13 @@ void YApplication::initSignals() {
     sfd.registerPoll(this, signalPipe[0]);
 }
 
-#ifdef linux
+#ifdef __linux__
 void alrm_handler(int /*sig*/) {
     show_backtrace();
 }
 #endif
 
-YApplication::YApplication(int * /*argc*/, char ***/*argv*/) {
+YApplication::YApplication(int * /*argc*/, char *** /*argv*/) {
     app = this;
     ::mainLoop = this;
     
@@ -75,6 +71,9 @@ YApplication::YApplication(int * /*argc*/, char ***/*argv*/) {
     fExitApp = 0;
     fFirstTimer = fLastTimer = 0;
     fFirstPoll = fLastPoll = 0;
+
+    setvbuf(stdout, NULL, _IOLBF, BUFSIZ);
+    setvbuf(stderr, NULL, _IOLBF, BUFSIZ);
 
 #if 0
     {
@@ -99,7 +98,7 @@ YApplication::YApplication(int * /*argc*/, char ***/*argv*/) {
     sigaction(SIGCHLD, &sig, &oldSignalCHLD);
 #endif
 
-#ifdef linux
+#ifdef __linux__
     if (measure_latency) {
         struct sigaction sa;
         sa.sa_handler = alrm_handler;
@@ -366,7 +365,7 @@ int YApplication::mainLoop() {
                 difftime.tv_usec += 1000000;
             }
             if (difftime.tv_sec > 0 || difftime.tv_usec >= 50 * 1000) {
-                DBG warn("latency: %d.%06d",
+                DBG warn("latency: %ld.%06ld",
                      difftime.tv_sec, difftime.tv_usec);
             }
         }
@@ -467,7 +466,7 @@ int YApplication::mainLoop() {
             if (difftime.tv_sec < 0 ||
                 (difftime.tv_sec == 0 && difftime.tv_usec < 0))
             {
-                warn("time warp of %d.%06d",
+                warn("time warp of %ld.%06ld",
                      difftime.tv_sec, difftime.tv_usec);
                 decreaseTimeouts(difftime);
             } else {
@@ -555,22 +554,18 @@ void YApplication::resetSignals() {
 }
 
 void YApplication::closeFiles() {
-#ifdef linux   /* for now, some debugging code */
-    int             i, max = 1024;
-    struct rlimit   lim;
-
-    if (getrlimit(RLIMIT_NOFILE, &lim) == 0)
-        max = lim.rlim_max;
+#ifdef __linux__   /* for now, some debugging code */
+    int             i, max = dup(0);
 
     for (i = 3; i < max; i++) {
         int fl = 0;
         if (fcntl(i, F_GETFD, &fl) == 0) {
             if (!(fl & FD_CLOEXEC)) {
                 char path[64];
-                char buf[1024];
+                char buf[64];
 
                 memset(buf, 0, sizeof(buf));
-                sprintf(path, "/proc/%d/fd/%d", getpid(), i);
+                snprintf(path, sizeof path, "/proc/%d/fd/%d", (int) getpid(), i);
                 if (readlink(path, buf, sizeof(buf) - 1) == -1)
 		    buf[0] = '\0';
 
@@ -580,6 +575,7 @@ void YApplication::closeFiles() {
             }
         }
     }
+    close(max);
 #endif
 }
 
@@ -609,6 +605,7 @@ int YApplication::runProgram(const char *path, const char *const *args) {
         else
             execlp(path, path, (void *)NULL);
 
+	fail("%s", path);
         _exit(99);
     }
     return cpid;
@@ -695,32 +692,49 @@ bool YSignalPoll::forWrite() {
     return false;
 }
 
-const char *YApplication::getLibDir() {
-    return libDir;
+const upath& YApplication::getLibDir() {
+    static upath dir( REDIR_ROOT(LIBDIR) );
+    return dir;
 }
 
-const char *YApplication::getConfigDir() {
-    return configDir;
+const upath& YApplication::getConfigDir() {
+    static upath dir( CFGDIR );
+    return dir;
 }
 
-const char *YApplication::getPrivConfDir() {
-    static char cfgdir[PATH_MAX] = "";
-
-    if (*cfgdir == '\0') {
+const upath& YApplication::getPrivConfDir() {
+    static upath dir;
+    if (dir.isEmpty()) {
         const char *env = getenv("ICEWM_PRIVCFG");
-
-        if (NULL == env) {
+        if (env)
+            dir = env;
+        else {
             env = getenv("HOME");
-            strcpy(cfgdir, env ? env : "");
-            strcat(cfgdir, "/.icewm");
-        } else {
-            strcpy(cfgdir, env);
+            if (env)
+                dir = env;
+            dir += "/.icewm";
         }
-
-        msg("using %s for private configuration files", cfgdir);
+        MSG(("using %s for private configuration files", cstring(dir).c_str()));
     }
+    return dir;
+}
 
-    return cfgdir;
+const upath& YApplication::getXdgConfDir() {
+    static upath dir;
+    if (dir.isEmpty()) {
+        const char *env = getenv("XDG_CONFIG_HOME");
+        if (env)
+            dir = env;
+        else {
+            env = getenv("HOME");
+            if (env)
+                dir = env;
+            dir += "/.config";
+        }
+        dir += "/icewm";
+        MSG(("using %s for private configuration files", cstring(dir).c_str()));
+    }
+    return dir;
 }
 
 upath YApplication::findConfigFile(upath name) {
@@ -729,15 +743,19 @@ upath YApplication::findConfigFile(upath name) {
     if (name.isAbsolute())
         return name;
 
-    p = upath(getPrivConfDir()).relative(name);
+    p = getXdgConfDir() + name;
     if (p.fileExists())
         return p;
 
-    p = upath(configDir).relative(name);
+    p = getPrivConfDir() + name;
     if (p.fileExists())
         return p;
 
-    p = upath(REDIR_ROOT(libDir)).relative(name);
+    p = getConfigDir() + name;
+    if (p.fileExists())
+        return p;
+
+    p = getLibDir() + name;
     if (p.fileExists())
         return p;
 

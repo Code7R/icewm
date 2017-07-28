@@ -4,8 +4,6 @@
 #include "yapp.h"
 
 #include "ywindow.h"
-#include "ycursor.h"
-#include "ypoll.h"
 
 class YXPoll: public YPoll<class YXApplication> {
 public:
@@ -53,8 +51,6 @@ public:
 
     YWindow *grabWindow() const { return fGrabWindow; }
 
-    void initModifiers();
-
     void alert();
 
     void setClipboardText(const ustring &data);
@@ -76,6 +72,9 @@ public:
     unsigned int KeyMask;
     unsigned int ButtonMask;
     unsigned int ButtonKeyMask;
+
+    static const char* getHelpText();
+
 private:
     Display *fDisplay;
     Time lastEventTime;
@@ -93,6 +92,11 @@ private:
 
     virtual bool handleXEvents();
     virtual void flushXEvents();
+
+    void initModifiers();
+    static void initAtoms();
+    static void initPointers();
+    static void initColors();
 };
 
 extern YXApplication *xapp;

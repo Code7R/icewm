@@ -157,7 +157,7 @@ private:
     MEMStatus *fMEMStatus;
 #endif
 #ifdef CONFIG_APPLET_CPU_STATUS
-    CPUStatus *fCPUStatus;
+    CPUStatus **fCPUStatus;
 #endif
 #ifdef CONFIG_APPLET_APM
     YApm *fApm;
@@ -209,25 +209,6 @@ private:
 };
 
 extern TaskBar *taskBar; // !!! get rid of this
-
-#if 1
-extern ref<YPixmap> startPixmap;
-extern ref<YPixmap> windowsPixmap;
-
-extern ref<YPixmap> taskbackPixmap;
-extern ref<YPixmap> taskbuttonPixmap;
-extern ref<YPixmap> taskbuttonactivePixmap;
-extern ref<YPixmap> taskbuttonminimizedPixmap;
-#endif
-
-#ifdef CONFIG_GRADIENTS
-class YPixbuf;
-
-extern ref<YImage> taskbackPixbuf;
-extern ref<YImage> taskbuttonPixbuf;
-extern ref<YImage> taskbuttonactivePixbuf;
-extern ref<YImage> taskbuttonminimizedPixbuf;
-#endif
 
 #endif
 

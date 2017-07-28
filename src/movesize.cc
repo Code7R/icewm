@@ -685,7 +685,7 @@ bool YFrameWindow::handleKey(const XKeyEvent &key) {
             switch (handleMoveKeys(key, newX, newY)) {
             case -2:
                 moveWindow(newX, newY);
-                /* nobreak */
+                /* fall-through */
             case -1:
                 endMoveSize();
                 break;
@@ -739,7 +739,7 @@ bool YFrameWindow::handleKey(const XKeyEvent &key) {
                 drawMoveSizeFX(x(), y(), width(), height());
                 setCurrentGeometryOuter(YRect(newX, newY, newWidth, newHeight));
                 drawMoveSizeFX(x(), y(), width(), height());
-                /* nobreak */
+                /* falls-through */
 
             case -1:
                 endMoveSize();
@@ -891,7 +891,7 @@ void YFrameWindow::startMoveSize(int x, int y,
     int sx[] = { -1, 0, 1, 1, 1, 0, -1, -1, 0 };
     int sy[] = { -1, -1, -1, 0, 1, 1, 1, 0, 0 };
 
-    if (direction >= 0 && direction < (int)(sizeof(sx)/sizeof(sx[0]))) {
+    if (direction >= 0 && direction < (int) ACOUNT(sx)) {
         MSG(("move size %d %d %d", x, y, direction));
         if (direction == _NET_WM_MOVERESIZE_MOVE) {
             x -= this->x();

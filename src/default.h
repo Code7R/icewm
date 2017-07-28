@@ -134,7 +134,7 @@ XIV(bool, showWindowList,                       true)
 XIV(bool, showHelp,                             true)
 XIV(bool, allowFullscreen,                      true)
 XIV(bool, fullscreenUseAllMonitors,             false)
-XIV(bool, enableAddressBar,                     true);
+XIV(bool, enableAddressBar,                     true)
 XIV(bool, showAddressBar,                       true)
 XIV(bool, confirmLogout,                        true)
 #ifdef CONFIG_SHAPED_DECORATION
@@ -200,6 +200,7 @@ XIV(int, taskBarNetDelay,                       500)
 XSV(const char *, cpuCommand,                   "x-terminal-emulator -e top")
 XSV(const char *, cpuClassHint,                 "top.XTerm")
 XSV(const char *, netCommand,                   "x-terminal-emulator -e netstat -c")
+XIV(bool, cpuCombine,                           true)
 XSV(const char *, netClassHint,                 "netstat.XTerm")
 XSV(const char *, netDevice,                    "eth0 wlan0")
 XSV(const char *, addressBarCommand,            0)
@@ -427,6 +428,7 @@ cfoption icewm_preferences[] = {
     OSV("RebootCommand",                        &rebootCommand,                 "Command to reboot the system"),
     OSV("CPUStatusCommand",                     &cpuCommand,                    "Command to run on CPU status"),
     OSV("CPUStatusClassHint",                   &cpuClassHint,                  "WM_CLASS to allow runonce for CPUStatusCommand"),
+    OBV("CPUStatusCombine",                     &cpuCombine,                    "Combine all CPUs to one"),
     OSV("NetStatusCommand",                     &netCommand,                    "Command to run on Net status"),
     OSV("NetStatusClassHint",                   &netClassHint,                  "WM_CLASS to allow runonce for NetStatusCommand"),
     OSV("AddressBarCommand",                    &addressBarCommand,             "Command to run for address bar entries"),

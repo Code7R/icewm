@@ -17,6 +17,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <limits.h>
 
 #include "intl.h"
 
@@ -549,6 +550,9 @@ void YInputLine::limit() {
 void YInputLine::replaceSelection(const ustring &str) {
     int min, max;
 
+    // FIXME: GCC7 tells us for optimized builds: src/yinput.cc:552:5: warning: assuming signed overflow does not occur when assuming that (X + c) < X is always false [-Wstrict-overflow]
+    // that might imply that all code paths leading to here are already such that the condition always holds true
+    // Unfortunatelly GCC does not help much here.
     if (curPos > markPos) {
         min = markPos;
         max = curPos;
@@ -579,7 +583,7 @@ bool YInputLine::deleteNextChar() {
     int textLen = fText.length();
 
     if (curPos < textLen) {
-        markPos = curPos + 1;
+        markPos = curPos + (curPos < INT_MAX);
         deleteSelection();
         return true;
     }
@@ -722,7 +726,6 @@ void YInputLine::autoScroll(int delta, const XMotionEvent *motion) {
     beginAutoScroll(delta ? true : false, motion);
 }
 void YInputLine::complete() {
-#ifdef HAVE_ASPRINTF
     char *res=NULL;
     int  res_count=0;
     cstring t(fText);
@@ -737,7 +740,6 @@ void YInputLine::complete() {
     }
     setText(ustring(res, strlen(res)));
     free(res);
-#endif
 }
 
 #endif

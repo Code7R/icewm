@@ -5,7 +5,6 @@
  */
 #include "config.h"
 #include "yfull.h"
-#include "yutil.h"
 #include "ywindow.h"
 #include "ykey.h"
 
@@ -18,8 +17,6 @@
 
 #include "ytimer.h"
 #include "ypopup.h"
-
-extern const char *ApplicationName;
 
 /******************************************************************************/
 /******************************************************************************/
@@ -321,7 +318,7 @@ void YWindow::create() {
                                 &attributes);
 
         if (parent() == desktop &&
-            !(flags & (wsManager || wsOverrideRedirect)))
+            !(flags & (wsManager | wsOverrideRedirect)))
             XSetWMProtocols(xapp->display(), fHandle, &_XA_WM_DELETE_WINDOW, 1);
 
         if ((flags & wfVisible) && !(flags & wfNullSize))
@@ -332,15 +329,6 @@ void YWindow::create() {
         XGetWindowAttributes(xapp->display(),
                              fHandle,
                              &attributes);
-
-        if(attributes.width <= 1 && strstr(ApplicationName, "icewmtray"))
-        {
-            sleep(1);
-            XGetWindowAttributes(xapp->display(),
-                                 fHandle,
-                                 &attributes);
-        }
-
         fX = attributes.x;
         fY = attributes.y;
         fWidth = attributes.width;
@@ -1921,6 +1909,7 @@ void YDesktop::updateXineramaInfo(int &w, int &h) {
 
             MSG(("output: %s -> %d", oinfo->name, oinfo->crtc));
 
+#ifndef NO_CONFIGURE
             if (xineramaPrimaryScreenName != 0 && oinfo->name != NULL) {
                 if (strcmp(xineramaPrimaryScreenName, oinfo->name) == 0)
                 { 
@@ -1933,6 +1922,7 @@ void YDesktop::updateXineramaInfo(int &w, int &h) {
                     }
                 }
             }
+#endif
 	    XRRFreeOutputInfo(oinfo);
         }
 	XRRFreeScreenResources(xrrsr);
