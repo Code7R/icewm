@@ -78,6 +78,8 @@ override_dh_install:
 	mkdir -p "$(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ"
 	cd $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ && sgml2html $(CURDIR)/debian/FAQ/source/*.sgml
 	sgml2txt $(CURDIR)/debian/FAQ/source/*.sgml && col -bx < IceWM-FAQ.txt > $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ/IceWM-FAQ.txt
+	echo FIXME: this is a temp. workaround for installation of HTML help until the decission of when to rebuild is made
+	cp doc/icewm.html $(ICEWM_COMMON)/usr/share/doc/icewm-common/html/
 	# making -experimental compat symlinks
 	for x in icewm-session icewm icewmhint icehelp icewmtray icewmbg icesh icesound ; do ln -s $$x $(ICEWM_EXP)/usr/bin/$$x-experimental ; done
 	# Install undocumented manpages
