@@ -5,6 +5,9 @@
 %:
 	dh $@ --parallel
 
+# debhelper is still not doing what we need :-(
+PAROPT=$(shell echo $$DEB_BUILD_OPTIONS | sed -e 's,.*parallel=\([0-9]\).*,-j\1,')
+
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
@@ -50,8 +53,8 @@ override_dh_auto_build:
 	cd debian && for x in -lite -experimental ; do cp -lf icewm.postinst icewm$$x.postinst ; cp -lf icewm.prerm icewm$$x.prerm ; done
 
 override_dh_auto_install:
-	$(MAKE) -C $(BDIR)-lite install DESTDIR=$(CURDIR)/debian/tmp
-	$(MAKE) -C $(BDIR)-normal install DESTDIR=$(CURDIR)/debian/tmp
+	$(MAKE) $(PAROPT) -C $(BDIR)-lite install DESTDIR=$(CURDIR)/debian/tmp
+	$(MAKE) $(PAROPT) -C $(BDIR)-normal install DESTDIR=$(CURDIR)/debian/tmp
 
 override_dh_install:
 	dh_install
