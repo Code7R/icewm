@@ -123,5 +123,5 @@ get-orig-source:
 
 update-debian-mod:
 	grep debian .git/HEAD
-	git log icewm-1-4-BRANCH -n 200 --decorate --stat=76 -M -C|fmt -sct -w80 > ChangeLog
+	oldstate=$$(head ChangeLog  | grep ^commit | head -1 | cut -f2 -d ' ') && git log $$oldstate..icewm-1-4-BRANCH --stat=76 -M -C |fmt -sct -w80 > ChangeLog
 	git commit ChangeLog -m "Updating ChangeLog for a new Debian snapshot"
