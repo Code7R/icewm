@@ -6,7 +6,7 @@
 	dh $@ --parallel
 
 # debhelper is still not doing what we need :-(
-PAROPT=$(shell echo $$DEB_BUILD_OPTIONS | sed -e 's,.*parallel=\([0-9]\).*,-j\1,')
+#PAROPT=$(shell echo $$DEB_BUILD_OPTIONS | sed -e 's,.*parallel=\([0-9]\).*,-j\1,')
 
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 DPKG_EXPORT_BUILDFLAGS = 1
@@ -78,8 +78,8 @@ override_dh_install:
 	mkdir -p "$(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ"
 	cd $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ && sgml2html $(CURDIR)/debian/FAQ/source/*.sgml
 	sgml2txt $(CURDIR)/debian/FAQ/source/*.sgml && col -bx < IceWM-FAQ.txt > $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ/IceWM-FAQ.txt
-	echo FIXME: this is a temp. workaround for installation of HTML help until the decission of when to rebuild is made
-	cp doc/icewm.html $(ICEWM_COMMON)/usr/share/doc/icewm-common/html/
+#	echo FIXME: this is a temp. workaround for installation of HTML help until the decission of when to rebuild is made
+#	cp doc/icewm.html $(ICEWM_COMMON)/usr/share/doc/icewm-common/html/
 	# making -experimental compat symlinks
 	for x in icewm-session icewm icewmhint icehelp icewmtray icewmbg icesh icesound ; do ln -s $$x $(ICEWM_EXP)/usr/bin/$$x-experimental ; done
 	# Install undocumented manpages
