@@ -28,9 +28,9 @@ void logEvent(const XEvent &xev) {
     switch (xev.type) {
 #if 1
     case CreateNotify:
-        msg("window=0x%lX: create serial=%10d parent=0x%lX, (%d:%d-%dx%d) border_width=%d, override_redirect=%s",
+        msg("window=0x%lX: create serial=%10lu parent=0x%lX, (%d:%d-%dx%d) border_width=%d, override_redirect=%s",
             xev.xcreatewindow.window,
-            xev.xany.serial,
+            (unsigned long) xev.xany.serial,
             xev.xcreatewindow.parent,
             xev.xcreatewindow.x, xev.xcreatewindow.y,
             xev.xcreatewindow.width, xev.xcreatewindow.height,
@@ -39,9 +39,9 @@ void logEvent(const XEvent &xev) {
         break;
 
     case DestroyNotify:
-        msg("window=0x%lX: destroy serial=%10d event=0x%lX",
+        msg("window=0x%lX: destroy serial=%10lu event=0x%lX",
             xev.xdestroywindow.window,
-            xev.xany.serial,
+            (unsigned long) xev.xany.serial,
             xev.xdestroywindow.event);
         break;
 #else
@@ -51,9 +51,9 @@ void logEvent(const XEvent &xev) {
 #endif
 #if 1
     case MapRequest:
-        msg("window=0x%lX: mapRequest serial=%10d parent=0x%lX",
+        msg("window=0x%lX: mapRequest serial=%10lu parent=0x%lX",
             xev.xmaprequest.window,
-            xev.xany.serial,
+            (unsigned long) xev.xany.serial,
             xev.xmaprequest.parent);
         break;
 #else
@@ -62,17 +62,17 @@ void logEvent(const XEvent &xev) {
 #endif
 #if 1
     case MapNotify:
-        msg("window=0x%lX: mapNotify serial=%10d event=0x%lX, override_redirect=%s",
+        msg("window=0x%lX: mapNotify serial=%10lu event=0x%lX, override_redirect=%s",
             xev.xmap.window,
-            xev.xany.serial,
+            (unsigned long) xev.xany.serial,
             xev.xmap.event,
             xev.xmap.override_redirect ? "True" : "False");
         break;
 
     case UnmapNotify:
-        msg("window=0x%lX: unmapNotify serial=%10d event=0x%lX, from_configure=%s send_event=%s",
+        msg("window=0x%lX: unmapNotify serial=%10lu event=0x%lX, from_configure=%s send_event=%s",
             xev.xunmap.window,
-            xev.xany.serial,
+            (unsigned long) xev.xany.serial,
             xev.xunmap.event,
             xev.xunmap.from_configure ? "True" : "False",
             xev.xunmap.send_event ? "True" : "False");
@@ -84,10 +84,10 @@ void logEvent(const XEvent &xev) {
 #endif
 #if 1
     case ConfigureRequest:
-        msg("window=0x%lX: %s configureRequest serial=%10d parent=0x%lX, (%d:%d-%dx%d) border_width=%d, above=0x%lX, detail=%d, value_mask=0x%lX",
+        msg("window=0x%lX: %s configureRequest serial=%10lu parent=0x%lX, (%d:%d-%dx%d) border_width=%d, above=0x%lX, detail=%d, value_mask=0x%lX",
             xev.xconfigurerequest.window,
             xev.xconfigurerequest.send_event ? "synth" : "real",
-            xev.xany.serial,
+            (unsigned long) xev.xany.serial,
             xev.xconfigurerequest.parent,
             xev.xconfigurerequest.x, xev.xconfigurerequest.y,
             xev.xconfigurerequest.width, xev.xconfigurerequest.height,
@@ -131,9 +131,9 @@ void logEvent(const XEvent &xev) {
 
 #if 1
     case ReparentNotify:
-        msg("window=0x%lX: reparentNotify serial=%10d event=0x%lX, parent=0x%lX, (%d:%d), override_redirect=%s",
+        msg("window=0x%lX: reparentNotify serial=%10lu event=0x%lX, parent=0x%lX, (%d:%d), override_redirect=%s",
             xev.xreparent.window,
-            xev.xany.serial,
+            (unsigned long) xev.xany.serial,
             xev.xreparent.event,
             xev.xreparent.parent,
             xev.xreparent.x, xev.xreparent.y,
@@ -146,9 +146,9 @@ void logEvent(const XEvent &xev) {
 
 #if 1
     case ConfigureNotify:
-        msg("window=0x%lX: configureNotify serial=%10d event=0x%lX, (%d:%d-%dx%d) border_width=%d, above=0x%lX, override_redirect=%s",
+        msg("window=0x%lX: configureNotify serial=%10lu event=0x%lX, (%d:%d-%dx%d) border_width=%d, above=0x%lX, override_redirect=%s",
             xev.xconfigure.window,
-            xev.xany.serial,
+            (unsigned long) xev.xany.serial,
             xev.xconfigure.event,
             xev.xconfigure.x, xev.xconfigure.y,
             xev.xconfigure.width, xev.xconfigure.height,
@@ -233,10 +233,10 @@ void logEvent(const XEvent &xev) {
 #if 1
     case EnterNotify:
     case LeaveNotify:
-        msg("window=0x%lX: %s serial=%10d root=0x%lX, subwindow=0x%lX, time=%ld, (%d:%d %d:%d) mode=%d detail=%d same_screen=%s, focus=%s state=0x%X",
+        msg("window=0x%lX: %s serial=%10lu root=0x%lX, subwindow=0x%lX, time=%ld, (%d:%d %d:%d) mode=%d detail=%d same_screen=%s, focus=%s state=0x%X",
             xev.xcrossing.window,
             (xev.type == EnterNotify) ? "enterNotify" : "leaveNotify",
-            xev.xany.serial,
+            (unsigned long) xev.xany.serial,
             xev.xcrossing.root,
             xev.xcrossing.subwindow,
             xev.xcrossing.time,
@@ -448,6 +448,7 @@ void operator delete[](void *p) {
 #endif
 
 /* Prefer this as a safer alternative over strcpy. Return strlen(from). */
+#if !defined(HAVE_STRLCPY) || !HAVE_STRLCPY
 size_t strlcpy(char *dest, const char *from, size_t dest_size)
 {
     const char *in = from;
@@ -461,8 +462,10 @@ size_t strlcpy(char *dest, const char *from, size_t dest_size)
     while (*in) ++in;
     return in - from;
 }
+#endif
 
 /* Prefer this over strcat. Return strlen(dest) + strlen(from). */
+#if !defined(HAVE_STRLCAT) || !HAVE_STRLCAT
 size_t strlcat(char *dest, const char *from, size_t dest_size)
 {
     char *to = dest;
@@ -470,6 +473,7 @@ size_t strlcat(char *dest, const char *from, size_t dest_size)
     while (to < stop && *to) ++to;
     return to - dest + strlcpy(to, from, dest_size - (to - dest));
 }
+#endif
 
 char *newstr(char const *str) {
     return (str != NULL ? newstr(str, strlen(str)) : NULL);
@@ -544,6 +548,19 @@ bool GetLongArgument(char* &ret, const char *name, char** &argpp, char **endpp)
 	++argpp;
 	ret = *argpp;
 	return true;
+}
+
+bool GetArgument(char* &ret, const char *sn, const char *ln, char** &arg, char **end)
+{
+    bool got = false;
+    if (**arg == '-') {
+        if (arg[0][1] == '-') {
+            got = GetLongArgument(ret, ln, arg, end);
+        } else {
+            got = GetShortArgument(ret, sn, arg, end);
+        }
+    }
+    return got;
 }
 
 bool is_short_switch(const char *arg, const char *name)

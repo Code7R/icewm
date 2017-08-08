@@ -17,7 +17,6 @@
 #include "yprefs.h"
 
 #include "ascii.h"
-#include "ypixbuf.h"
 
 #ifndef LITE
 #include "yicon.h"
@@ -680,12 +679,12 @@ YMenuItem * YMenu::add(YMenuItem *item, const char *icons) {
 #endif
 
 
-YMenuItem * YMenu::addSorted(YMenuItem *item, bool duplicates) {
+YMenuItem * YMenu::addSorted(YMenuItem *item, bool duplicates, bool ignoreCase) {
     for (int i = 0; i < itemCount(); i++) {
         if (item->getName() == null || fItems[i]->getName() == null)
             continue;
 
-        int cmp = item->getName().collate(fItems[i]->getName());
+        int cmp = item->getName().collate(fItems[i]->getName(), ignoreCase);
         if (cmp > 0)
             continue;
         else if (cmp != 0 || duplicates) {

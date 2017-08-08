@@ -10,6 +10,7 @@ INCLUDE(CheckTypeSize)
 INCLUDE(CheckIncludeFileCXX)
 INCLUDE(FindPkgConfig)
 INCLUDE(CheckCXXSourceCompiles)
+INCLUDE(CheckCXXCompilerFlag)
 
 SET(CXXFLAGS_COMMON "-pthread -Wall -Wextra -Wno-unused-parameter -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -I.")
 
@@ -21,6 +22,16 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
    add_definitions(-DDEBUG)
 endif()
 
+# carefully splicing of command line arguments, even from lists
+macro(_append varname)
+        string(REPLACE ";" " " _apx "${ARGN}")
+        if(NOT DEFINED ${varname})
+                set(${varname} "${_apx}")
+        else()
+                set(${varname} "${${varname}} ${_apx}")
+        endif()
+endmacro()
+
 # I don't need -rdynamic, thanks!
 SET(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
 SET(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
@@ -28,12 +39,23 @@ SET(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
 # apply to test calls
 SET(CMAKE_REQUIRED_FLAGS ${CXXFLAGS_COMMON})
 
+CHECK_CXX_COMPILER_FLAG(-fvisibility=hidden CXX_VHI)
+if(CXX_VHI)
+        _append(CXXFLAGS_COMMON -fvisibility=hidden)
+endif()
+
+CHECK_CXX_COMPILER_FLAG(-fvisibility-inlines-hidden CXX_VIHI)
+if(CXX_VIHI)
+        _append(CXXFLAGS_COMMON -fvisibility-inlines-hidden)
+endif()
+
 option(CONFIG_XPM "Legacy XPM image loader" off)
 option(CONFIG_IMLIB "(Deprecated) IMLIB image loader" off)
 option(CONFIG_GDK_PIXBUF_XLIB "LIBGDKPIXBUF based image loader" on)
 option(CONFIG_I18N "Define to enable internationalization" on)
 option(ENABLE_NLS "Enable Native Language Support" on)
 option(CONFIG_SESSION "Define to enable X session management" on)
+option(ENABLE_LTO "Enable Link Time Optimization" off)
 
 SET(CONFIG_UNICODE_SET "" CACHE STRING "Your iconv unicode set in machine endian encoding (e.g. WCHAR_T, UCS-4-INTERNAL, UCS-4LE, UCS-4BE)")
 # turn off when empty, see config.h template for details
@@ -55,14 +77,21 @@ if(ENABLE_NLS OR CONFIG_I18N)
 	endif()
 endif()
 
+if(ENABLE_LTO)
+        set(CXXFLAGS_COMMON "${CXXFLAGS_COMMON} -flto")
+        list(APPEND EXTRA_LIBS -flto)
+endif()
+
 # the only used ones...
 # for x in `cat funclist` ; do grep $x src/* lib/* && echo $x >> exlist ; done 
 # perl -e 'print "CHECK_FUNCTION_EXISTS($_ HAVE_".uc($_).")\n" for @ARGV' `cat exlist`
 # perl -e 'print "#cmakedefine HAVE_".uc($_)."\n" for @ARGV' `cat exlist`
+CHECK_FUNCTION_EXISTS(abort HAVE_ABORT)
+CHECK_FUNCTION_EXISTS(basename HAVE_BASENAME)
 CHECK_FUNCTION_EXISTS(dup2 HAVE_DUP2)
-CHECK_FUNCTION_EXISTS(getcwd HAVE_GETCWD)
 CHECK_FUNCTION_EXISTS(gethostbyname HAVE_GETHOSTBYNAME)
 CHECK_FUNCTION_EXISTS(gethostname HAVE_GETHOSTNAME)
+CHECK_FUNCTION_EXISTS(getloadavg HAVE_GETLOADAVG)
 CHECK_FUNCTION_EXISTS(gettimeofday HAVE_GETTIMEOFDAY)
 CHECK_FUNCTION_EXISTS(mblen HAVE_MBLEN)
 CHECK_FUNCTION_EXISTS(memchr HAVE_MEMCHR)
@@ -70,7 +99,6 @@ CHECK_FUNCTION_EXISTS(memmove HAVE_MEMMOVE)
 CHECK_FUNCTION_EXISTS(memset HAVE_MEMSET)
 CHECK_FUNCTION_EXISTS(mkdir HAVE_MKDIR)
 CHECK_FUNCTION_EXISTS(nl_langinfo HAVE_NL_LANGINFO)
-CHECK_FUNCTION_EXISTS(putenv HAVE_PUTENV)
 CHECK_FUNCTION_EXISTS(select HAVE_SELECT)
 CHECK_FUNCTION_EXISTS(setlocale HAVE_SETLOCALE)
 CHECK_FUNCTION_EXISTS(socket HAVE_SOCKET)
@@ -79,23 +107,17 @@ CHECK_FUNCTION_EXISTS(strchr HAVE_STRCHR)
 CHECK_FUNCTION_EXISTS(strcspn HAVE_STRCSPN)
 CHECK_FUNCTION_EXISTS(strdup HAVE_STRDUP)
 CHECK_FUNCTION_EXISTS(strerror HAVE_STRERROR)
+CHECK_FUNCTION_EXISTS(strlcpy HAVE_STRLCPY)
+CHECK_FUNCTION_EXISTS(strlcat HAVE_STRLCAT)
 CHECK_FUNCTION_EXISTS(strncasecmp HAVE_STRNCASECMP)
 CHECK_FUNCTION_EXISTS(strrchr HAVE_STRRCHR)
 CHECK_FUNCTION_EXISTS(strspn HAVE_STRSPN)
 CHECK_FUNCTION_EXISTS(strstr HAVE_STRSTR)
 CHECK_FUNCTION_EXISTS(strtol HAVE_STRTOL)
+CHECK_FUNCTION_EXISTS(strtoul HAVE_STRTOL)
+CHECK_FUNCTION_EXISTS(sysctlbyname HAVE_SYSCTLBYNAME)
 CHECK_FUNCTION_EXISTS(sysinfo HAVE_SYSINFO)
 CHECK_FUNCTION_EXISTS(uname HAVE_UNAME)
-CHECK_FUNCTION_EXISTS(abort HAVE_ABORT)
-CHECK_FUNCTION_EXISTS(gettimeofday HAVE_GETTIMEOFDAY)
-CHECK_FUNCTION_EXISTS(putenv HAVE_PUTENV)
-CHECK_FUNCTION_EXISTS(select HAVE_SELECT)
-CHECK_FUNCTION_EXISTS(socket HAVE_SOCKET)
-CHECK_FUNCTION_EXISTS(strtol HAVE_STRTOL)
-CHECK_FUNCTION_EXISTS(basename HAVE_BASENAME)
-CHECK_FUNCTION_EXISTS(sysctlbyname HAVE_SYSCTLBYNAME)
-CHECK_FUNCTION_EXISTS(getloadavg HAVE_GETLOADAVG)
-CHECK_FUNCTION_EXISTS(asprintf HAVE_ASPRINTF)
 CHECK_FUNCTION_EXISTS(wordexp HAVE_WORDEXP)
 
 CHECK_LIBRARY_EXISTS (X11 XInternAtoms "" HAVE_XINTERNATOMS)
@@ -284,7 +306,12 @@ ENDIF()
 SET(CMAKE_REQUIRED_FLAGS "${CXXFLAGS_COMMON} -Wimplicit-fallthrough=2")
 CHECK_CXX_SOURCE_COMPILES("int main() {return 0;}" USE_FALLTHROUGH_WARNING)
 IF(USE_FALLTHROUGH_WARNING)
-        SET(CXXFLAGS_COMMON "${CXXFLAGS_COMMON} -Wimplicit-fallthrough=2")
+        if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+                # apparently clang does not support the parameter but the default behavior is what we ant
+                SET(CXXFLAGS_COMMON "${CXXFLAGS_COMMON} -Wimplicit-fallthrough")
+        else()
+                SET(CXXFLAGS_COMMON "${CXXFLAGS_COMMON} -Wimplicit-fallthrough=2")
+        endif()
 ENDIF()
 
 #######################################
@@ -306,8 +333,8 @@ endforeach()
 
 SET(ICE_COMMON_SRCS mstring.cc udir.cc upath.cc yapp.cc yxapp.cc ytimer.cc
  ywindow.cc ypaint.cc ypopup.cc misc.cc ycursor.cc ysocket.cc ypaths.cc
- ypixbuf.cc ylocale.cc yarray.cc ypipereader.cc yxembed.cc yconfig.cc
- yprefs.cc yfont.cc ypixmap.cc yimage.cc
+ ylocale.cc yarray.cc ypipereader.cc yxembed.cc yconfig.cc
+ yprefs.cc yfont.cc ypixmap.cc
  yimage_gdk.cc yimage_imlib.cc yimage_xpm.cc ytooltip.cc)
 
 if(CONFIG_XFREETYPE)
@@ -347,7 +374,7 @@ TARGET_LINK_LIBRARIES(icewm-menu-fdo${EXEEXT} ${gio_LDFLAGS} ${nls_LIBS} ${EXTRA
 INSTALL(TARGETS icewm-menu-fdo${EXEEXT} DESTINATION ${BINDIR})
 ENDIF()
 
-ADD_EXECUTABLE(icewm-session${EXEEXT} icesm.cc yapp.cc misc.cc mstring.cc upath.cc ytimer.cc yprefs.cc)
+ADD_EXECUTABLE(icewm-session${EXEEXT} icesm.cc yapp.cc misc.cc mstring.cc upath.cc ytimer.cc yprefs.cc yarray.cc ref.cc)
 SET_TARGET_PROPERTIES(icewm-session${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
 TARGET_LINK_LIBRARIES(icewm-session${EXEEXT} ${nls_LIBS} ${EXTRA_LIBS})
 
@@ -355,7 +382,7 @@ ADD_EXECUTABLE(icewmhint${EXEEXT} icewmhint.cc misc.cc)
 SET_TARGET_PROPERTIES(icewmhint${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
 TARGET_LINK_LIBRARIES(icewmhint${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${nls_LIBS} ${EXTRA_LIBS})
 
-ADD_EXECUTABLE(icesh${EXEEXT} icesh.cc misc.cc mstring.cc)
+ADD_EXECUTABLE(icesh${EXEEXT} icesh.cc misc.cc mstring.cc ref.cc)
 SET_TARGET_PROPERTIES(icesh${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
 TARGET_LINK_LIBRARIES(icesh${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${nls_LIBS} ${EXTRA_LIBS})
 
@@ -411,8 +438,17 @@ foreach (_variableName
 		CONFIG_WINMENU
 		CONFIG_XFREETYPE
 		XINERAMA
+    ENABLE_LTO
+    ENABLE_ALSA
+    ENABLE_ESD
+    ENABLE_NLS
+    ENABLE_YIFF
 		)
-    message(STATUS "${_variableName} => ${${_variableName}}")
+    if("${${_variableName}}" STREQUAL "")
+            message(STATUS "${_variableName} => OFF")
+    else()
+            message(STATUS "${_variableName} => ${${_variableName}}")
+    endif()
 endforeach()
 
 IF(CONFIG_SESSION)

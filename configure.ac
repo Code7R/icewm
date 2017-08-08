@@ -2,8 +2,8 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([icewm],[1.4.1],[https://github.com/bbidulock/icewm/issues])
-AC_REVISION([1.4.1])
+AC_INIT([icewm],[1.4.2.78],[https://github.com/bbidulock/icewm/issues])
+AC_REVISION([1.4.2.78])
 AC_CONFIG_SRCDIR([src/ysmapp.cc])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
@@ -11,8 +11,11 @@ AC_CONFIG_AUX_DIR([scripts])
 AC_USE_SYSTEM_EXTENSIONS
 AC_CANONICAL_TARGET
 
-DATE='2017-07-27'
+DATE='2017-08-05'
 AC_SUBST([DATE])
+
+BRANCH='icewm-1-4-BRANCH'
+AC_SUBST([BRANCH])
 
 APPLICATIONS='icewm icewm-session icesh icewmhint icewmbg icewmtray'
 TESTCASES=`echo src/test*.cc | sed 's%src/\([[^ ]]*\)\.cc%\1%g'`
@@ -37,13 +40,34 @@ AC_PROG_MKDIR_P
 AC_ARG_VAR([LD], [Linker loader command])
 
 AC_ARG_VAR([MKFONTDIR],[mkfontdir command. @<:@default=mkfontdir@:>@])
-AC_PATH_PROG([MKFONTDIR],[mkfontdir],[${am_missing_run}mkfontdir],[$PATH$PATH_SEPARATOR/usr/X11R6/bin])
-
-AC_ARG_VAR([ASCIIDOC],[asciidoc command. @<:@default=asciidoctor@:>@])
-AC_PATH_PROG([ASCIIDOC],[asciidoctor],[${am_missing_run}asciidoc],[$PATH])
+AC_CHECK_PROGS([MKFONTDIR],[mkfontdir],[${am_missing_run}mkfontdir],[$PATH$PATH_SEPARATOR/usr/X11R6/bin])
 
 AC_ARG_VAR([MARKDOWN],[markdown command. @<:@default=markdown@:>@])
-AC_PATH_PROG([MARKDOWN],[markdown],[${am_missing_run}markdown],[$PATH])
+AC_CHECK_PROGS([MARKDOWN],[markdown],[${am_missing_run}markdown],[$PATH])
+
+AC_ARG_VAR([ASCIIDOC],[asciidoc command. @<:@default=asciidoctor@:>@])
+AC_CHECK_PROGS([ASCIIDOC],[asciidoctor asciidoc],[${am_missing_run}asciidoctor],[$PATH])
+
+AC_ARG_VAR([ASCIIDOC_BACKEND],[asciidoc backend @<:@default=NONE@:>@])
+if test -z "$ASCIIDOC_BACKEND"; then
+	case "$ASCIIDOC" in
+		asciidoc) ASCIIDOC_BACKEND="--backend=html4" ;;
+		asciidoctor) ASCIIDOC_BACKEND="--backend=html5" ;;
+		*) AC_MSG_WARN([ASCIIDOC $ASCIIDOC is not supported.]) ;;
+	esac
+fi
+
+AC_ARG_VAR([ASCIIMAN],[asciidoc to manpage converter. @<:@default=asciidoctor@:>@])
+AC_CHECK_PROGS([ASCIIMAN],[asciidoctor a2x],[${am_missing_run}asciidoctor],[$PATH])
+
+AC_ARG_VAR([ASCIIMAN_FORMAT],[asciidoc manpage option @<:@default=NONE@:>@])
+if test -z "$ASCIIMAN_FORMAT"; then
+        case "$ASCIIMAN" in
+                a2x) ASCIIMAN_FORMAT="--format=manpage" ;;
+                asciidoctor) ASCIIMAN_FORMAT="--backend=manpage" ;;
+                *) AC_MSG_WARN([ASCIIMAN $ASCIIMAN is not supported.]) ;;
+        esac
+fi
 
 LT_PATH_LD
 LT_PREREQ([2.4.2])
@@ -102,20 +126,51 @@ AC_CHECK_SIZEOF(long, 4)
 AC_TYPE_SIGNAL
 
 # Checks for library functions.
-AC_FUNC_STRFTIME
-AC_FUNC_VPRINTF
-AC_FUNC_ERROR_AT_LINE
 if test x$cross_compling != xyes ; then :; AC_FUNC_FORK fi
-AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
 if test x$cross_compling != xyes ; then :; AC_FUNC_MALLOC fi
-AC_FUNC_MMAP
 if test x$cross_compling != xyes ; then :; AC_FUNC_REALLOC fi
-AC_FUNC_STRNLEN
-AC_CHECK_FUNCS([dup2 getcwd gethostbyname gethostname gettimeofday mblen memchr memmove memset mkdir nl_langinfo putenv select setlocale socket strcasecmp strchr strcspn strdup strerror strncasecmp strrchr strspn strstr strtol sysinfo uname abort wordexp])
-AC_CHECK_FUNCS([gettimeofday putenv select socket strtol strtoul basename])
-AC_CHECK_FUNCS([sysctlbyname asprintf])
+AC_CHECK_FUNCS([abort basename dup2])
+AC_CHECK_FUNCS([gethostbyname gethostname gettimeofday])
+AC_CHECK_FUNCS([mblen memchr memmove memset mkdir nl_langinfo])
+AC_CHECK_FUNCS([select setlocale socket])
+AC_CHECK_FUNCS([strcasecmp strchr strcspn strdup strerror])
+AC_CHECK_FUNCS([strncasecmp strrchr strspn strstr strtol strtoul])
+AC_CHECK_FUNCS([sysctlbyname sysinfo uname wordexp])
 AC_CHECK_FUNC([getloadavg],[AC_DEFINE([HAVE_GETLOADAVG2], 1, [getloadavg() is available])])
 AC_FUNC_SELECT_ARGTYPES
+
+AC_MSG_CHECKING([for strlcpy])
+AC_RUN_IFELSE([AC_LANG_PROGRAM([[#include <string.h>]],[[
+               char a[2];
+               if (strlcpy(a, "yes", 2) != 3)
+                   return 1;]])],
+              [
+               AC_MSG_RESULT([yes])
+               AC_DEFINE([HAVE_STRLCPY], 1,
+                         [Define to 1 if you have the strlcpy function.])
+              ],
+              [
+               AC_MSG_RESULT([no])
+               AH_TEMPLATE([HAVE_STRLCPY],
+                           [Define to 1 if you have the strlcpy function.])
+              ])
+
+AC_MSG_CHECKING([for strlcat])
+AC_RUN_IFELSE([AC_LANG_PROGRAM([[#include <string.h>]],[[
+               char a[4] = "no";
+               if (strlcat(a, "yes", 4) != 5)
+                   return 1;]])],
+              [
+               AC_MSG_RESULT([yes])
+               AC_DEFINE([HAVE_STRLCAT], 1,
+                         [Define to 1 if you have the strlcat function.])
+              ],
+              [
+               AC_MSG_RESULT([no])
+               AH_TEMPLATE([HAVE_STRLCAT],
+                           [Define to 1 if you have the strlcat function.])
+              ])
+
 
 PKG_CHECK_MODULES([CORE],[fontconfig xext x11])
 AC_SUBST([CORE_CFLAGS])
