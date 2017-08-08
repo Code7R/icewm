@@ -1,3 +1,9 @@
+icewm (1.4.2+mod+20170808-1) experimental; urgency=low
+
+  * New (unofficial fork) upstream snapshot
+
+ -- Eduard Bloch <blade@debian.org>  Tue, 08 Aug 2017 21:11:45 +0200
+
 icewm (1.4.1+mod+20170728-1) experimental; urgency=low
 
   * New (unofficial fork) upstream snapshot
