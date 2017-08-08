@@ -1,3 +1,1067 @@
+commit ef3f80af7f4c6ee0fd34f6ac1b9d3ec48bdedc7a
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sat Aug 5 17:54:10 2017 +0200
+
+    Use case-insensitive sorting for the theme menu
+
+    The collation rules for different locales added "weird" sorting rules to
+    the themes menu. That "problem" has probably existed for a while now but
+    was not noticeable due to too aggressive menu nesting algorithm.
+
+ src/mstring.cc | 7 +++++--
+ src/mstring.h  | 2 +-
+ src/themes.cc  | 4 ++--
+ src/ymenu.cc   | 4 ++--
+ src/ymenu.h    | 2 +-
+ 5 files changed, 11 insertions(+), 8 deletions(-)
+
+commit 18d85d3ae978a8f4a8a8fdf660e05a68508ead08
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sat Aug 5 13:27:46 2017 +0200
+
+    Fix URL formatting.
+
+ README.md    | 2 +-
+ README.md.in | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit f521595772fa3384d9d40576753c6bf05d2370b2
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sat Aug 5 13:22:42 2017 +0200
+
+    Update links to online docs.
+
+ README.md    | 38 ++++++++++++++++++++------------------
+ README.md.in | 12 +++++++-----
+ VERSION      |  2 +-
+ configure.ac |  6 +++---
+ 4 files changed, 31 insertions(+), 27 deletions(-)
+
+commit 0eef32c74e22e27ec823e2eb21fe8cf5e35e2131
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sat Aug 5 13:12:09 2017 +0200
+
+    Explicitly control which themes are installed.
+
+ lib/CMakeLists.txt | 23 +++++++++++++++++++----
+ 1 file changed, 19 insertions(+), 4 deletions(-)
+
+commit 01530d7110369e5f1e732dae90c68f2aad097e3b
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sat Aug 5 13:11:22 2017 +0200
+
+    Generate manpages + their html from AsciiDoc.
+
+ doc/Makefile.am | 30 +++++++++++++++++++++---------
+ 1 file changed, 21 insertions(+), 9 deletions(-)
+
+commit c48a58a5066e5b2eab1c8246de93ed949b1256b0
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sat Aug 5 13:10:47 2017 +0200
+
+    ASCIIMAN and ASCIIMAN_FORMAT variables for generating manpages from
+    AsciiDoc.
+
+ configure.ac | 21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
+
+commit 8b2b034fb79d9201300b8c2f677c35afef172f1f
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sat Aug 5 13:09:57 2017 +0200
+
+    Generate manpages and html files from AsciiDoc.
+
+ doc/CMakeLists.txt | 140 ++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 120 insertions(+), 20 deletions(-)
+
+commit 7ec44f3fe9196f755de4b76b8168ff07ee648050
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sat Aug 5 13:09:01 2017 +0200
+
+    Manual pages in AsciiDoc.
+
+ doc/icewm.1.adoc   | 1041 ++++++++++++++++++++++++++++++++++++++++++++++++
+ doc/icewmbg.1.adoc |  164 ++++++++
+ 2 files changed, 1205 insertions(+)
+
+commit 9efc87a8e222cd8ae989c661a56bd38523b54be8
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Thu Aug 3 00:19:04 2017 -0600
+
+    update contributing in readme
+
+ CONTRIBUTING.md | 22 +++++++++++++++++++---
+ README.md       | 15 +++++++++++----
+ README.md.in    | 15 +++++++++++----
+ 3 files changed, 41 insertions(+), 11 deletions(-)
+
+commit ce576f14acd924a940f496af03320f58d1d5dd3f
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 2 23:56:39 2017 -0600
+
+    more comments on contributing
+
+ CONTRIBUTING.md | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+commit 52ee75edd07fe397fc4bc7ceed785f3830c0a23a
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 2 23:46:56 2017 -0600
+
+    add contributing file per github policy
+
+ CONTRIBUTING.md | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
+
+commit ec0f736cee854062acb74df04daf118201355a49
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 2 23:46:41 2017 -0600
+
+    place correct subdir for version or branch
+
+ README.md | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+
+commit b13ceed58a3d6f880eee2366f6d0ce8b7d7365ce
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 2 23:43:55 2017 -0600
+
+    substitute branch when generating release files
+
+ Makefile.am | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+commit 2d2dd67b32c912c6f570e515e52334c79ec33115
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 2 23:42:06 2017 -0600
+
+    new default branch
+
+ README.md.in | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit 8cb943cffd21ec16f47a707051a93e2788d07193
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 2 23:39:53 2017 -0600
+
+    add branch to readme
+
+ README.md.in | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+commit 27b78dc030e2f039fbe32608acf366e40e42a444
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 2 23:38:59 2017 -0600
+
+    substitute BRANCH for release version or github branch
+
+ autogen.sh | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+commit d3f7fd3c27b6a8d79df96af9d517e54e7c2fda1c
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 2 23:38:35 2017 -0600
+
+    add a branch to configure.ac
+
+ configure.ac | 3 +++
+ 1 file changed, 3 insertions(+)
+
+commit 120dc73cad48abfad6290c34d9603eec7bc283d9
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 2 23:38:05 2017 -0600
+
+    new INSTALL file
+
+ INSTALL | 320 ++++++++++++++++++++++++++++++------------------------------
+ 1 file changed, 159 insertions(+), 161 deletions(-)
+
+commit ea2749a75953ca3714e18d3637d7cacde16ba0e9
+Author: Brian Bidulock <bidulock@openss7.com>
+Date:   Wed Aug 2 20:42:56 2017 -0600
+
+    Create CODE_OF_CONDUCT.md
+
+ CODE_OF_CONDUCT.md | 46 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
+
+commit 8a73a2a010bdd6c1fd3a9cf04fa5875586431f6e
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Aug 1 23:38:20 2017 +0200
+
+    Prefer AC_DEFINE/AH_TEMPLATE over AC_DEFINE_UNQUOTED.
+    This gives an #undef instead of a #define to 0, which is what we want.
+
+ configure.ac | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+commit a1616d450f6a9dbb2f746ca5e1eb120dc0eceb5e
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Aug 1 00:05:38 2017 +0200
+
+    Copying the current theme indicator flag to the nested submenu
+
+ src/themes.cc | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+commit 4c5f65eee12b338598d8dbcbdb8374797469c8bd
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Jul 31 23:38:57 2017 +0200
+
+    Recreated/improved original smart theme menu nesting algorithm
+
+ src/themes.cc | 58 ++++++++++++++++++++++++++++++-------------------------
+ 1 file changed, 32 insertions(+), 26 deletions(-)
+
+commit c09062266999606521a8fdf35cd58c21a593c0cb
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Jul 31 20:03:10 2017 +0200
+
+    Prevent accidental deletion of potfile
+
+    Since the output file was among regular target (even if not a default
+    dependency), it would be accidentally deleted by the make clean target.
+
+    Working around with a dummy output file.
+
+ po/CMakeLists.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 6fb516ddc1411704b6ac3dcf197fdc5dacfc2fce
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Jul 31 19:53:50 2017 +0200
+
+    Fix Debug build with CMake
+
+ src/CMakeLists.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 78157d56c035f56d665f6fcb10199a053e2353ff
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Jul 31 19:53:33 2017 +0200
+
+    Fix most creepy format errors/warnings in Debug build
+
+ src/misc.cc  | 36 ++++++++++++++++++------------------
+ src/wmapp.cc |  2 +-
+ 2 files changed, 19 insertions(+), 19 deletions(-)
+
+commit ddae2c44635637a63da5512e99ee096bc0af5e47
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Jul 31 19:00:44 2017 +0200
+
+    Minor binary size improvement with -fvisibility=hidden for CMake build
+
+ src/CMakeLists.txt | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+
+commit fb84975f9e775c646a820dd4fd5e1dae8281845f
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Jul 31 18:55:49 2017 +0200
+
+    Added a dedicated CMake option for LTO enabling
+
+ INSTALL.cmakebuild |  6 ++++--
+ src/CMakeLists.txt | 17 ++++++++++++++++-
+ 2 files changed, 20 insertions(+), 3 deletions(-)
+
+commit 177b22f0a98ceff75fd5f7b297c6693374913202
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Mon Jul 31 23:12:51 2017 +0200
+
+    Also mention HAVE_STRLCPY and HAVE_STRLCAT.
+    Remove obsolete and duplicate defines.
+    Define defines always with a true numeric value of 1.
+
+ src/config.cmake.h.in | 217 ++++++++++++++++++++++------------------------
+ 1 file changed, 104 insertions(+), 113 deletions(-)
+
+commit 28c76e4973571b5805aa59622c291469af56acea
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Mon Jul 31 21:44:02 2017 +0200
+
+    Better fix for HAVE_STRLCPY/HAVE_STRLCAT.
+
+ src/base.h  | 4 ++--
+ src/misc.cc | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 57b8f15fbd67709055c245222b0c20cd27d3c3a1
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Mon Jul 31 21:30:20 2017 +0200
+
+    Changes for ALTLinux which has its own prototypes for strlcpy/strlcat.
+    Also cleanup obsolete AC_FUNC_*s and sort -u the CHECK_FUNCs.
+    Add two AC_RUN_IFELSE to detect correct operations of strlcpy/strcat.
+    Define HAVE_STRLCPY / HAVE_STRLCAT if they do.
+    Don't include our own strlcpy/strlcat if these are defined.
+
+ configure.ac       | 49 ++++++++++++++++++++++++++++++++++++++++---------
+ src/CMakeLists.txt | 19 +++++++------------
+ src/base.h         |  5 +++++
+ src/misc.cc        |  4 ++++
+ 4 files changed, 56 insertions(+), 21 deletions(-)
+
+commit 35092643f93482cdedde2c3bbd2f60814943018d
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Jul 31 18:23:16 2017 +0200
+
+    Fixing all Clang-5 warnings found so far
+
+ src/CMakeLists.txt |  7 ++++++-
+ src/icetray.cc     |  3 ++-
+ src/icewmbg.cc     |  3 ++-
+ src/themes.cc      |  2 +-
+ src/wmtaskbar.cc   |  5 ++++-
+ src/yapp.cc        | 10 +++++-----
+ src/ytimer.cc      |  8 ++++----
+ 7 files changed, 24 insertions(+), 14 deletions(-)
+
+commit 3025c9bbb531abf65f7b8594c64d99254329a39d
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Jul 31 17:51:58 2017 +0200
+
+    Fix CMake build (yarray dependency after recent refactorings)
+
+ src/CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit e947fdecfa3916a4837de2667dbd155bc83ad4a4
+Merge: ac7770e1 01d7fa76
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Jul 31 17:45:07 2017 +0200
+
+    Merge branch 'icewm-1-4-BRANCH' of https://github.com/bbidulock/icewm
+    into icewm-1-4-BRANCH
+
+commit ac7770e17b6848052d2bf31280f52d405e7afacd
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Jul 31 17:38:41 2017 +0200
+
+    Document stamp files, added exception for build dir from CMake build
+    instructions
+
+ .gitignore | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+commit 01d7fa76e50efd4670844274fd1eada3b896a03e
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 22:20:39 2017 +0200
+
+    Add some ifdefs/ifndefs to support different configure --enable/--disable
+    option combinations.
+
+ src/icetray.cc  |  2 ++
+ src/icewmbg.cc  | 16 +++++++++++++---
+ src/wmapp.cc    |  7 ++++++-
+ src/wmapp.h     |  2 ++
+ src/wmclient.cc |  2 ++
+ src/wmconfig.cc |  2 ++
+ src/wmframe.cc  |  2 +-
+ src/wmprog.cc   |  2 ++
+ 8 files changed, 30 insertions(+), 5 deletions(-)
+
+commit d7f32c40f9a507e5d659863a13653025302e1a06
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 18:50:21 2017 +0200
+
+    Remove the ifdef CONFIG_GUIEVENTS around "extern YWMApp* wmapp", so that
+    it is always available.
+
+ src/wmapp.h | 2 --
+ 1 file changed, 2 deletions(-)
+
+commit 523b8ade53f0e71228c3dcdcb10796edbd322846
+Merge: 54dcb3a9 72eeb820
+Author: gijsbers <gijsbers@users.noreply.github.com>
+Date:   Sun Jul 30 15:13:02 2017 +0200
+
+    Merge pull request #151 from gijsbers/post42
+
+    icewmbg rewrite, UserTime, Focus models, new applet/tray options, etc
+
+commit 72eeb8209a70e8df82990e7dda822708146c837e
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:57:45 2017 +0200
+
+    Rewrite icewmbg to support unique colors and images per workspace.
+    Backgrounds are periodically checked for changes on filesystem when
+    switching workspace.
+    New option for one large full multi-head monitor background.
+    Can now also scale an image to fully cover a single monitor.
+    Suppors all configuration options also from the command line.
+
+ src/icewmbg.cc      | 1064 ++++++++++++++++++++++++++++++++---------------
+ src/icewmbg_prefs.h |   52 ++-
+ 2 files changed, 767 insertions(+), 349 deletions(-)
+
+commit 0c34542b2da288595afa4202b854d9036b86b2b3
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:57:24 2017 +0200
+
+    initialize prop before using it.
+
+ src/testnetwmhints.cc | 2 +-
+ src/testwinhints.cc   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 2edc1a807c8229568ae907bbe67426ad7df2616b
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:56:50 2017 +0200
+
+    Remove globals.
+
+ src/wmabout.cc  | 2 --
+ src/wmabout.h   | 2 --
+ src/wmswitch.cc | 2 --
+ src/wmswitch.h  | 2 --
+ src/ydialog.cc  | 1 -
+ 5 files changed, 9 deletions(-)
+
+commit 3fd8c2c269ec72062fae94e91cc73ca23af09b7c
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:55:51 2017 +0200
+
+    No longer include ypixbuf.h.
+
+ src/gnome.cc     | 1 -
+ src/gnome2.cc    | 1 -
+ src/iceicon.cc   | 1 -
+ src/icelist.cc   | 1 -
+ src/wmbutton.cc  | 1 -
+ src/wmwinlist.cc | 2 +-
+ src/ybutton.cc   | 1 -
+ src/yimage.cc    | 1 -
+ src/ylistbox.cc  | 1 -
+ src/ymenu.cc     | 1 -
+ src/ymenuitem.cc | 1 -
+ src/ymenuitem.h  | 1 -
+ src/yxapp.cc     | 3 ++-
+ 13 files changed, 3 insertions(+), 13 deletions(-)
+
+commit eb553e03d30210c845fee3848782c5e3d2b9ac4f
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:53:00 2017 +0200
+
+    We no longer need ypixbuf.cc ypixbuf.h yimage.cc.
+
+ src/CMakeLists.txt | 4 ++--
+ src/Makefile.am    | 3 ---
+ 2 files changed, 2 insertions(+), 5 deletions(-)
+
+commit 982e3a36cedbd0e91fe248f8fd92518761e58667
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:51:08 2017 +0200
+
+    Fix getNetWMStrutPartial. Initialize property data pointer before testing
+    if it is non-null.
+
+ src/wmclient.cc | 50 ++++++++++++++++++++++----------------------------
+ 1 file changed, 22 insertions(+), 28 deletions(-)
+
+commit 8fffcde08e00c8ebdc0a6e70825d9a8fec36fab2
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:50:21 2017 +0200
+
+    Implement UserTime in a separate class with an extra seconds field.
+
+ src/wmframe.cc | 39 ++++++++++++++----------------
+ src/wmframe.h  |  2 +-
+ src/wmmgr.cc   | 69 ++++++++++++++++++++++++++++++------------------------
+ src/wmmgr.h    | 48 +++++++++++++++++++++++++++++++++----
+ 4 files changed, 101 insertions(+), 57 deletions(-)
+
+commit a20aa52678813bfc441da63013558f0a585a2352
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:48:45 2017 +0200
+
+    Create the dialog buttons in the order such that tabbing through them is
+    in reading order left-right-top-to-bottom.
+
+ src/wmdialog.cc | 40 +++++++++++++++++++++-------------------
+ src/wmdialog.h  |  2 --
+ 2 files changed, 21 insertions(+), 21 deletions(-)
+
+commit edad79f50a01db934fe488ff23727338a3cc42cd
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:46:44 2017 +0200
+
+    Don't init a upath with NULL, but use null.
+
+ src/yicon.cc | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+commit 543e90f8eeb011794f6ab251a2c1261876f3ff3d
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:46:22 2017 +0200
+
+    remove unused code.
+
+ src/yimage_gdk.cc | 21 ++-------------------
+ 1 file changed, 2 insertions(+), 19 deletions(-)
+
+commit 9fc098f9d05512295ed231210e1fcf3a4afb14b2
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:46:08 2017 +0200
+
+    free when done.
+
+ src/yinput.cc | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+commit 0c91ec97a375b94dbbb77c08a140caa962d2fac7
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:41:25 2017 +0200
+
+    Add 3 more focus models. freeActions() when done. Hide globals behind a
+    function. Restart icewm from same executable location.
+    Don't initialize upath to 0 but to null.
+    If an item could not be added to a menu then free it.
+
+ src/wmaction.cc |  62 ++++++++++++++
+ src/wmaction.h  |   4 +
+ src/wmapp.cc    | 228 ++++++++++++++++++++++++++++++++++++----------------
+ src/wmapp.h     |  32 +++++++-
+ src/wmprog.cc   |  70 ++++++++--------
+ src/wmprog.h    |  10 ++-
+ 6 files changed, 296 insertions(+), 110 deletions(-)
+
+commit d92148b0f18ff6e590ab74c54affb4a7a6e1c755
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:38:33 2017 +0200
+
+    Check if directories are searchable.
+
+ src/ypaths.cc | 10 +++++-----
+ src/ypaths.h  |  6 ++++--
+ 2 files changed, 9 insertions(+), 7 deletions(-)
+
+commit 02f128ee70898c3da4db70bf9941fba62ba487fd
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:35:18 2017 +0200
+
+    timers for mainLoop.
+
+ src/yapp.h | 25 ++++++-------------------
+ 1 file changed, 6 insertions(+), 19 deletions(-)
+
+commit 8d16c0b614ef6d519a88317af0e2d7f2f48bc36d
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:25:17 2017 +0200
+
+    Make Graphics smaller/cheaper. Add more precise drawPixmap for speed
+    improvements to large images like backgrounds.
+    Make YDimension use ints to prevent warnings.
+    Remove obsolete CONFIG_ANTIALIASING code.
+
+ src/ypaint.cc | 216 +++++++++++++++++++++---------------------------------
+ src/ypaint.h  |  30 ++++----
+ 2 files changed, 98 insertions(+), 148 deletions(-)
+
+commit 5bdf8c47089e97eadb02cbfeb2c34a627c2212c6
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:23:41 2017 +0200
+
+    Calculate stringOffset just once (clang-analyze).
+
+ src/wmtitle.cc | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+commit 8243ea5b69274ade64e859f3d38e4e0ca2dfc983
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:20:28 2017 +0200
+
+    use getTaskBarBg().
+
+ src/objbar.cc | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+commit 74da279c04aa649930d923a325be1a4777904183
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:18:51 2017 +0200
+
+    Define getTaskBarBg(). Prevent leaks. Details.
+
+ src/icetray.cc | 45 ++++++++++++++++++++++++---------------------
+ 1 file changed, 24 insertions(+), 21 deletions(-)
+
+commit b6413e61cf62ce4c543895a6ed853707b0a3fefb
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:17:46 2017 +0200
+
+    Use monotonic time. Fix interval calculation.
+
+ src/icesound.cc | 16 +++++-----------
+ 1 file changed, 5 insertions(+), 11 deletions(-)
+
+commit 0d7892a5f2a7025945ea5ac98877c3d114686da7
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:17:20 2017 +0200
+
+    use getTaskBarBg().
+
+ src/atray.cc | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+commit 25b2cf16a1bb443f5b585a13a38c6f4a5fbc1c57
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:17:03 2017 +0200
+
+    free workspace data when done.
+
+ src/aworkspaces.cc | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+commit 3bd85bdef310a0bd90b12e92d0dd4d73aabf86f6
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:15:11 2017 +0200
+
+    Make flash time have sub-second precision.
+    Changes to make clang-analyze happy.
+
+ src/atasks.cc | 24 ++++++++----------------
+ src/atasks.h  |  2 +-
+ 2 files changed, 9 insertions(+), 17 deletions(-)
+
+commit 3cbb6d20633f3e925a511a52a377c65e52886633
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:14:42 2017 +0200
+
+    use getTaskBarBg().
+
+ src/amailbox.cc | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+commit 07d00a4c045ed77b568469bcadbcd79f7abcadb8
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:11:01 2017 +0200
+
+    Add two new options to control applet dimensions: TaskBarGraphHeight,
+    TaskBarGraphWidth.
+    Free resources when done. No globals. Fix MEMStatus::parseField.
+
+ src/aclock.cc     | 25 ++++++++-----------------
+ src/aclock.h      |  9 ++++-----
+ src/acpustatus.cc | 23 ++++++++++++++---------
+ src/amemstatus.cc |  4 ++--
+ src/apppstatus.cc | 18 +++++-------------
+ src/default.h     | 16 +++++++++-------
+ 6 files changed, 42 insertions(+), 53 deletions(-)
+
+commit e4621b92790d846069a77f5584770ff46fad4715
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:07:56 2017 +0200
+
+    Cleanup battery code. Free all resources. No globals.
+
+ src/aapm.cc | 301 +++++++++++++++++---------------------------------------
+ src/aapm.h  |  36 +++----
+ 2 files changed, 107 insertions(+), 230 deletions(-)
+
+commit 155e0f944898eab5dc6f33424beb0481848654f3
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 14:01:32 2017 +0200
+
+    Add some handy operators for struct timeval.
+    Add support for clock_gettime and prefer it over gettimeofday.
+    Use monotonic clocks for interval measurements.
+    Simplify timer management.
+    Simplify YApplication::mainLoop.
+    When HOME is undefined get its value from getpwuid.
+
+ src/yapp.cc   | 531 +++++++++++++++---------------------------------------
+ src/ytimer.cc | 191 ++++++++++++++------
+ src/ytimer.h  |  51 +++++-
+ 3 files changed, 325 insertions(+), 448 deletions(-)
+
+commit 374d553147999fa2a6298bf8507f50a27135330e
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 13:57:36 2017 +0200
+
+    Add two options to control the max tray icon dimensions.
+
+ src/themable.h | 17 +++++++++++------
+ src/yxtray.cc  | 49 ++++++++++++++++++-------------------------------
+ 2 files changed, 29 insertions(+), 37 deletions(-)
+
+commit 6cf6993694a59421d600c3de4e58e8079623ccb9
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 13:54:42 2017 +0200
+
+    Replace the taskBarBg global, which was initialed everywhere,
+    by the function getTaskBarBg().
+    Properly free data on when taskbar is done.
+    Sanitize taskBarAtTop (clang-analyze).
+
+ src/wmtaskbar.cc | 107 +++++++++++++++++++++++----------------------------
+ src/wmtaskbar.h  |   2 +
+ 2 files changed, 50 insertions(+), 59 deletions(-)
+
+commit baccd67acd2bfc0bfd8d2a825a9ebfba4aa05ca2
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 13:49:18 2017 +0200
+
+    Fix the calculation in the comment for DECIMAL_DIGIT_COUNT.
+    Base max on less than. Add inrange. Add GetArgument.
+    Fix an off-by-one error in intersection and reduce it to a one-liner.
+
+ src/base.h  | 33 +++++++++------------------------
+ src/misc.cc | 13 +++++++++++++
+ 2 files changed, 22 insertions(+), 24 deletions(-)
+
+commit b414637ec17d982f35fb317a64ed7a85a55d0bff
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 13:48:29 2017 +0200
+
+    Adding a menu item may fail. If this happens then the items must be
+    freed to prevent a leak.
+
+ src/browse.cc | 3 +++
+ 1 file changed, 3 insertions(+)
+
+commit 722a5cf5bb7ccb33d94a98ed17fabe4d857c38f8
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 13:47:13 2017 +0200
+
+    Also print a string option if it has only just a description, but not
+    a non-null value.
+
+ src/genpref.cc | 28 +++++++++++++++++++---------
+ 1 file changed, 19 insertions(+), 9 deletions(-)
+
+commit 1669a0c3ca7d48808a6aa0d56f8c64544174827b
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 13:45:47 2017 +0200
+
+    When executing a child program check if it can be found alongside the
+    absolute path of icewm-session. Also fix the examination of exit status
+    of icewm and the detection of crashes.
+
+ src/icesm.cc | 35 +++++++++++++++++++++++++++--------
+ 1 file changed, 27 insertions(+), 8 deletions(-)
+
+commit 930d89979d4efd5f0a866b4827e65dd7e2789d7c
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 13:45:26 2017 +0200
+
+    Prevent a memory leak.
+
+ src/objbutton.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+commit 59c7785e02a7fb4a1657a200aea387ed40756b6c
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 13:44:36 2017 +0200
+
+    container->addSorted may refuse to add an item its name is a duplicate.
+    Detect this and free the item to prevent a leak (3x).
+
+ src/themes.cc | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
+
+commit 733ece669c2be197f4e69a03d55b59ea1b40d396
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 13:44:00 2017 +0200
+
+    Free theme_preferences when done.
+
+ src/wmconfig.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 84e69e497680e7471d269569d76a90f8c4729b5d
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 13:43:28 2017 +0200
+
+    Simplify rd_str and prevent a corruption on bad input.
+
+ src/wmsession.cc | 35 +++++++++++++----------------------
+ 1 file changed, 13 insertions(+), 22 deletions(-)
+
+commit bad1ad02be116bd892a56dac9a8392d82147ea68
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 13:42:43 2017 +0200
+
+    Make sure *key is initialized (clang-analyze). Add YConfig::cfoptionSize()
+    for genpref.
+
+ src/yconfig.cc | 5 +++++
+ src/yconfig.h  | 1 +
+ 2 files changed, 6 insertions(+)
+
+commit 9150dcfa7022b57b48ee38c58d1d1586149a3124
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 13:41:41 2017 +0200
+
+    Make tabPos not unsigned but int to prevent warnings, in multilineAlloc.
+
+ src/yfont.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 9777ee6df76b1ac40403168cbeff16dca43d560f
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 13:40:58 2017 +0200
+
+    Reduce clutter and clarify.
+
+ src/ypixmap.cc | 31 ++++++-------------------------
+ 1 file changed, 6 insertions(+), 25 deletions(-)
+
+commit c5667caa2efd00f04ac2830fd0381c4f53a03397
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 13:40:35 2017 +0200
+
+    make scrollGC not static but local.
+
+ src/ywindow.cc | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+commit 9e57215a0639b2ffa96a28b6e3e8cee5f14d3d3e
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 13:39:56 2017 +0200
+
+    prevent a leak on nstr in unescape.
+
+ src/yurl.cc | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 35470079dde273547625beb149f72dfce2429a85
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 13:39:18 2017 +0200
+
+    4 assignment operators for easy initialization of smart pointers.
+
+ src/ypointer.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+commit 0b4de4581ae646c90d1adee15a83e17cec29f8e8
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 13:38:47 2017 +0200
+
+    Move definition of null to ref.cc to make clang-analyze happy.
+
+ src/ref.cc | 3 +++
+ src/ref.h  | 4 +---
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+commit 939e4de6f1d25bfcf95e479052602f18210ef150
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 13:38:00 2017 +0200
+
+    Add class YArrayIterator for easy iteratation over YArrays.
+
+ src/yarray.h | 113 +++++++++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 105 insertions(+), 8 deletions(-)
+
+commit 54dcb3a9b454437386dc1ccbd2f4d8f201823f9a
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 10:59:06 2017 +0200
+
+    Prepare for release 1.4.2.
+
+ NEWS         | 36 +++++++++++++++++++++++++++---------
+ README.md    |  6 +++---
+ VERSION      |  2 +-
+ configure.ac |  8 ++++----
+ 4 files changed, 35 insertions(+), 17 deletions(-)
+
+commit a1e2b7c8fc13ac53d74874cc814a3662ddbd9424
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jul 30 03:29:14 2017 +0200
+
+    Always show icon in the top left corner of a window in issue #144.
+
+ src/wmbutton.cc | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+commit 128d004a1fe97e264e88903b0c666a64a074c170
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sat Jul 29 21:59:08 2017 +0200
+
+    New function copyPixmaps adds more defaults for missing pixmaps.
+    When some pixmaps are missing then they are copied from others.
+    This restores backward compatibility in issue #144.
+
+ src/wpixres.cc | 38 ++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 36 insertions(+), 2 deletions(-)
+
+commit a5e88958218fad9b7cc1fd6846e6155dcbd34e91
+Merge: d42f8b93 6469ee85
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sat Jul 29 12:21:53 2017 -0600
+
+    Merge branch 'icewm-1-4-BRANCH' of github.com:bbidulock/icewm into
+    icewm-1-4-BRANCH
+
+commit d42f8b933fdc5097620a8b7ecad01a0f0d214f7d
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sat Jul 29 12:21:22 2017 -0600
+
+    final tweak for #146
+
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 6469ee85309bf5e6ffc57d9b86a71ec03d30057f
+Merge: 1a4a384c 293ec537
+Author: Brian Bidulock <bidulock@openss7.com>
+Date:   Sat Jul 29 08:15:49 2017 -0600
+
+    Merge pull request #150 from
+    Code7R/feature/increase_theme_menu_collapsing_threshold
+
+    Increased the trigger value for the theme menu nesting algorithm
+
+commit 293ec537171e2f25153608d3fb3ed0333db4a5ff
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sat Jul 29 15:39:27 2017 +0200
+
+    Increased the trigger value for the theme menu nesting algorithm
+
+    IIRC I chose the value originally with an old small-res screen in mind
+    but that was 15 years ago.
+
+ src/default.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 1a4a384c56ab2c474406023b7ca19e553b8fcd3b
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Fri Jul 28 17:37:50 2017 -0600
+
+    better fix for issue #146
+
+ configure.ac    | 24 ++++++++++++++++--------
+ doc/Makefile.am |  2 +-
+ 2 files changed, 17 insertions(+), 9 deletions(-)
+
+commit cb5b554f2cd2034667472e73c4d5c154dcb22f1f
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Fri Jul 28 17:04:19 2017 -0600
+
+    partially address issue #146
+
+    - using --backend=html4 gets rid of the CSS
+
+ doc/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 0edd2a7c6263c85c89a4a8feb859387d5ba356a5
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Fri Jul 28 16:25:19 2017 -0600
+
+    icewm-1-4-BRANCH is now the default
+
+ README.md | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit 908e6812e70d710da9a92f02db57d6bcb6ea015d
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Fri Jul 28 16:23:51 2017 -0600
+
+    update NEWS file
+
+ NEWS | 93 ++++++++++++++++++++++++++++++++++++++++++----------------------
+ 1 file changed, 61 insertions(+), 32 deletions(-)
+
+commit 7ee3cdbe4a1e442274dbb92acb1dc2291de5c9b8
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Fri Jul 28 16:23:40 2017 -0600
+
+    generate more news
+
+ gennews.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 414dc055a1653efb1a9ed60d98f198f76df83aaf
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Fri Jul 28 16:20:31 2017 -0600
+
+    update AUTHORS file
+
+ AUTHORS | 75 ++++++++++++++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 55 insertions(+), 20 deletions(-)
+
+commit 3c296ea65b038998f6d9fcdafcbac6589156cfbb
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Fri Jul 28 16:19:38 2017 -0600
+
+    update po files
+
+ po/ar.po     | 10 +++++-----
+ po/be.po     | 10 +++++-----
+ po/bg.po     | 10 +++++-----
+ po/ca.po     | 10 +++++-----
+ po/cs.po     | 14 +++++++-------
+ po/da.po     | 10 +++++-----
+ po/de.po     | 10 +++++-----
+ po/el.po     | 14 +++++++-------
+ po/en.po     | 10 +++++-----
+ po/es.po     | 14 +++++++-------
+ po/fi.po     | 10 +++++-----
+ po/fr.po     | 14 +++++++-------
+ po/he.po     | 10 +++++-----
+ po/hr.po     | 10 +++++-----
+ po/hu.po     | 10 +++++-----
+ po/icewm.pot | 12 ++++++------
+ po/id.po     | 14 +++++++-------
+ po/it.po     | 18 +++++++++---------
+ po/ja.po     | 10 +++++-----
+ po/ko.po     | 10 +++++-----
+ po/lt.po     | 10 +++++-----
+ po/lv.po     | 10 +++++-----
+ po/mk.po     | 10 +++++-----
+ po/nb.po     | 10 +++++-----
+ po/nl.po     | 10 +++++-----
+ po/no.po     | 10 +++++-----
+ po/pl.po     | 10 +++++-----
+ po/pt_BR.po  | 10 +++++-----
+ po/ro.po     | 10 +++++-----
+ po/ru.po     | 10 +++++-----
+ po/sk.po     | 10 +++++-----
+ po/sl.po     | 10 +++++-----
+ po/sv.po     | 10 +++++-----
+ po/tr.po     | 10 +++++-----
+ po/uk.po     | 22 +++++++++++-----------
+ po/vi.po     | 10 +++++-----
+ po/zh_CN.po  | 10 +++++-----
+ po/zh_TW.po  | 10 +++++-----
+ 38 files changed, 211 insertions(+), 211 deletions(-)
+
+commit 82a976c283e69fe9d8de873896007934ee2a2121
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Jul 28 18:38:35 2017 +0200
+
+    Update ChangeLog to 1.4.1 and remove all changes for the 1.3.12 release
+    and older.
+
+ ChangeLog | 3432 +--------------------------------------------------------
+ 1 file changed, 55 insertions(+), 3377 deletions(-)
+
+commit 77340d01f7c28d44311eb9d84c24020e71cb4236
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Jul 28 18:37:41 2017 +0200
+
+    Specify output with -o icewm.html.
+
+ doc/CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 0b05ed496992eb1bb36a9c8c295a303960437041
+Merge: 8f1eed9c 5a4e1e05
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Fri Jul 28 06:56:13 2017 -0600
+
+    Merge remote-tracking branch 'origin/icewm-1-3-BRANCH' into
+    icewm-1-4-BRANCH
+
+commit 5a4e1e0551e15a54a9a5c4604ec3e323a38d306c
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Thu Jul 27 19:19:22 2017 +0200
+
+    Omit -b in git checkout icewm-1-4-BRANCH.
+
+ README.md    | 2 +-
+ README.md.in | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
 commit 8f1eed9cd44455a198c2f2d31a3927823f2c81ef
 Author: Bert Gijsbers <gijsbers@science.uva.nl>
