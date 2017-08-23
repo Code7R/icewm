@@ -9,7 +9,6 @@
 
 #define NEED_TIME_H
 
-#include "ykey.h"
 #include "objmenu.h"
 #include "wmprog.h"
 #include "wmoption.h"
@@ -27,7 +26,7 @@
 #include "themes.h"
 #include "browse.h"
 #include "wmtaskbar.h"
-#include "yicon.h"
+#include "ypaths.h"
 #include "intl.h"
 #include "appnames.h"
 #include "ascii.h"
@@ -811,6 +810,51 @@ FocusMenu::FocusMenu() {
     }
 }
 
+HelpMenu::HelpMenu(
+    IApp *app,
+    YSMListener *smActionListener,
+    YActionListener *wmActionListener)
+    : ObjectMenu(wmActionListener)
+{
+    struct HelpMenuItem {
+        const char *name;
+        const char *menu;
+    } help[] = {
+        { ICEHELPIDX, _("_Manual") },
+        { "icewm.1.html", _("_Icewm(1)") },
+        { "icewmbg.1.html", _("Icewm_Bg(1)") },
+        { "icesound.1.html", _("Ice_Sound(1)") },
+    };
+    for (size_t k = 0; k < ACOUNT(help); ++k) {
+        YStringArray args(3);
+        args.append(ICEHELPEXE);
+        if (k == 0) {
+            args.append(help[k].name);
+        } else {
+            upath path = upath(ICEHELPIDX).parent() + help[k].name;
+            args.append(path.string());
+        }
+        args.append(0);
+
+        DProgram *prog = DProgram::newProgram(
+            app,
+            smActionListener,
+            help[k].menu,
+            null,
+            false,
+            "browser.IceHelp",
+            ICEHELPEXE,
+            args);
+
+        if (prog)
+#ifdef LITE
+            addObject(prog);
+#else
+            addObject(prog, "help");
+#endif
+    }
+}
+
 void StartMenu::refresh() {
     MenuFileMenu::refresh();
 
@@ -908,26 +952,12 @@ void StartMenu::refresh() {
 #endif
 
     if (showHelp) {
-        YStringArray args(3);
-        args.append(ICEHELPEXE);
-        args.append(ICEHELPIDX);
-        args.append(0);
-
-        DProgram *help = DProgram::newProgram(
-            app,
-            smActionListener,
-            _("_Help"),
-            null,
-            false,
-            "browser.IceHelp",
-            ICEHELPEXE,
-            args);
-
-        if (help)
+        HelpMenu *helpMenu =
+            new HelpMenu(app, smActionListener, wmActionListener);
 #ifdef LITE
-		addObject(help);
+            addSubmenu(_("_Help"), -2, helpMenu);
 #else
-		addObject(help, "help");
+            addSubmenu(_("_Help"), -2, helpMenu, "help");
 #endif
     }
 #endif

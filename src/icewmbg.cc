@@ -8,6 +8,7 @@
 #include "yfull.h"
 #include "yxapp.h"
 #include "yprefs.h"
+#include "ypaths.h"
 #include "udir.h"
 #include "intl.h"
 #include "appnames.h"
@@ -748,12 +749,12 @@ static const char* get_help_text() {
 }
 
 static void print_help_xit() {
-    fputs(get_help_text(), stderr);
+    fputs(get_help_text(), stdout);
 #ifdef NO_CONFIGURE
     fputs(_("Please note that not all options are currently configured.\n"),
-            stderr);
+            stdout);
 #endif
-    exit(1);
+    exit(0);
 }
 
 #ifndef NO_CONFIGURE

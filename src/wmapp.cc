@@ -41,6 +41,7 @@
 #include "udir.h"
 #include "appnames.h"
 #include "ypointer.h"
+#include "ypaths.h"
 #include "intl.h"
 
 char const *ApplicationName("IceWM");
@@ -735,8 +736,9 @@ void dumpZorder(const char *oper, YFrameWindow *w, YFrameWindow *a) {
             msg("?? 0x%lX", p->handle());
         PRECONDITION(p->next() != p);
         PRECONDITION(p->prev() != p);
-        if (p->next())
+        if (p->next()) {
             PRECONDITION(p->next()->prev() == p);
+	}
         p = p->next();
     }
 }
@@ -1476,6 +1478,9 @@ static void print_configured(const char *argv0) {
 #ifdef CONFIG_ANTIALIASING
     " antialiasing"
 #endif
+#ifdef ENABLE_AO
+    " ao"
+#endif
 #ifdef CONFIG_APPLET_APM
     " apm"
 #endif
@@ -1592,9 +1597,6 @@ static void print_configured(const char *argv0) {
 #endif
 #ifdef CONFIG_XRANDR
     " xrandr"
-#endif
-#ifdef ENABLE_YIFF
-    " yiff"
 #endif
     "\n";
     printf(_("%s configured options:%s\n"), argv0,

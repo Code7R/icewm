@@ -1,4 +1,4 @@
-[icewm -- read me first file.  2017-08-05]: #
+[icewm -- read me first file.  2017-08-13]: #
 
 Ice Window Manager (IceWM)
 ==========================
@@ -16,7 +16,7 @@ list, and various other GitHub forks.
 Release
 -------
 
-This is the icewm-1.4.2.78 package, released under LGPL license 2017-08-05.
+This is the icewm-1.4.2.109 package, released under LGPL license 2017-08-13.
 This release as well as future versions here, can all be obtained from
 [GitHub][1] using a command such as:
 
@@ -89,7 +89,8 @@ Website][14], from the [online manual][16].
 
 Unfortunately that documentation is for version 1.2.27 and is incomplete
 at that; however, it is for the most part still usable.
-The good news is that the [`icewm(1)`][21] and [`icewmbg(1)`][22]
+The good news is that the
+[`icewm(1)`][21], [`icewmbg(1)`][22] and [`icesound(1)`][23]
 manual pages are complete and fully up-to-date.
 
 
@@ -104,7 +105,8 @@ Currently, the only included utilities are:
    icewmtray in an orderly fashion_),
  - `icewm-menu-fdo` (_a utility to genenerate XDG menus_),
  - `icewm-menu-gnome2` (_a utility to generate GNOME menus_),
- - `icewmhint` (_a utility to set IceWM-specific window options hint).
+ - `icewmhint` (_a utility to set IceWM-specific window options hint_).
+ - `icesound` (_play audio files when interesting GUI events happen_).
 
 
 Third-party Utilities
@@ -215,5 +217,6 @@ translations.  If you have difficulties using the tools, just send me the update
 [20]: https://github.com/bbidulock/icewm/blob/icewm-1-4-BRANCH/INSTALL-cmakebuild.md
 [21]: https://github.com/bbidulock/icewm/blob/icewm-1-4-BRANCH/doc/icewm.1.adoc
 [22]: https://github.com/bbidulock/icewm/blob/icewm-1-4-BRANCH/doc/icewmbg.1.adoc
+[23]: https://github.com/bbidulock/icewm/blob/icewm-1-4-BRANCH/doc/icesound.1.adoc
 
 [ vim: set ft=markdown sw=4 tw=80 nocin nosi fo+=tcqlorn: ]: #
