@@ -1,3 +1,909 @@
+commit d87695932b9e1117dcb75bf4f5cc86ed59cd5fbd
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Aug 22 21:00:50 2017 +0200
+
+    Enforce that a ref cannot be initialized with a NULL or, but require
+    a null.
+
+ src/ref.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit a24b942393a5d51bd4c39b75f2b2817ec9bc0e17
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Aug 22 20:58:15 2017 +0200
+
+    Don't initialize a ref with NULL, but use null.
+    Free fBrighter and fDarker when YColor is done.
+    Prevent copying YColor.
+    Fix indentation of Graphics::drawSurface.
+    Cleanup and simplify.
+
+ src/ypaint.cc | 99 +++++++++++++++++++++++++++----------------------------
+ src/ypaint.h  | 25 +++++---------
+ 2 files changed, 57 insertions(+), 67 deletions(-)
+
+commit a01218d208f80ad009c4bb6d635e1f81d656819f
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Aug 22 20:57:23 2017 +0200
+
+    Don't initialize a ref with NULL, but use null.
+
+ src/wmswitch.cc  | 2 +-
+ src/wmtaskbar.cc | 2 +-
+ src/ydialog.cc   | 2 +-
+ src/ylistbox.cc  | 2 +-
+ src/ymenu.cc     | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 3c69fdd08c13fe6fa865cdd7a7bdf5da57fc98ec
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 20 23:29:21 2017 +0200
+
+    Move obsolete sources to attic and have make distcheck OK!
+
+ src/{ => attic}/ycmdline.cc | 0
+ src/{ => attic}/ycmdline.h  | 0
+ src/{ => attic}/yimage.cc   | 0
+ src/{ => attic}/ylibrary.cc | 0
+ src/{ => attic}/ylibrary.h  | 0
+ src/{ => attic}/ypixbuf.cc  | 0
+ src/{ => attic}/ypixbuf.h   | 0
+ 7 files changed, 0 insertions(+), 0 deletions(-)
+
+commit 18832a712b874faf9329f24a0d6cf6964bf1c788
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 20 21:53:16 2017 +0200
+
+    AM_INSTALLCHECK_STD_OPTIONS_EXEMPT is no longer needed to make distcheck
+    succesful.
+
+ src/Makefile.am | 11 -----------
+ 1 file changed, 11 deletions(-)
+
+commit b0d2c1274c85abd5e2bdba9d408e1fab138bc8fa
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 20 21:52:18 2017 +0200
+
+    Make --help output go to stdout and exit success.
+
+ src/fdomenu.cc | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
+
+commit a96cb34dd78c435816ac758500a3f40ffe7d6ca7
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 20 21:51:14 2017 +0200
+
+    Redirect the help message output to stdout.
+
+ src/icewmbg.cc | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 04faafa33ab5552a45c7e59ddb0ec33d0a7f26dd
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 20 21:25:52 2017 +0200
+
+    CMake much smaller icewm-session by not linking any X11/font/image libs.
+
+ src/CMakeLists.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 29bf3d8128f5d876bfb897a82505e20f02ef0694
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 20 21:24:41 2017 +0200
+
+    Make icewm-session much smaller by not linking any X11/font/image libs.
+
+ src/Makefile.am | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+commit ee6e8c9249f548804db27c24773cbc7d1ce53dc0
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 20 21:05:15 2017 +0200
+
+    Add icesound.
+
+ README.md    | 7 +++++--
+ README.md.in | 7 +++++--
+ 2 files changed, 10 insertions(+), 4 deletions(-)
+
+commit 740a2ba7561a5c6ee9f7ad2c15e6f8702a5a1b1d
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 20 20:43:51 2017 +0200
+
+    CMake support for generating manpages from AsciiDoc.
+
+ doc/CMakeLists.txt | 141 ++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 121 insertions(+), 20 deletions(-)
+
+commit 88c187d7b42074bac7964fad02feccd086f6eb7c
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 20 20:00:19 2017 +0200
+
+    Generate .1 manpages from AsciiDoc.
+
+ doc/Makefile.am | 38 +++++++++++++++++++++++++++++---------
+ 1 file changed, 29 insertions(+), 9 deletions(-)
+
+commit 690c9d74678982df4a7da59305a4340673825905
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 20 19:56:05 2017 +0200
+
+    ASCIIMAN variables for adoc to manpage conversion.
+
+ configure.ac | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+commit ee73e3a83167fd245208ad9645f2c42232de07b0
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 20 18:26:30 2017 +0200
+
+    Add new AsciiDoc manpages icesound.1.adoc icewm.1.adoc icewmbg.1.adoc.
+
+ doc/icesound.1.adoc |  160 +++++++
+ doc/icewm.1.adoc    | 1070 +++++++++++++++++++++++++++++++++++++++++++++++
+ doc/icewmbg.1.adoc  |  164 ++++++++
+ 3 files changed, 1394 insertions(+)
+
+commit a81db00bd4fcb30d618dd828e5767274ffbf67ba
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 20 18:14:31 2017 +0200
+
+    Make distcheck work again by removing obsolete sources src/ycmdline.cc
+    src/yimage.cc src/ylibrary.cc src/ypixbuf.cc.
+
+ po/POTFILES.in | 4 ----
+ 1 file changed, 4 deletions(-)
+
+commit c8927283362ec6e3ce883c7b50881bb33b9ee9d8
+Merge: d2c98e53 4c50e7f0
+Author: Brian Bidulock <bidulock@openss7.com>
+Date:   Tue Aug 15 13:15:37 2017 -0600
+
+    Merge pull request #158 from attilakinali/icewm-1-4-BRANCH
+
+    Use byte/s instead of bit/s for NetStatus App tooltip
+
+commit 4c50e7f091839dc458662c9c7fe620d7130531a0
+Author: Attila Kinali <attila@kinali.ch>
+Date:   Tue Aug 15 17:21:08 2017 +0200
+
+    Use byte/s instead of bit/s for NetStatus App tooltip
+
+    Signed-off-by: Attila Kinali <attila@kinali.ch>
+
+ src/apppstatus.cc | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
+commit d2c98e53b6fcea5eec042a187cd1d9247f17b403
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 13 22:04:20 2017 -0600
+
+    correct format
+
+ src/ywindow.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 878d3836f6713f7123fb8d5946a6639edc86489a
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 13 22:03:13 2017 -0600
+
+    correct format
+
+ src/ywindow.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit fd479683f1cc9cf62a5fb2b7c8250d993fbf6bc3
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 13 22:01:54 2017 -0600
+
+    correct format error
+
+ src/ylocale.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 74f9d0c07db125b18cbdfe26fdcf5d2dfbc956d8
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 13 21:59:42 2017 -0600
+
+    restore device name
+
+ src/icesound.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit d33fd32d0bfbd7333e6ff963bd7f34851c265f20
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 13 21:59:06 2017 -0600
+
+    correct format errors
+
+ src/wmmgr.cc | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+commit 166b147bd4d06abf99e52c6295a389894a139118
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 13 21:58:22 2017 -0600
+
+    correct format errors
+
+ src/wmframe.cc | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 2bfdbd341101a30b9728452a5f8539c5fb282a5e
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 13 21:57:32 2017 -0600
+
+    correct warning
+
+ src/wmapp.cc | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+commit 5a37cbecdd37f339222ea2b7378f7ad33dd527ca
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 13 21:40:21 2017 -0600
+
+    O0 useless for debug
+
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 6d0d95b0320c6822a493626e8b5d2168e9cb7978
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 13 20:39:12 2017 -0600
+
+    Revert VERSION
+
+ VERSION | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit b9b07198b03466b58426e6d434a1a61b2718d673
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 13 20:38:53 2017 -0600
+
+    Revert "Updates for upcoming release."
+
+    This reverts commit 5b8e8808ee2fd550ee80c921dcd3a3bb12fa3676.
+
+    Premature.
+
+ AUTHORS        |   10 +-
+ ChangeLog      | 8345 +++++++++++++++++++++++++++++++++-------------------
+ NEWS           |  208 +-
+ README.md      |    2 +-
+ VERSION        |    2 +-
+ po/POTFILES.in |    4 +
+ po/ar.po       |  700 ++---
+ po/be.po       |  714 ++---
+ po/bg.po       |  708 ++---
+ po/ca.po       |  710 ++---
+ po/cs.po       |  715 ++---
+ po/da.po       |  706 ++---
+ po/de.po       |  715 ++---
+ po/el.po       |  713 ++---
+ po/en.po       |  617 ++--
+ po/es.po       |  713 ++---
+ po/fi.po       |  703 ++---
+ po/fr.po       |  714 ++---
+ po/he.po       |  674 ++---
+ po/hr.po       |  647 ++--
+ po/hu.po       |  712 ++---
+ po/icewm.pot   |  621 ++--
+ po/id.po       |  713 ++---
+ po/it.po       |  715 ++---
+ po/ja.po       |  722 ++---
+ po/ko.po       |  706 ++---
+ po/lt.po       |  718 ++---
+ po/lv.po       |  706 ++---
+ po/mk.po       |  708 ++---
+ po/nb.po       |  707 ++---
+ po/nl.po       |  713 ++---
+ po/no.po       |  707 ++---
+ po/pl.po       |  708 ++---
+ po/pt_BR.po    |  715 ++---
+ po/ro.po       |  706 ++---
+ po/ru.po       |  705 ++---
+ po/sk.po       |  713 ++---
+ po/sl.po       |  706 ++---
+ po/sv.po       |  707 ++---
+ po/tr.po       |  703 ++---
+ po/uk.po       |  712 ++---
+ po/vi.po       |  708 ++---
+ po/zh_CN.po    |  697 ++---
+ po/zh_TW.po    |  702 ++---
+ 44 files changed, 16966 insertions(+), 18284 deletions(-)
+
+commit 2faa6548aa7cbeffe4674166a0a9b39413719400
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 13 20:27:10 2017 -0600
+
+    breaks distcheck
+
+ icewm-set-gnomewm | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 0d1bc31d9e42cc335cf3ca155c2c987ce1d6b500
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 13 20:17:47 2017 -0600
+
+    Revert "Move obsolete sources to attic (ycmdline, yimage, ylibrary,
+    ypixbuf)."
+
+    This reverts commit 1df436671c91689329186c4e593f117141199cba.
+
+    Breaks distcheck.
+
+ src/{attic => }/ycmdline.cc | 0
+ src/{attic => }/ycmdline.h  | 0
+ src/{attic => }/yimage.cc   | 0
+ src/{attic => }/ylibrary.cc | 0
+ src/{attic => }/ylibrary.h  | 0
+ src/{attic => }/ypixbuf.cc  | 0
+ src/{attic => }/ypixbuf.h   | 0
+ 7 files changed, 0 insertions(+), 0 deletions(-)
+
+commit 72a1ebf670af410740f2bc45058c786d664f3832
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 13 20:14:53 2017 -0600
+
+    Revert "Make icewm-session much smaller in size by not linking any X11,
+    image or font library."
+
+    This reverts commit 7fb95b28e9e6610679b785ffffc63c1a26a76c1b.
+
+    Breaks distcheck.
+
+ src/CMakeLists.txt |  4 ++--
+ src/Makefile.am    | 12 ++++++++++--
+ 2 files changed, 12 insertions(+), 4 deletions(-)
+
+commit 8f3b1b0bf61c60204dd4093a1a8f0173331a70cc
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 13 20:08:47 2017 -0600
+
+    Revert "Manual pages in AsciiDoc."
+
+    This reverts commit 7ec44f3fe9196f755de4b76b8168ff07ee648050.
+
+    Breaks distcheck.
+
+ doc/icewm.1.adoc   | 1070 ------------------------------------------------
+ doc/icewmbg.1.adoc |  164 --------
+ 2 files changed, 1234 deletions(-)
+
+commit e4403b84b07127fc202e5bbe2f46f0c144abbe85
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 13 20:07:54 2017 -0600
+
+    Revert "Generate manpages and html files from AsciiDoc."
+
+    This reverts commit 8b2b034fb79d9201300b8c2f677c35afef172f1f.
+
+    Breaks distcheck.
+
+ doc/CMakeLists.txt | 140 +++++++------------------------------------------
+ 1 file changed, 20 insertions(+), 120 deletions(-)
+
+commit 322592eb070089309ba28dd5053b7a7972701931
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 13 20:07:44 2017 -0600
+
+    Revert "ASCIIMAN and ASCIIMAN_FORMAT variables for generating manpages
+    from AsciiDoc."
+
+    This reverts commit c48a58a5066e5b2eab1c8246de93ed949b1256b0.
+
+    Breaks distcheck.
+
+ configure.ac | 21 ++++-----------------
+ 1 file changed, 4 insertions(+), 17 deletions(-)
+
+commit 22bba7b4b0f23fac837cd1d521dab4fd0336c58f
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 13 20:06:28 2017 -0600
+
+    Revert "Generate manpages + their html from AsciiDoc."
+
+    This reverts commit 01530d7110369e5f1e732dae90c68f2aad097e3b.
+
+    Breaks distcheck.
+
+ doc/Makefile.am | 30 +++++++++---------------------
+ 1 file changed, 9 insertions(+), 21 deletions(-)
+
+commit 3a0e80d02dacf5eac1180d7b80b471c763d5dcf2
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 13 20:06:02 2017 -0600
+
+    Revert "icesound manpage and html."
+
+    This reverts commit 57825cea10edd30827dc9bc3add57c5d0681c86c.
+
+    Breaks distcheck.
+
+ doc/CMakeLists.txt  |   4 +-
+ doc/Makefile.am     |   7 +--
+ doc/icesound.1.adoc | 160 ------------------------------------------------
+ 3 files changed, 4 insertions(+), 167 deletions(-)
+
+commit 5b8e8808ee2fd550ee80c921dcd3a3bb12fa3676
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 13 21:28:26 2017 +0200
+
+    Updates for upcoming release.
+
+ AUTHORS        |   10 +-
+ ChangeLog      | 8251 ++++++++++++++++++----------------------------------
+ NEWS           |  208 +-
+ README.md      |    2 +-
+ VERSION        |    2 +-
+ configure.ac   |    4 +-
+ po/POTFILES.in |    4 -
+ po/ar.po       |  700 +++--
+ po/be.po       |  714 +++--
+ po/bg.po       |  708 +++--
+ po/ca.po       |  710 +++--
+ po/cs.po       |  715 +++--
+ po/da.po       |  706 +++--
+ po/de.po       |  715 +++--
+ po/el.po       |  713 +++--
+ po/en.po       |  617 ++--
+ po/es.po       |  713 +++--
+ po/fi.po       |  703 +++--
+ po/fr.po       |  714 +++--
+ po/he.po       |  674 +++--
+ po/hr.po       |  647 ++--
+ po/hu.po       |  712 +++--
+ po/icewm.pot   |  621 ++--
+ po/id.po       |  713 +++--
+ po/it.po       |  715 +++--
+ po/ja.po       |  722 +++--
+ po/ko.po       |  706 +++--
+ po/lt.po       |  718 +++--
+ po/lv.po       |  706 +++--
+ po/mk.po       |  708 +++--
+ po/nb.po       |  707 +++--
+ po/nl.po       |  713 +++--
+ po/no.po       |  707 +++--
+ po/pl.po       |  708 +++--
+ po/pt_BR.po    |  715 +++--
+ po/ro.po       |  706 +++--
+ po/ru.po       |  705 +++--
+ po/sk.po       |  713 +++--
+ po/sl.po       |  706 +++--
+ po/sv.po       |  707 +++--
+ po/tr.po       |  703 +++--
+ po/uk.po       |  712 +++--
+ po/vi.po       |  708 +++--
+ po/zh_CN.po    |  697 +++--
+ po/zh_TW.po    |  702 +++--
+ 45 files changed, 18239 insertions(+), 16921 deletions(-)
+
+commit 6cd522dc9d2478c138bad712eab2b2df6a0ea45e
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 13 20:58:34 2017 +0200
+
+    Changes for debug build.
+
+ VERSION            | 2 +-
+ configure.ac       | 4 ++--
+ src/CMakeLists.txt | 2 +-
+ src/icesh.cc       | 8 ++++----
+ src/icesound.cc    | 2 +-
+ src/ylocale.cc     | 2 +-
+ src/ypopup.cc      | 2 +-
+ src/ywindow.cc     | 6 +++---
+ 8 files changed, 14 insertions(+), 14 deletions(-)
+
+commit 4c686a28bf778fed2693a5847996657f951ce3b7
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 13 19:15:12 2017 +0200
+
+    More icesound support.
+
+ doc/icewm.1.adoc |  6 ++++--
+ src/appnames.h   |  4 ++++
+ src/icesm.cc     | 32 +++++++++++++++++++++++++++++++-
+ src/wmprog.cc    |  1 +
+ 4 files changed, 40 insertions(+), 3 deletions(-)
+
+commit 57825cea10edd30827dc9bc3add57c5d0681c86c
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 13 19:13:18 2017 +0200
+
+    icesound manpage and html.
+
+ doc/CMakeLists.txt  |   4 +-
+ doc/Makefile.am     |   7 ++-
+ doc/icesound.1.adoc | 160 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 167 insertions(+), 4 deletions(-)
+
+commit d2884fc23369e2011e7a9d5ab1a0137375275c9a
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 13 14:17:14 2017 +0200
+
+    Update CMake build for icesound with libAO.
+
+ src/CMakeLists.txt    | 6 +++---
+ src/config.cmake.h.in | 3 ++-
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+
+commit 1df436671c91689329186c4e593f117141199cba
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 13 13:15:30 2017 +0200
+
+    Move obsolete sources to attic (ycmdline, yimage, ylibrary, ypixbuf).
+
+ src/{ => attic}/ycmdline.cc | 0
+ src/{ => attic}/ycmdline.h  | 0
+ src/{ => attic}/yimage.cc   | 0
+ src/{ => attic}/ylibrary.cc | 0
+ src/{ => attic}/ylibrary.h  | 0
+ src/{ => attic}/ypixbuf.cc  | 0
+ src/{ => attic}/ypixbuf.h   | 0
+ 7 files changed, 0 insertions(+), 0 deletions(-)
+
+commit f706ece0317099f88b26976be4a9f680b2fe7ab0
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 13 13:11:12 2017 +0200
+
+    Redesign/rewrite icesound. Try all enabled sound drivers until one
+    works, from AO, ESD, ALSA, OSS, but the order can be specified. Drop
+    support for YIFF. Add support for libAO. Fix support for ALSA. Make class
+    YCommandLine obsolete. Make verbose more usefully verbose. Add -O and -A
+    options. Also check in ~/.config/icewm/sounds/ for audio files. Replace
+    the busy-wait polling with a blocking select. Identify which GUI events
+    are not implemented yet. Update CMake, autoconf/automake and manpage.
+
+ README.md             |    4 +-
+ VERSION               |    2 +-
+ configure.ac          |   35 +-
+ configure.sh          |    2 +-
+ doc/icewm.1.adoc      |   27 +-
+ src/CMakeLists.txt    |   20 +-
+ src/Makefile.am       |   15 +-
+ src/config.cmake.h.in |    1 +
+ src/guievent.h        |   84 +--
+ src/icesound.cc       | 1552 ++++++++++++++++++---------------------------
+ src/wmapp.cc          |    6 +-
+ 11 files changed, 738 insertions(+), 1010 deletions(-)
+
+commit a76e6cc0852a50b5b45b56adf2653cae848f9e32
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 13 13:03:08 2017 +0200
+
+    mstring additions to reduce very-short-lived memory allocations.
+
+ src/mstring.cc | 39 +++++++++++++++++++++++++++++++++++----
+ src/mstring.h  |  5 +++++
+ src/strtest.cc | 20 ++++++++++++++++++++
+ src/ysmapp.cc  |  4 ++--
+ 4 files changed, 62 insertions(+), 6 deletions(-)
+
+commit 1025965b636a717654e438e37edd736c4f40e7dd
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 13 12:56:53 2017 +0200
+
+    Remove superfluous GUI_EVENT_NAMES to prevent a warning.
+
+ src/icewmhint.cc | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit 649f80ef6ec73c0bb169cc5f9fc3e34493ceb891
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 13 12:54:59 2017 +0200
+
+    include strings.h for strcasecmp.
+    Make History::get() return a const char*.
+
+ src/icehelp.cc | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+commit cbd6823658e1e66f48db59fe1812ba7ba2db4d8e
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 13 12:51:40 2017 +0200
+
+    Three fixes for correctly drawing taskbarbg.xpm when it is a Gradient.
+    See issue https://github.com/bbidulock/icewm/issues/87.
+
+ src/atasks.cc    |  4 +++-
+ src/wmtaskbar.cc | 10 ++++++----
+ src/wpixres.cc   | 22 ++++++++++------------
+ 3 files changed, 19 insertions(+), 17 deletions(-)
+
+commit bb6922a48404cdbeff1dd6bb9a4ebe77424d9098
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sat Aug 12 21:26:27 2017 -0600
+
+    Revert "mstring additions to reduce memory allocations."
+
+    This reverts commit c7a56426247982f21aa30c78e8089945cc9d0fe5.
+
+ src/icehelp.cc |  2 +-
+ src/mstring.cc | 39 ++++-----------------------------------
+ src/mstring.h  |  5 -----
+ src/strtest.cc | 20 --------------------
+ src/ysmapp.cc  |  4 ++--
+ 5 files changed, 7 insertions(+), 63 deletions(-)
+
+commit 11fa5d4f1408dc55c076e93e29ce5635f9021cd1
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sat Aug 12 21:26:24 2017 -0600
+
+    Revert "Fixes for correctly drawing taskbarbg.xpm when it is a Gradient."
+
+    This reverts commit 4846de1bb5ed561d292a347c961982bf6f7d3afd.
+
+ src/atasks.cc    |  4 +---
+ src/wmtaskbar.cc | 10 ++++------
+ src/wpixres.cc   | 22 ++++++++++++----------
+ 3 files changed, 17 insertions(+), 19 deletions(-)
+
+commit aed2cd66bdfc694dd0f5efedc31ae4ca6094b486
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sat Aug 12 21:26:18 2017 -0600
+
+    Revert "Move obsolete source to attic."
+
+    This reverts commit aca0268bea8a60951589491b4e9020db991a7f02.
+
+ src/{attic => }/ycmdline.cc | 0
+ src/{attic => }/ycmdline.h  | 0
+ src/{attic => }/yimage.cc   | 0
+ src/{attic => }/ylibrary.cc | 0
+ src/{attic => }/ylibrary.h  | 0
+ src/{attic => }/ypixbuf.cc  | 0
+ src/{attic => }/ypixbuf.h   | 0
+ 7 files changed, 0 insertions(+), 0 deletions(-)
+
+commit 57ce0630af07b83124225136ffd6b481a71d5e83
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sat Aug 12 21:26:10 2017 -0600
+
+    Revert "More sounds info. Add keys example."
+
+    This reverts commit 977e11612d92de5762c0feaab335ec76bafcc536.
+
+ doc/icewm.1.adoc | 27 +--------------------------
+ 1 file changed, 1 insertion(+), 26 deletions(-)
+
+commit 769b955a77521506e86eb0d8947f7af0c9e5346a
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sat Aug 12 21:26:04 2017 -0600
+
+    Revert "Update build for new icesound."
+
+    This reverts commit eabc8bbce744aea42d12a921b2b9f1f67ba458a2.
+
+ VERSION            |  2 +-
+ configure.ac       | 24 ++++++++++++++++--------
+ src/CMakeLists.txt | 14 +++++++++-----
+ src/Makefile.am    | 15 ++++++++-------
+ 4 files changed, 34 insertions(+), 21 deletions(-)
+
+commit ab6873a0e84d991913563d206d10996b82b9bd92
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sat Aug 12 21:26:01 2017 -0600
+
+    Revert "include strings.h for strcasecmp."
+
+    This reverts commit 8f847f26642ba573f64e404eba5b975bdd20868e.
+
+ src/icehelp.cc | 3 ---
+ 1 file changed, 3 deletions(-)
+
+commit 548725bcd0b392e67524988c413076b599d69e28
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sat Aug 12 21:25:57 2017 -0600
+
+    Revert "GUI_EVENT_NAMES were not used (prevent a warning)."
+
+    This reverts commit 33ddb9981017bd2426e06a08296225fe33e565e1.
+
+ src/icewmhint.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit ad0ea1a94d4f31520b441e99f12893ca5b2c6178
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sat Aug 12 21:25:38 2017 -0600
+
+    Revert "drop YIFF."
+
+    This reverts commit 9797010a02402d12eacf5977ecc80dba61c84089.
+
+ src/wmapp.cc | 3 +++
+ 1 file changed, 3 insertions(+)
+
+commit 370951341ba66ddbbac050a9ad8ed18726736bd5
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sat Aug 12 21:25:23 2017 -0600
+
+    Revert "Redesign/rewrite icesound. Try all enabled sound drivers until one
+    works, from ESD, ALSA, OSS, but the order can be specified. Drop support
+    for YIFF. Fix support for ALSA. Make class YCommandLine obsolete. Make
+    verbose more usefully verbose. Add -O and -A options. Also check in
+    ~/.config/icewm/sounds/ for audio files. Identify which GUI events are
+    not implemented yet."
+
+    This reverts commit 2ba788b58e5ecd844b600d3c0cb4fa67f3445a1c.
+
+ src/guievent.h  |   84 ++-
+ src/icesound.cc | 1406 +++++++++++++++++++++++++++++++++------------------
+ 2 files changed, 942 insertions(+), 548 deletions(-)
+
+commit c7a56426247982f21aa30c78e8089945cc9d0fe5
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 13 00:42:15 2017 +0200
+
+    mstring additions to reduce memory allocations.
+
+ src/icehelp.cc |  2 +-
+ src/mstring.cc | 39 +++++++++++++++++++++++++++++++++++----
+ src/mstring.h  |  5 +++++
+ src/strtest.cc | 20 ++++++++++++++++++++
+ src/ysmapp.cc  |  4 ++--
+ 5 files changed, 63 insertions(+), 7 deletions(-)
+
+commit 4846de1bb5ed561d292a347c961982bf6f7d3afd
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 13 00:33:29 2017 +0200
+
+    Fixes for correctly drawing taskbarbg.xpm when it is a Gradient.
+    See issue https://github.com/bbidulock/icewm/issues/87.
+
+ src/atasks.cc    |  4 +++-
+ src/wmtaskbar.cc | 10 ++++++----
+ src/wpixres.cc   | 22 ++++++++++------------
+ 3 files changed, 19 insertions(+), 17 deletions(-)
+
+commit aca0268bea8a60951589491b4e9020db991a7f02
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sat Aug 12 00:24:55 2017 +0200
+
+    Move obsolete source to attic.
+
+ src/{ => attic}/ycmdline.cc | 0
+ src/{ => attic}/ycmdline.h  | 0
+ src/{ => attic}/yimage.cc   | 0
+ src/{ => attic}/ylibrary.cc | 0
+ src/{ => attic}/ylibrary.h  | 0
+ src/{ => attic}/ypixbuf.cc  | 0
+ src/{ => attic}/ypixbuf.h   | 0
+ 7 files changed, 0 insertions(+), 0 deletions(-)
+
+commit 977e11612d92de5762c0feaab335ec76bafcc536
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Aug 11 23:59:19 2017 +0200
+
+    More sounds info. Add keys example.
+
+ doc/icewm.1.adoc | 27 ++++++++++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
+
+commit eabc8bbce744aea42d12a921b2b9f1f67ba458a2
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Aug 11 23:58:53 2017 +0200
+
+    Update build for new icesound.
+
+ VERSION            |  2 +-
+ configure.ac       | 24 ++++++++----------------
+ src/CMakeLists.txt | 14 +++++---------
+ src/Makefile.am    | 15 +++++++--------
+ 4 files changed, 21 insertions(+), 34 deletions(-)
+
+commit 8f847f26642ba573f64e404eba5b975bdd20868e
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Aug 11 23:57:55 2017 +0200
+
+    include strings.h for strcasecmp.
+
+ src/icehelp.cc | 3 +++
+ 1 file changed, 3 insertions(+)
+
+commit 33ddb9981017bd2426e06a08296225fe33e565e1
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Aug 11 23:57:25 2017 +0200
+
+    GUI_EVENT_NAMES were not used (prevent a warning).
+
+ src/icewmhint.cc | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit 9797010a02402d12eacf5977ecc80dba61c84089
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Aug 11 23:57:09 2017 +0200
+
+    drop YIFF.
+
+ src/wmapp.cc | 3 ---
+ 1 file changed, 3 deletions(-)
+
+commit 2ba788b58e5ecd844b600d3c0cb4fa67f3445a1c
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Aug 11 23:49:32 2017 +0200
+
+    Redesign/rewrite icesound. Try all enabled sound drivers until one works,
+    from ESD, ALSA, OSS, but the order can be specified. Drop support for
+    YIFF. Fix support for ALSA. Make class YCommandLine obsolete. Make
+    verbose more usefully verbose. Add -O and -A options. Also check in
+    ~/.config/icewm/sounds/ for audio files. Identify which GUI events are
+    not implemented yet.
+
+ src/guievent.h  |   84 +--
+ src/icesound.cc | 1406 ++++++++++++++++++---------------------------------
+ 2 files changed, 548 insertions(+), 942 deletions(-)
+
+commit 7acdedaef6b2540f6263ae74c941dae6d0d8351c
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Wed Aug 9 22:47:13 2017 +0200
+
+    Change Menu Help into a submenu with 3 items for all manual pages.
+
+ src/wmprog.cc | 66 ++++++++++++++++++++++++++++++++++++++++---------------
+ src/wmprog.h  |  7 ++++++
+ 2 files changed, 55 insertions(+), 18 deletions(-)
+
+commit a704f3512846af8e1de84ba80698dce43f1d4a83
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Aug 8 21:55:14 2017 +0200
+
+    icewm-session --notray.
+
+ doc/icewm.1.adoc | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+commit 7fb95b28e9e6610679b785ffffc63c1a26a76c1b
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Aug 8 21:52:03 2017 +0200
+
+    Make icewm-session much smaller in size by not linking any X11, image
+    or font library.
+    ylibrary.cc and ylibrary.h are obsolete.
+    Reduce AM_INSTALLCHECK_STD_OPTIONS_EXEMPT programs.
+
+ src/CMakeLists.txt |  4 ++--
+ src/Makefile.am    | 12 ++----------
+ 2 files changed, 4 insertions(+), 12 deletions(-)
+
+commit 3154fefaa1069c5bd7f783b6e6ab4a3d7b4d6f6b
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Aug 8 21:49:40 2017 +0200
+
+    Make icewm-session resilient against a missing icewmtray.
+    Add a --notray option to not start icewmtray.
+    See issue https://github.com/bbidulock/icewm/issues/154.
+
+ src/icesm.cc | 83 ++++++++++++++++++++++++++++++++++++--------------------
+ 1 file changed, 53 insertions(+), 30 deletions(-)
+
+commit 28c7643eeb9f8e7681c715ba4e61a5b15c4c8b26
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Aug 8 21:48:11 2017 +0200
+
+    Have --help and --version exit not with 1, but with 0.
+
+ src/icehelp.cc   | 2 +-
+ src/icesound.cc  | 2 +-
+ src/icewmbg.cc   | 3 ++-
+ src/icewmhint.cc | 2 +-
+ src/misc.cc      | 4 ++--
+ 5 files changed, 7 insertions(+), 6 deletions(-)
+
+commit 2ddcbbfd4957833ce91cbdd2e37aa097152dde2d
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Aug 8 21:43:01 2017 +0200
+
+    Move ypaths.h out of yapp.h, because a pure-yapps may not need X11.
+    Include ypaths.h into some C++ files which do need it.
+
+ src/aworkspaces.cc | 2 +-
+ src/wmapp.cc       | 1 +
+ src/wmdialog.cc    | 2 +-
+ src/wmprog.cc      | 3 +--
+ src/yapp.h         | 2 +-
+ src/ycursor.cc     | 1 +
+ src/yicon.cc       | 2 +-
+ src/yprefs.h       | 1 +
+ 8 files changed, 8 insertions(+), 6 deletions(-)
 commit ef3f80af7f4c6ee0fd34f6ac1b9d3ec48bdedc7a
 Author: Eduard Bloch <blade@debian.org>
 Date:   Sat Aug 5 17:54:10 2017 +0200
