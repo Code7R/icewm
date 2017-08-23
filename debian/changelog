@@ -2,6 +2,8 @@ icewm (1.4.3+mod+20170823-1) experimental; urgency=low
 
   * New (unofficial fork) upstream snapshot
   * Drop our modifications on font loading (explicite preference for DejaVu)
+  * Build rules fixes to use parallelization (stop using dh_auto_build, use
+    plain make)
 
  -- Eduard Bloch <blade@debian.org>  Tue, 08 Aug 2017 21:11:45 +0200
 

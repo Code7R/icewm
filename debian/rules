@@ -2,11 +2,16 @@
 # -*- makefile -*-
 # debian/rules for icewm
 
-%:
-	dh $@ --parallel
-
-# debhelper is still not doing what we need :-(
-#PAROPT=$(shell echo $$DEB_BUILD_OPTIONS | sed -e 's,.*parallel=\([0-9]\).*,-j\1,')
+ICEWM_COMMON=$(CURDIR)/debian/icewm-common
+ICEWM=$(CURDIR)/debian/icewm
+ICEWM_LITE=$(CURDIR)/debian/icewm-lite
+ICEWM_EXP=$(CURDIR)/debian/icewm-experimental
+DOCDIR=/usr/share/doc/icewm-common
+BDIR=builddir
+ICONS=$(CURDIR)/debian/icons
+FDO=$(CURDIR)/debian/fdo
+CUSTOM=$(CURDIR)/debian/custom
+cmakecmd = cmake $(CURDIR) -DICEHELPIDX=/usr/share/doc/icewm-common/html/icewm.html -DCFGDIR=/etc/X11/icewm -DCMAKE_INSTALL_PREFIX=/usr -DVERSION=$(ORIGVERSION) -DDOCDIR=$(DOCDIR) -DEXTRA_LIBS="-lsupc++" -DCMAKE_VERBOSE_MAKEFILE=ON
 
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 DPKG_EXPORT_BUILDFLAGS = 1
@@ -19,22 +24,22 @@ ifeq (linux,$(DEB_TARGET_ARCH_OS))
 	 CXXFLAGS += -DUSE_SIGNALFD
 endif
 
-ICEWM_COMMON=$(CURDIR)/debian/icewm-common
-ICEWM=$(CURDIR)/debian/icewm
-ICEWM_LITE=$(CURDIR)/debian/icewm-lite
-ICEWM_EXP=$(CURDIR)/debian/icewm-experimental
-DOCDIR=/usr/share/doc/icewm-common
-BDIR=builddir
-ICONS=$(CURDIR)/debian/icons
-FDO=$(CURDIR)/debian/fdo
-CUSTOM=$(CURDIR)/debian/custom
+%:
+	dh $@ --parallel
 
 # DEBVERSION=$(shell dpkg-parsechangelog -SVersion)
 # that one also works with wheezy
 DEBVERSION := $(shell dpkg-parsechangelog |grep ^Version | sed -e s,Version:.,,)
 ORIGVERSION := $(shell echo $(DEBVERSION) | sed -e 's,-[^-]*$$,,' )
 
-cmakecmd = cmake $(CURDIR) -DICEHELPIDX=/usr/share/doc/icewm-common/html/icewm.html -DCFGDIR=/etc/X11/icewm -DCMAKE_INSTALL_PREFIX=/usr -DVERSION=$(ORIGVERSION) -DDOCDIR=$(DOCDIR) -DEXTRA_LIBS="-lsupc++" -DCMAKE_VERBOSE_MAKEFILE=ON
+# dh_auto_build is no help here...
+PAROPT=$(shell echo $$DEB_BUILD_OPTIONS | sed -e 's,.*parallel=\([0-9]\).*,-j\1,')
+
+build_lite:
+	$(MAKE) $(PAROPT) -C $(BDIR)-lite
+
+build_normal:
+	$(MAKE) $(PAROPT) -C $(BDIR)-normal
 
 config_lite:
 	mkdir -p $(BDIR)-lite
@@ -47,14 +52,12 @@ config_normal:
 override_dh_auto_configure:
 	$(MAKE) -f debian/rules -j2 config_normal config_lite
 
-override_dh_auto_build:
-	dh_auto_build -- -C $(BDIR)-lite
-	dh_auto_build -- -C $(BDIR)-normal
+override_dh_auto_build: build_normal build_lite
 	cd debian && for x in -lite -experimental ; do cp -lf icewm.postinst icewm$$x.postinst ; cp -lf icewm.prerm icewm$$x.prerm ; done
 
 override_dh_auto_install:
-	$(MAKE) $(PAROPT) -C $(BDIR)-lite install DESTDIR=$(CURDIR)/debian/tmp
-	$(MAKE) $(PAROPT) -C $(BDIR)-normal install DESTDIR=$(CURDIR)/debian/tmp
+	$(MAKE) -C $(BDIR)-lite install DESTDIR=$(CURDIR)/debian/tmp
+	$(MAKE) -C $(BDIR)-normal install DESTDIR=$(CURDIR)/debian/tmp
 
 override_dh_install:
 	dh_install
@@ -78,8 +81,6 @@ override_dh_install:
 	mkdir -p "$(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ"
 	cd $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ && sgml2html $(CURDIR)/debian/FAQ/source/*.sgml
 	sgml2txt $(CURDIR)/debian/FAQ/source/*.sgml && col -bx < IceWM-FAQ.txt > $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ/IceWM-FAQ.txt
-#	echo FIXME: this is a temp. workaround for installation of HTML help until the decission of when to rebuild is made
-#	cp doc/icewm.html $(ICEWM_COMMON)/usr/share/doc/icewm-common/html/
 	# making -experimental compat symlinks
 	for x in icewm-session icewm icewmhint icehelp icewmtray icewmbg icesh icesound ; do ln -s $$x $(ICEWM_EXP)/usr/bin/$$x-experimental ; done
 	# Install undocumented manpages
