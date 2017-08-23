@@ -1,6 +1,7 @@
-icewm (1.4.2+mod+20170808-1) experimental; urgency=low
+icewm (1.4.3+mod+20170823-1) experimental; urgency=low
 
   * New (unofficial fork) upstream snapshot
+  * Drop our modifications on font loading (explicite preference for DejaVu)
 
  -- Eduard Bloch <blade@debian.org>  Tue, 08 Aug 2017 21:11:45 +0200
 
