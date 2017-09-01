@@ -1,3 +1,950 @@
+commit 97823a66fbd821c148a69ff69d0381f7dda09b75
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Thu Aug 31 23:44:04 2017 +0000
+
+    complete icewmtray manual page
+
+ man/icewmtray.pod | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
+
+commit a312e96cb848f299881aded85984e80b8a999581
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Thu Aug 31 16:38:01 2017 -0600
+
+    more work on icewmtray manual page
+
+ man/icewmtray.pod | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+commit 83beb68fdd6d355e48abd96c652a0e833fd2ef84
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Thu Aug 31 15:47:18 2017 -0600
+
+    working up icewmtray manual page
+
+ man/icewmtray.pod | 35 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 33 insertions(+), 2 deletions(-)
+
+commit 2c0282774051fd9b16d02285aeffacb36767cba4
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Thu Aug 31 13:49:12 2017 -0600
+
+    complete icesh manual page
+
+ man/icesh.pod | 84 ++++++++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 58 insertions(+), 26 deletions(-)
+
+commit a52cd14a143a1c81ac61f51a2557e5646e8bb13b
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Thu Aug 31 13:33:01 2017 -0600
+
+    building up icesh manual page
+
+ man/icesh.pod | 125 ++++++++++++++++++++++++++++++++----------------------
+ 1 file changed, 74 insertions(+), 51 deletions(-)
+
+commit 9f859af20e7aca39efd758eca923fd9d323d284a
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Thu Aug 31 09:46:20 2017 -0600
+
+    more updates to icesh manual page
+
+ man/icesh.pod | 113 +++++++++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 82 insertions(+), 31 deletions(-)
+
+commit 0a2a609d31c05afa1e512a660be2d9f5f08e6f10
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Thu Aug 31 05:30:46 2017 -0600
+
+    working up icesh manual page
+
+ man/icesh.pod | 124 +++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 123 insertions(+), 1 deletion(-)
+
+commit 199b657cb436943a6c1398bcd8a4ed26439ca1da
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Thu Aug 31 04:45:09 2017 -0600
+
+    syntax error
+
+ man/icewm.pod | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit 099fbefe91c75b4960c2a06d3c76e912f95e6a99
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Thu Aug 31 04:44:36 2017 -0600
+
+    strap in icehelp manual page
+
+ man/icehelp.pod | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
+
+commit a569631c9dd223d78ff1973704a434692b9eee1a
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Thu Aug 31 00:51:35 2017 -0600
+
+    comaplete icesound manual page
+
+ man/icesound.pod | 151 ++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 150 insertions(+), 1 deletion(-)
+
+commit 6955d2d4daec387b3c2a39698cbdbbbc5f17a92b
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Thu Aug 31 00:33:08 2017 -0600
+
+    strap in manual page for icewmbg
+
+ man/icewmbg.pod | 142 +++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 141 insertions(+), 1 deletion(-)
+
+commit 68549fe748a74a558f2b043f5361d5f4c2c6a5bc
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:26:21 2017 -0600
+
+    add standard usage option to icewmtray manual page
+
+ man/icewmtray.pod | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+commit 28abfe396746f394f4c595064c4ed69a9cc9f6d1
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:26:08 2017 -0600
+
+    add standard usage option to icewmhint manual page
+
+ man/icewmhint.pod | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+commit c6c5dac733aa206b0eb97b202a1691169561fe04
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:25:55 2017 -0600
+
+    add standard usage option to icewmbg manual page
+
+ man/icewmbg.pod | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+commit eb494559c9757d82db56fca1491527457737d99e
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:25:40 2017 -0600
+
+    add standard usage option to icewm-set-gnomewm manual page
+
+ man/icewm-set-gnomewm.pod | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+commit e7da683817cd5c0de08551d82c7c3ee231988f08
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:25:20 2017 -0600
+
+    add standard usage option to icewm-session manual page
+
+ man/icewm-session.pod | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+commit 8064ad76215519923aea7a23bbad164b53076906
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:25:01 2017 -0600
+
+    add standard usage option to icewm-menu-fdo manual page
+
+ man/icewm-menu-fdo.pod | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+commit 8fa51108b9a58907d11b83f8a836ae0fb3521d2a
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:24:41 2017 -0600
+
+    add standard usage option to icesound manual page
+
+ man/icesound.pod | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+commit b191d256af35b530b084b294a2de1fa17adac0a9
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:24:30 2017 -0600
+
+    add standard usage option to icesh manual page
+
+ man/icesh.pod | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+commit aed6d5d4ae16eea9b1cb13f48866e65329d59e2d
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:24:16 2017 -0600
+
+    add standard usage option to icehelp manual page
+
+ man/icehelp.pod | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+commit e140336ded813622841ea1f22e0a32758186ad28
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:18:02 2017 -0600
+
+    sort manual pages alphabetic
+
+ man/Makefile.am | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
+
+commit 541c4668a65618969882d0c30b3012bd19011523
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:17:10 2017 -0600
+
+    add icewm-set-gnomewm manual page to Makefile
+
+ man/Makefile.am | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+commit 32667ea1b08f21a5ba25a460e63b6ecca8610ef1
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:16:36 2017 -0600
+
+    add icewm-set-gnomewm manual page
+
+ man/icewm-set-gnomewm.pod | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+
+commit d0f6d47ff8bc927935dad3374ac17f529467ba85
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:15:04 2017 -0600
+
+    add icewwm-menu-fdo manual page
+
+ man/Makefile.am | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+commit c9867f718b993c4352792f9de00b17d919b6fc50
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:14:15 2017 -0600
+
+    add icewm-menu-fdo manual page
+
+ man/icewm-menu-fdo.pod | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+
+commit 844593cbd331e8108892a230729276ad01f51924
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:12:52 2017 -0600
+
+    add icewmhint manual page to makefile
+
+ man/Makefile.am | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+commit 0a222e7b9d9b5152d1f04279d40f9a80461de06b
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:12:10 2017 -0600
+
+    add icewmhint manual page
+
+ man/icewmhint.pod | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+
+commit a3f1e5054142be978062fb81bbb1de3c69468444
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:10:56 2017 -0600
+
+    add icehelp manual page to makefile
+
+ man/Makefile.am | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+commit 1448d3b8ef2a12885715f015b287e91efb87b436
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:10:19 2017 -0600
+
+    add icehelp manual page
+
+ man/icehelp.pod | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+
+commit e1e3591141d04b9aa8793befb91da25794ddb71c
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:09:28 2017 -0600
+
+    add icesh manual page to makefile
+
+ man/Makefile.am | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+commit a0299b8e75a47b1a7af7319ad82f06f4984a2a86
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:09:01 2017 -0600
+
+    add icesh manual page
+
+ man/icesh.pod | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+
+commit 50825bdc965566e68033a210661a7d90888070c5
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:07:10 2017 -0600
+
+    add icesound manual page to makefile
+
+ man/Makefile.am | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+commit 78078498dcd18db6694f522f077ba9c8251481cf
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:06:34 2017 -0600
+
+    add icesound manual page
+
+ man/icesound.pod | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+
+commit 962913d5751b2842b42720cc3e4d7f75eb112e1c
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:05:25 2017 -0600
+
+    add icewmtray manual page to makefile
+
+ man/Makefile.am | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+commit 3aac2badd1efcf4fd24d23931a84fde42228f53f
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:04:48 2017 -0600
+
+    add icewmtray manual page
+
+ man/icewmtray.pod | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+
+commit 59f17deb883a3170a386af9214eb2b280e161621
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:02:58 2017 -0600
+
+    add icewm-session manual page to makefile
+
+ man/Makefile.am | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+commit c8a7446cf5298dfd08c6de4ac1a7c58dee9d95a1
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:02:19 2017 -0600
+
+    add icewm-session manual page
+
+ man/icewm-session.pod | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+
+commit 31d7e66d12c86ab03b1d6283d018e119aaa7f321
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 23:01:06 2017 -0600
+
+    use package name
+
+ man/icewm.pod | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit e284e7f9f7d28c6df1a0772f240cfd3a8965f0cf
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 22:59:50 2017 -0600
+
+    spelling
+
+ man/icewmbg.pod | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 461b00d1dbd4b5e11264e862cdaac518d0ae3ac5
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 22:59:14 2017 -0600
+
+    add icewmbg to makefile
+
+ man/Makefile.am | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+commit 95c3ee3007e1ba7de8613858d5b1cef88d730c6f
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 22:58:30 2017 -0600
+
+    add skeleton for icewmbg manual page
+
+ man/icewmbg.pod | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+
+commit 05d5e6f0537a1be9c5da0ecf6abc5973233f162f
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 22:57:58 2017 -0600
+
+    ignore file for this directory
+
+ man/.gitignore | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 790d149e1b5e1416dfb06e91a19398a920ea6baf
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 22:55:18 2017 -0600
+
+    yet another correction
+
+ man/icewm.pod | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 7d6906a5f85df90efcc60f72c40c4cd0ca8bf1db
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 22:53:34 2017 -0600
+
+    another correction
+
+ man/icewm.pod | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+commit 30cf44c64e824073b66282e3df5616ef46d88cfd
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 22:46:04 2017 -0600
+
+    add manual page directory to make
+
+ Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 213467af599a859d30f32110296cb3df5b8bc553
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 22:45:36 2017 -0600
+
+    add manual makefile to configure
+
+ configure.ac | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 365be7679187012d45d7999efe669c339ad3d7d1
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 22:42:51 2017 -0600
+
+    add initial pod file for icewm
+
+ man/icewm.pod | 1036 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 1036 insertions(+)
+
+commit a71ec83456b2b8de036b5a05bfa0851b36975e7f
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 22:40:10 2017 -0600
+
+    add makefile for manual pages
+
+ man/Makefile.am | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+
+commit a2b1df26165f4465eace70db729eeb712154fbad
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 19:15:47 2017 -0600
+
+    proper references
+
+ doc/icewm.1.adoc | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+
+commit 5017dfe7d82c7fc9947e427caab39e41dc2e3d21
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 19:11:15 2017 -0600
+
+    correct name
+
+ doc/icewm.1.adoc | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+
+commit cb525beb3ea5476a5d0f9af4998623bf66509109
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 19:10:09 2017 -0600
+
+    not correct
+
+ doc/icewm.1.adoc | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 67f3e07fae30be83839a7a0aa528014c6b2d620e
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 18:47:50 2017 -0600
+
+    distribute manual pages
+
+ doc/Makefile.am | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+commit b27f9c989b9c93be5d574e9b65e3ddf1c4d21d78
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 18:46:55 2017 -0600
+
+    more ignores
+
+ .gitignore | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 57bdc67a9082ab03db9f7f5ec4ab4bd275ef1439
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 18:45:42 2017 -0600
+
+    update po files
+
+ po/ar.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/be.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/bg.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/ca.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/cs.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/da.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/de.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/el.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/en.po     | 90 +++++++++++++++++++++++++++++++++++++++---------------
+ po/es.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/fi.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/fr.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/he.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/hr.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/hu.po     | 93 +++++++++++++++++++++++++++++++++++++++++---------------
+ po/icewm.pot | 92 +++++++++++++++++++++++++++++++++++++++----------------
+ po/id.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/it.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/ja.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/ko.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/lt.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/lv.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/mk.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/nb.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/nl.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/no.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/pl.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/pt_BR.po  | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/ro.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/ru.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/sk.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/sl.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/sv.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/tr.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/uk.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/vi.po     | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/zh_CN.po  | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ po/zh_TW.po  | 91 +++++++++++++++++++++++++++++++++++++++---------------
+ 38 files changed, 2509 insertions(+), 951 deletions(-)
+
+commit 3a0021d222b94476e125d3c0d05e3e480f720f02
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 17:57:24 2017 -0600
+
+    asciidoc -D option only applies to html
+
+ doc/Makefile.am | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
+commit f086a897cc99409c64d5810556341f09f93285a1
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 17:56:00 2017 -0600
+
+    suppress warnings
+
+ src/yapp.cc | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit a6b7aa87425c4585ffd2d4fa0e58705d6705bd53
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 17:55:15 2017 -0600
+
+    Revert "suppress warnings on open files"
+
+    This reverts commit 7063a5a1913180d25ce1d08daf0ee9b6f0fac213.
+
+ AUTHORS      |    2 +-
+ ChangeLog    | 8780 ++++++++++++++++++++++++++++++++++--------------------
+ NEWS         |  281 +-
+ README.md    |   43 +-
+ VERSION      |    2 +-
+ configure.ac |   10 +-
+ src/yapp.cc  |    2 -
+ 7 files changed, 5602 insertions(+), 3518 deletions(-)
+
+commit 7063a5a1913180d25ce1d08daf0ee9b6f0fac213
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 17:54:44 2017 -0600
+
+    suppress warnings on open files
+
+ AUTHORS      |    2 +-
+ ChangeLog    | 8154 +++++++++++++++++++-----------------------------------
+ NEWS         |  281 +-
+ README.md    |   43 +-
+ VERSION      |    2 +-
+ configure.ac |   10 +-
+ src/yapp.cc  |    2 +
+ 7 files changed, 3205 insertions(+), 5289 deletions(-)
+
+commit f9349d3b34401db51b802ed4639afce961785070
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Aug 30 17:42:11 2017 -0600
+
+    Revert "Let icewm-session close unwanted file descriptors on startup
+    without making any disturbing noise. See issue #165."
+
+    This reverts commit 40ebc8d29b10ef8cb2f5a04565ddc1073ec782bc.
+
+ src/icesm.cc |  1 -
+ src/yapp.cc  | 42 ++++++++++++++++++++----------------------
+ src/yapp.h   |  2 +-
+ 3 files changed, 21 insertions(+), 24 deletions(-)
+
+commit bbab9e54ff18b5dc8ec24d19f083017814a67c11
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Wed Aug 30 20:30:45 2017 +0200
+
+    Update for icesound --play and list of sounds (dialogs).
+
+ doc/icesound.1.adoc | 8 +++++---
+ doc/icewm.1.adoc    | 2 ++
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+commit 994715a0e99ce5fdcc9a9374dee35955efdaa11a
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Wed Aug 30 20:30:03 2017 +0200
+
+    Close OSS device when done.
+
+ src/icesound.cc | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+commit 40ebc8d29b10ef8cb2f5a04565ddc1073ec782bc
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Wed Aug 30 12:43:21 2017 +0200
+
+    Let icewm-session close unwanted file descriptors on startup without
+    making any disturbing noise. See issue #165.
+
+ src/icesm.cc |  1 +
+ src/yapp.cc  | 42 ++++++++++++++++++++++--------------------
+ src/yapp.h   |  2 +-
+ 3 files changed, 24 insertions(+), 21 deletions(-)
+
+commit 04d2a558ebb9ab56e9fbae9b182210eea5158c35
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Aug 29 01:43:33 2017 +0000
+
+    dashify gennews
+
+ gennews.sh | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+commit 2ff785f2bf41d582df5bb4bbeca2704df4ea70ed
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 27 16:29:55 2017 +0200
+
+    cmake for the new OSS.
+
+ src/CMakeLists.txt    | 21 ++++++++++++---------
+ src/config.cmake.h.in |  3 ++-
+ 2 files changed, 14 insertions(+), 10 deletions(-)
+
+commit ee85eca0d9f27b370d3219306003d7eee3c0c75f
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 27 12:41:44 2017 +0200
+
+    Fully support OSS.
+
+ doc/icesound.1.adoc | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+commit 7aafba53a4e7ea60059fea8fb383ad156b967364
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 27 12:36:47 2017 +0200
+
+    Add proper support for the OSS audio interface.
+
+ src/icesound.cc | 162 +++++++++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 121 insertions(+), 41 deletions(-)
+
+commit 3dba50b748e3ab5ad3e1825464bbdb99fb0e1c50
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 27 12:35:32 2017 +0200
+
+    New OSS requires sndfile and sys/soundcard.h.
+
+ configure.ac | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
+
+commit b4cb06ecbcc562faf56717312f0d2b20ba1bd7fe
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sat Aug 26 05:36:24 2017 +0000
+
+    should fix #162 anyway
+
+ autogen.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 35c4265e71ede01529bb8dc16d09bfbb909296db
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sat Aug 26 05:02:21 2017 +0200
+
+    Fix AO for single channel sound files. Add --play to easily test sounds.
+
+ src/icesound.cc | 73 +++++++++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 57 insertions(+), 16 deletions(-)
+
+commit 2633f439a14fa678f9d26a95f2d4653e7827766b
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sat Aug 26 05:01:37 2017 +0200
+
+    install _mandir/man1/*
+
+ icewm.spec.in | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit ab962e379777d25222a0fb3761179e825dcb1682
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Fri Aug 25 14:44:15 2017 -0600
+
+    add version to statement
+
+ README.md.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 107e1cea355751a1fd9f244c908f371e26facdca
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Fri Aug 25 14:40:32 2017 -0600
+
+    add ignore
+
+ .gitignore | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 439a995219cecaac07f5be38c0080d1edb59f873
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Fri Aug 25 14:38:56 2017 -0600
+
+    restore README.md to previous release version
+
+ README.md | 43 +++++++++++++++++++------------------------
+ 1 file changed, 19 insertions(+), 24 deletions(-)
+
+commit 71dbef0e608be8eade703e2a9b9740bcdf519e3e
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Fri Aug 25 14:30:05 2017 -0600
+
+    update AUTHORS file
+
+ AUTHORS | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+commit 0f34aab54435a28c6622979424d9cf4995b4f822
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Fri Aug 25 14:28:58 2017 -0600
+
+    update po files
+
+ po/ar.po     | 720 ++++++++++++++++++++++++++++++-----------------------
+ po/be.po     | 734 +++++++++++++++++++++++++++++++-----------------------
+ po/bg.po     | 728 ++++++++++++++++++++++++++++++-----------------------
+ po/ca.po     | 730 +++++++++++++++++++++++++++++++-----------------------
+ po/cs.po     | 735 +++++++++++++++++++++++++++++++-----------------------
+ po/da.po     | 726 ++++++++++++++++++++++++++++++-----------------------
+ po/de.po     | 735 +++++++++++++++++++++++++++++++-----------------------
+ po/el.po     | 733 +++++++++++++++++++++++++++++++-----------------------
+ po/en.po     | 639 +++++++++++++++++++++++++----------------------
+ po/es.po     | 733 +++++++++++++++++++++++++++++++-----------------------
+ po/fi.po     | 723 ++++++++++++++++++++++++++++++-----------------------
+ po/fr.po     | 736 +++++++++++++++++++++++++++++++-----------------------
+ po/he.po     | 696 +++++++++++++++++++++++++++++----------------------
+ po/hr.po     | 669 +++++++++++++++++++++++++++----------------------
+ po/hu.po     | 732 +++++++++++++++++++++++++++++++-----------------------
+ po/icewm.pot | 641 +++++++++++++++++++++++++----------------------
+ po/id.po     | 733 +++++++++++++++++++++++++++++++-----------------------
+ po/it.po     | 735 +++++++++++++++++++++++++++++++-----------------------
+ po/ja.po     | 742 ++++++++++++++++++++++++++++++++-----------------------
+ po/ko.po     | 726 ++++++++++++++++++++++++++++++-----------------------
+ po/lt.po     | 738 +++++++++++++++++++++++++++++++-----------------------
+ po/lv.po     | 726 ++++++++++++++++++++++++++++++-----------------------
+ po/mk.po     | 728 ++++++++++++++++++++++++++++++-----------------------
+ po/nb.po     | 727 ++++++++++++++++++++++++++++++-----------------------
+ po/nl.po     | 733 +++++++++++++++++++++++++++++++-----------------------
+ po/no.po     | 727 ++++++++++++++++++++++++++++++-----------------------
+ po/pl.po     | 728 ++++++++++++++++++++++++++++++-----------------------
+ po/pt_BR.po  | 735 +++++++++++++++++++++++++++++++-----------------------
+ po/ro.po     | 726 ++++++++++++++++++++++++++++++-----------------------
+ po/ru.po     | 727 ++++++++++++++++++++++++++++++-----------------------
+ po/sk.po     | 733 +++++++++++++++++++++++++++++++-----------------------
+ po/sl.po     | 726 ++++++++++++++++++++++++++++++-----------------------
+ po/sv.po     | 727 ++++++++++++++++++++++++++++++-----------------------
+ po/tr.po     | 723 ++++++++++++++++++++++++++++++-----------------------
+ po/uk.po     | 732 +++++++++++++++++++++++++++++++-----------------------
+ po/vi.po     | 728 ++++++++++++++++++++++++++++++-----------------------
+ po/zh_CN.po  | 717 ++++++++++++++++++++++++++++++-----------------------
+ po/zh_TW.po  | 722 ++++++++++++++++++++++++++++++-----------------------
+ 38 files changed, 15772 insertions(+), 11677 deletions(-)
+
+commit 9cc55d5059964cd590de9ee661b9083567a4f320
+Author: Eduard Bloch <blade@debian.org>
+Date:   Fri Aug 25 20:35:11 2017 +0200
+
+    Fix build failure on kFreeBSD
+
+    Also prevent warnings there by moving some variables closer to their usage.
+
+ src/aapm.cc | 32 +++++++++++++++-----------------
+ 1 file changed, 15 insertions(+), 17 deletions(-)
+
+commit 913de56b8646e89101ecfdbed73e802da8308837
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Aug 25 18:38:40 2017 +0200
+
+    Better explain how to add a toolbar button. See issue #163.
+
+ doc/icewm.1.adoc | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
+
+commit bf26416a129e833b1d5766dd878b852bfd581d75
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Aug 25 18:38:27 2017 +0200
+
+    Update for -z, -l.
+
+ doc/icesound.1.adoc | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+commit 542f11006fbc4ae92a824c09f468afa0b24d6265
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Aug 25 18:36:09 2017 +0200
+
+    If sound could not be played then don't ignore next event.
+    Add -z ad -l options. Support geDialogOpened and geDialogClosed.
+    Report which audio interface is used if verbose.
+
+ src/icesound.cc | 79 +++++++++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 58 insertions(+), 21 deletions(-)
+
+commit 7dd8048a6a498e38a7af5feddbb6786dd3516fb8
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Aug 25 18:35:40 2017 +0200
+
+    Also support geDialogClosed and geDialogOpened GUI events.
+
+ src/guievent.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit c66d721e268882978f43a1b39af375113ce8a760
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Aug 25 18:34:16 2017 +0200
+
+    Also support geDialogClosed and geDialogOpened GUI events.
+    Don't generate a geWindowLower GUI event when the window is minimized,
+    otherwise geWindowMin will be overwritten and missed by icesound.
+    See issue #159.
+
+ src/wmframe.cc | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+commit 1e3d118971d205be5526faa467da04556a54c92c
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Aug 25 18:33:09 2017 +0200
+
+    When signalling GUI events:
+    The first event must be geStartup, Ignore all other events before that.
+    Because there is no event buffering, when multiple events occur in a
+    burst, only signal the first event of the burst.
+    See issue #159.
+
+ src/wmapp.cc | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+commit 4813c2c82bf39274606bd49e60fb8087381a91a9
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Aug 25 18:32:16 2017 +0200
+
+    Let tlog also report milliseconds.
+
+ src/misc.cc | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+commit bfc65e2ea8630ce392fae392d4f7af571bf2a11b
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Aug 25 18:30:56 2017 +0200
+
+    Start icesound before icewm so it can catch the geStartup event.
+
+ src/icesm.cc | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+commit f5cf45ab37c8c4771681a2bfb85194e48086026e
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Aug 25 18:30:17 2017 +0200
+
+    Use tlog for MSG reports.
+
+ src/debug.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 9510e404d500f6beedf96fa4f83d5e32496c88fd
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Aug 25 18:28:56 2017 +0200
+
+    When ledPixSpace is 1 pixel wide then replicate it 5 times per space.
+
+ src/aclock.cc | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+commit f6e545e8e65ae0a9902e4aaaa9c3e2db4aecd43a
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Thu Aug 24 23:55:49 2017 +0200
+
+    Docked iterator simplifies 8 loops.
+
+ src/yxtray.cc | 53 ++++++++++++++++++++---------------------------------
+ src/yxtray.h  |  4 +++-
+ 2 files changed, 23 insertions(+), 34 deletions(-)
+
+commit 844f19020c6625440c6cb8ecea2062fb2e5f2b5d
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Thu Aug 24 23:25:48 2017 +0200
+
+    Only apply TimeFormat hack when it is still equal to '%X'. See issue #159.
+
+ src/aclock.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit ea25f6c32dcbae9120558b298081d8589920f0e2
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Thu Aug 24 23:24:15 2017 +0200
+
+    +ledclock, +collapse.xpm, +expand.xpm.
+
+ lib/Makefile.am | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
+
+commit 4410c4d81b4128697ee54e566d22a57a2837f652
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Thu Aug 24 21:58:06 2017 +0200
+
+    Update NanoBlue to version 1.2 by SolisX.
+
+ lib/themes/NanoBlue/default.theme                |  33 +--
+ lib/themes/NanoBlue/ledclock/a.xpm               |  71 ++++++
+ lib/themes/NanoBlue/ledclock/colon.xpm           |  38 ++++
+ lib/themes/NanoBlue/ledclock/dot.xpm             |  38 ++++
+ lib/themes/NanoBlue/ledclock/m.xpm               |  56 +++++
+ lib/themes/NanoBlue/ledclock/n0.xpm              |  69 ++++++
+ lib/themes/NanoBlue/ledclock/n1.xpm              |  43 ++++
+ lib/themes/NanoBlue/ledclock/n2.xpm              |  67 ++++++
+ lib/themes/NanoBlue/ledclock/n3.xpm              |  77 +++++++
+ lib/themes/NanoBlue/ledclock/n4.xpm              |  53 +++++
+ lib/themes/NanoBlue/ledclock/n5.xpm              |  67 ++++++
+ lib/themes/NanoBlue/ledclock/n6.xpm              |  78 +++++++
+ lib/themes/NanoBlue/ledclock/n7.xpm              |  61 ++++++
+ lib/themes/NanoBlue/ledclock/n8.xpm              |  79 +++++++
+ lib/themes/NanoBlue/ledclock/n9.xpm              |  83 +++++++
+ lib/themes/NanoBlue/ledclock/p.xpm               |  59 +++++
+ lib/themes/NanoBlue/ledclock/slash.xpm           |  62 ++++++
+ lib/themes/NanoBlue/ledclock/space.xpm           |  38 ++++
+ lib/themes/NanoBlue/taskbar/collapse.xpm         |  74 +++++++
+ lib/themes/NanoBlue/taskbar/desktop.xpm          | 167 ++++++---------
+ lib/themes/NanoBlue/taskbar/expand.xpm           |  74 +++++++
+ lib/themes/NanoBlue/taskbar/icewm.xpm            | 214 ++++++++-----------
+ lib/themes/NanoBlue/taskbar/taskbarbg.xpm        | 121 ++++++-----
+ lib/themes/NanoBlue/taskbar/taskbuttonactive.xpm | 115 ++++++----
+ lib/themes/NanoBlue/taskbar/taskbuttonbg.xpm     | 119 +++++------
+ .../NanoBlue/taskbar/taskbuttonminimized.xpm     | 121 ++++++-----
+ lib/themes/NanoBlue/taskbar/toolbuttonbg.xpm     | 121 ++++++-----
+ lib/themes/NanoBlue/taskbar/windows.xpm          | 156 ++++++--------
+ .../NanoBlue/taskbar/workspacebuttonbg.xpm       | 121 ++++++-----
+ 29 files changed, 1792 insertions(+), 683 deletions(-)
 commit d87695932b9e1117dcb75bf4f5cc86ed59cd5fbd
 Author: Bert Gijsbers <gijsbers@science.uva.nl>
 Date:   Tue Aug 22 21:00:50 2017 +0200
