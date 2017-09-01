@@ -1,8 +1,9 @@
-icewm (1.4.3+mod+20170823-2) experimental; urgency=low
+icewm (1.4.3+mod+20170901-1) experimental; urgency=low
 
-  * Adding libao-dev to enable AO support
+  * New (unofficial fork) upstream snapshot
+  * Adding libao-dev build dependency to enable AO support
 
- -- 
+ -- Eduard Bloch <blade@debian.org>  Fri, 01 Sep 2017 21:33:43 +0200
 
 icewm (1.4.3+mod+20170823-1) experimental; urgency=low
 
