@@ -4,6 +4,7 @@ icewm (1.4.3+pre+mod+20170910-1) experimental; urgency=low
     - Fixed space allocation below taskbar in certain display setups (thanks to
       xxx, closes: FIXME)
   * Changed version string (this is preview, 1.4.3 is not released yet)
+  * Font size tuning (smaller and less bold)
 
  -- 
 
