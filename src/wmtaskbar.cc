@@ -103,12 +103,10 @@ void EdgeTrigger::stopHide() {
         fAutoHideTimer->stopTimer();
 }
 
-extern unsigned int ignore_enternotify_hack;
-
 void EdgeTrigger::handleCrossing(const XCrossingEvent &crossing) {
     if (crossing.type == EnterNotify /* && crossing.mode != NotifyNormal */) {
-        if (crossing.serial != ignore_enternotify_hack && crossing.serial != ignore_enternotify_hack + 1)
-        {
+        unsigned long last = YWindow::getLastEnterNotifySerial();
+        if (crossing.serial != last && crossing.serial != last + 1) {
             MSG(("enter notify %d %d", crossing.mode, crossing.detail));
             fDoShow = true;
             if (fAutoHideTimer) {
@@ -817,10 +815,7 @@ void TaskBar::updateWMHints() {
 
     long wk[4] = { 0, 0, 0, 0 };
     if (!taskBarAutoHide && !fIsCollapsed && getFrame()) {
-        if (taskBarAtTop)
-            wk[2] = getFrame()->y() + getFrame()->height();
-        else
-            wk[3] = dh - getFrame()->y();
+        wk[taskBarAtTop ? 2 : 3] = getFrame()->height();
     }
 
     MSG(("SET NET WM STRUT"));
@@ -840,7 +835,9 @@ void TaskBar::updateWMHints() {
 
 
 void TaskBar::handleCrossing(const XCrossingEvent &crossing) {
-    if (crossing.serial != ignore_enternotify_hack && (crossing.serial != ignore_enternotify_hack + 1 || crossing.detail != NotifyVirtual))
+    unsigned long last = YWindow::getLastEnterNotifySerial();
+    if (crossing.serial != last &&
+        (crossing.serial != last + 1 || crossing.detail != NotifyVirtual))
     {
         if (crossing.type == EnterNotify /* && crossing.mode != NotifyNormal */) {
             fEdgeTrigger->stopHide();

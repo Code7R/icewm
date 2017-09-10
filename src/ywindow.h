@@ -213,6 +213,7 @@ public:
     void setDoubleBuffer(bool doubleBuffer);
     
     KeySym keyCodeToKeySym(unsigned int keycode, int index = 0);
+    static unsigned long getLastEnterNotifySerial();
 
 private:
     typedef enum {
@@ -274,6 +275,8 @@ private:
     static unsigned fClickButton;
     static unsigned fClickButtonDown;
     static YTimer *fToolTipTimer;
+    static unsigned long lastEnterNotifySerial;
+    static void updateEnterNotifySerial(const XEvent& event);
 
     bool fDND;
     Window XdndDragSource;
@@ -323,24 +326,14 @@ extern int xrandrEventBase, xrandrErrorBase;
 
 
 extern Atom _XA_WM_CHANGE_STATE;
-extern Atom _XA_WM_CLASS;
 extern Atom _XA_WM_COLORMAP_NOTIFY;
 extern Atom _XA_WM_COLORMAP_WINDOWS;
-extern Atom _XA_WM_COMMAND;
 extern Atom _XA_WM_DELETE_WINDOW;
 extern Atom _XA_WM_DESKTOP;
-extern Atom _XA_WM_HINTS;
-extern Atom _XA_WM_ICON_NAME;
-extern Atom _XA_WM_ICON_SIZE;
 extern Atom _XA_WM_LOCALE_NAME;
-extern Atom _XA_WM_NAME;
-extern Atom _XA_WM_NORMAL_HINTS;
 extern Atom _XA_WM_PROTOCOLS;
-extern Atom _XA_WM_SIZE_HINTS;
 extern Atom _XA_WM_STATE;
 extern Atom _XA_WM_TAKE_FOCUS;
-extern Atom _XA_WM_TRANSIENT_FOR;
-extern Atom _XA_WM_ZOOM_HINTS;
 
 extern Atom _XATOM_MWM_HINTS;
 extern Atom _XA_CLIPBOARD;

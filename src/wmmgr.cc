@@ -125,7 +125,6 @@ YWindowManager::YWindowManager(
     } else {
         fTopSwitch = fBottomSwitch = 0;
     }
-    XSync(xapp->display(), False);
 
     YWindow::setWindowFocus();
 }
@@ -800,7 +799,7 @@ Window YWindowManager::findWindow(const char *resource) {
 Window YWindowManager::findWindow(Window root, char const * wmInstance,
                                   char const * wmClass) {
     Window firstMatch = None;
-    Window parent, *clients;
+    Window parent, *clients(NULL);
     unsigned nClients;
 
     XQueryTree(xapp->display(), root, &root, &parent, &clients, &nClients);
@@ -1026,11 +1025,10 @@ void YWindowManager::setColormapWindow(YFrameWindow *frame) {
 
 void YWindowManager::manageClients() {
     unsigned int clientCount;
-    Window winRoot, winParent, *winClients;
+    Window winRoot, winParent, *winClients(NULL);
 
     manager->fWmState = YWindowManager::wmSTARTUP;
     XGrabServer(xapp->display());
-    XSync(xapp->display(), False);
     XQueryTree(xapp->display(), handle(),
                &winRoot, &winParent, &winClients, &clientCount);
 
@@ -1064,11 +1062,11 @@ void YWindowManager::unmanageClients() {
         }
     }
     XSetInputFocus(xapp->display(), PointerRoot, RevertToNone, CurrentTime);
-    XSync(xapp->display(), False);
     XUngrabServer(xapp->display());
+    XSync(xapp->display(), True);
 }
 
-int addco(int *v, int &n, int c) {
+static int addco(int *v, int &n, int c) {
     int l, r, m;
 
     /* find */
@@ -3431,7 +3429,7 @@ void YWindowManager::doWMAction(long action) {
     memset(&xev, 0, sizeof(xev));
 
     xev.type = ClientMessage;
-    xev.window = handle();
+    xev.window = xapp->root();
     xev.message_type = _XA_ICEWM_ACTION;
     xev.format = 32;
     xev.data.l[0] = CurrentTime;
@@ -3439,7 +3437,7 @@ void YWindowManager::doWMAction(long action) {
 
     MSG(("new mask/state: %ld/%ld", xev.data.l[0], xev.data.l[1]));
 
-    XSendEvent(xapp->display(), handle(), False, SubstructureNotifyMask, (XEvent *) &xev);
+    XSendEvent(xapp->display(), xapp->root(), False, SubstructureNotifyMask, (XEvent *) &xev);
 }
 
 #ifdef CONFIG_XRANDR
