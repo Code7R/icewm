@@ -13,6 +13,7 @@
 #include "wmwinlist.h"
 #include "wpixmaps.h"
 #include "yrect.h"
+#include "wmaction.h"
 
 static YColor *normalTaskBarAppFg = 0;
 static YColor *normalTaskBarAppBg = 0;
@@ -247,6 +248,13 @@ void TaskBarApp::paint(Graphics &g, const YRect &/*r*/) {
 
 void TaskBarApp::handleButton(const XButtonEvent &button) {
     YWindow::handleButton(button);
+    if (button.button == 2 && true)
+    {
+        getFrame()->actionPerformed(actionClose, 0);
+        repaint();
+        return;
+    }
+
     if (button.button == 1 || button.button == 2) {
         if (button.type == ButtonPress) {
             selected = 2;
