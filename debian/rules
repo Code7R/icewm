@@ -95,6 +95,7 @@ override_dh_install:
 	ln -sf icewm.1.gz debian/icewm-experimental/usr/share/man/man1/icesound-experimental.1.gz
 	ln -sf icewm.1.gz debian/icewm-common/usr/share/man/man1/icewm-menu-fdo.1.gz
 	cd debian ; for x in icewm icewm-lite icewm-experimental ; do mkdir -p $$x/usr/share/lintian/overrides ; cp $$x.lintian $$x/usr/share/lintian/overrides/$$x ; done	
+	sed -e 's,^.link.*fonts.googleapis.*,,' -i "$(ICEWM_COMMON)/usr/share/doc/icewm-common/html/"*.html
 
 override_dh_auto_clean:
 	rm -rf $(BDIR)-lite $(BDIR)-normal IceWM-FAQ.txt configure.in

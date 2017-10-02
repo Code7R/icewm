@@ -1,4 +1,4 @@
-icewm (1.4.3+pre+mod+20171002-1) experimental; urgency=low
+icewm (1.4.3.0~pre-20171002-1) experimental; urgency=low
 
   * New upstream snapshot
     - Fixed space allocation below taskbar in certain display setups (thanks to
