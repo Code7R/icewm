@@ -599,7 +599,7 @@ static void initMenus(
 				(YIcon::getIcon("xterm")),
 #endif
 				true, 0,
-                		QUOTE(XTERMCMD), noargs);
+                		"xterm", noargs);
             if (restartXTerm)
                 logoutMenu->add(new DObjectMenuItem(restartXTerm));
 #endif
