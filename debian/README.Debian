@@ -1,6 +1,17 @@
 IceWM for Debian
 ================
 
+Introduction
+------------
+
+This is the Debian version of the Ice Window Manager. In particular, this is
+the "fork edition" maintained by a group of volunteers started after the
+original development has apparently ceased to exist.
+
+To report obvious program bugs and feature requests, please visit
+https://github.com/bbidulock/icewm/issues . To report Debian specific problems,
+please use the reportbug utility.
+
 Adding missing functionality:
 ----------------------------
 
@@ -141,17 +152,16 @@ general update-menus command (from root) won't update your personal
 Example .xsession file:
 ---------------------
 
----
+The icewm session can be started from graphical login manager which allow
+selection of available session handlers. If selection is not available (xdm) or
+for console start (startx), local ~/.xsession file can be created, with the
+following contents:
+
 #!/bin/sh
 
 # locale setting needed for Germany, for example
 LANG=de_DE.UTF-8
 export LANG
 exec /usr/bin/icewm-session
-
-# The old way...
-#/usr/bin/icewmbg&
-#exec icewm
----
 
  -- Eduard Bloch <blade@debian.org>, Wed, 23 Sep 2015 20:59:07 +0200

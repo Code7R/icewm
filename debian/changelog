@@ -1,10 +1,17 @@
-icewm (1.4.3+pre+mod+20170910-1) experimental; urgency=low
+icewm (1.4.3+pre+mod+20171002-1) experimental; urgency=low
 
   * New upstream snapshot
     - Fixed space allocation below taskbar in certain display setups (thanks to
-      xxx, closes: FIXME)
+      Dmitry Semyonov, closes: #874271, #536251)
+    - Fixes/Improves automatic discovery of network devices including new
+      systemd naming scheme, closes: #801867, #790745)
+    - Overhauled icon space allocation (probably closes: #400880)
   * Changed version string (this is preview, 1.4.3 is not released yet)
   * Font size tuning (smaller and less bold)
+  * Dropped dependency on libesd (will be used if present through libao,
+    detected at runtime; closes: #856080)
+  * Documented upstream bug tracker (closes: #802181)
+  * Drop deprecated symlink for deprecated themes gtk/gtk2 (closes: #877183)
 
  -- 
 
