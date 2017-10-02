@@ -1,3 +1,29 @@
+Release Notes
+=============
+
+These are new and noteworthy comments on the features and bugfixes in the
+latest releases of icewm (fork) edition.
+
+Release icewm-1.4.3 UNRELEASED
+---------------------------------------
+
++ New Features
+
+* Simplifying mouse driven manipulation of taskbar window entries (dragging with left button, closing with middle while holding Alt)
+* Network status widget supports semi-automated discovery of network devices on Linux, driven by shell patterns (like NetworkStatusDevice="eth* wlan*"), also detecting new ones after startup
+
++ Bugfixes
+
+* Various internal bugfixes for rare memory leaks
+
++ Internal improvements
+
+* Using less CPU activity for network status updates
+
++ Cleanup work
+
+* Dropped support for the first generation of libxft (deprecated for over a decade)
+* Dropped support for NetStatus format of Linux 2.0.x
 
 Release icewm-1.4.2 released 2017-07-30
 ---------------------------------------
