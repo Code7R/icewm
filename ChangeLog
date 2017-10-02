@@ -1,3 +1,11 @@
+commit ff84cb909f30eb30943f825f34ae291d1493c66f
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Oct 2 18:55:08 2017 +0200
+
+    Added forgotten file (currently unused)
+
+ src/ycollections.cc | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 commit 65d5deb7dbab4cc95335f6dd2eb5b1a21c1580e7
 Author: Eduard Bloch <blade@debian.org>
 Date:   Mon Oct 2 12:46:13 2017 +0200
