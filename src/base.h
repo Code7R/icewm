@@ -32,6 +32,11 @@ inline T max(T a, T b) {
 }
 
 template <class T>
+inline void swap(T& a, T& b) {
+    T t(a); a = b; b = t;
+}
+
+template <class T>
 inline T clamp(T value, T minimum, T maximum) {
     return max(min(value, maximum), minimum);
 }
@@ -161,6 +166,10 @@ const char *my_basename(const char *filename);
 bool strequal(const char *a, const char *b);
 int strnullcmp(const char *a, const char *b);
 #endif
+
+inline const char* boolstr(bool bval) {
+    return bval ? "true" : "false";
+}
 
 template <class T>
 inline char const * niceUnit(T & val, char const * const units[],

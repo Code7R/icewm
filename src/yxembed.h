@@ -1,8 +1,8 @@
 #ifndef __YXEMBED_H
 #define __YXEMBED_H
 
-#include "yarray.h"
 #include "ywindow.h"
+#include "yarray.h"
 
 class YXEmbedClient;
 
@@ -14,7 +14,7 @@ public:
 //    YObjectArray<YWindow> fClients;
 
 //    YXEmbedClient *manage(YXEmbed *embedder, Window win);
-    virtual void destroyedClient(Window /*win*/) = 0;
+    virtual bool destroyedClient(Window /*win*/) = 0;
     virtual void handleClientUnmap(Window win) = 0;
 };
 

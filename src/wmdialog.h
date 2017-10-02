@@ -20,6 +20,7 @@ public:
     void deactivate();
 private:
     YActionButton *lockButton;
+    YActionButton *suspendButton;
     YActionButton *logoutButton;
     YActionButton *restartButton;
     YActionButton *cancelButton;
@@ -28,6 +29,7 @@ private:
     YActionButton *aboutButton;
     YActionButton *windowListButton;
     IApp *app;
+    YActionButton *addButton(const ustring& str, int& maxW, int& maxH);
 };
 
 #endif

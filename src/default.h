@@ -68,7 +68,7 @@ XIV(bool, pagerShowPreview,                     true)
 XIV(bool, pagerShowWindowIcons,                 true)
 XIV(bool, pagerShowMinimized,                   true)
 XIV(bool, pagerShowBorders,                     true)
-XIV(bool, pagerShowNumbers,                     true)
+XIV(bool, pagerShowNumbers,                     false)
 XIV(bool, taskBarShowCPUStatus,                 true)
 XIV(bool, cpustatusShowRamUsage,                true)
 XIV(bool, cpustatusShowSwapUsage,               true)
@@ -167,7 +167,7 @@ XIV(int, taskBarGraphHeight,                    20)
 XIV(int, taskBarMEMSamples,                     20)
 XIV(int, focusRequestFlashTime,                 0)
 XIV(int, focusRequestFlashInterval,             250)
-XIV(int, nestedThemeMenuMinNumber,              25)
+XIV(int, nestedThemeMenuMinNumber,              21)
 XIV(int, batteryPollingPeriod,                  10)
 XIV(int, netWorkAreaBehaviour,                  0)
 
@@ -188,11 +188,14 @@ XSV(const char *, terminalCommand,              "x-terminal-emulator")
 XSV(const char *, logoutCommand,                0)
 XSV(const char *, logoutCancelCommand,          0)
 #if defined(__linux__)
-XSV(const char *, shutdownCommand,              "/bin/sh -c \"{ test -e /run/systemd/system && systemctl poweroff; } || sudo -n /sbin/halt\"")
-XSV(const char *, rebootCommand,                "/bin/sh -c \"{ test -e /run/systemd/system && systemctl reboot; } || sudo -n /sbin/reboot\"")
+// use shell code since those are wrapped through shell in YWindowManager::execAfterFork
+XSV(const char *, shutdownCommand,              "test -e /run/systemd/system && systemctl poweroff || sudo -n /sbin/poweroff")
+XSV(const char *, rebootCommand,                "test -e /run/systemd/system && systemctl reboot || sudo -n /sbin/reboot")
+XSV(const char *, suspendCommand,               "test -e /run/systemd/system && systemctl suspend || sudon -n /usr/sbin/pm-suspend")
 #else
 XSV(const char *, shutdownCommand,              0)
 XSV(const char *, rebootCommand,                0)
+XSV(const char *, suspendCommand,               0)
 #endif // LINUX
 XIV(int, taskBarCPUDelay,                       500)
 XIV(int, taskBarMEMDelay,                       500)
@@ -203,7 +206,12 @@ XSV(const char *, cpuClassHint,                 "top.XTerm")
 XSV(const char *, netCommand,                   "x-terminal-emulator -e netstat -c")
 XIV(bool, cpuCombine,                           true)
 XSV(const char *, netClassHint,                 "netstat.XTerm")
+#ifdef __linux__
+// use sysfs to build the interface list
+XSV(const char *, netDevice,                    "e* w*")
+#else
 XSV(const char *, netDevice,                    "eth0 wlan0")
+#endif
 XSV(const char *, addressBarCommand,            0)
 #ifdef CONFIG_I18N
 XSV(const char *, fmtTime,                      "%X")
@@ -428,6 +436,7 @@ cfoption icewm_preferences[] = {
     OSV("LogoutCancelCommand",                  &logoutCancelCommand,           "Command to cancel logout"),
     OSV("ShutdownCommand",                      &shutdownCommand,               "Command to shutdown the system"),
     OSV("RebootCommand",                        &rebootCommand,                 "Command to reboot the system"),
+    OSV("SuspendCommand",                       &suspendCommand,                "Command to send the system to standby mode"),
     OSV("CPUStatusCommand",                     &cpuCommand,                    "Command to run on CPU status"),
     OSV("CPUStatusClassHint",                   &cpuClassHint,                  "WM_CLASS to allow runonce for CPUStatusCommand"),
     OBV("CPUStatusCombine",                     &cpuCombine,                    "Combine all CPUs to one"),

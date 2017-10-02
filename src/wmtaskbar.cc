@@ -69,6 +69,7 @@ static void initPixmaps() {
 #endif
 }
 
+
 EdgeTrigger::EdgeTrigger(TaskBar *owner) {
     setStyle(wsOverrideRedirect | wsInputOnly);
     setPointer(YXApplication::leftPointer);
@@ -260,7 +261,7 @@ TaskBar::~TaskBar() {
     delete fApplications; fApplications = 0;
     delete fObjectBar; fObjectBar = 0;
 #endif
-    delete fWorkspaces;
+    delete fWorkspaces; fWorkspaces = 0;
 #ifdef CONFIG_APPLET_APM
     delete fApm; fApm = 0;
 #endif
@@ -271,15 +272,12 @@ TaskBar::~TaskBar() {
         delete[] fCPUStatus; fCPUStatus = 0;
     }
 #endif
-#ifdef HAVE_NET_STATUS
-    if (fNetStatus) {
-        for (int i = 0; fNetStatus[i]; ++i)
-            delete fNetStatus[i];
-        delete[] fNetStatus; fNetStatus = 0;
-    }
-#endif
 #ifdef CONFIG_ADDRESSBAR
     delete fAddressBar; fAddressBar = 0;
+#endif
+    delete fTasks; fTasks = 0;
+#ifdef CONFIG_TRAY
+    delete fWindowTray; fWindowTray = 0;
 #endif
     delete fCollapseButton; fCollapseButton = 0;
     delete fShowDesktop; fShowDesktop = 0;
@@ -345,30 +343,7 @@ void TaskBar::initApplets() {
         CPUStatus::GetCPUStatus(smActionListener, this, fCPUStatus, cpuCombine);
 #endif
 #ifdef CONFIG_APPLET_NET_STATUS
-    fNetStatus = 0;
-#ifdef HAVE_NET_STATUS
-    if (taskBarShowNetStatus && netDevice && netDevice[0]) {
-        mstring devName(null), devList(netDevice);
-        int cnt = 0;
-
-        while (devList.splitall(' ', &devName, &devList))
-            cnt += devName.nonempty();
-
-        if (cnt) {
-            fNetStatus = new NetStatus*[cnt + 1];
-            fNetStatus[cnt--] = NULL;
-
-            devList = netDevice;
-            while (devList.splitall(' ', &devName, &devList)) {
-                if (devName.isEmpty())
-                    continue;
-
-                fNetStatus[cnt--] = new NetStatus(app, smActionListener,
-                                                  devName, this, this);
-            }
-        }
-    }
-#endif
+    fNetStatus.init(new NetStatusControl(app, smActionListener, this, this));
 #endif
 #ifdef CONFIG_APPLET_CLOCK
     if (taskBarShowClock) {
@@ -413,7 +388,8 @@ void TaskBar::initApplets() {
     fMailBoxStatus = 0;
 
     if (taskBarShowMailboxStatus) {
-        char const * mailboxList(mailBoxPath ? mailBoxPath : getenv("MAIL"));
+        char const *envMail = getenv("MAIL");
+        char const *mailboxList(mailBoxPath ? mailBoxPath : envMail);
         unsigned cnt = 0;
 
         mstring mailboxes(mailboxList);
@@ -434,20 +410,17 @@ void TaskBar::initApplets() {
 
                 fMailBoxStatus[cnt--] = new MailBoxStatus(app, smActionListener, s, this);
             }
-        } else if (getenv("MAIL")) {
+        } else if (envMail) {
             fMailBoxStatus = new MailBoxStatus*[2];
-            fMailBoxStatus[0] = new MailBoxStatus(app, smActionListener, getenv("MAIL"), this);
+            fMailBoxStatus[0] = new MailBoxStatus(app, smActionListener, envMail, this);
             fMailBoxStatus[1] = NULL;
         } else if (getlogin()) {
-            char * mbox = cstrJoin("/var/spool/mail/", getlogin(), NULL);
-
-            if (!access(mbox, R_OK)) {
+            upath mbox(mstring("/var/spool/mail/", getlogin()));
+            if (mbox.isReadable()) {
                 fMailBoxStatus = new MailBoxStatus*[2];
                 fMailBoxStatus[0] = new MailBoxStatus(app, smActionListener, mbox, this);
                 fMailBoxStatus[1] = NULL;
             }
-
-            delete[] mbox;
         }
     }
 #endif
@@ -502,8 +475,7 @@ void TaskBar::initApplets() {
     } else
         fWindowTray = 0;
 #endif
-    char trayatom[64];
-    sprintf(trayatom,"_ICEWM_INTTRAY_S%d", xapp->screen());
+    YAtom trayatom("_ICEWM_INTTRAY_S", true);
     fDesktopTray = new YXTray(this, true, trayatom, this);
     fDesktopTray->relayout();
 }
@@ -577,12 +549,11 @@ void TaskBar::updateLayout(int &size_w, int &size_h) {
     wlist.append(nw);
 #endif
 #ifdef CONFIG_APPLET_NET_STATUS
-#ifdef CONFIG_APPLET_MAILBOX
-    for (NetStatus ** n(fNetStatus); n && *n; ++n) {
-        nw = LayoutInfo( *n, false, 1, false, 2, 2, false );
+    YVec<NetStatus*>::iterator it = fNetStatus->getIterator();
+    while(it.hasNext()) {
+        nw = LayoutInfo( it.next(), false, 1, false, 2, 2, false );
         wlist.append(nw);
     }
-#endif
 #endif
 #ifdef CONFIG_APPLET_APM
     nw = LayoutInfo( fApm, false, 1, true, 0, 2, false );

@@ -25,12 +25,15 @@ features=''
 # Initialize Automake
 AM_INIT_AUTOMAKE([1.13.4 dist-xz no-dist-gzip std-options -Wall color-tests silent-rules tar-pax])
 AM_MAINTAINER_MODE
+AM_SILENT_RULES([yes])
+AC_PREFIX_DEFAULT([/usr])
 
 # Checks for programs.
 AC_LANG_CPLUSPLUS
-AC_PROG_CXX
+AC_PROG_SED
 AC_PROG_AWK
 AC_PROG_CC
+AC_PROG_CXX
 AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
@@ -69,6 +72,13 @@ if test -z "$ASCIIMAN_FORMAT"; then
 	esac
 fi
 
+AC_ARG_VAR([LINKS],[links command. @<:@default=lynx@:>@])
+AC_CHECK_PROGS([LINKS],[lynx links],[${am_missing_run}lynx],[$PATH])
+if test "$LINKS" = "links"; then
+	LINKS="links -codepage utf-8"
+fi
+
+AC_DISABLE_STATIC
 LT_PATH_LD
 LT_PREREQ([2.4.2])
 LT_INIT([dlopen])
@@ -236,15 +246,8 @@ if test x$enable_xfreetype != xno; then
 	CORE_CFLAGS="$XFT2_CFLAGS $CORE_CFLAGS"
 	CORE_LIBS="$XFT2_LIBS $CORE_LIBS"
 	AC_DEFINE([CONFIG_XFREETYPE],[2],[Define to enable XFT support.])
-	features="$features xfreetype"],[
-	    enable_corefonts=yes
-	    PKG_CHECK_MODULES([XFT],[xft],[
-		CORE_CFLAGS="$XFT_CFLAGS $CORE_CFLAGS"
-		CORE_LIBS="$XFT_LIBS $CORE_LIBS"
-		AC_DEFINE([CONFIG_XFREETYPE],[1])
-		features="$features xfreetype"],[
-		    AC_MSG_WARN([XFT not supported.])
-		    enable_xfreetype=no])])
+	features="$features xfreetype"],
+	[AC_MSG_WARN([XFT 2+ not supported.])])
 else
     enable_corefonts=yes
 fi

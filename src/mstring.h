@@ -1,6 +1,10 @@
 #ifndef __MSTRING_H
 #define __MSTRING_H
 
+#ifdef __YARRAY_H
+#error include yarray.h after mstring.h
+#endif
+
 #include "ref.h"
 #include <string.h>
 
@@ -22,10 +26,11 @@ struct MStringData {
 class mstring {
 private:
     friend class cstring;
+    friend class MStringArray;
 
     MStringData *fStr;
-    int fOffset;
-    int fCount;
+    size_t fOffset;
+    size_t fCount;
 
     void acquire() {
         ++fStr->fRefCount;
@@ -36,14 +41,14 @@ private:
         fStr = 0;
     }
     void destroy();
-    mstring(MStringData *fStr, int fOffset, int fCount);
-    void init(const char *str, int len);
+    mstring(MStringData *fStr, size_t fOffset, size_t fCount);
+    void init(const char *str, size_t len);
     const char *data() const { return fStr->fStr + fOffset; }
 public:
     mstring(const char *str);
     mstring(const char *str1, const char *str2);
     mstring(const char *str1, const char *str2, const char *str3);
-    mstring(const char *str, int len);
+    mstring(const char *str, size_t len);
 
     mstring(const class null_ref &):
         fStr(0),
@@ -65,7 +70,7 @@ public:
     }
     ~mstring();
 
-    int length() const { return fCount; }
+    size_t length() const { return fCount; }
     bool isEmpty() const { return 0 == fCount; }
     bool nonempty() const { return 0 < fCount; }
 
@@ -79,10 +84,12 @@ public:
     bool operator!=(const mstring &rv) const { return !equals(rv); }
     bool operator==(const class null_ref &) const { return fStr == 0; }
     bool operator!=(const class null_ref &) const { return fStr != 0; }
+//    bool operator==(const char *rv, size_t len) const { return equals(rv, len); }
+//    bool operator!=(const char *rv, size_t len) const { return !equals(rv, len); }
 
     mstring& operator=(const class null_ref &);
-    mstring substring(int pos) const;
-    mstring substring(int pos, int len) const;
+    mstring substring(size_t pos) const;
+    mstring substring(size_t pos, size_t len) const;
 
     int operator[](int pos) const { return charAt(pos); }
     int charAt(int pos) const;
@@ -91,6 +98,7 @@ public:
     int count(char ch) const;
 
     bool equals(const char *s) const;
+    bool equals(const char *s, unsigned len) const;
     bool equals(const mstring &s) const;
     int collate(const mstring &s, bool ignoreCase = false) const;
     int compareTo(const mstring &s) const;
@@ -151,5 +159,9 @@ public:
     int c_str_len() const { return str.length(); }
     int length()    const { return str.length(); }
 };
+
+inline mstring operator+(const char* s, const mstring& m) {
+    return mstring(s) + m;
+}
 
 #endif

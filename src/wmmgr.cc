@@ -61,6 +61,7 @@ YWindowManager::YWindowManager(
     fLastWorkspace = WinWorkspaceInvalid;
     fArrangeCount = 0;
     fArrangeInfo = 0;
+    rootProxy = 0;
     fWorkAreaMoveWindows = false;
     fWorkArea = 0;
     fWorkAreaWorkspaceCount = 0;
@@ -143,6 +144,7 @@ YWindowManager::~YWindowManager() {
     delete[] fFocusedWindow;
     for (int l(0); l < WinLayerCount; l++)
         delete layerActionSet[l];
+    delete rootProxy;
 }
 
 void YWindowManager::grabKeys() {
@@ -743,6 +745,7 @@ void YWindowManager::handleClientMessage(const XClientMessageEvent &message) {
         case ICEWM_ACTION_LOGOUT:
         case ICEWM_ACTION_CANCEL_LOGOUT:
         case ICEWM_ACTION_SHUTDOWN:
+        case ICEWM_ACTION_SUSPEND:
         case ICEWM_ACTION_REBOOT:
         case ICEWM_ACTION_RESTARTWM:
         case ICEWM_ACTION_WINDOWLIST:
@@ -945,7 +948,7 @@ void YWindowManager::setFocus(YFrameWindow *f, bool /*canWarp*/) {
         XSetInputFocus(xapp->display(), fTopWin->handle(), RevertToNone, xapp->getEventTime("setFocus"));
     }
 
-    if (c && w == c->handle() && c->protocols() & YFrameClient::wpTakeFocus) {
+    if (c && w == c->handle() && (c->protocols() & YFrameClient::wpTakeFocus)) {
         c->sendTakeFocus();
     }
 
@@ -3022,7 +3025,10 @@ void YWindowManager::updateUserTime(const UserTime& userTime) {
 }
 
 void YWindowManager::execAfterFork(const char *command) {
-    pid_t pid = fork();
+	if(!command || !*command)
+		return;
+    msg("Running system command in shell: %s", command);
+	pid_t pid = fork();
     switch(pid) {
     case -1: /* Failed */
         fail("fork failed");
@@ -3450,8 +3456,8 @@ void YWindowManager::UpdateScreenSize(XEvent *event) {
     XRRUpdateConfiguration(event);
 #endif
 
-    int nw = DisplayWidth(xapp->display(), DefaultScreen(xapp->display()));
-    int nh = DisplayHeight(xapp->display(), DefaultScreen(xapp->display()));
+    int nw = xapp->displayWidth();
+    int nh = xapp->displayHeight();
     updateXineramaInfo(nw, nh);
 
     if (width() != nw ||

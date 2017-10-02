@@ -23,12 +23,19 @@
 
 #include "wmapp.h"
 
+#include "udir.h"
+#include "ycollections.h"
+
 #ifdef HAVE_NET_STATUS
 #include "prefs.h"
 #include "intl.h"
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <net/if.h>
+
+#ifdef __linux__
+#include <fnmatch.h>
+#endif
 
 #ifdef __FreeBSD__
 #include <sys/sysctl.h>
@@ -62,25 +69,19 @@ NetStatus::NetStatus(
 
     setSize(taskBarNetSamples, taskBarGraphHeight);
 
-    fUpdateTimer = new YTimer(0);
-    if (fUpdateTimer) {
-        fUpdateTimer->setInterval(taskBarNetDelay);
-        fUpdateTimer->setTimerListener(this);
-        fUpdateTimer->startTimer();
-    }
     prev_ibytes = prev_obytes = offset_ibytes = offset_obytes = 0;
     prev_time = monotime();
     // set prev values for first updateStatus
 
-    getCurrent(0, 0);
+    getCurrent(0, 0, 0);
     wasUp = true;
 
     // test for isdn-device
     useIsdn = fNetDev.startsWith("ippp");
     // unset phoneNumber
-    strcpy(phoneNumber,"");
+    phoneNumber[0] = 0;
 
-    updateStatus();
+    updateStatus(0);
     start_time = time(NULL);
     start_ibytes = cur_ibytes;
     start_obytes = cur_obytes;
@@ -94,7 +95,6 @@ NetStatus::~NetStatus() {
     delete color[2];
     delete[] ppp_in;
     delete[] ppp_out;
-    delete fUpdateTimer;
 }
 
 
@@ -109,11 +109,9 @@ void NetStatus::updateVisible(bool aVisible) {
     }
 }
 
-bool NetStatus::handleTimer(YTimer *t) {
-    if (t != fUpdateTimer)
-        return false;
+void NetStatus::handleTimer(const void* sharedData, bool forceDown) {
 
-    bool up = isUp();
+    bool up = !forceDown && isUp();
 
     if (up) {
         if (!wasUp) {
@@ -124,12 +122,12 @@ bool NetStatus::handleTimer(YTimer *t) {
             cur_ibytes = 0;
             cur_obytes = 0;
 
-            updateStatus();
+            updateStatus(sharedData);
             start_ibytes = cur_ibytes;
             start_obytes = cur_obytes;
             updateVisible(true);
         }
-        updateStatus();
+        updateStatus(sharedData);
 
         if (toolTipVisible())
             updateToolTip();
@@ -139,7 +137,6 @@ bool NetStatus::handleTimer(YTimer *t) {
             updateVisible(false);
 
     wasUp = up;
-    return true;
 }
 
 void NetStatus::updateToolTip() {
@@ -489,14 +486,14 @@ bool NetStatus::isUp() {
 #endif
 }
 
-void NetStatus::updateStatus() {
+void NetStatus::updateStatus(const void* sharedData) {
     int last = taskBarNetSamples - 1;
 
     for (int i = 0; i < last; i++) {
         ppp_in[i] = ppp_in[i + 1];
         ppp_out[i] = ppp_out[i + 1];
     }
-    getCurrent(&ppp_in[last], &ppp_out[last]);
+    getCurrent(&ppp_in[last], &ppp_out[last], sharedData);
     /* These two lines clears first measurement; you can throw these lines
      * off, but bug will occur: on startup, the _second_ bar will show
      * always zero -stibor- */
@@ -507,7 +504,7 @@ void NetStatus::updateStatus() {
 }
 
 
-void NetStatus::getCurrent(long *in, long *out) {
+void NetStatus::getCurrent(long *in, long *out, const void* sharedData) {
 #if 0
     struct ifpppstatsreq req; // from <net/if_ppp.h> in the linux world
 
@@ -538,45 +535,13 @@ void NetStatus::getCurrent(long *in, long *out) {
     cur_ibytes = 0;
     cur_obytes = 0;
 
-
 #ifdef __linux__
-    FILE *fp = fopen("/proc/net/dev", "r");
-    if (!fp)
-        return ;
+    const char *p = (const char*) sharedData;
+    if(p)
+        sscanf(p, "%llu %*d %*d %*d %*d %*d %*d %*d %llu", &cur_ibytes, &cur_obytes);
 
-    char buf[512];
-
-    while (fgets(buf, sizeof(buf), fp) != NULL) {
-        char *p = buf;
-        while (*p == ' ')
-            p++;
-        cstring cs(fNetDev);
-        if (strncmp(p, cs.c_str(), cs.c_str_len()) == 0 &&
-            p[cs.c_str_len()] == ':')
-        {
-            int dummy;
-            p = strchr(p, ':') + 1;
-
-            if (sscanf(p, "%llu %*d %*d %*d %*d %*d %*d %*d" " %llu %*d %*d %*d %*d %*d %*d %d",
-                       &cur_ibytes, &cur_obytes, &dummy) != 3)
-            {
-                long long ipackets = 0, opackets = 0;
-
-                sscanf(p, "%lld %*d %*d %*d %*d" " %lld %*d %*d %*d %*d %*d",
-                       &ipackets, &opackets);
-                // for linux<2.0 fake packets as bytes (we only need relative values anyway)
-                cur_ibytes = ipackets;
-                cur_obytes = opackets;
-            }
-
-            //msg("cur:%lld %lld", cur_ibytes, cur_obytes);
-
-            break;
-        }
-    }
-    fclose(fp);
 #endif //__linux__
-#ifdef __FreeBSD__
+#if defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
     // FreeBSD code by Ronald Klop <ronald@cs.vu.nl>
     struct ifmibdata ifmd;
     size_t ifmd_size=sizeof ifmd;
@@ -664,6 +629,153 @@ void NetStatus::getCurrent(long *in, long *out) {
     prev_time = curr_time;
     prev_ibytes = cur_ibytes;
     prev_obytes = cur_obytes;
+}
+
+NetStatusControl::~NetStatusControl() {
+    delete fUpdateTimer;
+    for(NetStatus **p = fNetStatus.data; p<fNetStatus.data+fNetStatus.size;++p)
+        delete *p;
+}
+
+#ifdef __linux__
+void NetStatusControl::fetchSystemData() {
+    cachedStats.size = cachedStatsIdx.size = 0;
+    FILE *fp = fopen("/proc/net/dev", "r");
+    if (!fp)
+        return;
+    while (!feof(fp) && !ferror(fp)) {
+        cachedStats.preserve(cachedStats.size + 1000);
+        cachedStats.size += fread(cachedStats.data + cachedStats.size,
+                sizeof(char), cachedStats.remainingCapa(), fp);
+    }
+    while (fclose(fp)) {}
+    cachedStats.add(0); // zero terminated, for sure
+    cachedStatsIdx.size = 0;
+    // XXX: check performance! This is written for easier understanding.
+    // But if strchr is a fast compiler builtin then it might be faster to strchr for ':' and then look back for space or newline...
+    char *pStart = cachedStats.data, *pEnd = cachedStats.data + cachedStats.size;
+    enum tProcState { start, name, goeol };
+    tProcState state = start;
+    for(char *p = pStart;p<pEnd;++p) {
+        switch(state)
+        {
+        case start:
+            if(*p == ' ') continue;
+            cachedStatsIdx.add(p);
+            state = name;
+            break;
+        case name:
+            // header junk?
+            if(*p == '|') state = goeol, cachedStatsIdx.size--;
+            else if(*p == ':')
+            {
+                state = goeol;
+                cachedStatsIdx.add(p+1);
+                *p = 0;
+            }
+            break;
+        case goeol:
+            if(*p == '\n') *p = 0, state = start;
+            break;
+        }
+    }
+}
+#endif
+
+NetStatusControl::NetStatusControl(IApp* app, YSMListener* smActionListener,
+        IAppletContainer* taskBar, YWindow* aParent) : fUpdateTimer(0) {
+
+    this->app = app;
+    this->smActionListener = smActionListener;
+    this->taskBar = taskBar;
+    this->aParent = aParent;
+
+#ifdef HAVE_NET_STATUS
+#ifdef __linux__
+    fetchSystemData();
+#endif
+
+    mstring devName, devList(netDevice);
+    while (devList.splitall(' ', &devName, &devList)) {
+        if (!devName.nonempty())
+            continue;
+        // find that device in the list of valid not;
+        // if not, consider it a match pattern and try adding later;
+        // for non-linux, add them always
+#ifdef __linux__
+        bool found=false;
+        for(unsigned i=0; !found && i<cachedStatsIdx.size; i+=2)
+            found = devName.equals(cachedStatsIdx[i]);
+        if(!found)
+            matchPatterns.add(devName);
+        else
+#endif
+        fNetStatus.add(new NetStatus(app, smActionListener, devName, taskBar, aParent));
+    }
+#endif
+
+    fUpdateTimer = new YTimer(0);
+    if (fUpdateTimer) {
+        fUpdateTimer->setInterval(taskBarNetDelay);
+        fUpdateTimer->setTimerListener(this);
+        fUpdateTimer->startTimer();
+    }
+}
+
+
+bool NetStatusControl::handleTimer(YTimer *t)
+{
+	if (t != fUpdateTimer)
+		return false;
+
+#ifdef __linux__
+	fetchSystemData();
+
+	// hardcopy of existing monitors to check the remaining ones faster
+	covered.preserve(fNetStatus.size);
+	covered.size = fNetStatus.size;
+	memcpy(covered.data, fNetStatus.data, sizeof(covered[0]) * fNetStatus.size);
+
+	for(unsigned i=0; i<cachedStatsIdx.size; i+=2)
+	{
+	    //mstring devName(cachedStatsIdx[i], cachedStatsIdx[i+1]-cachedStatsIdx[i]);
+	    bool handled=false;
+	    for(unsigned j = 0; j<fNetStatus.size; ++j)
+	    {
+            if (fNetStatus[j]->fNetDev != cachedStatsIdx[i])
+                continue;
+            fNetStatus[j]->handleTimer(cachedStatsIdx[i + 1], false);
+            handled = true;
+            covered[j] = 0;
+            break;
+        }
+        if (handled)
+            continue;
+
+        // oh, we got a new device? allowed?
+        // XXX: this still wastes some cpu cycles for repeated fnmatch on forbidden devices.
+        // Maybe tackle this with a list of checksums?
+        for (mstring* p = matchPatterns.data;
+                p < matchPatterns.data + matchPatterns.size; ++p) {
+            if (fnmatch(cstring(*p), cachedStatsIdx[i], 0))
+                continue;
+            NetStatus *pn = new NetStatus(app, smActionListener, cachedStatsIdx[i],
+                            taskBar, aParent);
+            fNetStatus.add(pn);
+            pn->handleTimer(cachedStatsIdx[i + 1], false);
+            break;
+        }
+	}
+	// mark disappeared devices as down without additional ioctls
+	for(NetStatus** p = covered.data; p && p < covered.data + covered.size; ++p)
+	    if(*p)
+	        (**p).handleTimer(0, true);
+
+#else
+	for(NetStatus* p=fNetStatus.data; p<fNetStatus.data+fNetStatus.size; ++p)
+	    p->handleTimer(0, false);
+#endif
+	return true;
 }
 
 #endif // HAVE_NET_STATUS

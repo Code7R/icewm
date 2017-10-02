@@ -7,6 +7,9 @@
 #define SYSTEM_TRAY_BEGIN_MESSAGE 1
 #define SYSTEM_TRAY_CANCEL_MESSAGE 2
 
+#define SYSTEM_TRAY_ORIENTATION_HORZ 0
+#define SYSTEM_TRAY_ORIENTATION_VERT 1
+
 class YXTrayProxy;
 class YXTray;
 
@@ -23,7 +26,7 @@ public:
     ~YXTrayEmbedder();
     virtual void paint(Graphics &g, const YRect &r);
     virtual void handleConfigureRequest(const XConfigureRequestEvent &configureRequest);
-    virtual void destroyedClient(Window win);
+    virtual bool destroyedClient(Window win);
     void detach();
     virtual void configure(const YRect &r);
 
@@ -40,16 +43,17 @@ private:
 
 class YXTray: public YWindow {
 public:
-    YXTray(YXTrayNotifier *notifier, bool internal, const char *atom, YWindow *aParent = 0);
+    YXTray(YXTrayNotifier *notifier, bool internal,
+           const class YAtom& trayatom, YWindow *aParent = 0);
     virtual ~YXTray();
 
     virtual void paint(Graphics &g, const YRect &r);
     virtual void configure(const YRect &r);
-    virtual void getScaleSize(int *ww, int *hh);
     virtual void handleConfigureRequest(const XConfigureRequestEvent &configureRequest);
 
     void backgroundChanged();
     void relayout();
+    int countClients() const { return fDocked.getCount(); }
 
     void trayRequestDock(Window win);
     void detachTray();
@@ -57,8 +61,10 @@ public:
     void showClient(Window win, bool show);
     bool kdeRequestDock(Window win);
 
-    void destroyedClient(Window win);
+    bool destroyedClient(Window win);
 private:
+    static void getScaleSize(int *ww, int *hh);
+
     YXTrayProxy *fTrayProxy;
     typedef YObjectArray<YXTrayEmbedder> DockedType;
     typedef DockedType::IterType IterType;

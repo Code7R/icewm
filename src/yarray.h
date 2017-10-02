@@ -19,7 +19,9 @@
 #include "base.h"
 #include "ref.h"
 
-template<class T>
+template <class DataType>
+class YArray;
+template <class DataType, class ArrayType = YArray<DataType> >
 class YArrayIterator;
 
 /*******************************************************************************
@@ -85,9 +87,11 @@ public:
 
 
 private:
-    YBaseArray(const YBaseArray &) {} // not implemented
+    YBaseArray(const YBaseArray &); // not implemented
+    void operator=(const YBaseArray&); // not implemented
 
-    SizeType fElementSize, fCapacity, fCount;
+    const SizeType fElementSize;
+    SizeType fCapacity, fCount;
     StorageType *fElements;
 };
 
@@ -101,6 +105,7 @@ public:
     typedef YArrayIterator<DataType> IterType;
 
     YArray(): YBaseArray(sizeof(DataType)) {}
+    YArray(YArray &other): YBaseArray((YBaseArray&)other) {}
 
     void append(const DataType &item) {
         YBaseArray::append(&item);
@@ -134,6 +139,9 @@ public:
     DataType &operator*() { 
         return getItem(0);
     }
+    void swap(const SizeType index1, const SizeType index2) {
+        ::swap(getItem(index1), getItem(index2));
+    }
     IterType iterator();
     IterType reverseIterator();
 };
@@ -145,20 +153,36 @@ public:
 template <class DataType>
 class YObjectArray: public YArray<DataType *> {
 public:
+    typedef YArray<DataType *> BaseType;
+    typedef typename BaseType::SizeType SizeType;
+
+    YObjectArray() {}
+    explicit YObjectArray(SizeType capacity) {
+        setCapacity(capacity);
+    }
     virtual ~YObjectArray() {
         clear();
     }
 
-    virtual void remove(const typename YArray<DataType *>::SizeType index) {
-        if (index < YArray<DataType *>::getCount())
-             delete YArray<DataType *>::getItem(index);
-        YArray<DataType *>::remove(index);
+    virtual void remove(const SizeType index) {
+        if (index < getCount()) {
+             delete getItem(index);
+             BaseType::remove(index);
+        }
     }
-    
+
+    SizeType getCount() const {
+        return BaseType::getCount();
+    }
+
+    DataType* getItem(const SizeType index) const {
+        return BaseType::getItem(index);
+    }
+
     virtual void clear() {
-        for (typename YArray<DataType *>::SizeType i = 0; i < YArray<DataType *>::getCount(); ++i)
-            delete YArray<DataType *>::getItem(i);
-        YArray<DataType *>::clear();
+        for (SizeType n = getCount(); n > 0; )
+            delete getItem(--n);
+        BaseType::clear();
     }
 };
 
@@ -166,53 +190,56 @@ template <class DataType>
 class YRefArray: public YBaseArray {
 public:
     YRefArray(): YBaseArray(sizeof(ref<DataType>)) {}
+    ~YRefArray() { clear(); }
 
-    void append(ref<DataType> &item) {
-        ref<DataType> r = item;
-        r.__ref();
-        YBaseArray::append(&r);
+    void append(ref<DataType> item) {
+        item.__ref();
+        YBaseArray::append(&item);
     }
-    void insert(const SizeType index, ref<DataType> &item) {
-        ref<DataType> r = item;
-        r.__ref();
-        YBaseArray::insert(index, &r);
+    void insert(const SizeType index, ref<DataType> item) {
+        item.__ref();
+        YBaseArray::insert(index, &item);
     }
 
     ref<DataType> getItem(const SizeType index) const {
-        ref<DataType> r = *(ref<DataType> *)YBaseArray::getItem(index);
-        return r;
+        return *getItemPtr(index);
     }
     ref<DataType> operator[](const SizeType index) const {
         return getItem(index);
     }
 
-    virtual void remove(const typename YArray<ref<DataType> *>::SizeType index) {
-        if (index < getCount())
-            ((ref<DataType> *)YBaseArray::getItem(index))->__unref();
-        YBaseArray::remove(index);
+    virtual void remove(const SizeType index) {
+        if (index < getCount()) {
+            getItemPtr(index)->__unref();
+            YBaseArray::remove(index);
+        }
     }
-    
+
     virtual void clear() {
-        for (typename YArray<ref<DataType> *>::SizeType i = 0; i < getCount(); ++i)
-            ((ref<DataType> *)YBaseArray::getItem(i))->__unref();
+        for (SizeType i = 0; i < getCount(); ++i)
+            getItemPtr(i)->__unref();
         YBaseArray::clear();
     }
+
+private:
+    ref<DataType>* getItemPtr(const SizeType index) const {
+        return (ref<DataType> *) YBaseArray::getItem(index);
+    }
 };
+
 /*******************************************************************************
  * An array of strings
  ******************************************************************************/
 
-#if 1
-class YStringArray: public YBaseArray {
+class YStringArray: public YArray<const char *> {
 public:
-    YStringArray(YStringArray &other): YBaseArray((YBaseArray&)other) {}
+    YStringArray(YStringArray &other): YArray((YArray&)other) {}
     YStringArray(const YStringArray &other);
 
-    explicit YStringArray(SizeType capacity = 0): 
-        YBaseArray(sizeof(char *)) {
-            setCapacity(capacity);
+    explicit YStringArray(SizeType capacity = 0) {
+        setCapacity(capacity);
     }
-    
+
     virtual ~YStringArray() {
         clear();
     }
@@ -244,7 +271,6 @@ public:
     char *const *getCArray() const;
     char **release();
 };
-#endif
 
 /*******************************************************************************
  * A stack emulated by a dynamic array
@@ -280,14 +306,62 @@ public:
 };
 
 /*******************************************************************************
+ * An array of mstrings
+ ******************************************************************************/
+
+#ifdef __MSTRING_H
+class MStringArray: public YArray<mstring> {
+public:
+    MStringArray() {}
+    explicit MStringArray(SizeType capacity) {
+        setCapacity(capacity);
+    }
+    virtual ~MStringArray() { clear(); }
+
+    void append(mstring& item) {
+        item.acquire();
+        YBaseArray::append(&item);
+    }
+    void insert(const SizeType index, mstring& item) {
+        item.acquire();
+        YBaseArray::insert(index, &item);
+    }
+
+    mstring& getItem(const SizeType index) const {
+        return *getItemPtr(index);
+    }
+    mstring& operator[](const SizeType index) const {
+        return getItem(index);
+    }
+
+    virtual void remove(const SizeType index) {
+        if (index < getCount()) {
+            getItemPtr(index)->release();
+            YBaseArray::remove(index);
+        }
+    }
+
+    virtual void clear() {
+        for (SizeType i = 0; i < getCount(); ++i)
+            getItemPtr(i)->release();
+        YBaseArray::clear();
+    }
+
+private:
+    mstring* getItemPtr(const SizeType index) const {
+        return (mstring *) YBaseArray::getItem(index);
+    }
+};
+#endif  /*__MSTRING_H*/
+
+/*******************************************************************************
  * An array iterator
  ******************************************************************************/
 
-template <class DataType>
+template <class DataType, class ArrayType>
 class YArrayIterator {
 public:
-    typedef YArrayIterator<DataType> IterType;
-    typedef YArray<DataType> ArrayType;
+    typedef YArrayIterator<DataType, ArrayType> IterType;
 
 private:
     ArrayType *array;
@@ -295,7 +369,7 @@ private:
     int index;
 
     bool validate(int extra) const {
-        return inrange(index + extra, 0, array->getCount() - 1);
+        return inrange((int) index + extra, (int) 0, (int) array->getCount() - 1);
     }
     IterType& move(int amount) {
         index += amount;
@@ -339,6 +413,9 @@ public:
     operator bool() const {
         return isValid();
     }
+    operator DataType&() const {
+        return get();
+    }
     DataType& operator->() const {
         return get();
     }
@@ -377,4 +454,10 @@ int find(const YArray<DataType>& array, const DataType& data) {
     return -1;
 }
 
+template<class DataType>
+void findRemove(YArray<DataType>& array, DataType& data) {
+    int k = find(array, data);
+    if (k >= 0)
+        array.remove(k);
+}
 #endif

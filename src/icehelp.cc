@@ -15,6 +15,10 @@
 #include <strings.h>
 #endif
 
+#define ICEWM_SITE      "http://www.icewm.org/"
+#define ICEWM_FAQ       "http://www.icewm.org/FAQ/"
+#define THEME_HOWTO     "http://www.icewm.org/themes/"
+
 #ifdef DEBUG
 #define DUMP
 //#define TEXT
@@ -276,7 +280,8 @@ public:
         anchor, img,
         tt, dl, dd, dt,
         thead, tbody, tfoot,
-        link, code, meta, form, input
+        link, code, meta, form, input,
+        section, figure, aside, footer, main,
     };
 
     node(node_type t) :
@@ -402,6 +407,11 @@ const char *node::to_string(node_type type) {
         TS(img);
         TS(form);
         TS(input);
+        TS(section);
+        TS(figure);
+        TS(aside);
+        TS(footer);
+        TS(main);
     }
     tlog("Unknown node_type %d, after %s, before %s", type,
             type > unknown ? to_string((node_type)(type - 1)) : "",
@@ -474,10 +484,30 @@ node::node_type node::get_type(const char *buf)
     TS(img, img);
     TS(form, form);
     TS(input, input);
+    TS(section, section);
+    TS(figure, figure);
+    TS(aside, aside);
+    TS(footer, footer);
+    TS(main, main);
     if (*buf && buf[strlen(buf)-1] == '/') {
         cbuffer cbuf(buf);
         cbuf.pop();
         return get_type(cbuf);
+    }
+    static const char* ignored[] = {
+        "abbr",
+        "g",
+        "g-emoji",
+        "include-fragment",
+        "rect",
+        "relative-time",
+        "th",
+        "time",
+        "time-ago",
+    };
+    for (unsigned i = 0; i < ACOUNT(ignored); ++i) {
+        if (0 == strcmp(buf, ignored[i]))
+            return node::unknown;
     }
     tlog("unknown tag %s", buf);
     return node::unknown;
@@ -708,8 +738,18 @@ static node *parse(FILE *fp, int flags, node *parent, node *&nextsub, node::node
                         c = entity[1];
                     }
                     else {
-                        tlog("unknown special '%s'", entity.peek());
-                        c = ' ';
+                        unsigned special = 0;
+                        int len = 0;
+                        if (1 == sscanf(entity, "&#%u%n", &special, &len)
+                                && len == entity.len()
+                                && inrange(special, 32U, 126U))
+                        {
+                            c = (char) special;
+                        }
+                        else {
+                            tlog("unknown special '%s'", entity.peek());
+                            c = ' ';
+                        }
                     }
                 }
                 if (c == '\r') {
@@ -1521,6 +1561,7 @@ void HTextView::layout(
                 layout(n, n->container, left, right, x, y, w, h, fl, state);
             }
             break;
+        case node::tt:
         case node::code:
             if (n->container) {
                 Flags fl(this, flags, flags | MONO);
@@ -1541,6 +1582,11 @@ void HTextView::layout(
         case node::link:
         case node::form:
         case node::input:
+        case node::section:
+        case node::figure:
+        case node::aside:
+        case node::footer:
+        case node::main:
             if (n->container) {
                 layout(n, n->container, left, right, x, y, w, h, flags, state);
             }
@@ -1745,10 +1791,21 @@ void FileView::activateURL(const cstring& url, bool relative) {
         return; // empty
     }
 
-    if (relative && path.length() > 0 && upath(path).isRelative()) {
-        int k = fPath.path().lastIndexOf('/');
-        if (k >= 0) {
-            path = fPath.path().substring(0, k + 1) + path;
+    if (relative && path.nonempty() && false == upath(path).hasProtocol()) {
+        if (upath(path).isRelative()) {
+            int k = fPath.path().lastIndexOf('/');
+            if (k >= 0) {
+                path = fPath.path().substring(0, k + 1) + path;
+            }
+        }
+        else if (fPath.hasProtocol()) {
+            int k = fPath.path().find("://");
+            if (k > 0) {
+                int i = fPath.path().substring(k + 3).indexOf('/');
+                if (i > 0) {
+                    path = fPath.path().substring(0, k + 3 + i) + path;
+                }
+            }
         }
     }
     path = path.searchAndReplaceAll("/./", "/");
@@ -1769,7 +1826,7 @@ void FileView::activateURL(const cstring& url, bool relative) {
                 }
             }
             else {
-                return invalidPath(path, "Unsupported protocol.");
+                return invalidPath(path, _("Unsupported protocol."));
             }
         }
         else if (loadFile(path) == false) {
@@ -1795,7 +1852,7 @@ void FileView::activateURL(const cstring& url, bool relative) {
 void FileView::invalidPath(const upath& path, const char *reason) {
     const char *cstr = cstring(path);
     const char *cfmt = _("Invalid path: %s\n");
-    const char *crea = _(reason);
+    const char *crea = reason;
     tlog(cfmt, cstr);
     tlog("%s", crea);
 
@@ -1817,12 +1874,12 @@ void FileView::invalidPath(const upath& path, const char *reason) {
 
 bool FileView::loadFile(const upath& path) {
     if (path.fileExists() == false) {
-        invalidPath(path, "Path does not refer to a file.");
+        invalidPath(path, _("Path does not refer to a file."));
         return false;
     }
     FILE *fp = fopen(cstring(path), "r");
     if (fp == 0) {
-        invalidPath(path, "Failed to open file for reading.");
+        invalidPath(path, _("Failed to open file for reading."));
         return false;
     }
     node *nextsub = 0;
@@ -1851,7 +1908,7 @@ public:
     temp_file() : fp(0) {
         const char *tenv = getenv("TMPDIR");
         if ((tenv && init(tenv)) || init("/tmp") || init("/var/tmp")) ;
-        else tlog("Failed to create a temporary file");
+        else tlog(_("Failed to create a temporary file"));
     }
     ~temp_file() {
         unlink(cbuf.peek());
@@ -1943,7 +2000,7 @@ public:
         const char *cmd = cstring(mcmd);
         int xit = ::system(cmd);
         if (xit) {
-            tlog("Failed to execute system(%s) (%d)", cmd, xit);
+            tlog(_("Failed to execute system(%s) (%d)"), cmd, xit);
             return false;
         }
         // tlog("Executed system(%s) OK!", cmd);
@@ -1966,7 +2023,7 @@ public:
                 }
             }
         }
-        tlog("Failed to decompress %s", local.path());
+        tlog(_("Failed to decompress %s"), local.path());
         return false;
     }
 };
@@ -1974,11 +2031,11 @@ public:
 bool FileView::loadHttp(const upath& path) {
     downloader loader;
     if (!loader) {
-        invalidPath(path, "Could not locate curl or wget in PATH");
+        invalidPath(path, _("Could not locate curl or wget in PATH"));
         return false;
     }
     if (!loader.is_safe(cstring(path))) {
-        invalidPath(path, "Unsafe characters in URL");
+        invalidPath(path, _("Unsafe characters in URL"));
         return false;
     }
     temp_file temp;
@@ -1993,10 +2050,38 @@ bool FileView::loadHttp(const upath& path) {
 
 static void print_help()
 {
-    printf(_("Usage: %s FILENAME\n\n"
-             "A very simple HTML browser displaying the document specified "
-             "by FILENAME.\n\n"),
-           ApplicationName);
+    printf(_(
+    "Usage: %s [OPTIONS] [ FILENAME | URL ]\n\n"
+    "IceHelp is a very simple HTML browser for the IceWM window manager.\n"
+    "It can display a HTML document from file, or browse a website.\n"
+    "It remembers visited pages in a history, which is navigable\n"
+    "by key bindings and a context menu (right mouse click).\n"
+    "It neither supports rendering of images nor JavaScript.\n"
+    "If no file or URL is given it will display the IceWM Manual\n"
+    "from %s.\n"
+    "\n"
+    "Options:\n"
+    "  --display=NAME      NAME of the X server to use.\n"
+    "  --sync              Synchronize X11 commands.\n"
+    "\n"
+    "  -b, --bugs          Display the IceWM bug reports (primitively).\n"
+    "  -f, --faq           Display the IceWM FAQ and Howto.\n"
+    "  -i, --icewm         Display the IceWM website.\n"
+    "  -m, --manual        Display the IceWM Manual (default).\n"
+    "  -t, --theme         Display the IceWM themes Howto.\n"
+    "\n"
+    "  -V, --version       Prints version information and exits.\n"
+    "  -h, --help          Prints this usage screen and exits.\n"
+    "\n"
+    "Environment variables:\n"
+    "  DISPLAY=NAME        Name of the X server to use.\n"
+    "\n"
+    "To report bugs, support requests, comments please visit:\n"
+    "%s\n"
+    "\n"),
+        ApplicationName,
+        ICEHELPIDX,
+        PACKAGE_BUGREPORT);
     exit(0);
 }
 
@@ -2015,6 +2100,20 @@ int main(int argc, char **argv) {
                 if (GetLongArgument(dummy, "display", arg, argv + argc)) {
                     /*ignore*/;
                 }
+                else if (is_long_switch(*arg, "sync"))
+                {}
+                else if (is_switch(*arg, "b", "bugs"))
+                    helpfile = PACKAGE_BUGREPORT;
+                else if (is_switch(*arg, "f", "faq"))
+                    helpfile = ICEWM_FAQ;
+                else if (is_switch(*arg, "i", "icewm"))
+                    helpfile = ICEWM_SITE;
+                else if (is_switch(*arg, "m", "manual"))
+                    helpfile = ICEHELPIDX;
+                else if (is_switch(*arg, "t", "themes"))
+                    helpfile = THEME_HOWTO;
+                else
+                    warn(_("Ignoring option '%s'"), *arg);
             }
         }
         else {

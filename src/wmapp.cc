@@ -108,10 +108,8 @@ static bool post_preferences;
 
 static Window registerProtocols1(char **argv, int argc) {
     long timestamp = CurrentTime;
-    char buf[32];
-    sprintf(buf, "WM_S%d", DefaultScreen(xapp->display()));
-    Atom wmSx = XInternAtom(xapp->display(), buf, False);
-    Atom wm_manager = XInternAtom(xapp->display(), "MANAGER", False);
+    YAtom wmSx("WM_S", true);
+    YAtom wm_manager("MANAGER");
 
     Window current_wm = XGetSelectionOwner(xapp->display(), wmSx);
 
@@ -129,13 +127,13 @@ static Window registerProtocols1(char **argv, int argc) {
     Window xid = 
         XCreateSimpleWindow(xapp->display(), xroot,
             0, 0, 1, 1, 0,
-            BlackPixel(xapp->display(), DefaultScreen(xapp->display())),
-            BlackPixel(xapp->display(), DefaultScreen(xapp->display())));
+            xapp->black(),
+            xapp->black());
 
     XSetSelectionOwner(xapp->display(), wmSx, xid, timestamp);
 
     if (XGetSelectionOwner(xapp->display(), wmSx) != xid) 
-        die(1, _("failed to set %s owner"), buf);
+        die(1, _("Failed to become the owner of the %s selection"), wmSx.str());
 
     if (current_wm != None) {
         XEvent event;
@@ -422,7 +420,7 @@ static void initFontPath(IApp *app) {
             cstring dir(fonts_dirDir.path());
             const char *fontsdir = dir.c_str();
 
-#if CONFIG_XFREETYPE >= 2
+#ifdef CONFIG_XFREETYPE
             MSG(("font dir add %s", fontsdir));
             FcConfigAppFontAddDir(0, (FcChar8 *)fontsdir);
 #endif
@@ -577,6 +575,13 @@ static void initMenus(
 #else
                 logoutMenu->addItem(_("Shut_down"), -2, null, actionShutdown, "shutdown");
 #endif
+            if (couldRunCommand(suspendCommand))
+#ifdef LITE
+                logoutMenu->addItem(_("_Suspend"), -2, null, actionSuspend);
+#else
+                logoutMenu->addItem(_("_Suspend"), -2, null, actionSuspend, "suspend");
+#endif
+
             if (logoutMenu->itemCount() != oldItemCount)
                 logoutMenu->addSeparator();
 
@@ -840,6 +845,8 @@ void YWMApp::actionPerformed(YAction *action, unsigned int /*modifiers*/) {
         this->runCommand(lockCommand);
     } else if (action == actionShutdown) {
         manager->doWMAction(ICEWM_ACTION_SHUTDOWN);
+    } else if (action == actionSuspend) {
+        manager->doWMAction(ICEWM_ACTION_SUSPEND);
     } else if (action == actionReboot) {
         manager->doWMAction(ICEWM_ACTION_REBOOT);
     } else if (action == actionRestart) {
@@ -1210,7 +1217,7 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
 
 #ifndef LITE
     statusMoveSize = new MoveSizeStatus(manager);
-    statusWorkspace = new WorkspaceStatus(manager);
+    statusWorkspace = WorkspaceStatus::createInstance(manager);
 #endif
 #ifdef CONFIG_TASKBAR
     if (showTaskBar) {
@@ -1453,9 +1460,8 @@ static void print_usage(const char *argv0) {
              "  -l, --list-themes   Print a list of all available themes.\n"
              "\n"
              "Environment variables:\n"
-             "  XDG_CONFIG_HOME=PATH  Directory for configuration files,\n"
-             "                      \"$HOME/.config\" by default.\n"
              "  ICEWM_PRIVCFG=PATH  Directory for user configuration files,\n"
+             "                      \"$XDG_CONFIG_HOME/icewm\" if exists or\n"
              "                      \"$HOME/.icewm\" by default.\n"
              "  DISPLAY=NAME        Name of the X server to use.\n"
              "  MAIL=URL            Location of your mailbox.\n"
@@ -1495,7 +1501,6 @@ static void print_confdir(const char *name, const char *path) {
 
 static void print_directories(const char *argv0) {
     printf(_("%s configuration directories:\n"), argv0);
-    print_confdir("XdgConfDir", YApplication::getXdgConfDir().string());
     print_confdir("PrivConfDir", YApplication::getPrivConfDir().string());
     print_confdir("CFGDIR", CFGDIR);
     print_confdir("LIBDIR", LIBDIR);
@@ -1820,6 +1825,9 @@ void YWMApp::handleSMAction(int message) {
         wmapp->actionPerformed(actionAbout, 0);
 #endif
         break;
+    case ICEWM_ACTION_SUSPEND:
+    	YWindowManager::execAfterFork(suspendCommand);
+    	break;
     }
 }
 

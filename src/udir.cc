@@ -122,7 +122,7 @@ bool adir::open() {
     if (fPath) {
         DirPtr dirp(fPath);
         if (dirp) {
-            int count = 0;
+            unsigned int count = 0;
             size_t size = 0;
             for (; dirp.next(); ++count) {
                 size += dirp.size();
@@ -150,11 +150,11 @@ bool adir::open() {
 }
 
 bool adir::next() {
-    return fName && 1 + fLast < fCount && ++fLast >= 0;
+    return fName && 1 + fLast < fCount && ++fLast != unsigned(-1);
 }
 
 const char* adir::entry() const {
-    if (fName && fLast >= 0 && fLast < fCount) {
+    if (fName && fLast != unsigned(-1) && fLast < fCount) {
         return fName[fLast];
     }
     return 0;
@@ -220,7 +220,7 @@ bool udir::nextExt(const ustring& extension) {
 }
 
 sdir::sdir(const upath& path)
-    : fPath(path), fName(0), fCount(0), fLast(-1)
+    : fPath(path), fLast(-1)
 {
     if (path.nonempty()) {
         open();
@@ -228,12 +228,8 @@ sdir::sdir(const upath& path)
 }
 
 void sdir::close() {
-    if (fName) {
-        fCount = 0;
-        delete[] fName;
-        fName = 0;
-        fLast = -1;
-    }
+    fName.reset();
+    fLast = -1;
 }
 
 bool sdir::open(const upath& path) {
@@ -253,14 +249,10 @@ bool sdir::open() {
     if (fPath.nonempty()) {
         DirPtr dirp(fPath);
         if (dirp) {
-            int count = 4;
-            while (dirp.next())
-                ++count;
-            fName = new ustring[count];
-            fCount = 0;
-            for (dirp.rewind(); dirp.next() && fCount < count; )
-                fName[fCount++] = ustring(dirp.name());
-            qsort(fName, fCount, sizeof(*fName), compare_ustrings);
+            fName.preserve(4);
+            while(dirp.next())
+                fName.add(dirp.name());
+            qsort(fName.data, fName.size, sizeof(fName[0]), compare_ustrings);
         }
         fLast = -1;
     }
@@ -268,7 +260,7 @@ bool sdir::open() {
 }
 
 bool sdir::next() {
-    return fName && 1 + fLast < fCount && ++fLast >= 0;
+    return fName.data && 1 + fLast < fName.size && ++fLast != unsigned(-1);
 }
 
 const ustring& sdir::entry() const {

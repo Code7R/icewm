@@ -10,22 +10,25 @@
 
 #ifdef CONFIG_APPLET_NET_STATUS
 #if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || \
-    defined(__OpenBSD__)
+    defined(__OpenBSD__) || defined(__FreeBSD_kernel__)
+
+#include "ycollections.h"
 
 #define HAVE_NET_STATUS 1
 
 class IAppletContainer;
+class NetStatusControl;
 
-class NetStatus: public YWindow, public YTimerListener {
+class NetStatus: public YWindow {
 public:
     NetStatus(IApp *app, YSMListener *smActionListener, mstring netdev, IAppletContainer *taskBar, YWindow *aParent = 0);
     ~NetStatus();
 private:
     IAppletContainer *fTaskBar;
     YColor *color[3];
-    YTimer *fUpdateTimer;
     YSMListener *smActionListener;
     IApp *app;
+    friend class NetStatusControl;
 
     long *ppp_in; /* long could be really enough for rate in B/s */
     long *ppp_out;
@@ -46,16 +49,43 @@ private:
     // methods local to this class
     bool isUp();
     bool isUpIsdn();
-    void getCurrent(long *in, long *out);
-    void updateStatus();
+    void getCurrent(long *in, long *out, const void* sharedData);
+    void updateStatus(const void* sharedData);
     void updateToolTip();
+    void handleTimer(const void* sharedData, bool forceDown);
 
-    // methods overloaded from superclasses
-    virtual bool handleTimer(YTimer *t);
+    // methods overridden from superclasses
     virtual void handleClick(const XButtonEvent &up, int count);
     virtual void paint(Graphics & g, const YRect &r);
 };
 
+class NetStatusControl : public YTimerListener, public refcounted {
+    YTimer* fUpdateTimer;
+    //YSortedMap<ustring,NetStatus*> fNetStatus;
+    YVec<NetStatus*> fNetStatus;
+
+    IApp* app;
+    YSMListener* smActionListener;
+    IAppletContainer* taskBar;
+    YWindow* aParent;
+
+#ifdef __linux__
+    // preprocessed data from procfs with offset table (name, values, name, vaues, ...)
+    YVec<char> cachedStats;
+    YVec<const char *> cachedStatsIdx;
+    YVec<NetStatus*> covered;
+
+    YVec<mstring> matchPatterns;
+    void fetchSystemData();
+#endif
+
+public:
+    NetStatusControl(IApp *app, YSMListener *smActionListener, IAppletContainer *taskBar, YWindow *aParent);
+    ~NetStatusControl();
+    YVec<NetStatus*>::iterator getIterator() { return fNetStatus.getIterator();}
+    // subclassing method overrides
+    virtual bool handleTimer(YTimer *t);
+};
 
 #else // __linux__ || __FreeBSD__ || __NetBSD__
 #undef CONFIG_APPLET_NET_STATUS

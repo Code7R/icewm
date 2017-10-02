@@ -200,21 +200,19 @@ IF(NOT xrandr_FOUND)
 ENDIF()
 endif()
 
+option(CONFIG_COREFONTS "Define to enable X11 core fonts" off)
 option(CONFIG_XFREETYPE "Define to enable XFT support" on)
 if(CONFIG_XFREETYPE)
-   set(CONFIG_XFREETYPE_VALUE 2)
    pkg_check_modules(xft xft>=2.0)
    IF(NOT xft_FOUND)
-      set(CONFIG_XFREETYPE_VALUE 1)
-      pkg_check_modules(xft xft)
-   ENDIF()
-   IF(NOT xft_FOUND)
-      message(WARNING "xft library not found, disabling CONFIG_xft")
+      message(WARNING "xft library (>=2.0) not found, disabling CONFIG_XFREETYPE")
       set(CONFIG_XFREETYPE off)
+      set(CONFIG_COREFONTS on)
    ENDIF()
+else()
+   set(CONFIG_COREFONTS on)
 endif()
 
-option(CONFIG_COREFONTS "Define to enable X11 core fonts" off)
 option(CONFIG_PDA "Define to enable PDA operation (no window hiding)" off)
 option(CONFIG_GUIEVENTS "Define to enable GUI events for audio" off)
 set(ICESOUND "ALSA,AO,OSS,ESound" CACHE STRING "List of supported audio subsystems")
@@ -337,7 +335,7 @@ endforeach()
 
 SET(ICE_COMMON_SRCS mstring.cc udir.cc upath.cc yapp.cc yxapp.cc ytimer.cc
  ywindow.cc ypaint.cc ypopup.cc misc.cc ycursor.cc ysocket.cc ypaths.cc
- ylocale.cc yarray.cc ypipereader.cc yxembed.cc yconfig.cc
+ ylocale.cc yarray.cc ycollections.cc ypipereader.cc yxembed.cc yconfig.cc
  yprefs.cc yfont.cc ypixmap.cc
  yimage_gdk.cc yimage_imlib.cc yimage_xpm.cc ytooltip.cc)
 
@@ -380,7 +378,7 @@ ENDIF()
 
 ADD_EXECUTABLE(icewm-session${EXEEXT} icesm.cc yapp.cc misc.cc mstring.cc upath.cc ytimer.cc yprefs.cc yarray.cc ref.cc)
 SET_TARGET_PROPERTIES(icewm-session${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON}")
-TARGET_LINK_LIBRARIES(icewm-session${EXEEXT} ${nls_LIBS})
+TARGET_LINK_LIBRARIES(icewm-session${EXEEXT} ${nls_LIBS} ${EXTRA_LIBS})
 
 ADD_EXECUTABLE(icewmhint${EXEEXT} icewmhint.cc misc.cc)
 SET_TARGET_PROPERTIES(icewmhint${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
@@ -441,6 +439,7 @@ foreach (_variableName
 		CONFIG_APPLET_APM 
 		CONFIG_WINMENU
 		CONFIG_XFREETYPE
+		CONFIG_COREFONTS
 		XINERAMA
 		ENABLE_LTO
 		ENABLE_ALSA
