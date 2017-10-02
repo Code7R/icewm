@@ -1,6 +1,6 @@
-icewm (1.4.3.0~pre-20171002-2) UNRELEASED; urgency=medium
+icewm (1.4.3.0~pre-20171002-2) experimental; urgency=low
 
-  * FIXME
+  * Fix FTBFS due to accidentally removed libsndfile1-dev dependency
   * Change of x-terminal-emulator call to xterm in the "Restart as Xterm"
     function, since this ends deadly with multi-window-single-session
     implementations like terminator (partial fix of #224537)
