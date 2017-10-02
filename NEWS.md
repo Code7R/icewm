@@ -1,60 +1,62 @@
+Release Notes
+=============
+
+These are new and noteworthy comments on the features and bugfixes in the
+latest releases of icewm (fork) edition. Also see ChangeLog for more details
+and credits.
+
+Release icewm-1.4.3 UNRELEASED
+---------------------------------------
+
+### New Features
+
+* Simplifying mouse driven manipulation of taskbar window entries (dragging with left button, closing with middle while holding Alt, #170, #172)
+* Network status applet supports semi-automated discovery of network devices on Linux, driven by shell patterns (like NetworkStatusDevice="eth* wlan*"), also detecting new ones after startup (Debian #801867)
+* Dedicated trigger buttons for system suspend in Logout menu and shutdown dialog (with default command preset for systemd on Linux)
+
+### Bugfixes
+
+* Drawing names on workspace pager areas even in window preview mode (#171)
+* Cleanup of sticky "ghost" black tray icons appearing in some corner cases (#152)
+* Various internal bugfixes for memory leaks and rare memory corruption
+* Compilation on kFreeBSD with network status applet enabled (#138)
+* Overlapping of windows by taskbar in vertical dualhead configurations (Debian #874271)
+
+### Internal improvements
+
+* Using less CPU activity for network status updates
+* Disabled analysis of file handle leaks (typically from other, buggy, applications) when icewm-session ends (#165)
+
+### Cleanup work
+
+* Dropped support for the first generation of libxft (deprecated for over a decade, #168)
+* Dropped support for NetStatus format of Linux 2.0.x
 
 Release icewm-1.4.2 released 2017-07-30
 ---------------------------------------
 
-git shortlog -e -n -w80,6,8 1.4.1...HEAD
+### Bugfixes
 
-Brian Bidulock <bidulock@openss7.org> (10):
-      Merge remote-tracking branch 'origin/icewm-1-3-BRANCH' into
-        icewm-1-4-BRANCH
-      update po files
-      update AUTHORS file
-      generate more news
-      update NEWS file
-      icewm-1-4-BRANCH is now the default
-      partially address issue #146
-      better fix for issue #146
-      final tweak for #146
-      Merge branch 'icewm-1-4-BRANCH' of github.com:bbidulock/icewm into
-        icewm-1-4-BRANCH
+* Fixed grouping and sorting of theme menu entries, changed the trigger length for collapsing to modern screen size
+* Proper installation of icewm help with CMake build type
+* Fixes taskbar/deco rendering glitches and missing icons with legacy themes (#144)
 
-Bert Gijsbers <gijsbers@science.uva.nl> (5):
-      Omit -b in git checkout icewm-1-4-BRANCH.
-      Specify output with -o icewm.html.
-      Update ChangeLog to 1.4.1 and remove all changes for the 1.3.12 release
-        and older.
-      New function copyPixmaps adds more defaults for missing pixmaps. When some
-        pixmaps are missing then they are copied from others. This restores
-        backward compatibility in issue #144.
-      Always show icon in the top left corner of a window in issue #144.
+### Internal improvements
 
-Brian Bidulock <bidulock@openss7.com> (1):
-      Merge pull request #150 from
-        Code7R/feature/increase_theme_menu_collapsing_threshold
-
-Eduard Bloch <blade@debian.org> (1):
-      Increased the trigger value for the theme menu nesting algorithm
-
+* icewm-1-4-BRANCH is now the default
+* Further improvements on documentation markup (#146)
 
 Release icewm-1.4.1 released 2017-07-28
 ---------------------------------------
 
-git shortlog -e -n -w80,6,8 1.4.0...1.4.1
+### Bugfixes
 
-Bert Gijsbers <gijsbers@science.uva.nl> (5):
-      Before calling setNetFrameExtents check if client() is non-null. This
-        prevents a SEGV crash which occasionally occurs when closing all
-        windows.
-      Only load a gradient when it is specified in the theme "gradients" option.
-        This fixes issue #144.
-      Omit -b in git checkout icewm-1-4-BRANCH.
-      Update to version 1.4.0.
-      Prepare for 1.4.1 release.
+* Critical stability problems with legacy themes
 
-Aleš Kastner <alkas@volny.cz> (1):
-      Translated using Weblate (Czech)
+Older releases
+--------------
 
-
+```
 Release icewm-1.4.0 released 2017-07-24
 ---------------------------------------
 
@@ -3959,4 +3961,4 @@ Release icewm-1.3.8 released 2013-11-17
 git shortlog -e -n -w80,6,8 1_3_8...icewm_1_3_8
 
 
-
+```
