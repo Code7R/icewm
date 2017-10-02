@@ -31,6 +31,7 @@ endif
 # that one also works with wheezy
 DEBVERSION := $(shell dpkg-parsechangelog |grep ^Version | sed -e s,Version:.,,)
 ORIGVERSION := $(shell echo $(DEBVERSION) | sed -e 's,-[^-]*$$,,' )
+ORIGTAG := upstream/$(shell echo $(ORIGVERSION) | sed -e 's,~,,g' )
 
 # dh_auto_build is no help here...
 PAROPT=$(shell echo $$DEB_BUILD_OPTIONS | sed -e 's,.*parallel=\([0-9]\).*,-j\1,')
@@ -123,8 +124,8 @@ set-orig-snapshot:
 get-orig-source:
 	! test -e ../icewm_$(ORIGVERSION).orig.tar.xz || (echo Target already exists ; exit 1)
 	lc=`git reflog icewm-1-4-BRANCH | head -n1 | cut -f1 -d" "` && echo "Expected upstream ref: $$lc (on failure run update-debian-mod target)" && grep -m1 ^commit ChangeLog | grep $$lc
-	git tag upstream/$(ORIGVERSION) icewm-1-4-BRANCH
-	git archive upstream/$(ORIGVERSION) --prefix icewm-$(ORIGVERSION)/ | xz -9 > ../icewm_$(ORIGVERSION).orig.tar.xz
+	git tag $(ORIGTAG) icewm-1-4-BRANCH
+	git archive $(ORIGTAG) --prefix icewm-$(ORIGVERSION)/ | xz -9 > ../icewm_$(ORIGVERSION).orig.tar.xz
 	test -d ../tarballs && ln ../icewm_$(ORIGVERSION).orig.tar.xz ../tarballs || true
 	pristine-tar commit ../icewm_$(ORIGVERSION).orig.tar.xz icewm-1-4-BRANCH
 
