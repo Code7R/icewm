@@ -1,0 +1,83 @@
+#!/usr/bin/perl
+#
+# Create config to enable some popular monitor configurations
+#
+# Copyright (c) 2017 Eduard Bloch
+# License: WTFPL
+#
+#use Data::Dumper;
+
+use strict;
+
+my $curmon;
+my $primary;
+my @connected;
+my $disco;
+my @active;
+
+for(`xrandr`)
+{
+	if(/^(\S+)\s+(connected|disconnected)\s+(primary)?/)
+	{
+		$curmon = $1;
+		$primary = $curmon if !$primary;
+		$disco = ($2 eq "disconnected");
+		push(@connected, $curmon) if !$disco;
+	}
+	# detect active only when there is a flag in the resolution list...
+	push(@active, $curmon) if(/^\s.*\*/ && !$disco);
+}
+#print Dumper(\@active,\@connected,$primary);
+if(1 == @connected)
+{
+	my $mon = shift(@connected);
+	$mon =~ s/\s.*//;
+	print "prog \"".$mon."\" setscreen1 /bin/true\n";
+	exit 0;
+}
+
+my $other;
+# assuming that the primary is always among the connected screens...
+# but prefer those which are already active
+foreach(@active, @connected)
+{
+	next if $_ eq $primary;
+	$other = $_;
+	last;
+}
+
+foreach my $mon ($primary, $other)
+{
+	my $cmd = "prog $mon setscreen1 sh -c 'xrandr ".
+	join(" ", map { "--output $_ ".($_ eq $mon ? "--auto" : "--off") } @connected)
+	."'\n";
+	print $cmd;
+}
+
+# actually enable all but set the extra monitors on left
+my $cmd = "prog '$other + $primary' setscreen21 sh -c 'xrandr ".
+join(" ", map { "--output $_ --auto ".( $_ eq $primary ? "--primary" : "--left-of $primary")} @connected)
+."'\n";
+print $cmd;
+
+my $cmd = "prog '$primary + $other' setscreen12 sh -c 'xrandr ".
+join(" ", map { "--output $_ --auto ".( $_ eq $primary ? "--primary" : "--right-of $primary")} @connected)
+."'\n";
+print $cmd;
+
+my $cmd = "prog '".join(" / ", @connected)."' setscreen_all sh -c 'xrandr ".
+join(" ", map { "--output $_ --auto ".( $_ eq $primary ? "--primary" : "--same-as $primary")} @connected)
+."'\n";
+print $cmd;
+
+my $prev="";
+my $cmd = "prog '".join(" + ", @connected)."' setscreen_all sh -c 'xrandr";
+for(@connected)
+{
+	$cmd.=" --output $_ --auto";
+	$cmd.=" --right-of $prev" if $prev;
+	$prev=$_;
+}
+$cmd.="'\n";
+print $cmd;
+
