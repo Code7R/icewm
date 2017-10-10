@@ -3,7 +3,7 @@
 # Create config to enable some popular monitor configurations
 #
 # Copyright (c) 2017 Eduard Bloch
-# License: WTFPL
+# License: Simplified BSD License
 #
 #use Data::Dumper;
 
@@ -15,25 +15,106 @@ my @connected;
 my $disco;
 my @active;
 
-for(`xrandr`)
+my $readedid;
+my $curedid;
+my %realname;
+
+my $xrandr = "xrandr";
+
+my $header = chr(0).chr(0xfc).chr(0);
+my $end = chr(0x0a);
+
+# xrandr --verbose can be slow, grab data from sysfs if possible
+# Unclear how to map X screens to DRM reliably, use the shortcut only
+# when just one graphics card is installed.
+my @drmCards = <"/sys/devices/*/*/*/drm/card*">;
+if($#drmCards == 0)
 {
-	if(/^(\S+)\s+(connected|disconnected)\s+(primary)?/)
-	{
-		$curmon = $1;
-		$primary = $curmon if !$primary;
-		$disco = ($2 eq "disconnected");
-		push(@connected, $curmon) if !$disco;
-	}
-	# detect active only when there is a flag in the resolution list...
-	push(@active, $curmon) if(/^\s.*\*/ && !$disco);
+        foreach(<"/sys/devices/*/*/*/drm/card0/card0-*/edid">)
+        {
+                my $fd;
+                my $data;
+                my $hdump;
+                if(open($fd, $_))
+                {
+                        /card0.card0-([^\/]+)\/edid/;
+                        my $connector = $1;
+                        read $fd, $data, 4000;
+                        #$hdump = unpack("H*", $data);
+                        #$realname{$connector} = pack("H*", $1) if($hdump =~ /00fc00(.*?)0a/)
+                        #
+                        # Alternatively: just dig through the binary data;
+                        # should be bytes 72–89 by the EDID spec but better
+                        # look around and trim the first word...
+                        my $pos = index $data, $header, 70;
+                        if($pos>0)
+                        {
+                                $data = substr $data, $pos+3, 18;
+                                $data =~ s/^\s+//;
+                                $data =~ s/\s.*//;
+                                $realname{$connector} = "$data\@$connector";
+                        }
+                }
+
+        }
+}
+
+my $fishEdid = !%realname;
+$xrandr.=" --verbose" if $fishEdid;
+
+for(`$xrandr`)
+{
+        if(/^(\S+)\s+(connected|disconnected)\s+(primary)?/)
+        {
+                $curmon = $1;
+                $primary = $curmon if !$primary;
+                $disco = ($2 eq "disconnected");
+                if(!$disco){
+                        push(@connected, $curmon);
+                        $realname{$curmon}=${curmon} if ! $realname{$curmon};
+                };
+        }
+        # detect active only when there is a flag in the resolution list...
+        push(@active, $curmon) if(/^\s.*\*/ && !$disco);
+        if($fishEdid)
+        {
+                # another bit of interest is the EDID stuff, while we are at it...
+                if(/EDID:/)
+                {
+                        $readedid = 1;
+                        $curedid = "";
+                }
+                elsif(!/:/)
+                {
+                        if($readedid)
+                        {
+                                /(\w+)/;
+                                $curedid.=$1;
+                        }
+                }
+                else
+                {
+                        if($readedid)
+                        {
+                                $readedid = 0;
+                                if($curedid =~ /00fc00(.*?)0a/)
+                                {
+                                        my $name=pack("H*", $1);
+                                        # XXX: not sure about endian, check EDID spec
+                                        #print "moo, $curedid is $1 for $curmon aka $name\n";
+                                        $realname{$curmon}=$name;
+                                }
+                        }
+                }
+        }
 }
 #print Dumper(\@active,\@connected,$primary);
 if(1 == @connected)
 {
-	my $mon = shift(@connected);
-	$mon =~ s/\s.*//;
-	print "prog \"".$mon."\" setscreen1 /bin/true\n";
-	exit 0;
+        my $mon = shift(@connected);
+        $mon =~ s/\s.*//;
+        print "prog \"".$realname{$mon}."\" setscreen1 /bin/true\n";
+        exit 0;
 }
 
 my $other;
@@ -41,42 +122,42 @@ my $other;
 # but prefer those which are already active
 foreach(@active, @connected)
 {
-	next if $_ eq $primary;
-	$other = $_;
-	last;
+        next if $_ eq $primary;
+        $other = $_;
+        last;
 }
 
 foreach my $mon ($primary, $other)
 {
-	my $cmd = "prog $mon setscreen1 sh -c 'xrandr ".
-	join(" ", map { "--output $_ ".($_ eq $mon ? "--auto" : "--off") } @connected)
-	."'\n";
-	print $cmd;
+        my $cmd = "prog $realname{$mon} setscreen1 sh -c 'xrandr ".
+        join(" ", map { "--output $_ ".($_ eq $mon ? "--auto" : "--off") } @connected)
+        ."'\n";
+        print $cmd;
 }
 
 # actually enable all but set the extra monitors on left
-my $cmd = "prog '$other + $primary' setscreen21 sh -c 'xrandr ".
+my $cmd = "prog '$realname{$other} + $realname{$primary}' setscreen21 sh -c 'xrandr ".
 join(" ", map { "--output $_ --auto ".( $_ eq $primary ? "--primary" : "--left-of $primary")} @connected)
 ."'\n";
 print $cmd;
 
-my $cmd = "prog '$primary + $other' setscreen12 sh -c 'xrandr ".
+my $cmd = "prog '$realname{$primary} + $realname{$other}' setscreen12 sh -c 'xrandr ".
 join(" ", map { "--output $_ --auto ".( $_ eq $primary ? "--primary" : "--right-of $primary")} @connected)
 ."'\n";
 print $cmd;
 
-my $cmd = "prog '".join(" / ", @connected)."' setscreen_all sh -c 'xrandr ".
+my $cmd = "prog '".join(" / ", map { $realname{$_} } @connected)."' setscreen_all sh -c 'xrandr ".
 join(" ", map { "--output $_ --auto ".( $_ eq $primary ? "--primary" : "--same-as $primary")} @connected)
 ."'\n";
 print $cmd;
 
 my $prev="";
-my $cmd = "prog '".join(" + ", @connected)."' setscreen_all sh -c 'xrandr";
+my $cmd = "prog '".join(" + ", map { $realname{$_} } @connected)."' setscreen_chain sh -c 'xrandr";
 for(@connected)
 {
-	$cmd.=" --output $_ --auto";
-	$cmd.=" --right-of $prev" if $prev;
-	$prev=$_;
+        $cmd.=" --output $_ --auto";
+        $cmd.=" --right-of $prev" if $prev;
+        $prev=$_;
 }
 $cmd.="'\n";
 print $cmd;
