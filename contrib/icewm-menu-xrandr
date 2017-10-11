@@ -52,7 +52,7 @@ if($#drmCards == 0)
                                 $data = substr $data, $pos+3, 18;
                                 $data =~ s/^\s+//;
                                 $data =~ s/\s.*//;
-                                $realname{$connector} = "$data\@$connector";
+                                $realname{$connector} = "$data~$connector";
                         }
                 }
 
