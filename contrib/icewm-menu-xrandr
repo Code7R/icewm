@@ -5,7 +5,7 @@
 # Copyright (c) 2017 Eduard Bloch
 # License: Simplified BSD License
 #
-use Data::Dumper;
+#use Data::Dumper;
 
 use strict;
 
@@ -127,7 +127,7 @@ for(`$xrandr`)
 $primary=$connected[0] if($primary && !grep(/$primary/, @connected));
 print "# Next primary: $primary\n";
 
-print Dumper(\@active,\@connected,$primary, \%realname);
+#print Dumper(\@active,\@connected,$primary, \%realname);
 if(1 == @connected)
 {
         my $mon = shift(@connected);
