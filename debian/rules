@@ -11,7 +11,7 @@ BDIR=builddir
 ICONS=$(CURDIR)/debian/icons
 FDO=$(CURDIR)/debian/fdo
 CUSTOM=$(CURDIR)/debian/custom
-cmakecmd = cmake $(CURDIR) -DICEHELPIDX=/usr/share/doc/icewm-common/html/icewm.html -DCFGDIR=/etc/X11/icewm -DCMAKE_INSTALL_PREFIX=/usr -DVERSION=$(ORIGVERSION) -DDOCDIR=$(DOCDIR) -DEXTRA_LIBS="-lsupc++" -DCMAKE_VERBOSE_MAKEFILE=ON
+cmakeargs = -DICEHELPIDX=/usr/share/doc/icewm-common/html/icewm.html -DCFGDIR=/etc/X11/icewm -DCMAKE_INSTALL_PREFIX=/usr -DVERSION=$(ORIGVERSION) -DDOCDIR=$(DOCDIR) -DEXTRA_LIBS="-lsupc++" -DCMAKE_VERBOSE_MAKEFILE=ON
 
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 DPKG_EXPORT_BUILDFLAGS = 1
@@ -44,11 +44,10 @@ build_normal:
 
 config_lite:
 	mkdir -p $(BDIR)-lite
-	cd $(BDIR)-lite && $(cmakecmd) -DLITE=on -DEXEEXT=-lite -DCONFIG_XFREETYPE=off -DCONFIG_COREFONTS=on -DXINERAMA=on -DCONFIG_XRANDR=off -DCONFIG_TASKBAR=off -DCONFIG_FDO_MENUS=off -DSKIP_TRANSLATIONS=on
+	dh_auto_configure --builddirectory=$(BDIR)-lite -- $(cmakeargs) -DLITE=on -DEXEEXT=-lite -DCONFIG_XFREETYPE=off -DCONFIG_COREFONTS=on -DXINERAMA=on -DCONFIG_XRANDR=off -DCONFIG_TASKBAR=off -DCONFIG_FDO_MENUS=off -DSKIP_TRANSLATIONS=on
 
 config_normal:
-	mkdir -p $(BDIR)-normal
-	cd $(BDIR)-normal && $(cmakecmd) -DCONFIG_XRANDR=on -DCONFIG_GUIEVENTS=on
+	dh_auto_configure --builddirectory=$(BDIR)-normal -- $(cmakeargs) -DCONFIG_XRANDR=on -DCONFIG_GUIEVENTS=on
 
 override_dh_auto_configure:
 	$(MAKE) -f debian/rules -j2 config_normal config_lite
