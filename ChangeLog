@@ -1,3 +1,1861 @@
+commit 8cdf7311f57bead9caf03b5883b50da683d7082d
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 15 11:05:47 2017 +0200
+
+    should have class
+
+ doc/icewm.adoc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 7bac495dd1eded28703cf2c7899af82261008d88
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 15 10:56:34 2017 +0200
+
+    workspaces Shift + left button click
+
+ doc/icewm.1.adoc | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+commit 9caab519510becf9e4be5efb49c4100111eb008a
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Fri Oct 13 05:18:30 2017 -0600
+
+    make sure installed colormaps are correct
+
+    - when making the client container and frame a depth of 32 with an
+      ARGB visual, the colormaps must match the visual.  This corrects
+      that.  There are still some BadDrawables, so the WM must be attempting
+      to use a depth 24 GC on a depth 32 window (i.e. drawing on either
+      the client container or the frame or both).  Next commit will
+      address that.
+
+ src/wmframe.cc    | 49 +++++++++++++++++++++++++++++++------------------
+ src/wmframe.h     |  2 +-
+ src/wmmgr.cc      |  6 ++++--
+ src/wmminiicon.cc |  3 ++-
+ src/wmtitle.cc    |  2 +-
+ src/ybutton.cc    |  2 +-
+ src/ywindow.cc    | 21 ++++++++++++++++++---
+ src/ywindow.h     |  6 +++++-
+ 8 files changed, 63 insertions(+), 28 deletions(-)
+
+commit 3820eb78755e3a0dd0260f9ba9c73147a74c1bfa
+Merge: 4ea99428 cef22c38
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Thu Oct 12 23:00:47 2017 -0600
+
+    Merge branch 'icewm-1-4-BRANCH' of github.com:bbidulock/icewm into
+    icewm-1-4-BRANCH
+
+commit 4ea99428b5d61ed21b0776c616722c30d26e8721
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Thu Oct 12 22:52:23 2017 -0600
+
+    make frame inherit ARGB visual from client (#130)
+
+    - Some (if not all) compositors only use the visual of top-level
+      windows when compositing.  This causes problems when the frame
+      of a reparented client has an RGB visual and the client has an
+      ARGB visual.  When creating a frame as a parent of the root
+      window, it will always get an RGB visual (the root window
+      cannot be transparent as there is nothing behind it so the
+      root (and default) visual is an RGB visual (depth == 24)).
+      Therefore, when the client has an ARGB visual (depth == 32),
+      we remember that depth and visual and use it when creating
+      the frame window.
+
+    - This could be a fix for #130.
+
+ src/wmframe.cc | 4 ++--
+ src/wmframe.h  | 2 +-
+ src/wmmgr.cc   | 7 ++++++-
+ src/ywindow.cc | 7 ++++---
+ src/ywindow.h  | 5 ++++-
+ 5 files changed, 17 insertions(+), 8 deletions(-)
+
+commit cef22c38ab41a26e09f807e538fe673be6e6706b
+Merge: d6bfa510 94b7555b
+Author: openSUSE Weblate <weblate-noreply@opensuse.org>
+Date:   Fri Oct 13 02:37:43 2017 +0000
+
+    Merge remote-tracking branch 'origin/icewm-1-4-BRANCH' into
+    icewm-1-4-BRANCH
+
+commit d6bfa510933a7ef4979e3ee981991b4fddd66782
+Author: Luiz Fernando Ranghetti <elchevive68@gmail.com>
+Date:   Thu Oct 12 18:25:31 2017 +0000
+
+    Translated using Weblate (Portuguese (Brazil))
+
+    Currently translated at 88.7% (283 of 319 strings)
+
+ po/pt_BR.po | 81 +++++++++++++++++++++++++++------------------------------
+ 1 file changed, 39 insertions(+), 42 deletions(-)
+
+commit ce75833039e074b6ab96bf66e096c3148ca9c776
+Author: David Medina <medipas@gmail.com>
+Date:   Wed Oct 11 17:02:05 2017 +0000
+
+    Translated using Weblate (Catalan)
+
+    Currently translated at 97.4% (311 of 319 strings)
+
+ po/ca.po | 43 ++++++++++++++++++++-----------------------
+ 1 file changed, 20 insertions(+), 23 deletions(-)
+
+commit 94b7555b4869386f5cf54ae15ace70b024084609
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Thu Oct 12 20:20:29 2017 -0600
+
+    support _NET_WM_WINDOW_OPACITY (fix for #130 ?)
+
+    - Compositors look for the property _NET_WM_WINDOW_OPACITY on
+      top-level windows only.  Client set _NET_WM_WINDOW_OPACITY on
+      on their top-level windows (override redirect or not).
+      Reparenting window managers (such as IceWM) need to propagate
+      changes in the _NET_WM_WINDOW_OPACITY property to the frame
+      so that compositors will see it.
+
+      The same might also true for the _NET_WM_WINDOW_TYPE which
+      clients also should set on override redirect windows as well as
+      managed top-level windows.  Two other properties that might have
+      to be propagated to the frame are: _NET_WM_OPAQUE_REGION and
+      _NET_WM_BYPASS_COMPOSITOR.
+
+      To really fix #130, it may be necessary to ensure that the root
+      window and frame uses an ARGB visual when available instead of
+      the default, which is usually an RGB visual.
+
+ COMPLIANCE      |  2 +-
+ src/wmapp.cc    |  2 +-
+ src/wmclient.cc | 34 ++++++++++++++++++++++++++++++++++
+ src/wmclient.h  |  2 ++
+ src/wmframe.cc  | 11 +++++++++++
+ src/wmframe.h   |  1 +
+ src/wmmgr.h     |  2 +-
+ 7 files changed, 51 insertions(+), 3 deletions(-)
+
+commit b87a88c90d0642390771240138e122779ace1cab
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Oct 11 02:27:14 2017 -0600
+
+    rename notifyFocus() to notifyActive()
+
+    - function changes _NET_ACTIVE_WINDOW which is notification
+      that the active window changed not the focussed window
+
+ src/wmmgr.cc | 4 ++--
+ src/wmmgr.h  | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit ae57e64c2f441c86c0e2c5073a2b5af3173b8e54
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Oct 11 01:24:24 2017 -0600
+
+    do not update _NET_ACTIVE_WINDOW when unnecessary
+
+    - IceWM calls notifyFocus() even when the active client
+      has not changed.  This can be very often and changing
+      _NET_ACTIVE_WINDOW to the same value still raises a
+      property notification each time.  This change simply
+      checks if the new value to set is the same as the last
+      value that was set and does not update otherwise.
+
+    - Note that the same is true of updateClientList() and
+      _NET_CLIENT_LIST and _NET_CLIENT_LIST_STACKING.  These
+      really need to check whether anything has changed
+      before updating these root window properties with the
+      same list as before and very frequently, causing any
+      other progrm interested in the list to reload and
+      analyze the entire list again on each update.
+
+ src/wmmgr.cc | 17 ++++++++++-------
+ src/wmmgr.h  |  1 +
+ 2 files changed, 11 insertions(+), 7 deletions(-)
+
+commit a35b86a71dffd3427453b900d1df618007097f85
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Oct 11 01:21:09 2017 -0600
+
+    a little purer ICCMS 2.0 getInputFocusHint behaviour
+
+ src/wmframe.cc |  9 ---------
+ src/wmmgr.cc   | 10 ++++------
+ 2 files changed, 4 insertions(+), 15 deletions(-)
+
+commit 72e281302979986b52da1210c1c6ff543409bb4b
+Author: Yasuhiko Kamata <belphegor@belbel.or.jp>
+Date:   Wed Oct 11 02:11:20 2017 +0000
+
+    Translated using Weblate (Japanese)
+
+    Currently translated at 100.0% (319 of 319 strings)
+
+ po/ca.po | 111 +++++++++----------
+ po/it.po |  18 +--
+ po/ja.po | 353 ++++++++++++++++++++++++++++++++---------------------------
+ 3 files changed, 257 insertions(+), 225 deletions(-)
+
+commit 6c2b2d14f047b101c7193b200e6e2a4734cef722
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 9 23:47:52 2017 -0600
+
+    document perl requirement
+
+ README.md.in | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit ea67114cba02789d2eb207dd91461b7e9de3157d
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 9 23:36:25 2017 -0600
+
+    update po files
+
+ po/ar.po     | 134 ++++++++++++++++++++++++++++-----------------
+ po/be.po     | 138 +++++++++++++++++++++++++++++------------------
+ po/bg.po     | 134 ++++++++++++++++++++++++++++-----------------
+ po/ca.po     | 138 +++++++++++++++++++++++++++++------------------
+ po/cs.po     | 134 ++++++++++++++++++++++++++++-----------------
+ po/da.po     | 134 ++++++++++++++++++++++++++++-----------------
+ po/de.po     | 161 +++++++++++++++++++++++++++++--------------------------
+ po/el.po     | 134 ++++++++++++++++++++++++++++-----------------
+ po/en.po     | 134 ++++++++++++++++++++++++++++-----------------
+ po/es.po     | 134 ++++++++++++++++++++++++++++-----------------
+ po/fi.po     | 134 ++++++++++++++++++++++++++++-----------------
+ po/fr.po     | 138 +++++++++++++++++++++++++++++------------------
+ po/he.po     | 134 ++++++++++++++++++++++++++++-----------------
+ po/hr.po     | 138 +++++++++++++++++++++++++++++------------------
+ po/hu.po     | 134 ++++++++++++++++++++++++++++-----------------
+ po/icewm.pot | 134 ++++++++++++++++++++++++++++-----------------
+ po/id.po     | 134 ++++++++++++++++++++++++++++-----------------
+ po/it.po     | 134 ++++++++++++++++++++++++++++-----------------
+ po/ja.po     | 138 +++++++++++++++++++++++++++++------------------
+ po/ko.po     | 134 ++++++++++++++++++++++++++++-----------------
+ po/lt.po     | 138 +++++++++++++++++++++++++++++------------------
+ po/lv.po     | 134 ++++++++++++++++++++++++++++-----------------
+ po/mk.po     | 134 ++++++++++++++++++++++++++++-----------------
+ po/nb.po     | 134 ++++++++++++++++++++++++++++-----------------
+ po/nl.po     | 138 +++++++++++++++++++++++++++++------------------
+ po/no.po     | 134 ++++++++++++++++++++++++++++-----------------
+ po/pl.po     | 134 ++++++++++++++++++++++++++++-----------------
+ po/pt_BR.po  | 134 ++++++++++++++++++++++++++++-----------------
+ po/ro.po     | 138 +++++++++++++++++++++++++++++------------------
+ po/ru.po     | 134 ++++++++++++++++++++++++++++-----------------
+ po/sk.po     | 134 ++++++++++++++++++++++++++++-----------------
+ po/sl.po     | 138 +++++++++++++++++++++++++++++------------------
+ po/sv.po     | 138 +++++++++++++++++++++++++++++------------------
+ po/tr.po     | 134 ++++++++++++++++++++++++++++-----------------
+ po/uk.po     | 138 +++++++++++++++++++++++++++++------------------
+ po/vi.po     | 134 ++++++++++++++++++++++++++++-----------------
+ po/zh_CN.po  | 134 ++++++++++++++++++++++++++++-----------------
+ po/zh_TW.po  | 134 ++++++++++++++++++++++++++++-----------------
+ 38 files changed, 3241 insertions(+), 1922 deletions(-)
+
+commit 2709fe934fd5765608ec991ad08e16a2a1ade7cf
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 9 23:31:16 2017 -0600
+
+    add missing source files to po/POTFILES.in
+
+ po/POTFILES.in | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+commit 5b947cfff09e3780b8df5b3d442510c61d527dee
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 9 23:22:36 2017 -0600
+
+    remove removed file
+
+ po/POTFILES.in | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit 1cc09042025768d573dabff492e580af28bf0515
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 9 23:16:59 2017 -0600
+
+    update TODO
+
+ TODO | 26 +++++++++++++++++++++++++-
+ 1 file changed, 25 insertions(+), 1 deletion(-)
+
+commit 29c67752bef90cf261b03a0d4d2b3e860c24419b
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 9 23:08:21 2017 -0600
+
+    update COMPLIANCE
+
+ COMPLIANCE | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+commit b4c7a2bbbbc0b4dbe17b9cec08bbd5f828e8036e
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 9 21:21:47 2017 -0600
+
+    just activate window regardless of focus
+
+ src/wmcontainer.cc | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+commit f31dd152f6254e8bd72a673c051cbb6455feb554
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 9 21:10:44 2017 -0600
+
+    more wat was intended here
+
+ src/wmcontainer.cc | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+commit 74689f564c49d3a39cc99589e337f1b8e42add72
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 9 20:49:54 2017 -0600
+
+    missing qualify on constant
+
+ src/wmmgr.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 63a4cb8765fccb0c3d64a61090677dc949a92a39
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 9 20:47:40 2017 -0600
+
+    getInputFocusHint() is never true when client takes focus
+
+ src/wmframe.cc | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
+
+commit a33f78d42a4f831dd280f33758e94365ef4b8fc9
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 9 20:44:57 2017 -0600
+
+    simplify and document setFocus() behaviour
+
+ src/wmmgr.cc | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+commit 933c61f36bd51a459f553ac866ad8d2a73db2e90
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 9 20:24:52 2017 -0600
+
+    document getInputFocusHint behaviour in code
+
+ src/wmframe.cc | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
+
+commit 406709455f744d5f5f1fa8f467e5276bf2fe4a37
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 9 20:15:21 2017 -0600
+
+    Revert "Revert erroneous commit d3b00cc4ed07f4f55695b9b91b20e0e9b08d9cf7
+    "JDK7 focus fix" as this makes IceWM focus behavior non-conformant. See
+    issue #23."
+
+    This reverts commit dad0795135a24c24ee49e733011eabbfcd474c0b.
+
+ src/wmframe.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 67e61e0d05e1afe9b882d3caf859c025bd70e08e
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 9 20:14:28 2017 -0600
+
+    Revert "fix getInputFocusHint"
+
+    This reverts commit 7ffddee7a0f08cee554b3b9ae3521f5e85cf9e44.
+
+ src/wmframe.cc | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 4b3ce9ddf95353f33a881bfe04ba00aeee91c8fa
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 9 20:05:39 2017 -0600
+
+    remove unused code
+
+ src/wmmgr.cc | 10 ----------
+ 1 file changed, 10 deletions(-)
+
+commit 37ffbbf8bd5bb1a1b9c230c46b8dc866a7930a21
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 9 20:03:02 2017 -0600
+
+    remove unnecessary java7 hack
+
+ src/default.h |  2 --
+ src/wmmgr.cc  | 33 +++------------------------------
+ 2 files changed, 3 insertions(+), 32 deletions(-)
+
+commit 753d0cca794747dab569ede1ece66d3bc18cd59b
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 9 19:58:17 2017 -0600
+
+    don't set focus if sent WM_TAKE_FOCUS (ICCCM 2.0)
+
+ src/wmmgr.cc | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+commit 893eb31a85e40f4a34ab4a1bd1e20b37bcd8bbc4
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 9 19:56:13 2017 -0600
+
+    more vim swap files to ignore
+
+ .gitignore | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+commit 268a29a7eaaa52c09223e3417c67592667139f1b
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 9 19:48:56 2017 -0600
+
+    remove unnecessary check for frame
+
+ src/wmcontainer.cc | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+commit ec11ac5a1a4da8ffc877ed43e2b4b359e6c9b6d9
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 9 16:33:07 2017 -0600
+
+    Revert "Taskbar never needs focus and should never get focus"
+
+    This reverts commit fa0f5a30f089b3e967cf8d1c8803fa11492d6ae9.
+
+ src/wmtaskbar.cc | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+commit 8c257c51854d6da6227243b095f992e81a2c74d7
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 9 16:32:56 2017 -0600
+
+    Revert "no need to activate the taskbar."
+
+    This reverts commit e368aba4be508991b0f8406e6c9f9d9b4dc43446.
+
+ src/wmtaskbar.cc | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
+
+commit 335d41764e9d2656f5a2f045758241e634ef927b
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 9 16:28:06 2017 -0600
+
+    Revert "avoid RevertToNone when setting focus. use RevertToPointerRoot."
+
+    This reverts commit 635bc8c1bc7e689d390f54b60bad7e0a24717ec5.
+
+ src/wmmgr.cc   | 13 +++++++------
+ src/ywindow.cc |  2 +-
+ src/yxapp.cc   |  8 --------
+ src/yxapp.h    |  2 --
+ 4 files changed, 8 insertions(+), 17 deletions(-)
+
+commit 7ffddee7a0f08cee554b3b9ae3521f5e85cf9e44
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 9 16:26:46 2017 -0600
+
+    fix getInputFocusHint
+
+ src/wmframe.cc | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit ce94e59fc45def23de402cd8b438c36b098f4a2e
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Mon Oct 9 22:47:31 2017 +0200
+
+    Turn predefined actions into an enumerated type.
+    This allows to switch-case on them and saves a little space.
+
+ src/CMakeLists.txt |  2 +-
+ src/Makefile.am    |  3 --
+ src/decorate.cc    |  2 +-
+ src/objbutton.h    |  4 +-
+ src/testmenus.cc   |  2 +-
+ src/themes.cc      |  2 +-
+ src/wmaction.cc    | 60 ------------------------------
+ src/wmaction.h     | 99 ++++++++++++++++++++++++++------------------------
+ src/wmbutton.cc    | 20 +++++-----
+ src/wmbutton.h     |  4 +-
+ src/wmframe.cc     |  4 +-
+ src/wmwinlist.cc   |  8 ++--
+ src/yaction.h      | 17 ++++++---
+ src/ybutton.cc     |  2 +-
+ src/ymenu.cc       | 32 ++++++++--------
+ src/ymenuitem.cc   |  6 +--
+ 16 files changed, 107 insertions(+), 160 deletions(-)
+
+commit 635bc8c1bc7e689d390f54b60bad7e0a24717ec5
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Mon Oct 9 21:24:05 2017 +0200
+
+    avoid RevertToNone when setting focus. use RevertToPointerRoot.
+
+ src/wmmgr.cc   | 13 ++++++-------
+ src/ywindow.cc |  2 +-
+ src/yxapp.cc   |  8 ++++++++
+ src/yxapp.h    |  2 ++
+ 4 files changed, 17 insertions(+), 8 deletions(-)
+
+commit e368aba4be508991b0f8406e6c9f9d9b4dc43446
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Mon Oct 9 21:06:07 2017 +0200
+
+    no need to activate the taskbar.
+
+ src/wmtaskbar.cc | 16 +---------------
+ 1 file changed, 1 insertion(+), 15 deletions(-)
+
+commit 1ce5acf42f94652d3d6d943cf9d3b405a4f943f6
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Mon Oct 9 21:05:28 2017 +0200
+
+    remove 2 unused actions.
+
+ src/wmaction.cc | 2 --
+ src/wmaction.h  | 5 -----
+ 2 files changed, 7 deletions(-)
+
+commit 4948e468fd6f688e14be4fb29a06f36f9d01cf67
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Mon Oct 9 01:47:01 2017 +0200
+
+    Inheritance from YAction is not needed.
+
+ src/objmenu.h       | 2 +-
+ src/wmprog.cc       | 3 +--
+ src/wmwinmenu.cc    | 5 ++---
+ src/yactionbutton.h | 7 ++++---
+ src/ybutton.h       | 1 +
+ 5 files changed, 9 insertions(+), 9 deletions(-)
+
+commit fa0f5a30f089b3e967cf8d1c8803fa11492d6ae9
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 8 06:28:08 2017 +0200
+
+    Taskbar never needs focus and should never get focus
+    as focus must reside with applications. See issue #23.
+
+ src/wmtaskbar.cc | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+commit 9afc0fcdf9500340ca356090b5a0249ca4f1699a
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 8 06:25:34 2017 +0200
+
+    Correction for seconds interval not being milliseconds.
+
+ src/wmmgr.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit dad0795135a24c24ee49e733011eabbfcd474c0b
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 8 06:20:00 2017 +0200
+
+    Revert erroneous commit d3b00cc4ed07f4f55695b9b91b20e0e9b08d9cf7 "JDK7
+    focus fix" as this makes IceWM focus behavior non-conformant. See
+    issue #23.
+
+ src/wmframe.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 83b94fcc0af6639bf337804752fd9c806761d95a
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 8 02:06:20 2017 +0200
+
+    Replace pointer based *YAction with value based YAction.
+
+ src/aworkspaces.cc  |   7 +-
+ src/aworkspaces.h   |   2 +-
+ src/decorate.cc     |   2 +-
+ src/icehelp.cc      |   3 +-
+ src/icelist.cc      |  15 ++--
+ src/icesame.cc      |   9 +-
+ src/iceview.cc      |  10 +--
+ src/objbar.cc       |   2 +-
+ src/objbutton.h     |   8 +-
+ src/objmenu.h       |   4 +-
+ src/testmenus.cc    |   6 +-
+ src/themes.cc       |   2 +-
+ src/wmaction.cc     | 216 +++++++++++-------------------------------------
+ src/wmaction.h      |  98 +++++++++++-----------
+ src/wmapp.cc        |   5 +-
+ src/wmapp.h         |   2 +-
+ src/wmbutton.cc     |  35 ++++----
+ src/wmbutton.h      |  10 +--
+ src/wmclient.h      |   2 +-
+ src/wmconfig.cc     |   8 +-
+ src/wmdialog.cc     |  20 ++---
+ src/wmdialog.h      |   2 +-
+ src/wmframe.cc      |   6 +-
+ src/wmframe.h       |   2 +-
+ src/wmmgr.cc        |  23 +-----
+ src/wmmgr.h         |   8 +-
+ src/wmprog.cc       |   7 +-
+ src/wmtaskbar.cc    |   2 +-
+ src/wmtaskbar.h     |   2 +-
+ src/wmwinlist.cc    |  10 +--
+ src/wmwinlist.h     |   2 +-
+ src/wmwinmenu.cc    |   7 +-
+ src/yaction.h       |  28 ++++++-
+ src/yactionbutton.h |   7 +-
+ src/ybutton.cc      |   8 +-
+ src/ybutton.h       |  11 ++-
+ src/yinput.cc       |  14 +---
+ src/yinputline.h    |   2 +-
+ src/ymenu.cc        |  49 +++++------
+ src/ymenu.h         |  16 ++--
+ src/ymenuitem.cc    |   8 +-
+ src/ymenuitem.h     |  11 ++-
+ src/ymsgbox.cc      |   7 +-
+ src/ymsgbox.h       |   2 +-
+ 44 files changed, 283 insertions(+), 417 deletions(-)
+
+commit c288a445819e3fc5c3e2eab9a96307564e2e2b9b
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 8 02:02:06 2017 +0200
+
+    remove superfluous includes
+
+ src/ydialog.cc | 8 --------
+ 1 file changed, 8 deletions(-)
+
+commit 419fda791ff1c64229613398af43c05c94b71075
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 8 01:56:31 2017 +0200
+
+    make it compile.
+
+ src/strtest.cc | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 71652dd23acdda09734d46794ddffe31e6f70baa
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 8 01:56:01 2017 +0200
+
+    make it compile
+
+ src/iceskt.cc | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+commit 8ecd7bd05a0047a071bc9e2694817750c3161acd
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 8 01:55:16 2017 +0200
+
+    make it compile.
+
+ src/iceclock.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit fd81cafe3b14cc0d4bd87aaea1679d39724364c8
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 8 01:54:43 2017 +0200
+
+    link Xlib.
+
+ src/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit c93bf5112ddebbc6ff4fa15e24419d3d07fab38d
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 8 01:54:10 2017 +0200
+
+    Increase sprintf buffer size.
+
+ src/testlocale.cc | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+commit dcadbb3d3e1acfcbc4d599f297333e91105dc510
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sat Oct 7 17:10:58 2017 +0200
+
+    Revert "Stop misusing dynamic allocator as enumeration manager"
+
+    This reverts commit 60584512f323e8f152c58e88e8f1885616610792.
+
+ src/aworkspaces.cc  |  11 +--
+ src/aworkspaces.h   |   2 +-
+ src/icehelp.cc      |  39 ++++++-----
+ src/icelist.cc      |  10 +--
+ src/icesame.cc      |   4 +-
+ src/iceview.cc      |   6 +-
+ src/misc.cc         |   2 -
+ src/objbar.cc       |   2 +-
+ src/objbutton.h     |   4 +-
+ src/objmenu.h       |   4 +-
+ src/testmenus.cc    |   2 +-
+ src/wmaction.cc     | 180 ++++++++++++++++++++++++++++++++++++++++++++++++
+ src/wmaction.h      | 105 ++++++++++++++--------------
+ src/wmapp.cc        |   8 ++-
+ src/wmapp.h         |   2 +-
+ src/wmbutton.cc     |   8 +--
+ src/wmbutton.h      |  10 +--
+ src/wmclient.h      |   2 +-
+ src/wmconfig.cc     |  13 ++--
+ src/wmdialog.cc     |  20 +++---
+ src/wmdialog.h      |   2 +-
+ src/wmframe.cc      |   2 +-
+ src/wmframe.h       |   2 +-
+ src/wmmgr.cc        |  30 +++++---
+ src/wmmgr.h         |   8 +--
+ src/wmprog.cc       |   6 +-
+ src/wmtaskbar.cc    |   2 +-
+ src/wmtaskbar.h     |   2 +-
+ src/wmwinlist.cc    |   2 +-
+ src/wmwinlist.h     |   2 +-
+ src/wmwinmenu.cc    |   6 +-
+ src/yaction.h       |   8 +--
+ src/yactionbutton.h |   4 +-
+ src/ybutton.cc      |   6 +-
+ src/ybutton.h       |  10 +--
+ src/yinput.cc       |  24 ++++---
+ src/yinputline.h    |   2 +-
+ src/ymenu.cc        |  16 ++---
+ src/ymenu.h         |  18 ++---
+ src/ymenuitem.cc    |   6 +-
+ src/ymenuitem.h     |  10 +--
+ src/ymsgbox.cc      |   6 +-
+ src/ymsgbox.h       |   2 +-
+ 43 files changed, 410 insertions(+), 200 deletions(-)
+
+commit bc5ca9d97c1861985952817cf9de991ac9376ad2
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sat Oct 7 17:07:45 2017 +0200
+
+    Revert "Give static/acquired action IDs odd values"
+
+    This reverts commit 1e4bf101c41118a93250a591ede0b83d63979e68.
+
+ src/misc.cc     |  6 +---
+ src/wmaction.h  | 99 ++++++++++++++++++++++++++---------------------------
+ src/wmconfig.cc |  4 +--
+ src/wmmgr.cc    |  6 ++--
+ src/yaction.h   |  2 +-
+ src/yinput.cc   | 10 +++---
+ 6 files changed, 61 insertions(+), 66 deletions(-)
+
+commit fe519d763e6021fb458dc59c4d0453b9f71de128
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sat Oct 7 17:07:30 2017 +0200
+
+    Revert "Make the initial generated value really odd"
+
+    This reverts commit 29e6a209c8d1aa7595c14c9357ebd80117a469c1.
+
+ src/misc.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit cc17c6fda8510de70f7a57bbd1f04782aa2cedd6
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sat Oct 7 17:07:21 2017 +0200
+
+    Revert "Document action id assignment rules"
+
+    This reverts commit 1a72e63ddc89feb97338cd7007a8d561eee4ae34.
+
+ src/icehelp.cc |  3 +--
+ src/misc.cc    |  2 +-
+ src/wmaction.h | 18 +-----------------
+ src/yaction.h  | 10 +---------
+ src/yinput.cc  | 15 ++++++---------
+ 5 files changed, 10 insertions(+), 38 deletions(-)
+
+commit 26396010f3afacdcf79d8e852e6d90e695f272ed
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sat Oct 7 17:07:07 2017 +0200
+
+    Revert "Modify typedef name, tActionId to TActionId"
+
+    This reverts commit 48ad1e0a136de129e41ff76108d8dfb802f8ee78.
+
+ src/aworkspaces.cc  |  4 ++--
+ src/aworkspaces.h   |  2 +-
+ src/icehelp.cc      | 36 ++++++++++++++++++------------------
+ src/icelist.cc      | 10 +++++-----
+ src/icesame.cc      |  4 ++--
+ src/iceview.cc      |  6 +++---
+ src/objbar.cc       |  2 +-
+ src/objbutton.h     |  4 ++--
+ src/objmenu.h       |  2 +-
+ src/testmenus.cc    |  2 +-
+ src/wmapp.cc        |  2 +-
+ src/wmapp.h         |  2 +-
+ src/wmbutton.cc     |  8 ++++----
+ src/wmbutton.h      | 10 +++++-----
+ src/wmclient.h      |  2 +-
+ src/wmconfig.cc     |  4 ++--
+ src/wmdialog.cc     | 20 ++++++++++----------
+ src/wmdialog.h      |  2 +-
+ src/wmframe.cc      |  2 +-
+ src/wmframe.h       |  2 +-
+ src/wmmgr.cc        |  4 ++--
+ src/wmmgr.h         |  8 ++++----
+ src/wmprog.cc       |  6 +++---
+ src/wmtaskbar.cc    |  2 +-
+ src/wmtaskbar.h     |  2 +-
+ src/wmwinlist.cc    |  2 +-
+ src/wmwinlist.h     |  2 +-
+ src/wmwinmenu.cc    |  4 ++--
+ src/yaction.h       |  8 ++++----
+ src/yactionbutton.h |  2 +-
+ src/ybutton.cc      |  6 +++---
+ src/ybutton.h       |  8 ++++----
+ src/yinput.cc       |  2 +-
+ src/yinputline.h    |  2 +-
+ src/ymenu.cc        | 16 ++++++++--------
+ src/ymenu.h         | 16 ++++++++--------
+ src/ymenuitem.cc    |  4 ++--
+ src/ymenuitem.h     |  8 ++++----
+ src/ymsgbox.cc      |  6 +++---
+ src/ymsgbox.h       |  2 +-
+ 40 files changed, 118 insertions(+), 118 deletions(-)
+
+commit ca18c24e9bb58d4593242ed2ff72d196b170620e
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sat Oct 7 17:06:55 2017 +0200
+
+    Revert "Reduce the need of some TActionId casts"
+
+    This reverts commit 982cc6cf2fcd677b33e8983a7c2a558e984ca1f1.
+
+ src/aworkspaces.cc |  2 +-
+ src/icehelp.cc     | 12 ++++++------
+ src/icelist.cc     |  8 ++++----
+ src/wmdialog.cc    | 19 +++++++++----------
+ 4 files changed, 20 insertions(+), 21 deletions(-)
+
+commit a48f0607b96839a53461a59c2399dcef2098858c
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sat Oct 7 17:06:46 2017 +0200
+
+    Revert "Change some occurences of YAction references"
+
+    This reverts commit 1e9ec22ab04e20f50c5cde2616c792840a288a4b.
+
+ src/icesame.cc   | 8 ++++----
+ src/iceview.cc   | 8 ++++----
+ src/testmenus.cc | 2 +-
+ 3 files changed, 9 insertions(+), 9 deletions(-)
+
+commit 51645e1603bee9989e85d968be75d4459289ea0c
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sat Oct 7 11:32:24 2017 +0200
+
+    reuse memory in setMwmHints.
+
+ src/wmclient.cc | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+commit 2f6e4a8fcfbdf38792799eea8063fc1671175955
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sat Oct 7 11:30:27 2017 +0200
+
+    Prefer private themes over system ones. Als have checked theme menu
+    items if a theme alternative is used (non-default.theme). Expand tabs.
+
+ src/themes.cc | 63 ++++++++++++++++++++++++++++++++-----------------------
+ 1 file changed, 37 insertions(+), 26 deletions(-)
+
+commit 1e9ec22ab04e20f50c5cde2616c792840a288a4b
+Author: Eduard Bloch <blade@debian.org>
+Date:   Wed Oct 4 19:40:08 2017 +0200
+
+    Change some occurences of YAction references
+
+    ... those used in the unofficial demo apps of the "icewm toolkit"
+
+ src/icesame.cc   | 8 ++++----
+ src/iceview.cc   | 8 ++++----
+ src/testmenus.cc | 2 +-
+ 3 files changed, 9 insertions(+), 9 deletions(-)
+
+commit 982cc6cf2fcd677b33e8983a7c2a558e984ca1f1
+Author: Eduard Bloch <blade@debian.org>
+Date:   Wed Oct 4 19:38:13 2017 +0200
+
+    Reduce the need of some TActionId casts
+
+ src/aworkspaces.cc |  2 +-
+ src/icehelp.cc     | 12 ++++++------
+ src/icelist.cc     |  8 ++++----
+ src/wmdialog.cc    | 19 ++++++++++---------
+ 4 files changed, 21 insertions(+), 20 deletions(-)
+
+commit 48ad1e0a136de129e41ff76108d8dfb802f8ee78
+Author: Eduard Bloch <blade@debian.org>
+Date:   Wed Oct 4 19:27:16 2017 +0200
+
+    Modify typedef name, tActionId to TActionId
+
+ src/aworkspaces.cc  |  4 ++--
+ src/aworkspaces.h   |  2 +-
+ src/icehelp.cc      | 36 ++++++++++++++++++------------------
+ src/icelist.cc      | 10 +++++-----
+ src/icesame.cc      |  4 ++--
+ src/iceview.cc      |  6 +++---
+ src/objbar.cc       |  2 +-
+ src/objbutton.h     |  4 ++--
+ src/objmenu.h       |  2 +-
+ src/testmenus.cc    |  2 +-
+ src/wmapp.cc        |  2 +-
+ src/wmapp.h         |  2 +-
+ src/wmbutton.cc     |  8 ++++----
+ src/wmbutton.h      | 10 +++++-----
+ src/wmclient.h      |  2 +-
+ src/wmconfig.cc     |  4 ++--
+ src/wmdialog.cc     | 20 ++++++++++----------
+ src/wmdialog.h      |  2 +-
+ src/wmframe.cc      |  2 +-
+ src/wmframe.h       |  2 +-
+ src/wmmgr.cc        |  4 ++--
+ src/wmmgr.h         |  8 ++++----
+ src/wmprog.cc       |  6 +++---
+ src/wmtaskbar.cc    |  2 +-
+ src/wmtaskbar.h     |  2 +-
+ src/wmwinlist.cc    |  2 +-
+ src/wmwinlist.h     |  2 +-
+ src/wmwinmenu.cc    |  4 ++--
+ src/yaction.h       |  8 ++++----
+ src/yactionbutton.h |  2 +-
+ src/ybutton.cc      |  6 +++---
+ src/ybutton.h       |  8 ++++----
+ src/yinput.cc       |  2 +-
+ src/yinputline.h    |  2 +-
+ src/ymenu.cc        | 16 ++++++++--------
+ src/ymenu.h         | 16 ++++++++--------
+ src/ymenuitem.cc    |  4 ++--
+ src/ymenuitem.h     |  8 ++++----
+ src/ymsgbox.cc      |  6 +++---
+ src/ymsgbox.h       |  2 +-
+ 40 files changed, 118 insertions(+), 118 deletions(-)
+
+commit 1a72e63ddc89feb97338cd7007a8d561eee4ae34
+Author: Eduard Bloch <blade@debian.org>
+Date:   Wed Oct 4 18:53:35 2017 +0200
+
+    Document action id assignment rules
+
+    Also set some static values in yinput.cc to give the compiler better
+    chance to optimize code.
+
+ src/icehelp.cc |  3 ++-
+ src/misc.cc    |  2 +-
+ src/wmaction.h | 18 +++++++++++++++++-
+ src/yaction.h  | 10 +++++++++-
+ src/yinput.cc  | 15 +++++++++------
+ 5 files changed, 38 insertions(+), 10 deletions(-)
+
+commit 29e6a209c8d1aa7595c14c9357ebd80117a469c1
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Oct 3 23:44:04 2017 +0200
+
+    Make the initial generated value really odd
+
+ src/misc.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 62bfadd59078cfb3f9b9c191099209268e727b98
+Merge: 452c47fe 1e4bf101
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Oct 3 15:31:02 2017 -0600
+
+    Merge branch 'icewm-1-4-BRANCH' of github.com:bbidulock/icewm into
+    icewm-1-4-BRANCH
+
+commit 452c47fe1b296d038280d6735a3e9ff8680d9b9d
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Oct 3 15:30:48 2017 -0600
+
+    remove gnits for development builds
+
+ autogen.sh | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+commit 1e4bf101c41118a93250a591ede0b83d63979e68
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Oct 3 23:13:07 2017 +0200
+
+    Give static/acquired action IDs odd values
+
+    There is a (far-fetched) possibility of head/stack clash. To avoid any
+    conflicts with pointer-based IDs, make sure the predefined or
+    dynamically assigned action ID numbers are odd.
+
+ src/misc.cc     |  6 +++-
+ src/wmaction.h  | 99 +++++++++++++++++++++++++++--------------------------
+ src/wmconfig.cc |  4 +--
+ src/wmmgr.cc    |  6 ++--
+ src/yaction.h   |  2 +-
+ src/yinput.cc   | 10 +++---
+ 6 files changed, 66 insertions(+), 61 deletions(-)
+
+commit c876a6ed7f5bd529b0639e865cbcf7089e968464
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Oct 3 15:21:49 2017 -0600
+
+    move to gnits autoconf compliance
+
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 6ed41ce4ecb3b3810c2cfe784d1b60fb13131c41
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Oct 3 15:21:16 2017 -0600
+
+    update po files
+
+ po/ar.po     | 254 ++++++++++++++++++++++++++--------------------
+ po/be.po     | 255 ++++++++++++++++++++++++++--------------------
+ po/bg.po     | 254 ++++++++++++++++++++++++++--------------------
+ po/ca.po     | 256 ++++++++++++++++++++++++++--------------------
+ po/cs.po     | 256 ++++++++++++++++++++++++++--------------------
+ po/da.po     | 301 ++++++++++++++++++++++++++++++++-----------------------
+ po/de.po     | 254 ++++++++++++++++++++++++++--------------------
+ po/el.po     | 256 ++++++++++++++++++++++++++--------------------
+ po/en.po     | 239 ++++++++++++++++++++++++-------------------
+ po/es.po     | 256 ++++++++++++++++++++++++++--------------------
+ po/fi.po     | 256 ++++++++++++++++++++++++++--------------------
+ po/fr.po     | 254 ++++++++++++++++++++++++++--------------------
+ po/he.po     | 252 +++++++++++++++++++++++++++-------------------
+ po/hr.po     | 239 ++++++++++++++++++++++++-------------------
+ po/hu.po     | 255 ++++++++++++++++++++++++++--------------------
+ po/icewm.pot | 241 +++++++++++++++++++++++++-------------------
+ po/id.po     | 256 ++++++++++++++++++++++++++--------------------
+ po/it.po     | 256 ++++++++++++++++++++++++++--------------------
+ po/ja.po     | 254 ++++++++++++++++++++++++++--------------------
+ po/ko.po     | 254 ++++++++++++++++++++++++++--------------------
+ po/lt.po     | 254 ++++++++++++++++++++++++++--------------------
+ po/lv.po     | 254 ++++++++++++++++++++++++++--------------------
+ po/mk.po     | 256 ++++++++++++++++++++++++++--------------------
+ po/nb.po     | 254 ++++++++++++++++++++++++++--------------------
+ po/nl.po     | 254 ++++++++++++++++++++++++++--------------------
+ po/no.po     | 254 ++++++++++++++++++++++++++--------------------
+ po/pl.po     | 254 ++++++++++++++++++++++++++--------------------
+ po/pt_BR.po  | 256 ++++++++++++++++++++++++++--------------------
+ po/ro.po     | 255 ++++++++++++++++++++++++++--------------------
+ po/ru.po     | 254 ++++++++++++++++++++++++++--------------------
+ po/sk.po     | 255 ++++++++++++++++++++++++++--------------------
+ po/sl.po     | 254 ++++++++++++++++++++++++++--------------------
+ po/sv.po     | 255 ++++++++++++++++++++++++++--------------------
+ po/tr.po     | 256 ++++++++++++++++++++++++++--------------------
+ po/uk.po     | 254 ++++++++++++++++++++++++++--------------------
+ po/vi.po     | 256 ++++++++++++++++++++++++++--------------------
+ po/zh_CN.po  | 254 ++++++++++++++++++++++++++--------------------
+ po/zh_TW.po  | 254 ++++++++++++++++++++++++++--------------------
+ 38 files changed, 5632 insertions(+), 4049 deletions(-)
+
+commit 84d786335829d22c74352e8f76a58806b1ab73e0
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Oct 3 15:17:21 2017 -0600
+
+    add missing source files to automake
+
+ src/Makefile.am | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit 52a77fc54e9e03719b241b09e24e99fbf3331d93
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Oct 3 15:02:18 2017 -0600
+
+    typo in vim makers
+
+ src/MwmUtil.h         | 2 +-
+ src/WinMgr.h          | 2 +-
+ src/aaddressbar.cc    | 2 +-
+ src/aaddressbar.h     | 2 +-
+ src/aapm.cc           | 2 +-
+ src/aapm.h            | 2 +-
+ src/aclock.cc         | 2 +-
+ src/aclock.h          | 2 +-
+ src/acpustatus.cc     | 2 +-
+ src/acpustatus.h      | 2 +-
+ src/amailbox.cc       | 2 +-
+ src/amailbox.h        | 2 +-
+ src/amemstatus.cc     | 2 +-
+ src/amemstatus.h      | 2 +-
+ src/appnames.h        | 2 +-
+ src/apppstatus.cc     | 2 +-
+ src/apppstatus.h      | 2 +-
+ src/argument.h        | 2 +-
+ src/ascii.h           | 2 +-
+ src/atasks.cc         | 2 +-
+ src/atasks.h          | 2 +-
+ src/atray.cc          | 2 +-
+ src/atray.h           | 2 +-
+ src/aworkspaces.cc    | 2 +-
+ src/aworkspaces.h     | 2 +-
+ src/base.h            | 2 +-
+ src/binascii.h        | 2 +-
+ src/bindkey.h         | 2 +-
+ src/browse.cc         | 2 +-
+ src/browse.h          | 2 +-
+ src/debug.h           | 2 +-
+ src/decorate.cc       | 2 +-
+ src/default.h         | 2 +-
+ src/fdomenu.cc        | 2 +-
+ src/genpref.cc        | 2 +-
+ src/globit.cc         | 2 +-
+ src/globit.h          | 2 +-
+ src/gnome.cc          | 2 +-
+ src/gnome2.cc         | 2 +-
+ src/guievent.h        | 2 +-
+ src/iceclock.cc       | 2 +-
+ src/icehelp.cc        | 2 +-
+ src/iceicon.cc        | 2 +-
+ src/icelist.cc        | 2 +-
+ src/icerun.cc         | 2 +-
+ src/icesame.cc        | 2 +-
+ src/icesh.cc          | 2 +-
+ src/iceskt.cc         | 2 +-
+ src/icesm.cc          | 2 +-
+ src/icesound.cc       | 2 +-
+ src/icetray.cc        | 2 +-
+ src/iceview.cc        | 2 +-
+ src/icewmbg.cc        | 2 +-
+ src/icewmbg_prefs.h   | 2 +-
+ src/icewmhint.cc      | 2 +-
+ src/intl.h            | 2 +-
+ src/misc.cc           | 2 +-
+ src/movesize.cc       | 2 +-
+ src/mstring.cc        | 2 +-
+ src/mstring.h         | 2 +-
+ src/obj.h             | 2 +-
+ src/objbar.cc         | 2 +-
+ src/objbar.h          | 2 +-
+ src/objbutton.h       | 2 +-
+ src/objmenu.h         | 2 +-
+ src/prefs.h           | 2 +-
+ src/ref.cc            | 2 +-
+ src/ref.h             | 2 +-
+ src/strtest.cc        | 2 +-
+ src/sysdep.h          | 2 +-
+ src/testarray.cc      | 2 +-
+ src/testlocale.cc     | 2 +-
+ src/testmap.cc        | 2 +-
+ src/testmenus.cc      | 2 +-
+ src/testnetwmhints.cc | 2 +-
+ src/testwinhints.cc   | 2 +-
+ src/themable.h        | 2 +-
+ src/themes.cc         | 2 +-
+ src/themes.h          | 2 +-
+ src/udir.cc           | 2 +-
+ src/udir.h            | 2 +-
+ src/upath.cc          | 2 +-
+ src/upath.h           | 2 +-
+ src/wmabout.cc        | 2 +-
+ src/wmabout.h         | 2 +-
+ src/wmaction.cc       | 2 +-
+ src/wmaction.h        | 2 +-
+ src/wmapp.cc          | 2 +-
+ src/wmapp.h           | 2 +-
+ src/wmbutton.cc       | 2 +-
+ src/wmbutton.h        | 2 +-
+ src/wmclient.cc       | 2 +-
+ src/wmclient.h        | 2 +-
+ src/wmconfig.cc       | 2 +-
+ src/wmconfig.h        | 2 +-
+ src/wmcontainer.cc    | 2 +-
+ src/wmcontainer.h     | 2 +-
+ src/wmdialog.cc       | 2 +-
+ src/wmdialog.h        | 2 +-
+ src/wmframe.cc        | 2 +-
+ src/wmframe.h         | 2 +-
+ src/wmmgr.cc          | 2 +-
+ src/wmmgr.h           | 2 +-
+ src/wmminiicon.cc     | 2 +-
+ src/wmminiicon.h      | 2 +-
+ src/wmoption.cc       | 2 +-
+ src/wmoption.h        | 2 +-
+ src/wmprog.cc         | 2 +-
+ src/wmprog.h          | 2 +-
+ src/wmsession.cc      | 2 +-
+ src/wmsession.h       | 2 +-
+ src/wmstatus.cc       | 2 +-
+ src/wmstatus.h        | 2 +-
+ src/wmswitch.cc       | 2 +-
+ src/wmswitch.h        | 2 +-
+ src/wmtaskbar.cc      | 2 +-
+ src/wmtaskbar.h       | 2 +-
+ src/wmtitle.cc        | 2 +-
+ src/wmtitle.h         | 2 +-
+ src/wmwinlist.cc      | 2 +-
+ src/wmwinlist.h       | 2 +-
+ src/wmwinmenu.cc      | 2 +-
+ src/wmwinmenu.h       | 2 +-
+ src/wpixmaps.h        | 2 +-
+ src/wpixres.cc        | 2 +-
+ src/wpixres.h         | 2 +-
+ src/yaction.h         | 2 +-
+ src/yactionbutton.h   | 2 +-
+ src/yapp.cc           | 2 +-
+ src/yapp.h            | 2 +-
+ src/yarray.cc         | 2 +-
+ src/yarray.h          | 2 +-
+ src/ybutton.cc        | 2 +-
+ src/ybutton.h         | 2 +-
+ src/ycollections.cc   | 2 +-
+ src/ycollections.h    | 2 +-
+ src/yconfig.cc        | 2 +-
+ src/yconfig.h         | 2 +-
+ src/ycursor.cc        | 2 +-
+ src/ycursor.h         | 2 +-
+ src/ydialog.cc        | 2 +-
+ src/ydialog.h         | 2 +-
+ src/yfont.cc          | 2 +-
+ src/yfontcore.cc      | 2 +-
+ src/yfontxft.cc       | 2 +-
+ src/yfull.h           | 2 +-
+ src/yicon.cc          | 2 +-
+ src/yicon.h           | 2 +-
+ src/yimage.h          | 2 +-
+ src/yimage_gdk.cc     | 2 +-
+ src/yimage_imlib.cc   | 2 +-
+ src/yimage_xpm.cc     | 2 +-
+ src/yinput.cc         | 2 +-
+ src/yinputline.h      | 2 +-
+ src/ykey.h            | 2 +-
+ src/ylabel.cc         | 2 +-
+ src/ylabel.h          | 2 +-
+ src/ylib.h            | 2 +-
+ src/ylistbox.cc       | 2 +-
+ src/ylistbox.h        | 2 +-
+ src/ylocale.cc        | 2 +-
+ src/ylocale.h         | 2 +-
+ src/ymenu.cc          | 2 +-
+ src/ymenu.h           | 2 +-
+ src/ymenuitem.cc      | 2 +-
+ src/ymenuitem.h       | 2 +-
+ src/ymsgbox.cc        | 2 +-
+ src/ymsgbox.h         | 2 +-
+ src/ypaint.cc         | 2 +-
+ src/ypaint.h          | 2 +-
+ src/ypaths.cc         | 2 +-
+ src/ypaths.h          | 2 +-
+ src/ypipereader.cc    | 2 +-
+ src/ypipereader.h     | 2 +-
+ src/ypixmap.cc        | 2 +-
+ src/ypixmap.h         | 2 +-
+ src/ypoint.h          | 2 +-
+ src/ypointer.h        | 2 +-
+ src/ypoll.h           | 2 +-
+ src/ypopup.cc         | 2 +-
+ src/ypopup.h          | 2 +-
+ src/yprefs.cc         | 2 +-
+ src/yprefs.h          | 2 +-
+ src/yrect.h           | 2 +-
+ src/yscrollbar.cc     | 2 +-
+ src/yscrollbar.h      | 2 +-
+ src/yscrollview.cc    | 2 +-
+ src/yscrollview.h     | 2 +-
+ src/ysmapp.cc         | 2 +-
+ src/ysmapp.h          | 2 +-
+ src/ysocket.cc        | 2 +-
+ src/ysocket.h         | 2 +-
+ src/ystring.h         | 2 +-
+ src/ytimer.cc         | 2 +-
+ src/ytimer.h          | 2 +-
+ src/ytooltip.cc       | 2 +-
+ src/ytooltip.h        | 2 +-
+ src/yurl.cc           | 2 +-
+ src/yurl.h            | 2 +-
+ src/ywindow.cc        | 2 +-
+ src/ywindow.h         | 2 +-
+ src/yxapp.cc          | 2 +-
+ src/yxapp.h           | 2 +-
+ src/yxembed.cc        | 2 +-
+ src/yxembed.h         | 2 +-
+ src/yxtray.cc         | 2 +-
+ src/yxtray.h          | 2 +-
+ 207 files changed, 207 insertions(+), 207 deletions(-)
+
+commit 3335c73a3be86053238795d5246cb02b9eb2064e
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Oct 3 15:00:41 2017 -0600
+
+    add vim markers to all source files
+
+ src/MwmUtil.h         | 2 ++
+ src/WinMgr.h          | 2 ++
+ src/aaddressbar.cc    | 2 ++
+ src/aaddressbar.h     | 2 ++
+ src/aapm.cc           | 2 ++
+ src/aapm.h            | 2 ++
+ src/aclock.cc         | 2 ++
+ src/aclock.h          | 2 ++
+ src/acpustatus.cc     | 2 ++
+ src/acpustatus.h      | 2 ++
+ src/amailbox.cc       | 2 ++
+ src/amailbox.h        | 2 ++
+ src/amemstatus.cc     | 2 ++
+ src/amemstatus.h      | 2 ++
+ src/appnames.h        | 2 ++
+ src/apppstatus.cc     | 2 ++
+ src/apppstatus.h      | 2 ++
+ src/argument.h        | 2 ++
+ src/ascii.h           | 2 ++
+ src/atasks.cc         | 2 ++
+ src/atasks.h          | 2 ++
+ src/atray.cc          | 2 ++
+ src/atray.h           | 2 ++
+ src/aworkspaces.cc    | 2 ++
+ src/aworkspaces.h     | 2 ++
+ src/base.h            | 2 ++
+ src/binascii.h        | 2 ++
+ src/bindkey.h         | 2 ++
+ src/browse.cc         | 2 ++
+ src/browse.h          | 2 ++
+ src/debug.h           | 2 ++
+ src/decorate.cc       | 2 ++
+ src/default.h         | 2 ++
+ src/fdomenu.cc        | 2 ++
+ src/genpref.cc        | 2 ++
+ src/globit.cc         | 2 ++
+ src/globit.h          | 2 ++
+ src/gnome.cc          | 2 ++
+ src/gnome2.cc         | 2 ++
+ src/guievent.h        | 2 ++
+ src/iceclock.cc       | 2 ++
+ src/icehelp.cc        | 2 ++
+ src/iceicon.cc        | 2 ++
+ src/icelist.cc        | 2 ++
+ src/icerun.cc         | 2 ++
+ src/icesame.cc        | 2 ++
+ src/icesh.cc          | 2 ++
+ src/iceskt.cc         | 2 ++
+ src/icesm.cc          | 2 ++
+ src/icesound.cc       | 2 ++
+ src/icetray.cc        | 2 ++
+ src/iceview.cc        | 2 ++
+ src/icewmbg.cc        | 2 ++
+ src/icewmbg_prefs.h   | 2 ++
+ src/icewmhint.cc      | 2 ++
+ src/intl.h            | 2 ++
+ src/misc.cc           | 2 ++
+ src/movesize.cc       | 2 ++
+ src/mstring.cc        | 2 ++
+ src/mstring.h         | 2 ++
+ src/obj.h             | 2 ++
+ src/objbar.cc         | 2 ++
+ src/objbar.h          | 2 ++
+ src/objbutton.h       | 2 ++
+ src/objmenu.h         | 2 ++
+ src/prefs.h           | 2 ++
+ src/ref.cc            | 2 ++
+ src/ref.h             | 2 ++
+ src/strtest.cc        | 2 ++
+ src/sysdep.h          | 2 ++
+ src/testarray.cc      | 2 ++
+ src/testlocale.cc     | 2 ++
+ src/testmap.cc        | 2 ++
+ src/testmenus.cc      | 2 ++
+ src/testnetwmhints.cc | 2 ++
+ src/testwinhints.cc   | 2 ++
+ src/themable.h        | 2 ++
+ src/themes.cc         | 2 ++
+ src/themes.h          | 2 ++
+ src/udir.cc           | 2 ++
+ src/udir.h            | 2 ++
+ src/upath.cc          | 2 ++
+ src/upath.h           | 2 ++
+ src/wmabout.cc        | 2 ++
+ src/wmabout.h         | 2 ++
+ src/wmaction.cc       | 2 ++
+ src/wmaction.h        | 2 ++
+ src/wmapp.cc          | 2 ++
+ src/wmapp.h           | 2 ++
+ src/wmbutton.cc       | 2 ++
+ src/wmbutton.h        | 2 ++
+ src/wmclient.cc       | 2 ++
+ src/wmclient.h        | 2 ++
+ src/wmconfig.cc       | 2 ++
+ src/wmconfig.h        | 2 ++
+ src/wmcontainer.cc    | 2 ++
+ src/wmcontainer.h     | 2 ++
+ src/wmdialog.cc       | 2 ++
+ src/wmdialog.h        | 2 ++
+ src/wmframe.cc        | 2 ++
+ src/wmframe.h         | 2 ++
+ src/wmmgr.cc          | 2 ++
+ src/wmmgr.h           | 2 ++
+ src/wmminiicon.cc     | 2 ++
+ src/wmminiicon.h      | 2 ++
+ src/wmoption.cc       | 2 ++
+ src/wmoption.h        | 2 ++
+ src/wmprog.cc         | 2 ++
+ src/wmprog.h          | 2 ++
+ src/wmsession.cc      | 2 ++
+ src/wmsession.h       | 2 ++
+ src/wmstatus.cc       | 2 ++
+ src/wmstatus.h        | 2 ++
+ src/wmswitch.cc       | 2 ++
+ src/wmswitch.h        | 2 ++
+ src/wmtaskbar.cc      | 2 ++
+ src/wmtaskbar.h       | 2 ++
+ src/wmtitle.cc        | 2 ++
+ src/wmtitle.h         | 2 ++
+ src/wmwinlist.cc      | 2 ++
+ src/wmwinlist.h       | 2 ++
+ src/wmwinmenu.cc      | 2 ++
+ src/wmwinmenu.h       | 2 ++
+ src/wpixmaps.h        | 2 ++
+ src/wpixres.cc        | 2 ++
+ src/wpixres.h         | 2 ++
+ src/yaction.h         | 2 ++
+ src/yactionbutton.h   | 2 ++
+ src/yapp.cc           | 2 ++
+ src/yapp.h            | 2 ++
+ src/yarray.cc         | 2 ++
+ src/yarray.h          | 2 ++
+ src/ybutton.cc        | 2 ++
+ src/ybutton.h         | 2 ++
+ src/ycollections.cc   | 2 ++
+ src/ycollections.h    | 2 ++
+ src/yconfig.cc        | 2 ++
+ src/yconfig.h         | 2 ++
+ src/ycursor.cc        | 2 ++
+ src/ycursor.h         | 2 ++
+ src/ydialog.cc        | 2 ++
+ src/ydialog.h         | 2 ++
+ src/yfont.cc          | 2 ++
+ src/yfontcore.cc      | 2 ++
+ src/yfontxft.cc       | 2 ++
+ src/yfull.h           | 2 ++
+ src/yicon.cc          | 2 ++
+ src/yicon.h           | 2 ++
+ src/yimage.h          | 2 ++
+ src/yimage_gdk.cc     | 2 ++
+ src/yimage_imlib.cc   | 2 ++
+ src/yimage_xpm.cc     | 2 ++
+ src/yinput.cc         | 2 ++
+ src/yinputline.h      | 2 ++
+ src/ykey.h            | 2 ++
+ src/ylabel.cc         | 2 ++
+ src/ylabel.h          | 2 ++
+ src/ylib.h            | 2 ++
+ src/ylistbox.cc       | 2 ++
+ src/ylistbox.h        | 2 ++
+ src/ylocale.cc        | 2 ++
+ src/ylocale.h         | 2 ++
+ src/ymenu.cc          | 2 ++
+ src/ymenu.h           | 2 ++
+ src/ymenuitem.cc      | 2 ++
+ src/ymenuitem.h       | 2 ++
+ src/ymsgbox.cc        | 2 ++
+ src/ymsgbox.h         | 2 ++
+ src/ypaint.cc         | 2 ++
+ src/ypaint.h          | 2 ++
+ src/ypaths.cc         | 2 ++
+ src/ypaths.h          | 2 ++
+ src/ypipereader.cc    | 2 ++
+ src/ypipereader.h     | 2 ++
+ src/ypixmap.cc        | 2 ++
+ src/ypixmap.h         | 2 ++
+ src/ypoint.h          | 2 ++
+ src/ypointer.h        | 2 ++
+ src/ypoll.h           | 2 ++
+ src/ypopup.cc         | 2 ++
+ src/ypopup.h          | 2 ++
+ src/yprefs.cc         | 2 ++
+ src/yprefs.h          | 2 ++
+ src/yrect.h           | 2 ++
+ src/yscrollbar.cc     | 2 ++
+ src/yscrollbar.h      | 2 ++
+ src/yscrollview.cc    | 2 ++
+ src/yscrollview.h     | 2 ++
+ src/ysmapp.cc         | 2 ++
+ src/ysmapp.h          | 2 ++
+ src/ysocket.cc        | 2 ++
+ src/ysocket.h         | 2 ++
+ src/ystring.h         | 2 ++
+ src/ytimer.cc         | 2 ++
+ src/ytimer.h          | 2 ++
+ src/ytooltip.cc       | 2 ++
+ src/ytooltip.h        | 2 ++
+ src/yurl.cc           | 2 ++
+ src/yurl.h            | 2 ++
+ src/ywindow.cc        | 2 ++
+ src/ywindow.h         | 2 ++
+ src/yxapp.cc          | 2 ++
+ src/yxapp.h           | 2 ++
+ src/yxembed.cc        | 2 ++
+ src/yxembed.h         | 2 ++
+ src/yxtray.cc         | 2 ++
+ src/yxtray.h          | 2 ++
+ 207 files changed, 414 insertions(+)
+
+commit 889c82e392c5e9546c134b420e1796717689eb2a
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Oct 3 14:55:35 2017 -0600
+
+    remove leading tabs
+
+ src/aapm.h       |  6 +++---
+ src/acpustatus.h |  2 +-
+ src/amailbox.cc  |  6 +++---
+ src/wmdialog.cc  |  6 +++---
+ src/wmoption.cc  |  4 ++--
+ src/wmtaskbar.cc | 12 ++++++------
+ src/ybutton.cc   |  4 ++--
+ src/yicon.cc     | 12 ++++++------
+ src/ypaint.cc    |  2 +-
+ src/yxapp.h      |  2 +-
+ src/yxtray.cc    |  6 +++---
+ 11 files changed, 31 insertions(+), 31 deletions(-)
+
+commit 1ca0d2a302e40ce29e3b38934d83ded25b8f3e69
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Oct 3 14:53:57 2017 -0600
+
+    remove leading tabs
+
+ src/apppstatus.cc | 54 +++++++++++++++++++++++++--------------------------
+ src/misc.cc       | 52 ++++++++++++++++++++++++-------------------------
+ src/wmclient.cc   |  4 ++--
+ src/wmmgr.h       | 10 +++++-----
+ src/wmstatus.cc   |  4 ++--
+ src/yapp.cc       | 30 ++++++++++++++--------------
+ src/yinput.cc     | 20 +++++++++----------
+ src/ywindow.cc    | 12 ++++++------
+ 8 files changed, 93 insertions(+), 93 deletions(-)
+
+commit 196b4c0a62f3b1ec3639cd700aa87880e01118c4
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Oct 3 14:52:03 2017 -0600
+
+    remove leading tabs
+
+ src/aapm.cc     | 244 ++++++++++++++++++++++++++--------------------------
+ src/decorate.cc |   4 +-
+ 2 files changed, 124 insertions(+), 124 deletions(-)
+
+commit bbb362885d1ce93bac6730a4b547c999a3d03321
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Oct 3 14:50:17 2017 -0600
+
+    remove leading tabs
+
+ src/fdomenu.cc  | 492 ++++++++++++++++++++++++++--------------------------
+ src/wmapp.cc    |  14 +-
+ src/wmframe.cc  |  30 ++--
+ src/wmmgr.cc    |  44 ++---
+ src/yfontxft.cc |  46 ++---
+ src/ypixmap.cc  |  16 +-
+ 6 files changed, 321 insertions(+), 321 deletions(-)
+
+commit e4cdcb6c3ac313eaf85bc0ad02ae9ac239abf9f3
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Oct 3 14:44:10 2017 -0600
+
+    remove trailing space from lots of source files
+
+ src/WinMgr.h          | 10 +++++-----
+ src/aclock.cc         |  6 +++---
+ src/acpustatus.cc     |  2 +-
+ src/acpustatus.h      |  2 +-
+ src/amailbox.cc       |  2 +-
+ src/amailbox.h        |  4 ++--
+ src/apppstatus.cc     | 10 +++++-----
+ src/apppstatus.h      |  2 +-
+ src/argument.h        |  2 +-
+ src/atasks.cc         |  4 ++--
+ src/atasks.h          |  2 +-
+ src/atray.cc          | 12 ++++++------
+ src/atray.h           |  6 +++---
+ src/aworkspaces.cc    |  6 +++---
+ src/base.h            |  8 ++++----
+ src/browse.h          |  2 +-
+ src/decorate.cc       | 14 +++++++-------
+ src/genpref.cc        |  2 +-
+ src/icehelp.cc        |  2 +-
+ src/icesame.cc        |  2 +-
+ src/icetray.cc        |  8 ++++----
+ src/icewmhint.cc      |  2 +-
+ src/movesize.cc       | 12 ++++++------
+ src/mstring.cc        |  6 +++---
+ src/objbar.h          |  2 +-
+ src/objbutton.h       |  2 +-
+ src/objmenu.h         |  2 +-
+ src/testlocale.cc     |  2 +-
+ src/testmap.cc        |  8 ++++----
+ src/testnetwmhints.cc | 10 +++++-----
+ src/testwinhints.cc   | 12 ++++++------
+ src/themes.h          |  6 +++---
+ src/wmabout.cc        | 12 ++++++------
+ src/wmapp.cc          | 14 +++++++-------
+ src/wmapp.h           | 10 +++++-----
+ src/wmclient.cc       |  2 +-
+ src/wmclient.h        |  6 +++---
+ src/wmdialog.cc       |  6 +++---
+ src/wmframe.cc        | 14 +++++++-------
+ src/wmframe.h         |  8 ++++----
+ src/wmmgr.cc          |  2 +-
+ src/wmmgr.h           | 12 ++++++------
+ src/wmoption.cc       |  2 +-
+ src/wmprog.cc         |  4 ++--
+ src/wmprog.h          | 10 +++++-----
+ src/wmsession.cc      |  6 +++---
+ src/wmsession.h       |  2 +-
+ src/wmstatus.cc       | 12 ++++++------
+ src/wmstatus.h        |  6 +++---
+ src/wmswitch.cc       |  2 +-
+ src/wmswitch.h        |  2 +-
+ src/wmtaskbar.cc      |  8 ++++----
+ src/wmtaskbar.h       |  4 ++--
+ src/wmwinlist.h       |  4 ++--
+ src/wmwinmenu.cc      |  4 ++--
+ src/yapp.cc           |  2 +-
+ src/yarray.h          | 20 ++++++++++----------
+ src/ybutton.h         |  8 ++++----
+ src/ycursor.cc        | 20 ++++++++++----------
+ src/ydialog.cc        |  4 ++--
+ src/yfontxft.cc       |  6 +++---
+ src/yimage_gdk.cc     |  2 +-
+ src/ylabel.cc         |  6 +++---
+ src/ylistbox.cc       |  6 +++---
+ src/ylistbox.h        | 10 +++++-----
+ src/ylocale.h         |  4 ++--
+ src/ymenu.cc          |  8 ++++----
+ src/ymenu.h           |  2 +-
+ src/ymenuitem.cc      |  4 ++--
+ src/ymenuitem.h       |  6 +++---
+ src/ymsgbox.cc        |  6 +++---
+ src/ypaint.h          |  8 ++++----
+ src/ypaths.h          |  4 ++--
+ src/ypointer.h        |  2 +-
+ src/yscrollview.cc    |  4 ++--
+ src/yscrollview.h     |  2 +-
+ src/ystring.h         | 10 +++++-----
+ src/ytimer.h          |  2 +-
+ src/ywindow.cc        |  4 ++--
+ src/ywindow.h         | 12 ++++++------
+ src/yxapp.cc          | 10 +++++-----
+ 81 files changed, 248 insertions(+), 248 deletions(-)
+
+commit 3d0bb77eb64b17392009ff0ac885e46dcf4560f8
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Oct 3 14:39:58 2017 -0600
+
+    make sure X supports locale from start
+
+    - also get rid of trailing space and tabs
+
+ src/ylocale.cc | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
+
+commit 88b1e02254b1f6e1fc07c1f00407efd15ba024c2
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Oct 3 14:15:05 2017 -0600
+
+    WIN_WORKSPACE_NAMES must be standard ICCCM 2.0
+
+    - it cannot be UTF8_STRING
+
+ src/wmmgr.cc | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
+
+commit 193c2d641c5450b1bff3c6a2a710cb8727cf65d7
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Oct 3 21:48:25 2017 +0200
+
+    Prevent creating a hole with undefined data if array insert is beyond
+    the current count.
+
+ src/yarray.cc | 3 +++
+ 1 file changed, 3 insertions(+)
+
+commit 86856d26336afc98264cc61c3bd98c3a394420ce
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Oct 3 21:24:28 2017 +0200
+
+    fix a memory leak for YRect in updateLayout.
+
+ src/wmframe.cc | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit b6259646d4d6c3d76ae29a4c6402d8d79620b779
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Oct 3 21:21:12 2017 +0200
+
+    Incorporate two remarks:
+    1. Use a smart pointer to reduce boilerplate in readDesktopNames.
+    2. Restore XmbTextListToTextProperty in setNetDesktopNames,
+    but now use a better return code checking, to fix the setting of
+    _NET_DESKTOP_NAMES.
+
+ src/wmmgr.cc | 25 ++++++-------------------
+ 1 file changed, 6 insertions(+), 19 deletions(-)
+
+commit 7c2964847e1d661f8b36b204c7ecad8150e4dc4f
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Oct 3 21:15:46 2017 +0200
+
+    Create ~/.icewm/ with mode 0755.
+
+ src/ysmapp.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 4e7bc3a2b5c2b0159dfcf046beeccb693af1be79
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Oct 3 08:45:30 2017 -0600
+
+    distribute COMPLIANCE, longer ChangeLog
+
+ Makefile.am  | 16 ++++++++--------
+ configure.ac |  1 +
+ 2 files changed, 9 insertions(+), 8 deletions(-)
+
+commit e0b7bf337015cf9a74a2d55bc0da68216669d3b8
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Oct 3 15:23:52 2017 +0200
+
+    Prevent crash on shutdown when aboutDlg was freed
+
+ src/wmapp.cc |  1 +
+ src/wmapp.h  | 10 ++++++++++
+ 2 files changed, 11 insertions(+)
+
+commit 60584512f323e8f152c58e88e8f1885616610792
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Oct 3 14:21:48 2017 +0200
+
+    Stop misusing dynamic allocator as enumeration manager
+
+    The YAction class was a hack to manage identities of predefined and
+    dynamically generated actions. However, this came with runtime
+    allocation costs where simple enumberation is sufficient for static IDs
+    or a global counter for dynamic ids.
+
+    The type is still pointer-sized and not int for the few cases where the
+    pointer of derived class was used as key.
+
+ src/aworkspaces.cc  |  11 ++-
+ src/aworkspaces.h   |   2 +-
+ src/icehelp.cc      |  39 +++++------
+ src/icelist.cc      |  10 +--
+ src/icesame.cc      |   4 +-
+ src/iceview.cc      |   6 +-
+ src/misc.cc         |   2 +
+ src/objbar.cc       |   2 +-
+ src/objbutton.h     |   4 +-
+ src/objmenu.h       |   4 +-
+ src/testmenus.cc    |   2 +-
+ src/themes.cc       |   2 +-
+ src/wmaction.cc     | 180 ------------------------------------------------
+ src/wmaction.h      | 105 ++++++++++++++--------------
+ src/wmapp.cc        |   8 +--
+ src/wmapp.h         |   2 +-
+ src/wmbutton.cc     |   8 +--
+ src/wmbutton.h      |  10 +--
+ src/wmclient.h      |   2 +-
+ src/wmconfig.cc     |  13 ++--
+ src/wmdialog.cc     |  20 +++---
+ src/wmdialog.h      |   2 +-
+ src/wmframe.cc      |   2 +-
+ src/wmframe.h       |   2 +-
+ src/wmmgr.cc        |  30 +++-----
+ src/wmmgr.h         |   8 +--
+ src/wmprog.cc       |   6 +-
+ src/wmtaskbar.cc    |   2 +-
+ src/wmtaskbar.h     |   2 +-
+ src/wmwinlist.cc    |   2 +-
+ src/wmwinlist.h     |   2 +-
+ src/wmwinmenu.cc    |   6 +-
+ src/yaction.h       |   8 +--
+ src/yactionbutton.h |   4 +-
+ src/ybutton.cc      |   6 +-
+ src/ybutton.h       |  10 +--
+ src/yinput.cc       |  24 +++----
+ src/yinputline.h    |   2 +-
+ src/ymenu.cc        |  16 ++---
+ src/ymenu.h         |  18 ++---
+ src/ymenuitem.cc    |   6 +-
+ src/ymenuitem.h     |  10 +--
+ src/ymsgbox.cc      |   6 +-
+ src/ymsgbox.h       |   2 +-
+ 44 files changed, 201 insertions(+), 411 deletions(-)
+
+commit f17ab9cf5093bd1dbb673a2232768239a9e79cd7
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Oct 3 10:18:39 2017 +0200
+
+    Untangle selection of audio libs parameters
+
+    Fix build failure when building without esd or alsa or both
+
+ src/CMakeLists.txt | 83 +++++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 59 insertions(+), 24 deletions(-)
+
+commit 33c2cb8913efea0c295c461cae2cf78d66c9ee19
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Oct 3 10:17:04 2017 +0200
+
+    Fix some signedness inconsistencies triggered in Debug build
+
+ src/mstring.cc | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+commit 9cf0e5178fbdc44987ee25518810f659a285e353
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Oct 3 06:52:51 2017 +0200
+
+    Split readDesktopNames in smaller functions and also limit count by
+    workspaceCount. Only set _WIN_WORKSPACE_NAMES if GNOME1_HINTS.
+    Only set _NET_DESKTOP_NAMES if WMSPEC_HINTS.
+    Fix for setting _NET_DESKTOP_NAMES where XmbTextListToTextProperty
+    always failed for style XUTF8StringStyle.
+
+ src/wmmgr.cc | 176 ++++++++++++++++++++++++++++++-------------------------
+ src/wmmgr.h  |   3 +
+ 2 files changed, 99 insertions(+), 80 deletions(-)
+
+commit 8ac88c4eb7c8ae6ee50afb750f812ed5476f6134
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Oct 3 01:17:35 2017 +0200
+
+    [cmake] clean linker list explicitly if user disabled some audio backend
+
+    Also add sndfile check even with esd, and check OSS header only if OSS
+    use requested.
+
+ src/CMakeLists.txt | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+commit 360ec120d296ceb4cb9121041103351580edc0ef
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Oct 2 23:54:12 2017 +0200
+
+    Added confirmation for restart-as-xterm option
+
+    Long outstanding Debian bug 224537.
+
+ src/wmaction.cc |  3 +++
+ src/wmaction.h  |  1 +
+ src/wmapp.cc    | 27 ++++++++++++++++++++++-----
+ src/wmframe.cc  | 31 +++++++++++++++++++------------
+ src/wmframe.h   |  1 +
+ src/wmprog.cc   |  4 ++--
+ src/wmprog.h    |  4 ++--
+ 7 files changed, 50 insertions(+), 21 deletions(-)
+
+commit ecdf256c43e8a9945d010237d4a12eba1657ee90
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Mon Oct 2 23:03:39 2017 +0200
+
+    add TOC. fix email
+
+ doc/icesound.1.adoc | 1 +
+ doc/icewm.1.adoc    | 7 ++++++-
+ doc/icewm.adoc      | 4 ++--
+ doc/icewmbg.1.adoc  | 1 +
+ 4 files changed, 10 insertions(+), 3 deletions(-)
+
+commit c2744b23309084ef9c2d1061a9fbe8bc3b984ae1
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Mon Oct 2 22:23:59 2017 +0200
+
+    XDG base dir spec: "If, when attempting to write a file,
+    the destination directory is non-existant an attempt should
+    be made to create it with permission 0700."
+
+ src/upath.h   | 2 +-
+ src/ysmapp.cc | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 commit ff84cb909f30eb30943f825f34ae291d1493c66f
 Author: Eduard Bloch <blade@debian.org>
 Date:   Mon Oct 2 18:55:08 2017 +0200
