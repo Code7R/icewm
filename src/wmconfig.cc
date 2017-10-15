@@ -22,8 +22,8 @@
 
 long workspaceCount = 0;
 char *workspaceNames[MAXWORKSPACES];
-YAction *workspaceActionActivate[MAXWORKSPACES];
-YAction *workspaceActionMoveTo[MAXWORKSPACES];
+YAction workspaceActionActivate[MAXWORKSPACES];
+YAction workspaceActionMoveTo[MAXWORKSPACES];
 
 void WMConfig::loadConfiguration(IApp *app, const char *fileName) {
 #ifndef NO_CONFIGURE
@@ -53,8 +53,6 @@ void addWorkspace(const char * /*name*/, const char *value, bool append) {
     if (!append) {
         for (int i = 0; i < workspaceCount; i++) {
             delete[] workspaceNames[i];
-            delete workspaceActionActivate[i];
-            delete workspaceActionMoveTo[i];
         }
         workspaceCount = 0;
     }
@@ -62,8 +60,6 @@ void addWorkspace(const char * /*name*/, const char *value, bool append) {
     if (workspaceCount >= MAXWORKSPACES)
         return;
     workspaceNames[workspaceCount] = newstr(value);
-    workspaceActionActivate[workspaceCount] = new YAction(); // !! fix
-    workspaceActionMoveTo[workspaceCount] = new YAction();
     PRECONDITION(workspaceNames[workspaceCount] != NULL);
     workspaceCount++;
 }
@@ -220,3 +216,5 @@ void WMConfig::print_preferences() {
 #endif
 }
 
+
+// vim: set sw=4 ts=4 et:

@@ -12,9 +12,9 @@
 
 extern long workspaceCount;
 extern char *workspaceNames[MAXWORKSPACES];
-extern YAction *workspaceActionActivate[MAXWORKSPACES];
-extern YAction *workspaceActionMoveTo[MAXWORKSPACES];
-extern YAction *layerActionSet[WinLayerCount];
+extern YAction workspaceActionActivate[MAXWORKSPACES];
+extern YAction workspaceActionMoveTo[MAXWORKSPACES];
+extern YAction layerActionSet[WinLayerCount];
 
 class YWindowManager;
 class YFrameClient;
@@ -33,9 +33,9 @@ private:
     bool valid;
     long since;
     enum {
-        XTimeMask = 0xFFFFFFFFUL,
-        XTimeRange = 0x7FFFFFFFUL,
-        SInterval = 0x3FFFFFFFUL,
+        XTimeMask = 0xFFFFFFFFUL,       // milliseconds
+        XTimeRange = 0x7FFFFFFFUL,      // milliseconds
+        SInterval = 0x3FFFFFFFUL / 1000,     // seconds
     };
 public:
     UserTime() : xtime(0), valid(false), since(0) { }
@@ -128,10 +128,10 @@ public:
                         bool reparent = true);
     void destroyedClient(Window win);
     YFrameWindow *mapClient(Window win);
-    
+
     void setFocus(YFrameWindow *f, bool canWarp = false);
     YFrameWindow *getFocus() { return fFocusWin; }
-    
+
     void loseFocus(YFrameWindow *window);
     void activate(YFrameWindow *frame, bool raise, bool canWarp = false);
 
@@ -153,11 +153,11 @@ public:
     void placeWindow(YFrameWindow *frame, int x, int y, int cw, int ch, bool newClient, bool &canActivate);
 
     YFrameWindow *top(long layer) const {
-	    if (layer < 0)
-		    return fTop[0];
-	    if (layer >= WinLayerCount)
-		    return fTop[WinLayerCount - 1];
-	    return fTop[layer];
+            if (layer < 0)
+                    return fTop[0];
+            if (layer >= WinLayerCount)
+                    return fTop[WinLayerCount - 1];
+            return fTop[layer];
     }
     void setTop(long layer, YFrameWindow *top);
     YFrameWindow *bottom(long layer) const { return fBottom[layer]; }
@@ -211,7 +211,10 @@ public:
 
     bool readCurrentDesktop(long &workspace);
     void setDesktopGeometry();
+    bool compareDesktopNames(char **strings, int count);
     bool readDesktopNames();
+    bool readNetDesktopNames();
+    bool readWinDesktopNames();
     void setWinDesktopNames(long count);
     void setNetDesktopNames(long count);
     void setDesktopNames(long count);
@@ -235,7 +238,7 @@ public:
 
     void switchFocusTo(YFrameWindow *frame, bool reorderFocus = true);
     void switchFocusFrom(YFrameWindow *frame);
-    void notifyFocus(YFrameWindow *frame);
+    void notifyActive(YFrameWindow *frame);
 
     void popupStartMenu(YWindow *owner);
 #ifdef CONFIG_WINMENU
@@ -252,7 +255,7 @@ public:
     void smartPlace(YFrameWindow **w, int count);
     void getCascadePlace(YFrameWindow *frame, int &lastX, int &lastY, int &x, int &y, int w, int h);
     void cascadePlace(YFrameWindow **w, int count);
-    void setWindows(YFrameWindow **w, int count, YAction *action);
+    void setWindows(YFrameWindow **w, int count, YAction action);
 
     void getWindowsToArrange(YFrameWindow ***w, int *count, bool sticky = false, bool skipNonMinimizable = false);
 
@@ -269,12 +272,12 @@ public:
     int getScreen();
 
     static void doWMAction(long action);
-    void lockFocus() { 
+    void lockFocus() {
         //MSG(("lockFocus %d", lockFocusCount));
-        lockFocusCount++; 
+        lockFocusCount++;
     }
-    void unlockFocus() { 
-        lockFocusCount--; 
+    void unlockFocus() {
+        lockFocusCount--;
         //MSG(("unlockFocus %d", lockFocusCount));
     }
     bool focusLocked() { return lockFocusCount != 0; }
@@ -294,6 +297,7 @@ private:
     void updateArea(long workspace, int screen_number, int l, int t, int r, int b);
     bool handleWMKey(const XKeyEvent &key, KeySym k, unsigned int m, unsigned int vm);
 
+    Window fActiveWindow;
     YFrameWindow *fFocusWin;
     YFrameWindow *fTop[WinLayerCount];
     YFrameWindow *fBottom[WinLayerCount];
@@ -454,7 +458,7 @@ extern Atom _XA_NET_WM_USER_TIME;                   // OK
 extern Atom _XA_NET_WM_USER_TIME_WINDOW;            // OK
 extern Atom _XA_NET_WM_VISIBLE_ICON_NAME;           // OK
 extern Atom _XA_NET_WM_VISIBLE_NAME;                // OK
-extern Atom _XA_NET_WM_OPACITY;                     // TODO
+extern Atom _XA_NET_WM_WINDOW_OPACITY;              // OK
 extern Atom _XA_NET_WM_WINDOW_TYPE;                 // OK
 extern Atom _XA_NET_WM_WINDOW_TYPE_COMBO;           // OK
 extern Atom _XA_NET_WM_WINDOW_TYPE_DESKTOP;         // OK
@@ -490,3 +494,5 @@ extern Atom _XA_KDE_WM_CHANGE_STATE;
 extern Atom XA_IcewmWinOptHint;
 
 #endif
+
+// vim: set sw=4 ts=4 et:

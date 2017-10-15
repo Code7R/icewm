@@ -30,26 +30,26 @@ public:
 
 #ifndef LITE
     YMenuItem *add(YMenuItem *item, const char *icons);
-    YMenuItem *addItem(const ustring &name, int hotCharPos, const ustring &param, YAction *action, const char *icons);
-    YMenuItem *addItem(const ustring &name, int hotCharPos, YAction *action, YMenu *submenu, const char *icons);
+    YMenuItem *addItem(const ustring &name, int hotCharPos, const ustring &param, YAction action, const char *icons);
+    YMenuItem *addItem(const ustring &name, int hotCharPos, YAction action, YMenu *submenu, const char *icons);
     YMenuItem *addSubmenu(const ustring &name, int hotCharPos, YMenu *submenu, const char *icons);
 #endif
 
     YMenuItem *add(YMenuItem *item);
     YMenuItem *addSorted(YMenuItem *item, bool duplicates, bool ignoreCase = false);
-    YMenuItem *addItem(const ustring &name, int hotCharPos, const ustring &param, YAction *action);
-    YMenuItem *addItem(const ustring &name, int hotCharPos, YAction *action, YMenu *submenu);
+    YMenuItem *addItem(const ustring &name, int hotCharPos, const ustring &param, YAction action);
+    YMenuItem *addItem(const ustring &name, int hotCharPos, YAction action, YMenu *submenu);
     YMenuItem *addSubmenu(const ustring &name, int hotCharPos, YMenu *submenu);
     YMenuItem *addSeparator();
     YMenuItem *addLabel(const ustring &name);
     void removeAll();
-    YMenuItem *findAction(const YAction *action);
+    YMenuItem *findAction(YAction action);
     YMenuItem *findSubmenu(const YMenu *sub);
     YMenuItem *findName(const ustring &name, const int first = 0);
     int findFirstLetRef(char firstLet, const int first, const int ignCase = 1);
 
-    void enableCommand(YAction *action); // 0 == All
-    void disableCommand(YAction *action); // 0 == All
+    void enableCommand(YAction action); // 0 == All
+    void disableCommand(YAction action); // 0 == All
 
     int itemCount() const { return fItems.getCount(); }
     YMenuItem *getItem(int n) const { return fItems[n]; }
@@ -93,7 +93,7 @@ private:
     void drawBackground(Graphics &g, int x, int y, int w, int h);
     void drawSeparator(Graphics &g, int x, int y, int w);
 
-    void drawSubmenuArrow(Graphics &g, YMenuItem *mitem, 
+    void drawSubmenuArrow(Graphics &g, YMenuItem *mitem,
                           int left, int top);
     void paintItem(Graphics &g, const int i, const int l, const int t, const int r,
                    const int minY, const int maxY, bool draw);
@@ -112,7 +112,7 @@ private:
     int onCascadeButton(int selectedItem, int x, int y, bool checkPopup);
 
     void autoScroll(int deltaX, int deltaY, int mx, int my, const XMotionEvent *motion);
-    void finishPopup(YMenuItem *item, YAction *action, unsigned int modifiers);
+    void finishPopup(YMenuItem *item, YAction action, unsigned int modifiers);
     void hideSubmenu();
 };
 
@@ -129,3 +129,5 @@ extern ref<YImage> menusepPixbuf;
 #endif
 
 #endif
+
+// vim: set sw=4 ts=4 et:

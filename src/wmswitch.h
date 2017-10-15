@@ -17,7 +17,7 @@ public:
 
     virtual void activatePopup(int flags);
     virtual void deactivatePopup();
-    
+
     virtual bool handleKey(const XKeyEvent &key);
     virtual void handleButton(const XButtonEvent &button);
 
@@ -69,3 +69,5 @@ private: // not-used
 };
 
 #endif
+
+// vim: set sw=4 ts=4 et:

@@ -236,3 +236,5 @@ ref<YFont> getCoreFont(const char *name) {
 }
 
 #endif
+
+// vim: set sw=4 ts=4 et:

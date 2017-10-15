@@ -40,8 +40,8 @@ void YLabel::paint(Graphics &g, const YRect &/*r*/) {
 
     if (gradient != null)
         g.drawImage(gradient, x() - 1, y() - 1, width(), height(), 0, 0);
-    else 
-#endif    
+    else
+#endif
     if (dialogbackPixmap != null)
         g.fillPixmap(dialogbackPixmap, 0, 0, width(), height(), x() - 1, y() - 1);
     else {
@@ -54,7 +54,7 @@ void YLabel::paint(Graphics &g, const YRect &/*r*/) {
         int x = 1;
         int h = labelFont->height();
         ustring s(null), r(null);
-        
+
         g.setColor(labelFg);
         g.setFont(labelFont);
 
@@ -89,3 +89,5 @@ void YLabel::autoSize() {
     setSize(1 + w + 1, 1 + h + 1);
 }
 #endif
+
+// vim: set sw=4 ts=4 et:

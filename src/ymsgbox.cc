@@ -91,14 +91,14 @@ void YMsgBox::autoSize() {
     int w = lw + 24, h;
 
     w = clamp(w, 240, desktop->width());
-    
+
     h = 12;
     if (fLabel) {
         fLabel->setPosition((w - lw) / 2, h);
         h += fLabel->height();
     }
     h += 18;
-    
+
     unsigned const hh(max(fButtonOK ? fButtonOK->height() : 0,
                           fButtonCancel ? fButtonCancel->height() : 0));
     unsigned const ww(max(fButtonOK ? fButtonOK->width() : 0,
@@ -116,7 +116,7 @@ void YMsgBox::autoSize() {
     h += fButtonOK ? fButtonOK->height() :
         fButtonCancel ? fButtonCancel->height() : 0;
     h += 12;
-    
+
     setSize(w, h);
 }
 
@@ -135,11 +135,12 @@ void YMsgBox::setText(const ustring &text) {
 void YMsgBox::setPixmap(ref<YPixmap>/*pixmap*/) {
 }
 
-void YMsgBox::actionPerformed(YAction *action, unsigned int /*modifiers*/) {
+void YMsgBox::actionPerformed(YAction action, unsigned int /*modifiers*/) {
     if (fListener) {
-        if (action == fButtonOK) {
+        if (fButtonOK && action == *fButtonOK) {
             fListener->handleMsgBox(this, mbOK);
-        } else if (action == fButtonCancel) {
+        }
+        else if (fButtonCancel && action == *fButtonCancel) {
             fListener->handleMsgBox(this, mbCancel);
         }
     }
@@ -173,3 +174,5 @@ void YMsgBox::showFocused() {
     }
 }
 #endif
+
+// vim: set sw=4 ts=4 et:

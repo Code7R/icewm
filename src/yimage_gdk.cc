@@ -49,7 +49,7 @@ ref<YImage> YImage::load(upath filename) {
     }
     return image;
 }
-    
+
 ref<YImage> YImageGDK::scale(int w, int h) {
     ref<YImage> image;
     GdkPixbuf *pixbuf;
@@ -251,3 +251,5 @@ void image_init() {
 }
 
 #endif
+
+// vim: set sw=4 ts=4 et:

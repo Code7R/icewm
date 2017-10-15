@@ -4,10 +4,16 @@
 #include "ybutton.h"
 #include "yaction.h"
 
-class YActionButton: public YButton, public YAction {
+class YActionButton: public YButton {
 public:
-    YActionButton(YWindow *parent): YButton(parent, this) {
+    YActionButton(YWindow *parent):
+        YButton(parent, YAction())
+    {
     }
+
+    operator YAction() const { return getAction(); }
 };
 
 #endif
+
+// vim: set sw=4 ts=4 et:

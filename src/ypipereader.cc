@@ -106,3 +106,5 @@ void YPipeReader::notifyWrite() {
 bool YPipeReader::forWrite() {
     return false;
 }
+
+// vim: set sw=4 ts=4 et:

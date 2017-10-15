@@ -265,3 +265,5 @@ bool YSMPoll::forWrite() {
 }
 
 #endif /* CONFIG_SESSION */
+
+// vim: set sw=4 ts=4 et:

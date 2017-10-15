@@ -9,16 +9,16 @@ class Program;
 
 class ObjectButton: public YButton {
 public:
-    ObjectButton(YWindow *parent, DObject *object): 
-        YButton(parent, 0), fObject(object) {}
+    ObjectButton(YWindow *parent, DObject *object):
+        YButton(parent, actionNull), fObject(object) {}
     ObjectButton(YWindow *parent, YMenu *popup):
-        YButton(parent, 0, popup), fObject(NULL) {}
-    ObjectButton(YWindow *parent, YAction *action):
+        YButton(parent, actionNull, popup), fObject(NULL) {}
+    ObjectButton(YWindow *parent, YAction action):
         YButton(parent, action, 0), fObject(NULL) { /* hack */ }
 
     virtual ~ObjectButton() {}
 
-    virtual void actionPerformed(YAction *action, unsigned int modifiers);
+    virtual void actionPerformed(YAction action, unsigned int modifiers);
     virtual ref<YFont> getFont();
     virtual YColor * getColor();
     virtual YSurface getSurface();
@@ -32,3 +32,5 @@ private:
 };
 
 #endif
+
+// vim: set sw=4 ts=4 et:

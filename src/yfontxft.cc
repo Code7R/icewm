@@ -9,14 +9,14 @@
 #include <stdio.h>
 
 #ifdef CONFIG_FRIBIDI
-	// remove deprecated warnings for now...
-	#include <fribidi/fribidi-config.h>
-	#if FRIBIDI_USE_GLIB+0
-		#include <glib.h>
-		#undef G_GNUC_DEPRECATED
-		#define G_GNUC_DEPRECATED
-	#endif
-	#include <fribidi/fribidi.h>
+        // remove deprecated warnings for now...
+        #include <fribidi/fribidi-config.h>
+        #if FRIBIDI_USE_GLIB+0
+                #include <glib.h>
+                #undef G_GNUC_DEPRECATED
+                #define G_GNUC_DEPRECATED
+        #endif
+        #include <fribidi/fribidi.h>
 #endif
 
 /******************************************************************************/
@@ -29,7 +29,7 @@ public:
 #else
     typedef class YLocaleString string_t;
     typedef XftChar8 char_t;
-#endif    
+#endif
 
     YXftFont(ustring name, bool xlfd, bool antialias);
     virtual ~YXftFont();
@@ -41,7 +41,7 @@ public:
     virtual int textWidth(char const * str, int len) const;
 
     virtual int textWidth(string_t const & str) const;
-    virtual void drawGlyphs(class Graphics & graphics, int x, int y, 
+    virtual void drawGlyphs(class Graphics & graphics, int x, int y,
                             char const * str, int len);
 
 private:
@@ -84,23 +84,23 @@ public:
 
 #ifdef CONFIG_FRIBIDI
 
-#define STATIS_STRING_SIZE	256
+#define STATIS_STRING_SIZE      256
 
-		// Based around upstream (1.3.2) patch with some optimization
-		//   on my end. (reduce unnecessary memory allocation)
-		// - Gilboa
+                // Based around upstream (1.3.2) patch with some optimization
+                //   on my end. (reduce unnecessary memory allocation)
+                // - Gilboa
 
-		char_t static_str[STATIS_STRING_SIZE];
-		char_t *vis_str = static_str;
+                char_t static_str[STATIS_STRING_SIZE];
+                char_t *vis_str = static_str;
 
-		if (len >= STATIS_STRING_SIZE)
-		{
-			vis_str = new char_t[len+1];
-			if (!vis_str)
-				return;
-		}
+                if (len >= STATIS_STRING_SIZE)
+                {
+                        vis_str = new char_t[len+1];
+                        if (!vis_str)
+                                return;
+                }
 
-		FriBidiCharType pbase_dir = FRIBIDI_TYPE_N;
+                FriBidiCharType pbase_dir = FRIBIDI_TYPE_N;
     if (fribidi_log2vis(str, len, &pbase_dir, //input
                 vis_str, // output
                 NULL, NULL, NULL // "statistics" that we don't need
@@ -117,8 +117,8 @@ public:
 
 #ifdef CONFIG_FRIBIDI
 
-		if (vis_str != static_str)
-			delete[] str;
+                if (vis_str != static_str)
+                        delete[] str;
 
 #endif
 
@@ -283,7 +283,7 @@ void YXftFont::drawGlyphs(Graphics & graphics, int x, int y,
 }
 
 YXftFont::TextPart * YXftFont::partitions(char_t * str, size_t len,
-                                          size_t nparts) const 
+                                          size_t nparts) const
 {
     XGlyphInfo extends;
     XftFont ** lFont(fFonts + fFontCount);
@@ -358,3 +358,5 @@ ref<YFont> getXftFont(ustring name, bool antialias) {
 }
 
 #endif // CONFIG_XFREETYPE
+
+// vim: set sw=4 ts=4 et:

@@ -46,7 +46,7 @@ extern ref<YPixmap> taskbackPixmap;
 
 NetStatus::NetStatus(
     IApp *app,
-    YSMListener *smActionListener, 
+    YSMListener *smActionListener,
     mstring netdev,
     IAppletContainer *taskBar,
     YWindow *aParent):
@@ -142,7 +142,7 @@ void NetStatus::handleTimer(const void* sharedData, bool forceDown) {
 void NetStatus::updateToolTip() {
     char status[400];
     cstring netdev(fNetDev);
-    
+
     if (isUp()) {
         char const * const sizeUnits[] = { "B", "KiB", "MiB", "GiB", "TiB", NULL };
         char const * const rateUnits[] = { "B/s", "kB/s", "MB/s", NULL };
@@ -245,7 +245,7 @@ void NetStatus::paint(Graphics &g, const YRect &/*r*/) {
 
     long maxBytes = b_in_max + b_out_max;
     if (maxBytes < 1024)
-	maxBytes = 1024;
+        maxBytes = 1024;
     ///!!! this should really be unified with acpustatus.cc
     for (int i = 0; i < taskBarNetSamples; i++) {
         if (1 /* ppp_in[i] > 0 || ppp_out[i] > 0 */) {
@@ -427,10 +427,10 @@ bool NetStatus::isUp() {
     if (sysctlbyname("net.link.generic.system.ifcount", &nr_network_devs,
                     &int_size, (void*)0, 0) == -1) {
         printf("%s@%d: %s\n", __FILE__, __LINE__, strerror(errno));
-    } else { 
+    } else {
         for (int i = 1; i <= nr_network_devs; i++) {
             name[4] = i; /* row of the ifmib table */
-    
+
             if (sysctl(name, 6, &ifmd, &ifmd_size, (void *)0, 0) == -1) {
                 printf("%s@%d: %s\n", __FILE__, __LINE__, strerror(errno));
                 continue;
@@ -444,7 +444,7 @@ bool NetStatus::isUp() {
     return false;
 #else
     if (fNetDev == null)
-        return false;  
+        return false;
 
     int s = socket(PF_INET, SOCK_STREAM, 0);
     if (s == -1)
@@ -565,7 +565,7 @@ void NetStatus::getCurrent(long *in, long *out, const void* sharedData) {
                 warn("%s@%d: %s\n",__FILE__,__LINE__,strerror(errno));
                 continue;
             }
-	    if (mstring(ifmd.ifmd_name).compareTo(fNetDev) == 0) {
+            if (mstring(ifmd.ifmd_name).compareTo(fNetDev) == 0) {
                 cur_ibytes = ifmd.ifmd_data.ifi_ibytes;
                 cur_obytes = ifmd.ifmd_data.ifi_obytes;
                 break;
@@ -580,7 +580,7 @@ void NetStatus::getCurrent(long *in, long *out, const void* sharedData) {
 
     s = socket(AF_INET, SOCK_DGRAM, 0);
     if (s != -1) {
-	fNetDev.copyTo(ifdr.ifdr_name, sizeof(ifdr.ifdr_name));
+        fNetDev.copyTo(ifdr.ifdr_name, sizeof(ifdr.ifdr_name));
         if (ioctl(s, SIOCGIFDATA, &ifdr) != -1) {
             cur_ibytes = ifi->ifi_ibytes;
             cur_obytes = ifi->ifi_obytes;
@@ -595,7 +595,7 @@ void NetStatus::getCurrent(long *in, long *out, const void* sharedData) {
 
     s = socket(AF_INET, SOCK_DGRAM, 0);
     if (s != -1) {
-	fNetDev.copyTo(ifdr.ifr_name, sizeof(ifdr.ifr_name));
+        fNetDev.copyTo(ifdr.ifr_name, sizeof(ifdr.ifr_name));
         ifdr.ifr_data = (caddr_t) &ifi;
         if (ioctl(s, SIOCGIFDATA, &ifdr) != -1) {
             cur_ibytes = ifi.ifi_ibytes;
@@ -725,23 +725,23 @@ NetStatusControl::NetStatusControl(IApp* app, YSMListener* smActionListener,
 
 bool NetStatusControl::handleTimer(YTimer *t)
 {
-	if (t != fUpdateTimer)
-		return false;
+        if (t != fUpdateTimer)
+                return false;
 
 #ifdef __linux__
-	fetchSystemData();
+        fetchSystemData();
 
-	// hardcopy of existing monitors to check the remaining ones faster
-	covered.preserve(fNetStatus.size);
-	covered.size = fNetStatus.size;
-	memcpy(covered.data, fNetStatus.data, sizeof(covered[0]) * fNetStatus.size);
+        // hardcopy of existing monitors to check the remaining ones faster
+        covered.preserve(fNetStatus.size);
+        covered.size = fNetStatus.size;
+        memcpy(covered.data, fNetStatus.data, sizeof(covered[0]) * fNetStatus.size);
 
-	for(unsigned i=0; i<cachedStatsIdx.size; i+=2)
-	{
-	    //mstring devName(cachedStatsIdx[i], cachedStatsIdx[i+1]-cachedStatsIdx[i]);
-	    bool handled=false;
-	    for(unsigned j = 0; j<fNetStatus.size; ++j)
-	    {
+        for(unsigned i=0; i<cachedStatsIdx.size; i+=2)
+        {
+            //mstring devName(cachedStatsIdx[i], cachedStatsIdx[i+1]-cachedStatsIdx[i]);
+            bool handled=false;
+            for(unsigned j = 0; j<fNetStatus.size; ++j)
+            {
             if (fNetStatus[j]->fNetDev != cachedStatsIdx[i])
                 continue;
             fNetStatus[j]->handleTimer(cachedStatsIdx[i + 1], false);
@@ -765,17 +765,19 @@ bool NetStatusControl::handleTimer(YTimer *t)
             pn->handleTimer(cachedStatsIdx[i + 1], false);
             break;
         }
-	}
-	// mark disappeared devices as down without additional ioctls
-	for(NetStatus** p = covered.data; p && p < covered.data + covered.size; ++p)
-	    if(*p)
-	        (**p).handleTimer(0, true);
+        }
+        // mark disappeared devices as down without additional ioctls
+        for(NetStatus** p = covered.data; p && p < covered.data + covered.size; ++p)
+            if(*p)
+                (**p).handleTimer(0, true);
 
 #else
-	for(NetStatus* p=fNetStatus.data; p<fNetStatus.data+fNetStatus.size; ++p)
-	    p->handleTimer(0, false);
+        for(NetStatus* p=fNetStatus.data; p<fNetStatus.data+fNetStatus.size; ++p)
+            p->handleTimer(0, false);
 #endif
-	return true;
+        return true;
 }
 
 #endif // HAVE_NET_STATUS
+
+// vim: set sw=4 ts=4 et:

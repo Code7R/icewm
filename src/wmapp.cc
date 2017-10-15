@@ -122,9 +122,9 @@ static Window registerProtocols1(char **argv, int argc) {
           xapp->display(), current_wm,
           CWEventMask, &attrs);
     }
-   
+
     Window xroot = xapp->root();
-    Window xid = 
+    Window xid =
         XCreateSimpleWindow(xapp->display(), xroot,
             0, 0, 1, 1, 0,
             xapp->black(),
@@ -132,7 +132,7 @@ static Window registerProtocols1(char **argv, int argc) {
 
     XSetSelectionOwner(xapp->display(), wmSx, xid, timestamp);
 
-    if (XGetSelectionOwner(xapp->display(), wmSx) != xid) 
+    if (XGetSelectionOwner(xapp->display(), wmSx) != xid)
         die(1, _("Failed to become the owner of the %s selection"), wmSx.str());
 
     if (current_wm != None) {
@@ -213,7 +213,7 @@ static void registerProtocols2(Window xid) {
                     _XA_WIN_PROTOCOLS, XA_ATOM, 32,
                     PropModeReplace, (unsigned char *)win_proto, i);
 
-    XChangeProperty(xapp->display(), xid, 
+    XChangeProperty(xapp->display(), xid,
                     _XA_WIN_SUPPORTING_WM_CHECK, XA_CARDINAL, 32,
                     PropModeReplace, (unsigned char *)&xid, 1);
 
@@ -301,14 +301,14 @@ static void registerProtocols2(Window xid) {
         _XA_NET_WM_STATE_SKIP_TASKBAR,
         _XA_NET_WM_STATE_STICKY,            // trivial support
         _XA_NET_WM_STRUT,
-        _XA_NET_WM_STRUT_PARTIAL,	    // trivial support
+        _XA_NET_WM_STRUT_PARTIAL,           // trivial support
 //      _XA_NET_WM_SYNC_REQUEST,
 //      _XA_NET_WM_SYNC_REQUEST_COUNTER,
         _XA_NET_WM_USER_TIME,
         _XA_NET_WM_USER_TIME_WINDOW,
         _XA_NET_WM_VISIBLE_ICON_NAME,       // trivial support
         _XA_NET_WM_VISIBLE_NAME,            // trivial support
-//      _XA_NET_WM_WINDOW_OPACITY,
+        _XA_NET_WM_WINDOW_OPACITY,
         _XA_NET_WM_WINDOW_TYPE,
         _XA_NET_WM_WINDOW_TYPE_COMBO,
         _XA_NET_WM_WINDOW_TYPE_DESKTOP,
@@ -591,6 +591,7 @@ static void initMenus(
             logoutMenu->addItem(_("Restart _Icewm"), -2, null, actionRestart, "restart");
 #endif
 
+#ifdef LITE // no confirmation since dialog is not available
             DProgram *restartXTerm =
                 DProgram::newProgram(app, smActionListener, _("Restart _Xterm"),
 #ifdef LITE
@@ -602,6 +603,10 @@ static void initMenus(
                 		"xterm", noargs);
             if (restartXTerm)
                 logoutMenu->add(new DObjectMenuItem(restartXTerm));
+#else
+            logoutMenu->addItem(_("Restart _Xterm"), -2, null, actionRestartXterm, "xterm");
+#endif
+
 #endif
         }
     }
@@ -744,7 +749,7 @@ void dumpZorder(const char *oper, YFrameWindow *w, YFrameWindow *a) {
         PRECONDITION(p->prev() != p);
         if (p->next()) {
             PRECONDITION(p->next()->prev() == p);
-	}
+        }
         p = p->next();
     }
 }
@@ -833,7 +838,7 @@ void YWMApp::setFocusMode(int mode) {
 }
 #endif
 
-void YWMApp::actionPerformed(YAction *action, unsigned int /*modifiers*/) {
+void YWMApp::actionPerformed(YAction action, unsigned int /*modifiers*/) {
 
 
     if (action == actionLogout) {
@@ -851,7 +856,22 @@ void YWMApp::actionPerformed(YAction *action, unsigned int /*modifiers*/) {
         manager->doWMAction(ICEWM_ACTION_REBOOT);
     } else if (action == actionRestart) {
         restartClient(0, 0);
-    } else if (action == actionRun) {
+    }
+    else if(action == actionRestartXterm) {
+        struct t_executor : public YMsgBoxListener {
+            YSMListener *listener;
+            t_executor(YSMListener* x) : listener(x) {}
+            virtual void handleMsgBox(YMsgBox *msgbox, int operation) {
+                if (msgbox)
+                    manager->unmanageClient(msgbox->handle());
+                if (operation == YMsgBox::mbOK)
+                    listener->restartClient(QUOTE(XTERMCMD), 0);
+            }
+        };
+        static t_executor delegate(this);
+        YFrameWindow::wmConfirmKill(_("Kill IceWM, replace with Xterm"), &delegate);
+    }
+    else if (action == actionRun) {
         runCommand(runDlgCommand);
     } else if (action == actionExit) {
         manager->unmanageClients();
@@ -1057,7 +1077,7 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
             OSV("Theme", &themeName, "Theme name"),
             OK0()
         };
-        
+
         YConfig::findLoadConfigFile(this, theme_prefs, configFile);
         YConfig::findLoadConfigFile(this, theme_prefs, "theme");
     }
@@ -1139,7 +1159,6 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
     switchWindow = 0;
 
     initAtoms();
-    initActions();
     initPointers();
 
     if (post_preferences)
@@ -1148,11 +1167,11 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
     delete desktop;
 
     managerWindow = registerProtocols1(*argv, *argc);
-    
+
     desktop = manager = new YWindowManager(
         this, this, this, 0, root());
     PRECONDITION(desktop != 0);
-    
+
     registerProtocols2(managerWindow);
 
     initFontPath(this);
@@ -1299,8 +1318,6 @@ YWMApp::~YWMApp() {
 #endif
 
     WPixRes::freePixmaps();
-
-    freeActions();
 
     //!!!XFreeGC(display(), outlineGC); lazy init in movesize.cc
     //!!!XFreeGC(display(), clipPixmapGC); in ypaint.cc
@@ -1713,6 +1730,7 @@ int main(int argc, char **argv) {
     app.signalGuiEvent(geShutdown);
 #endif
     manager->unmanageClients();
+    app.clientsAreUnmanaged();
     unregisterProtocols();
 #ifndef LITE
     YIcon::freeIcons();
@@ -1826,8 +1844,10 @@ void YWMApp::handleSMAction(int message) {
 #endif
         break;
     case ICEWM_ACTION_SUSPEND:
-    	YWindowManager::execAfterFork(suspendCommand);
-    	break;
+        YWindowManager::execAfterFork(suspendCommand);
+        break;
     }
 }
 
+
+// vim: set sw=4 ts=4 et:

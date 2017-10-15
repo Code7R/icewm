@@ -14,7 +14,7 @@ public:
 
     virtual void paint(Graphics &g, const YRect &r);
     virtual bool handleKey(const XKeyEvent &key);
-    virtual void actionPerformed(YAction *action, unsigned int modifiers);
+    virtual void actionPerformed(YAction action, unsigned int modifiers);
 
     void activate();
     void deactivate();
@@ -33,3 +33,5 @@ private:
 };
 
 #endif
+
+// vim: set sw=4 ts=4 et:

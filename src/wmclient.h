@@ -28,7 +28,7 @@ public:
     virtual void activateWindow(bool raise) = 0;
     virtual bool isHidden() const = 0;
     virtual bool isMinimized() const = 0;
-    virtual void actionPerformed(YAction *action, unsigned int modifiers) = 0;
+    virtual void actionPerformed(YAction action, unsigned int modifiers) = 0;
     virtual bool focused() const = 0;
     virtual bool visibleNow() const = 0;
     virtual bool canRaise() = 0;
@@ -80,7 +80,7 @@ public:
         csKeepY = 2,
         csRound = 4
     };
-    
+
     void constrainSize(int &w, int &h, int flags);
 
     void gravityOffsets(int &xp, int &yp);
@@ -96,7 +96,7 @@ public:
 
     void getSizeHints();
     XSizeHints *sizeHints() const { return fSizeHints; }
-    
+
     // for going fullscreen and back
     XSizeHints savedSizeHints;
     void saveSizeHints();
@@ -161,6 +161,7 @@ public:
     bool getNetStartupId(unsigned long &time);
     bool getNetWMUserTime(Window window, unsigned long &time);
     bool getNetWMUserTimeWindow(Window &window);
+    bool getNetWMWindowOpacity(long &opacity);
     bool getNetWMWindowType(Atom *window_type);
     void setNetWMFullscreenMonitors(int top, int bottom, int left, int right);
     void setNetFrameExtents(int left, int right, int top, int bottom);
@@ -199,7 +200,7 @@ public:
     bool isKdeTrayWindow() { return prop.kde_net_wm_system_tray_window_for; }
 
     bool isEmbed() { return prop.xembed_info; }
-    
+
 private:
     YFrameWindow *fFrame;
     int fProtocols;
@@ -251,6 +252,7 @@ private:
         bool net_startup_id : 1; // no property notify
         bool net_wm_user_time : 1;
         bool net_wm_user_time_window : 1;
+        bool net_wm_window_opacity : 1;
 #endif
 #ifndef NO_MWM_HINTS
         bool mwm_hints : 1;
@@ -270,3 +272,5 @@ private: // not-used
 };
 
 #endif // YCLIENT_H
+
+// vim: set sw=4 ts=4 et:

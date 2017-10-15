@@ -927,7 +927,6 @@ public:
     ActionItem() : item(0) {}
     ~ActionItem() { delete item; }
     void operator=(YMenuItem* menuItem) { item = menuItem; }
-    operator YAction*() { return this; }
     YMenuItem* operator->() { return item; }
 };
 
@@ -1032,7 +1031,7 @@ public:
 
     virtual void handleClick(const XButtonEvent &up, int /*count*/);
 
-    virtual void actionPerformed(YAction *action, unsigned int /*modifiers*/) {
+    virtual void actionPerformed(YAction action, unsigned int /*modifiers*/) {
         if (action == actionClose) {
             listener->handleClose();
         }
@@ -1715,7 +1714,7 @@ public:
     FileView(YApplication *app, const char *path);
     ~FileView() {}
 
-    void activateURL(const cstring& url, bool relative = false); 
+    void activateURL(const cstring& url, bool relative = false);
 
     virtual void configure(const YRect &r) {
         YWindow::configure(r);
@@ -2363,3 +2362,5 @@ int main(int argc, char **argv) {
     }
 }
 #endif
+
+// vim: set sw=4 ts=4 et:

@@ -401,7 +401,7 @@ void Graphics::drawStringEllipsis(int x, int y, const char *str, int maxWidth) {
         drawChars(str, 0, len, x, y);
     } else {
         int maxW = 0;
-	if (!showEllipsis)
+        if (!showEllipsis)
             maxW = (maxWidth);
         else
             maxW = (maxWidth - fFont->textWidth("...", 3));
@@ -1143,3 +1143,5 @@ void Graphics::resetClip() {
 
 /******************************************************************************/
 /******************************************************************************/
+
+// vim: set sw=4 ts=4 et:

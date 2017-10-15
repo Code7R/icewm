@@ -236,3 +236,5 @@ bool YSocket::forWrite() {
     else
         return false;
 }
+
+// vim: set sw=4 ts=4 et:

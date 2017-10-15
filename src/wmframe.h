@@ -21,7 +21,7 @@ class YFrameTitleBar;
 
 class YFrameWindow: public YWindow, public YActionListener, public YTimerListener, public YPopDownListener, public YMsgBoxListener, public ClientData {
 public:
-    YFrameWindow(YActionListener *wmActionListener, YWindow *parent);
+    YFrameWindow(YActionListener *wmActionListener, YWindow *parent, int depth, Visual *visual, Colormap colormap);
     virtual ~YFrameWindow();
 
     void doManage(YFrameClient *client, bool &doActivate, bool &requestFocus);
@@ -52,9 +52,9 @@ public:
 
     virtual bool handleTimer(YTimer *t);
 
-    virtual void actionPerformed(YAction *action, unsigned int modifiers);
+    virtual void actionPerformed(YAction action, unsigned int modifiers);
     virtual void handleMsgBox(YMsgBox *msgbox, int operation);
-    
+
     void wmRestore();
     void wmMinimize();
     void wmMaximize();
@@ -69,6 +69,7 @@ public:
     void doRaise();
     void wmClose();
     void wmConfirmKill();
+    static YMsgBox* wmConfirmKill(const ustring& title, YMsgBoxListener *recvr);
     void wmKill();
     void wmNextWindow();
     void wmPrevWindow();
@@ -133,7 +134,7 @@ public:
 
     void outlineMove();
     void outlineResize();
-    
+
     void constrainPositionByModifier(int &x, int &y, const XMotionEvent &motion);
     void constrainMouseToWorkspace(int &x, int &y);
 
@@ -197,7 +198,7 @@ public:
     virtual void handlePopDown(YPopupWindow *popup);
 
     virtual void configure(const YRect &r);
-    
+
     void getNewPos(const XConfigureRequestEvent &cr,
                    int &cx, int &cy, int &cw, int &ch);
     void configureClient(const XConfigureRequestEvent &configureRequest);
@@ -281,7 +282,7 @@ public:
     int borderX() const;
     int borderY() const;
     int titleY() const;
-    
+
     void layoutTitleBar();
     void layoutButtons();
     void layoutResizeIndicators();
@@ -437,6 +438,7 @@ public:
     void updateNetStartupId();
     void updateNetWMUserTime();
     void updateNetWMUserTimeWindow();
+    void updateNetWMWindowOpacity();
     void updateNetWMFullscreenMonitors(int, int, int, int);
 #endif
     int strutLeft() { return fStrutLeft; }
@@ -610,3 +612,5 @@ private:
 
 #endif
 
+
+// vim: set sw=4 ts=4 et:

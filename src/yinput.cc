@@ -31,7 +31,7 @@ YMenu *YInputLine::inputMenu = 0;
 
 int YInputLine::fAutoScrollDelta = 0;
 
-static YAction *actionCut, *actionCopy, *actionPaste, *actionSelectAll, *actionPasteSelection;
+static YAction actionCut, actionCopy, actionPaste, actionSelectAll, actionPasteSelection;
 
 YInputLine::YInputLine(YWindow *parent): YWindow(parent), fText(null) {
     if (inputFont == null)
@@ -47,11 +47,6 @@ YInputLine::YInputLine(YWindow *parent): YWindow(parent), fText(null) {
     if (inputMenu == 0) {
         inputMenu = new YMenu();
         if (inputMenu) {
-            actionCut = new YAction();
-            actionCopy = new YAction();
-            actionPaste = new YAction();
-            actionPasteSelection = new YAction();
-            actionSelectAll = new YAction();
             inputMenu->setActionListener(this);
             inputMenu->addItem(_("Cu_t"), -2, _("Ctrl+X"), actionCut)->setEnabled(true);
             inputMenu->addItem(_("_Copy"), -2, _("Ctrl+C"), actionCopy)->setEnabled(true);
@@ -79,11 +74,6 @@ YInputLine::~YInputLine() {
         }
     }
     if (inputMenu) {
-        delete actionCut;
-        delete actionCopy;
-        delete actionPaste;
-        delete actionPasteSelection;
-        delete actionSelectAll;
         delete inputMenu;
     }
     delete inputSelectionFg;
@@ -222,10 +212,10 @@ bool YInputLine::handleKey(const XKeyEvent &key) {
             case XK_KP_Insert:
                 copySelection();
                 return true;
-	    case 'i':
-	    case 'I':
-		complete();
-		return true;
+            case 'i':
+            case 'I':
+                complete();
+                return true;
             }
         }
         if (m & ShiftMask) {
@@ -319,9 +309,9 @@ bool YInputLine::handleKey(const XKeyEvent &key) {
                 }
             }
             break;
-	case XK_Tab:
-	    complete();
-	    break;
+        case XK_Tab:
+            complete();
+            break;
         default:
             {
                 char s[16];
@@ -706,7 +696,7 @@ void YInputLine::copySelection() {
     }
 }
 
-void YInputLine::actionPerformed(YAction *action, unsigned int /*modifiers*/) {
+void YInputLine::actionPerformed(YAction action, unsigned int /*modifiers*/) {
     if (action == actionSelectAll)
         selectAll();
     else if (action == actionPaste)
@@ -730,14 +720,16 @@ void YInputLine::complete() {
 
     res_count = globit_best(t.c_str(), &res);
     if (res_count == -1) { //error-case
-	    free(res);
-	    return;
+            free(res);
+            return;
     }
     if (res_count == 0) { //no match found
-	    return;
+            return;
     }
     setText(ustring(res, strlen(res)));
     free(res);
 }
 
 #endif
+
+// vim: set sw=4 ts=4 et:

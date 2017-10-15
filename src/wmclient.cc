@@ -522,6 +522,11 @@ void YFrameClient::handleProperty(const XPropertyEvent &property) {
             if (getFrame())
                 getFrame()->updateNetWMUserTimeWindow();
             prop.net_wm_user_time_window = new_prop;
+        } else if (property.atom == _XA_NET_WM_WINDOW_OPACITY) {
+            MSG(("change: net wm window opacity"));
+            if (new_prop) prop.net_wm_window_opacity = true;
+            if (getFrame())
+                getFrame()->updateNetWMWindowOpacity();
         } else if (property.atom == _XA_NET_WM_FULLSCREEN_MONITORS) {
             // ignore - we triggered this event
             // (do i need to set a property here?)
@@ -1025,15 +1030,12 @@ void YFrameClient::getMwmHints() {
 }
 
 void YFrameClient::setMwmHints(const MwmHints &mwm) {
-    if (fMwmHints) {
-        XFree(fMwmHints);
-        fMwmHints = 0;
-    }
     XChangeProperty(xapp->display(), handle(),
                     _XATOM_MWM_HINTS, _XATOM_MWM_HINTS,
                     32, PropModeReplace,
                     (const unsigned char *)&mwm, sizeof(mwm)/sizeof(long)); ///!!!
-    fMwmHints = (MwmHints *)malloc(sizeof(MwmHints));
+    if (fMwmHints == 0)
+        fMwmHints = (MwmHints *)malloc(sizeof(MwmHints));
     if (fMwmHints)
         *fMwmHints = mwm;
 }
@@ -1794,7 +1796,7 @@ bool YFrameClient::getNetWMStrut(int *left, int *right, int *top, int *bottom) {
     return false;
 }
 
-bool YFrameClient::getNetWMStrutPartial(int *left, int *right, int *top, int *bottom, 
+bool YFrameClient::getNetWMStrutPartial(int *left, int *right, int *top, int *bottom,
         int *left_start_y, int *left_end_y, int *right_start_y, int* right_end_y,
         int *top_start_x, int *top_end_x, int *bottom_start_x, int *bottom_end_x) {
     if (left_start_y   != 0) *left_start_y   = 0;
@@ -1894,8 +1896,8 @@ bool YFrameClient::getNetWMUserTime(Window window, unsigned long &time) {
 
             MSG(("got user time"));
             time = utime[0] & 0xffffffff;
-	    if (time == -1UL)
-		    time = -2UL;
+            if (time == -1UL)
+                    time = -2UL;
 
             XFree(prop);
             return true;
@@ -1925,6 +1927,34 @@ bool YFrameClient::getNetWMUserTimeWindow(Window &window) {
 
             MSG(("got user time window"));
             window = uwin[0];
+
+            XFree(prop);
+            return true;
+        }
+        XFree(prop);
+    }
+    return false;
+}
+
+bool YFrameClient::getNetWMWindowOpacity(long &opacity) {
+    if (!prop.net_wm_window_opacity)
+        return false;
+
+    Atom r_type;
+    int r_format;
+    unsigned long count;
+    unsigned long bytes_remain;
+    unsigned char *prop(0);
+
+    if (XGetWindowProperty(xapp->display(), handle(),
+                _XA_NET_WM_WINDOW_OPACITY, 0, 1, False, XA_CARDINAL,
+                &r_type, &r_format, &count, &bytes_remain, &prop) == Success && prop)
+    {
+        if (r_type == XA_CARDINAL && r_format == 32 && count == 1U) {
+            long *data = (long *) prop;
+
+            MSG(("got window opacity"));
+            opacity = data[0];
 
             XFree(prop);
             return true;
@@ -2096,6 +2126,7 @@ void YFrameClient::getPropertiesList() {
             else if (a == _XA_NET_STARTUP_ID) HAS(prop.net_startup_id);
             else if (a == _XA_NET_WM_USER_TIME) HAS(prop.net_wm_user_time);
             else if (a == _XA_NET_WM_USER_TIME_WINDOW) HAS(prop.net_wm_user_time_window);
+            else if (a == _XA_NET_WM_WINDOW_OPACITY) HAS(prop.net_wm_window_opacity);
 #endif
 #ifdef GNOME1_HINTS
             else if (a == _XA_WIN_HINTS) HAS(prop.win_hints);
@@ -2124,3 +2155,5 @@ void YFrameClient::configure(const YRect &r) {
          r.height()));
 }
 
+
+// vim: set sw=4 ts=4 et:

@@ -82,7 +82,7 @@ public:
     virtual bool handleTimer(YTimer *t);
 #endif
 
-    virtual void actionPerformed(YAction *action, unsigned int modifiers);
+    virtual void actionPerformed(YAction action, unsigned int modifiers);
     virtual void handlePopDown(YPopupWindow *popup);
     virtual void handleEndPopup(YPopupWindow *popup);
 
@@ -121,7 +121,7 @@ public:
 
 #ifdef CONFIG_GRADIENTS
     virtual ref<YImage> getGradient() const { return fGradient; }
-#endif    
+#endif
 
     void contextMenu(int x_root, int y_root);
 
@@ -194,7 +194,7 @@ private:
 
     friend class WindowList;
     friend class WindowListBox;
-    
+
 #ifdef CONFIG_GRADIENTS
     ref<YImage> fGradient;
 #endif
@@ -215,3 +215,5 @@ class YColor* getTaskBarBg();
 #endif
 
 #endif
+
+// vim: set sw=4 ts=4 et:

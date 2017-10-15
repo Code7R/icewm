@@ -113,3 +113,5 @@ void YToolTip::locate(YWindow *w, const XCrossingEvent &/*crossing*/) {
     setPosition(x, y);
 }
 #endif
+
+// vim: set sw=4 ts=4 et:

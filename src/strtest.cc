@@ -71,11 +71,11 @@ static void test_mstring()
     assert(e, e == null);
     assert(e, e.indexOf(' ') == -1);
 
-    mstring m("abc", 0);
+    mstring m("abc", (size_t) 0);
     expect(m, "");
     assert(m, m.length() == 0);
 
-    mstring n(0, 0);
+    mstring n(0, (size_t) 0);
     expect(n, "");
     assert(n, n.length() == 0);
 
@@ -478,3 +478,5 @@ int main(int argc, char **argv)
 
     return 0;
 }
+
+// vim: set sw=4 ts=4 et:

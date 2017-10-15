@@ -39,7 +39,7 @@ WindowOption::WindowOption(ustring n_class_instance):
 #ifdef CONFIG_TRAY
     tray(WinTrayInvalid),
 #endif
-    gflags(0), gx(0), gy(0), gw(0), gh(0) 
+    gflags(0), gx(0), gy(0), gw(0), gh(0)
 {
 }
 
@@ -62,7 +62,7 @@ WindowOption *WindowOptions::getWindowOption(ustring a_class_instance,
 
     while (lo < hi) {
         const int pv = (lo + hi) / 2;
-	const WindowOption *pivot = fWinOptions[pv];
+        const WindowOption *pivot = fWinOptions[pv];
 
         int cmp = wo_cmp(a_class_instance,
                          pivot);
@@ -92,7 +92,7 @@ WindowOption *WindowOptions::getWindowOption(ustring a_class_instance,
 
 #ifdef DEBUG
     for (int i = 0; i < fWinOptions.getCount(); ++i)
-    	MSG(("> %d: %p", i, fWinOptions[i]));
+        MSG(("> %d: %p", i, fWinOptions[i]));
 #endif
 
     return newopt;
@@ -397,3 +397,5 @@ void loadWinOptions(upath optFile) {
     }
 }
 #endif
+
+// vim: set sw=4 ts=4 et:

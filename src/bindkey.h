@@ -210,3 +210,5 @@ DEF_WMKEY(gKeySysCollapseTaskBar);
 #undef DEF_WMKEY
 
 #endif
+
+// vim: set sw=4 ts=4 et:

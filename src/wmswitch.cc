@@ -460,7 +460,7 @@ int SwitchWindow::GetZListWorkspace(YFrameWindow **list, int max,
 
             if (w == fRoot->getFocus()) {
                 if (pass == 0) list[count++] = w;
-            } else if (w->isUrgent()) {              
+            } else if (w->isUrgent()) {
                 if (quickSwitchToUrgent) {
                     if (pass == 1) list[count++] = w;
                 } else {
@@ -743,3 +743,5 @@ bool SwitchWindow::modDown(int mod) {
 void SwitchWindow::handleButton(const XButtonEvent &button) {
     YPopupWindow::handleButton(button);
 }
+
+// vim: set sw=4 ts=4 et:

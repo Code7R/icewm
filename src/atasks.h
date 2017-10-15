@@ -30,7 +30,7 @@ public:
     bool getShown() const { return fShown || fFlashing; }
 
     void setFlash(bool urgent);
-    
+
 private:
     ClientData *fFrame;
     TaskPane *fTaskPane;
@@ -85,3 +85,5 @@ private:
 };
 
 #endif
+
+// vim: set sw=4 ts=4 et:

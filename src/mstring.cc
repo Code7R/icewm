@@ -34,10 +34,8 @@ mstring::mstring(MStringData *fStr, size_t fOffset, size_t fCount):
     fStr(fStr),
     fOffset(fOffset),
     fCount(fCount)
-{ 
-    PRECONDITION(fOffset >= 0);
-    PRECONDITION(fCount >= 0);
-    if (fStr) acquire(); 
+{
+    if (fStr) acquire();
 }
 
 mstring::mstring(const char *str) : fCount(0) {
@@ -83,7 +81,7 @@ void mstring::init(const char *str, size_t len) {
     } else {
         fStr = 0;
         fOffset = 0;
-        fCount = 0; 
+        fCount = 0;
     }
 }
 
@@ -304,7 +302,7 @@ bool mstring::copyTo(char *dst, size_t len) const {
 mstring mstring::replace(int position, int len, const mstring &insert) const {
     PRECONDITION(position >= 0);
     PRECONDITION(len >= 0);
-    PRECONDITION(position + len <= length());
+    PRECONDITION(position + len <= (int) length());
     return substring(0, position) + insert
         + substring(position + len, length() - position - len);
 }
@@ -391,3 +389,5 @@ cstring& cstring::operator=(const cstring& cs) {
     return *this;
 }
 
+
+// vim: set sw=4 ts=4 et:

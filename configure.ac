@@ -4,6 +4,7 @@
 AC_PREREQ([2.69])
 AC_INIT([icewm],[1.4.2],[https://github.com/bbidulock/icewm/issues])
 AC_REVISION([1.4.2])
+
 AC_CONFIG_SRCDIR([src/ysmapp.cc])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
@@ -23,7 +24,7 @@ TESTCASES="$TESTCASES iceview icesame iceicon icerun icelist icebar" # iceclock
 features=''
 
 # Initialize Automake
-AM_INIT_AUTOMAKE([1.13.4 dist-xz no-dist-gzip std-options -Wall color-tests silent-rules tar-pax])
+AM_INIT_AUTOMAKE([gnits 1.13.4 dist-xz no-dist-gzip std-options -Wall color-tests silent-rules tar-pax])
 AM_MAINTAINER_MODE
 AM_SILENT_RULES([yes])
 AC_PREFIX_DEFAULT([/usr])

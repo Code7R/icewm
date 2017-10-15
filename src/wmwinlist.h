@@ -20,7 +20,7 @@ public:
     virtual ~WindowListItem();
 
     virtual int getOffset();
-    
+
     virtual ustring getText();
     virtual ref<YIcon> getIcon();
     ClientData *getFrame() const { return fFrame; }
@@ -37,9 +37,9 @@ public:
 
     virtual bool handleKey(const XKeyEvent &key);
     virtual void handleClick(const XButtonEvent &up, int count);
-    
+
     virtual void activateItem(YListItem *item);
-    virtual void actionPerformed(YAction *action, unsigned int modifiers);
+    virtual void actionPerformed(YAction action, unsigned int modifiers);
 
     void enableCommands(YMenu *popup);
     void getSelectedWindows(YArray<YFrameWindow *> &frames);
@@ -82,3 +82,5 @@ extern WindowList *windowList;
 #endif
 
 #endif
+
+// vim: set sw=4 ts=4 et:

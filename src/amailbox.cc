@@ -144,12 +144,12 @@ void MailCheck::startCheck() {
         }
     } else {
         if (sk.connect((struct sockaddr *) &server_addr, sizeof(server_addr))
-            == 0) 
-	{
+            == 0)
+        {
             state = CONNECTING;
             got = 0;
-	} else {
-	    error();
+        } else {
+            error();
         }
     }
 }
@@ -471,3 +471,5 @@ bool MailBoxStatus::handleTimer(YTimer *t) {
 }
 
 #endif
+
+// vim: set sw=4 ts=4 et:

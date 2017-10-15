@@ -31,7 +31,7 @@
 XContext frameContext;
 XContext clientContext;
 
-YAction *layerActionSet[WinLayerCount];
+YAction layerActionSet[WinLayerCount];
 
 YWindowManager::YWindowManager(
     IApp *app,
@@ -48,10 +48,10 @@ YWindowManager::YWindowManager(
     fShowingDesktop = false;
     fShuttingDown = false;
     fOtherScreenFocused = false;
+    fActiveWindow = (Window) -1;
     fFocusWin = 0;
     lockFocusCount = 0;
     for (int l(0); l < WinLayerCount; l++) {
-        layerActionSet[l] = new YAction();
         fTop[l] = fBottom[l] = 0;
     }
     fFirst = fLast = 0;
@@ -142,8 +142,6 @@ YWindowManager::~YWindowManager() {
     delete fLeftSwitch;
     delete fTopWin;
     delete[] fFocusedWindow;
-    for (int l(0); l < WinLayerCount; l++)
-        delete layerActionSet[l];
     delete rootProxy;
 }
 
@@ -877,26 +875,15 @@ void YWindowManager::setFocus(YFrameWindow *f, bool /*canWarp*/) {
         if (ff) switchFocusFrom(ff);
     }
 
-    bool input = f ? f->getInputFocusHint() : false;
-#if 0
-    XWMHints *hints = c ? c->hints() : 0;
-
-    if (!f || !(f->frameOptions() & YFrameWindow::foIgnoreNoFocusHint)) {
-        if (hints && (hints->flags & InputHint) && !hints->input)
-            input = false;
-    }
-    if (f && (f->frameOptions() & YFrameWindow::foDoNotFocus))
-        input = false;
-#endif
-
     if (f && f->visible()) {
         if (c && c->visible() && !(f->isRollup() || f->isIconic()))
             w = c->handle();
         else
             w = f->handle();
 
-        if (input)
+        if (f->getInputFocusHint())
             switchFocusTo(f);
+
         f->setWmUrgency(false);
     }
 #ifdef DEBUG
@@ -915,42 +902,14 @@ void YWindowManager::setFocus(YFrameWindow *f, bool /*canWarp*/) {
     }
 #endif
 
-    if (w != None) {// input || w == desktop->handle()) {
-        /* UGLY HACK for JAVA7! */
-        bool focusproxyfound = false;
-        if (activateJava7FocusHack) {
-            Window rr, pr, *cr(NULL);
-            unsigned int nc;
-            XQueryTree(xapp->display(), w, &rr, &pr, &cr, &nc);
-            if (cr) {
-                unsigned int i;
-                for (i = 0; i < nc && !focusproxyfound; i++) {
-                    char *str(NULL);
-                    XFetchName(xapp->display(), cr[i], &str);
-                    if (str) {
-                        if (strcmp("FocusProxy", str)) {
-                            MSG(("HACK: Java(7) window found. Suppress XSetInputFocus."));
-                            focusproxyfound = true;
-                        }
-                        XFree(str);
-                    }
-                }
-                XFree(cr);
-            }
-            if ((!focusproxyfound) && input) {
-                XSetInputFocus(xapp->display(), w, None, xapp->getEventTime("setFocus"));
-            }
-        }
-        else if (!focusproxyfound) {
-            XSetInputFocus(xapp->display(), w, None, xapp->getEventTime("setFocus"));
-        }
-    } else {
-        XSetInputFocus(xapp->display(), fTopWin->handle(), RevertToNone, xapp->getEventTime("setFocus"));
-    }
-
-    if (c && w == c->handle() && (c->protocols() & YFrameClient::wpTakeFocus)) {
+    if (c && w == c->handle() && ((c->protocols() & YFrameClient::wpTakeFocus) || (f->frameOptions() & YFrameWindow::foAppTakesFocus)))
         c->sendTakeFocus();
+    if (w != None) {
+        if (f->getInputFocusHint())
+            XSetInputFocus(xapp->display(), w, RevertToNone, xapp->getEventTime("setFocus"));
     }
+    else
+        XSetInputFocus(xapp->display(), fTopWin->handle(), RevertToNone, xapp->getEventTime("setFocus"));
 
     if (!pointerColormap)
         setColormapWindow(f);
@@ -1291,7 +1250,7 @@ void YWindowManager::cascadePlace(YFrameWindow **w, int count) {
     }
 }
 
-void YWindowManager::setWindows(YFrameWindow **w, int count, YAction *action) {
+void YWindowManager::setWindows(YFrameWindow **w, int count, YAction action) {
     saveArrange(w, count);
 
     if (count == 0)
@@ -1517,7 +1476,14 @@ YFrameWindow *YWindowManager::manageClient(Window win, bool mapClient) {
 
     manager->updateFullscreenLayerEnable(false);
 
-    frame = new YFrameWindow(wmActionListener, 0);
+    XWindowAttributes wa;
+    XGetWindowAttributes(xapp->display(), client->handle(), &wa);
+
+    frame = new YFrameWindow(wmActionListener, 0,
+            wa.depth == 32 ? wa.depth : xapp->depth(),
+            wa.depth == 32 ? wa.visual : xapp->visual(),
+            wa.depth == 32 ? wa.colormap : xapp->colormap());
+
     if (frame == 0) {
         delete client;
         goto end;
@@ -1597,7 +1563,7 @@ YFrameWindow *YWindowManager::manageClient(Window win, bool mapClient) {
             doActivate = false;
             requestFocus = false;
         }
-	
+
         if (frame->frameOptions() & YFrameWindow::foNoFocusOnMap)
             requestFocus = false;
     }
@@ -2224,9 +2190,11 @@ void YWindowManager::announceWorkArea() {
     bool isCloned = true;
 
     /*
-      NET_WORKAREA behaviour: 0 (single/multimonitor with STRUT information, like metacity),
+      NET_WORKAREA behaviour: 0 (single/multimonitor with STRUT information,
+                                 like metacity),
                               1 (always full desktop),
-                              2 (singlemonitor with STRUT, multimonitor without STRUT)
+                              2 (singlemonitor with STRUT,
+                                 multimonitor without STRUT)
     */
 
     if (!area)
@@ -2241,30 +2209,34 @@ void YWindowManager::announceWorkArea() {
         }
     }
 
+    const YRect desktopArea(0, 0, desktop->width(), desktop->height());
     for (int ws = 0; ws < nw; ws++) {
-        YRect* r = new YRect(netWorkAreaBehaviour == 1 ? 0 : fWorkArea[ws][0].fMinX,
-                             netWorkAreaBehaviour == 1 ? 0 : fWorkArea[ws][0].fMinY,
-                             netWorkAreaBehaviour == 1 ? desktop->width()  : fWorkArea[ws][0].fMaxX - fWorkArea[ws][0].fMinX,
-                             netWorkAreaBehaviour == 1 ? desktop->height() : fWorkArea[ws][0].fMaxY - fWorkArea[ws][0].fMinY);
+        YRect r(desktopArea);
+        if (netWorkAreaBehaviour != 1) {
+            r = YRect(fWorkArea[ws][0].fMinX, fWorkArea[ws][0].fMinY,
+                      fWorkArea[ws][0].fMaxX - fWorkArea[ws][0].fMinX,
+                      fWorkArea[ws][0].fMaxY - fWorkArea[ws][0].fMinY);
+        }
 
         if (xiInfo.getCount() > 1 && ! isCloned && netWorkAreaBehaviour != 1) {
             if (netWorkAreaBehaviour == 0) {
-            // STRUTS information is messy and broken for multimonitor, but there is no solution for this problem.
-            // So we imitate metacity's behaviour := merge, but limit height of each screen and hope for the best
+                // STRUTS information is messy and broken for multimonitor,
+                // but there is no solution for this problem.
+                // So we imitate metacity's behaviour := merge,
+                // but limit height of each screen and hope for the best
                 for (int i = 1; i < xiInfo.getCount(); i++) {
-                    r->unionRect(fWorkArea[ws][i].fMinX, fWorkArea[ws][i].fMinY,
-                                 fWorkArea[ws][i].fMaxX - fWorkArea[ws][i].fMinX,
-                                 fWorkArea[ws][0].fMaxY - fWorkArea[ws][0].fMinY);
+                    r.unionRect(fWorkArea[ws][i].fMinX, fWorkArea[ws][i].fMinY,
+                                fWorkArea[ws][i].fMaxX - fWorkArea[ws][i].fMinX,
+                                fWorkArea[ws][0].fMaxY - fWorkArea[ws][0].fMinY);
                 }
             } else if (netWorkAreaBehaviour == 2) {
-                r->setRect(0, 0, desktop->width(), desktop->height());
+                r = desktopArea;
             }
         }
-        area[ws * 4    ] = r->x();
-        area[ws * 4 + 1] = r->y();
-        area[ws * 4 + 2] = r->width();
-        area[ws * 4 + 3] = r->height();
-	delete r;
+        area[ws * 4 + 0] = r.x();
+        area[ws * 4 + 1] = r.y();
+        area[ws * 4 + 2] = r.width();
+        area[ws * 4 + 3] = r.height();
     }
 
     XChangeProperty(xapp->display(), handle(),
@@ -2425,13 +2397,6 @@ void YWindowManager::appendNewWorkspace() {
         workspaceNames[ws] = newstr(s);
     }
 
-    if (workspaceActionActivate[ws] != 0)
-        delete workspaceActionActivate[ws];
-    if (workspaceActionMoveTo[ws] != 0)
-        delete workspaceActionMoveTo[ws];
-    workspaceActionActivate[ws] = new YAction();
-    workspaceActionMoveTo[ws] = new YAction();
-
     ::workspaceCount++;
 
     updateWorkspaces(true);
@@ -2462,15 +2427,6 @@ void YWindowManager::removeLastWorkspace() {
     ::workspaceCount--;
 
     updateWorkspaces(false);
-
-    if (workspaceActionActivate[ws] != 0) {
-        delete workspaceActionActivate[ws];
-        workspaceActionActivate[ws] = 0;
-    }
-    if (workspaceActionMoveTo[ws] != 0) {
-        delete workspaceActionMoveTo[ws];
-        workspaceActionMoveTo[ws] = 0;
-    }
 }
 
 void YWindowManager::updateWorkspaces(bool increase) {
@@ -2609,111 +2565,105 @@ void YWindowManager::updateMoveMenu() {
 }
 
 bool YWindowManager::readDesktopNames() {
-    XTextProperty names;
+    return readNetDesktopNames()
+        || readWinDesktopNames();
+}
+
+bool YWindowManager::compareDesktopNames(char **strings, int count) {
+    bool changed = false;
+
+    // old strings must persist until after the update
+    asmart<csmart> oldWorkspaceNames(new csmart[count]);
+
+    for (int i = 0; i < count; i++) {
+        if (workspaceNames[i] != 0) {
+            MSG(("Workspace %d: '%s' -> '%s'", i, workspaceNames[i], strings[i]));
+            if (strcmp(workspaceNames[i], strings[i])) {
+                oldWorkspaceNames[i] = workspaceNames[i];
+                workspaceNames[i] = newstr(strings[i]);
+                changed = true;
+            }
+        } else {
+            MSG(("Workspace %d: (null) -> '%s'", i, strings[i]));
+            workspaceNames[i] = newstr(strings[i]);
+            changed = true;
+        }
+    }
+
+    if (changed) {
+        updateTaskBarNames();
+        updateMoveMenu();
+    }
+
+    return changed;
+}
+
+bool YWindowManager::readNetDesktopNames() {
+    bool success = false;
+
 #ifdef WMSPEC_HINTS
     MSG(("reading: _NET_DESKTOP_NAMES(%d)",(int)_XA_NET_DESKTOP_NAMES));
+
+    XTextProperty names;
     if (XGetTextProperty(xapp->display(), handle(), &names,
                          _XA_NET_DESKTOP_NAMES) && names.nitems > 0) {
         int count = 0;
         char **strings = 0;
         if (XmbTextPropertyToTextList(xapp->display(), &names,
                                       &strings, &count) == Success) {
-            bool changed = false;
             if (count > 0 && strings[count - 1][0] == '\0')
                 count--;
-            if (count > MAXWORKSPACES)
-                count = MAXWORKSPACES;
-            char **oldWorkspaceNames = new char *[MAXWORKSPACES];
-            for (int i = 0; i < MAXWORKSPACES; i++)
-                oldWorkspaceNames[i] = 0;
-            for (int i = 0; i < count; i++) {
-                if (workspaceNames[i] != 0) {
-                    MSG(("Workspace %d: '%s' -> '%s'", i, workspaceNames[i], strings[i]));
-                    if (strcmp(workspaceNames[i],strings[i])) {
-                        oldWorkspaceNames[i] = workspaceNames[i];
-                        workspaceNames[i] = newstr(strings[i]);
-                        changed = true;
-                    }
-                } else {
-                    MSG(("Workspace %d: (null) -> '%s'", i, strings[i]));
-                    workspaceNames[i] = newstr(strings[i]);
-                    changed = true;
-                }
-            }
-            if (changed) {
-                updateTaskBarNames();
-                updateMoveMenu();
+            count = min(count, MAXWORKSPACES);
+            if (compareDesktopNames(strings, count)) {
                 setWinDesktopNames(count);
             }
             XFreeStringList(strings);
-            // old strings must persist until after the update
-            for (int i = 0; i < MAXWORKSPACES; i++)
-                if (oldWorkspaceNames[i] != 0)
-                    delete[] oldWorkspaceNames[i];
-            delete[] oldWorkspaceNames;
+            success = true;
         } else {
             MSG(("warning: could not convert strings for _NET_DESKTOP_NAMES"));
         }
         XFree(names.value);
-        return true;
     } else {
         MSG(("warning: could not read _NET_DESKTOP_NAMES"));
     }
 #endif
+    return success;
+}
+
+bool YWindowManager::readWinDesktopNames() {
+    bool success = false;
+
 #ifdef GNOME1_HINTS
     MSG(("reading: _WIN_WORKSPACE_NAMES(%d)",(int)_XA_WIN_WORKSPACE_NAMES));
+
+    XTextProperty names;
     if (XGetTextProperty(xapp->display(), handle(), &names,
                          _XA_WIN_WORKSPACE_NAMES) && names.nitems > 0) {
         int count = 0;
         char **strings = 0;
         if (XmbTextPropertyToTextList(xapp->display(), &names,
                                       &strings, &count) == Success) {
-            bool changed = false;
             if (count > 0 && strings[count - 1][0] == '\0')
                 count--;
-            if (count > MAXWORKSPACES)
-                count = MAXWORKSPACES;
-            char **oldWorkspaceNames = new char *[MAXWORKSPACES];
-            for (int i = 0; i < MAXWORKSPACES; i++)
-                oldWorkspaceNames[i] = 0;
-            for (int i = 0; i < count; i++) {
-                if (workspaceNames[i] != 0) {
-                    MSG(("Workspace %d: '%s' -> '%s'", i, workspaceNames[i], strings[i]));
-                    if (strcmp(workspaceNames[i],strings[i])) {
-                        oldWorkspaceNames[i] = workspaceNames[i];
-                        workspaceNames[i] = newstr(strings[i]);
-                        changed = true;
-                    }
-                } else {
-                    MSG(("Workspace %d: (null) -> '%s'", i, strings[i]));
-                    workspaceNames[i] = newstr(strings[i]);
-                    changed = true;
-                }
-            }
-            if (changed) {
-                updateTaskBarNames();
-                updateMoveMenu();
+            count = min(count, MAXWORKSPACES);
+            if (compareDesktopNames(strings, count)) {
                 setNetDesktopNames(count);
             }
             XFreeStringList(strings);
-            // old strings must persist until after the update
-            for (int i = 0; i < MAXWORKSPACES; i++)
-                if (oldWorkspaceNames[i] != 0)
-                    delete[] oldWorkspaceNames[i];
-            delete[] oldWorkspaceNames;
+            success = true;
         } else {
             MSG(("warning: could not convert strings for _WIN_WORKSPACE_NAMES"));
         }
         XFree(names.value);
-        return true;
     } else {
         MSG(("warning: could not read _WIN_WORKSPACE_NAMES"));
     }
 #endif
-    return false;
+    return success;
 }
 
 void YWindowManager::setWinDesktopNames(long count) {
+#ifdef GNOME1_HINTS
     MSG(("setting: _WIN_WORKSPACE_NAMES"));
     static char terminator[] = { '\0' };
     char **strings = new char *[count + 1];
@@ -2725,23 +2675,19 @@ void YWindowManager::setWinDesktopNames(long count) {
     }
     strings[count] = terminator;
     XTextProperty names;
-    int error = XLocaleNotSupported;
-#ifdef X_HAVE_UTF8_STRING
-    error = Xutf8TextListToTextProperty(xapp->display(), strings, count + 1, XUTF8StringStyle, &names);
-#endif
-    if (error != Success)
-        error = XStringListToTextProperty(strings, count + 1, &names);
-
-    if (error == Success)
-    {
+    if (XmbTextListToTextProperty(xapp->display(), strings,
+                                  count + 1, XStdICCTextStyle,
+                                  &names) == Success) {
         XSetTextProperty(xapp->display(), handle(), &names,
                          _XA_WIN_WORKSPACE_NAMES);
         XFree(names.value);
     }
     delete[] strings;
+#endif
 }
 
 void YWindowManager::setNetDesktopNames(long count) {
+#ifdef WMSPEC_HINTS
     MSG(("setting: _NET_DESKTOP_NAMES"));
     static char terminator[] = { '\0' };
     char **strings = new char *[count + 1];
@@ -2755,12 +2701,13 @@ void YWindowManager::setNetDesktopNames(long count) {
     XTextProperty names;
     if (XmbTextListToTextProperty(xapp->display(), strings,
                                   count + 1, XUTF8StringStyle,
-                                  &names)) {
+                                  &names) == Success) {
         XSetTextProperty(xapp->display(), handle(), &names,
                          _XA_NET_DESKTOP_NAMES);
         XFree(names.value);
     }
     delete[] strings;
+#endif
 }
 
 void YWindowManager::setDesktopNames(long count) {
@@ -2832,21 +2779,21 @@ void YWindowManager::getIconPosition(YFrameWindow *frame, int *iconX, int *iconY
     int *iconRow, *iconCol;
 
     if (miniIconsPlaceHorizontal) {
-	manager->getWorkArea(frame, &mcol, &mrow, &Mcol, &Mrow);
-	width = iw->width();
-	height = iw->height();
-	drow = (int)miniIconsBottomToTop * -2 + 1;
-	dcol = (int)miniIconsRightToLeft * -2 + 1;
-	iconRow = iconY;
-	iconCol = iconX;
+        manager->getWorkArea(frame, &mcol, &mrow, &Mcol, &Mrow);
+        width = iw->width();
+        height = iw->height();
+        drow = (int)miniIconsBottomToTop * -2 + 1;
+        dcol = (int)miniIconsRightToLeft * -2 + 1;
+        iconRow = iconY;
+        iconCol = iconX;
     } else {
-	manager->getWorkArea(frame, &mrow, &mcol, &Mrow, &Mcol);
-	width = iw->height();
-	height = iw->width();
-	drow = (int)miniIconsRightToLeft * -2 + 1;
-	dcol = (int)miniIconsBottomToTop * -2 + 1;
-	iconRow = iconX;
-	iconCol = iconY;
+        manager->getWorkArea(frame, &mrow, &mcol, &Mrow, &Mcol);
+        width = iw->height();
+        height = iw->width();
+        drow = (int)miniIconsRightToLeft * -2 + 1;
+        dcol = (int)miniIconsBottomToTop * -2 + 1;
+        iconRow = iconX;
+        iconCol = iconY;
     }
 
     /* Calculate start row and start column */
@@ -2854,9 +2801,9 @@ void YWindowManager::getIconPosition(YFrameWindow *frame, int *iconX, int *iconY
     int scol = (dcol > 0) ? mcol : (Mcol - width);
 
     if (!init) {
-	row = srow;
-	col = scol;
-	init = true;
+        row = srow;
+        col = scol;
+        init = true;
     }
 
     /* Return values */
@@ -3025,10 +2972,10 @@ void YWindowManager::updateUserTime(const UserTime& userTime) {
 }
 
 void YWindowManager::execAfterFork(const char *command) {
-	if(!command || !*command)
-		return;
+        if(!command || !*command)
+                return;
     msg("Running system command in shell: %s", command);
-	pid_t pid = fork();
+        pid_t pid = fork();
     switch(pid) {
     case -1: /* Failed */
         fail("fork failed");
@@ -3077,14 +3024,16 @@ void YWindowManager::removeClientFrame(YFrameWindow *frame) {
         updateWorkArea();
 }
 
-void YWindowManager::notifyFocus(YFrameWindow *frame) {
-    long wnd = frame ? frame->client()->handle() : None;
-    XChangeProperty(xapp->display(), handle(),
-                    _XA_NET_ACTIVE_WINDOW,
-                    XA_WINDOW,
-                    32, PropModeReplace,
-                    (unsigned char *)&wnd, 1);
-
+void YWindowManager::notifyActive(YFrameWindow *frame) {
+    Window wnd = frame ? frame->client()->handle() : None;
+    if (wnd != fActiveWindow) {
+        XChangeProperty(xapp->display(), handle(),
+                        _XA_NET_ACTIVE_WINDOW,
+                        XA_WINDOW,
+                        32, PropModeReplace,
+                        (unsigned char *)&wnd, 1);
+        fActiveWindow = wnd;
+    }
 }
 
 void YWindowManager::switchFocusTo(YFrameWindow *frame, bool reorderFocus) {
@@ -3103,7 +3052,7 @@ void YWindowManager::switchFocusTo(YFrameWindow *frame, bool reorderFocus) {
         frame->removeFocusFrame();
         frame->insertFocusFrame(true);
     }
-    notifyFocus(frame);
+    notifyActive(frame);
     updateClientList();
 }
 
@@ -3508,3 +3457,5 @@ void YWindowManager::UpdateScreenSize(XEvent *event) {
     }
 }
 #endif
+
+// vim: set sw=4 ts=4 et:

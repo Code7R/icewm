@@ -108,7 +108,7 @@ void WindowListBox::getSelectedWindows(YArray<YFrameWindow *> &frames) {
     }
 }
 
-void WindowListBox::actionPerformed(YAction *action, unsigned int modifiers) {
+void WindowListBox::actionPerformed(YAction action, unsigned int modifiers) {
     YArray<YFrameWindow *> frameList;
     getSelectedWindows(frameList);
 
@@ -225,7 +225,7 @@ void WindowListBox::enableCommands(YMenu *popup) {
     // enable minimize,hide if appropriate
     // enable workspace selections if appropriate
 
-    popup->enableCommand(0);
+    popup->enableCommand(actionNull);
     for (YListItem *i = getFirst(); i; i = i->getNext()) {
         if (isSelected(i)) {
             WindowListItem *item = (WindowListItem *)i;
@@ -257,7 +257,7 @@ void WindowListBox::enableCommands(YMenu *popup) {
     if (!notMinimized)
         popup->disableCommand(actionMinimize);
 
-    moveMenu->enableCommand(0);
+    moveMenu->enableCommand(actionNull);
     if (sameWorkspace && workspace != -1) {
         for (int i = 0; i < moveMenu->itemCount(); i++) {
             YMenuItem *item = moveMenu->getItem(i);
@@ -267,8 +267,8 @@ void WindowListBox::enableCommands(YMenu *popup) {
         }
     }
     if (noItems) {
-        moveMenu->disableCommand(0);
-        popup->disableCommand(0);
+        moveMenu->disableCommand(actionNull);
+        popup->disableCommand(actionNull);
     }
 }
 
@@ -490,3 +490,5 @@ void WindowList::showFocused(int x, int y) {
     }
 }
 #endif
+
+// vim: set sw=4 ts=4 et:

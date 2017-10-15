@@ -20,14 +20,14 @@ struct Battery {
   bool present;
   int capacity_full;
   Battery(const char* batName) : name(newstr(batName)),
-	  present(false), capacity_full(-1) { }
+          present(false), capacity_full(-1) { }
   ~Battery() { delete[] name; name = 0; }
 };
 
 
 class YApm: public YWindow, public YTimerListener {
 public:
-	// autodetect==true means becoming dormant if no battery was detected correctly
+        // autodetect==true means becoming dormant if no battery was detected correctly
     YApm(YWindow *aParent = 0, bool autodetect=false);
     virtual ~YApm();
 
@@ -73,10 +73,12 @@ private:
     // On line status and charge persent
     bool     acIsOnLine;
     // current and maximum charge, large enough for hundred 40Wh batteries
-    unsigned	energyNow, energyFull;
+    unsigned    energyNow, energyFull;
 
     void updateState();
 };
 #else
 #undef CONFIG_APPLET_APM
 #endif
+
+// vim: set sw=4 ts=4 et:

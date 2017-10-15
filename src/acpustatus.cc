@@ -359,7 +359,7 @@ int CPUStatus::getAcpiTemp(char *tempbuf, int buflen) {
                 strncat(tempbuf, buf + len - seglen, seglen);
             }
         }
-    } 
+    }
     else if (dir.open("/sys/class/thermal")) {
         while (dir.next()) {
             int len;
@@ -736,3 +736,5 @@ void CPUStatus::getCPUStatus(YSMListener *smActionListener, YWindow *aParent, CP
 #endif
 #endif
 
+
+// vim: set sw=4 ts=4 et:

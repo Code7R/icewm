@@ -127,7 +127,7 @@ YSurface ObjectButton::getSurface() {
 #endif
 }
 
-void ObjectButton::actionPerformed(YAction * action, unsigned modifiers) {
+void ObjectButton::actionPerformed(YAction action, unsigned modifiers) {
 #ifdef CONFIG_GUIEVENTS
     wmapp->signalGuiEvent(geLaunchApp);
 #endif
@@ -140,3 +140,5 @@ void ObjectButton::actionPerformed(YAction * action, unsigned modifiers) {
 #ifndef NO_CONFIGURE_MENUS
 ObjectMenu *rootMenu(NULL);
 #endif
+
+// vim: set sw=4 ts=4 et:

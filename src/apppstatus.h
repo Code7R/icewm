@@ -42,7 +42,7 @@ private:
     bool wasUp;               // previous link status
     bool useIsdn;             // netdevice is an IsdnDevice
     mstring fNetDev;            // name of the device
-    
+
     char phoneNumber[32];
 
     void updateVisible(bool aVisible);
@@ -93,3 +93,5 @@ public:
 #endif // CONFIG_APPLET_NET_STATUS
 
 #endif // NETSTATUS_H
+
+// vim: set sw=4 ts=4 et:

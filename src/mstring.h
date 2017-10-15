@@ -165,3 +165,5 @@ inline mstring operator+(const char* s, const mstring& m) {
 }
 
 #endif
+
+// vim: set sw=4 ts=4 et:

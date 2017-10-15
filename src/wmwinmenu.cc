@@ -22,10 +22,10 @@
 
 #include "intl.h"
 
-class ActivateWindowMenuItem: public YMenuItem, public YAction {
+class ActivateWindowMenuItem: public YMenuItem {
 public:
-    ActivateWindowMenuItem(YFrameWindow *frame): 
-        YMenuItem(frame->getTitle(), -1, null, this, 0),
+    ActivateWindowMenuItem(YFrameWindow *frame):
+        YMenuItem(frame->getTitle(), -1, null, YAction(), 0),
         fFrame(frame)
     {
 #ifndef LITE
@@ -34,7 +34,7 @@ public:
 #endif
     }
 
-    virtual void actionPerformed(YActionListener * /*listener*/, YAction * /*action*/, unsigned int modifiers) {
+    virtual void actionPerformed(YActionListener * /*listener*/, YAction /*action*/, unsigned int modifiers) {
         YFrameWindow *f = manager->topLayer();
 
         while (f) {
@@ -91,7 +91,7 @@ YMenu *YWindowManager::createWindowMenu(YMenu *menu, long workspace) {
                 if (level != windowLevel)
                     continue;
 
-                if ((levelCount == 0 && level > 0) || 
+                if ((levelCount == 0 && level > 0) ||
                     ((layerCount == 0 && layer > 0) && needSeparator))
                     menu->addSeparator();
 
@@ -140,3 +140,5 @@ void WindowListMenu::updatePopup() {
 }
 
 #endif
+
+// vim: set sw=4 ts=4 et:

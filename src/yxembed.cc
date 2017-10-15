@@ -31,3 +31,5 @@ void YXEmbedClient::handleUnmap(const XUnmapEvent &/*unmap*/) {
 //    YWindow::handleUnmap(unmap);
     fEmbedder->handleClientUnmap(handle());
 }
+
+// vim: set sw=4 ts=4 et:

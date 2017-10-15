@@ -148,7 +148,7 @@ TaskBar::TaskBar(IApp *app, YWindow *aParent, YActionListener *wmActionListener,
     YFrameClient(aParent, 0) INIT_GRADIENT(fGradient, null)
 {
     taskBar = this;
- 
+
     this->app = app;
     this->wmActionListener = wmActionListener;
     this->smActionListener = smActionListener;
@@ -185,10 +185,10 @@ TaskBar::TaskBar(IApp *app, YWindow *aParent, YActionListener *wmActionListener,
                     fIsCollapsed ? WinLayerAboveDock :
                     taskBarKeepBelow ? WinLayerBelow : WinLayerDock);
 #endif
-    Atom protocols[2] = { 
+    Atom protocols[2] = {
       _XA_WM_DELETE_WINDOW,
       _XA_WM_TAKE_FOCUS
-      //_NET_WM_PING, 
+      //_NET_WM_PING,
       //_NET_WM_SYNC_REQUEST,
     };
     XSetWMProtocols(xapp->display(), handle(), protocols, 2);
@@ -357,17 +357,17 @@ void TaskBar::initApplets() {
                            access("/sys/class/power_supply", 0) == 0 ||
                            access("/proc/acpi", 0) == 0 ||
                            access("/dev/acpi", 0) == 0 ||
-	                   access("/proc/pmu", R_OK|X_OK) == 0))
+                           access("/proc/pmu", R_OK|X_OK) == 0))
     {
         fApm = new YApm(this);
     }
     else if(!taskBarShowApm && taskBarShowApmAuto)
     {
-    	fApm = new YApm(this, true);
-    	if( ! fApm->hasBatteries()) {
-    		delete fApm;
-    		fApm = 0;
-    	}
+        fApm = new YApm(this, true);
+        if( ! fApm->hasBatteries()) {
+                delete fApm;
+                fApm = 0;
+        }
     }
 
     else
@@ -713,7 +713,7 @@ void TaskBar::updateLocation() {
     w = (dw/100.0) * taskBarWidthPercentage;
     if (strcmp(taskBarJustify, "right") == 0) x = dw - w;
     if (strcmp(taskBarJustify, "center") == 0) x = (dw - w)/2;
-    
+
     updateLayout(w, h);
 
     if (fIsCollapsed) {
@@ -1016,7 +1016,7 @@ void TaskBar::showBar(bool visible) {
     }
 }
 
-void TaskBar::actionPerformed(YAction *action, unsigned int modifiers) {
+void TaskBar::actionPerformed(YAction action, unsigned int modifiers) {
     wmActionListener->actionPerformed(action, modifiers);
 }
 
@@ -1110,3 +1110,5 @@ bool TaskBar::windowTrayRequestDock(Window w) {
 }
 
 #endif
+
+// vim: set sw=4 ts=4 et:

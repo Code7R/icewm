@@ -123,7 +123,8 @@ void YWindow::updateEnterNotifySerial(const XEvent &event) {
 /******************************************************************************/
 /******************************************************************************/
 
-YWindow::YWindow(YWindow *parent, Window win):
+YWindow::YWindow(YWindow *parent, Window win, int depth, Visual *visual, Colormap colormap):
+    fDepth(depth), fVisual(visual), fColormap(colormap),
     fParentWindow(parent),
     fNextWindow(0), fPrevWindow(0), fFirstWindow(0), fLastWindow(0),
     fFocusedWindow(0),
@@ -161,7 +162,7 @@ YWindow::~YWindow() {
     fFocusedWindow = 0;
     removeWindow();
     while (fNextWindow != 0)
-	    fNextWindow->removeWindow();
+            fNextWindow->removeWindow();
     while (accel) {
         YAccelerator *next = accel->next;
         delete accel;
@@ -318,6 +319,16 @@ void YWindow::create() {
             attributes.win_gravity = fWinGravity;
             attrmask |= CWWinGravity;
         }
+        if (fColormap != CopyFromParent) {
+            attributes.colormap = fColormap;
+            attrmask |= CWColormap;
+        }
+        if (fDepth != CopyFromParent) {
+            attributes.background_pixel = xapp->black();
+            attrmask |= CWBackPixel;
+            attributes.border_pixel = xapp->black();
+            attrmask |= CWBorderPixel;
+        }
 
         attributes.event_mask = fEventMask;
         int zw = width();
@@ -331,12 +342,17 @@ void YWindow::create() {
                                 parent()->handle(),
                                 x(), y(), zw, zh,
                                 0,
-                                CopyFromParent,
+                                fDepth,
                                 (fStyle & wsInputOnly) ? InputOnly : InputOutput,
-                                CopyFromParent,
+                                fVisual,
                                 attrmask,
                                 &attributes);
 
+        XWindowAttributes wa;
+        XGetWindowAttributes(xapp->display(), fHandle, &wa);
+        fDepth = wa.depth;
+        fVisual = wa.visual;
+        fColormap = wa.colormap;
         if (parent() == desktop &&
             !(flags & (wsManager | wsOverrideRedirect)))
             XSetWMProtocols(xapp->display(), fHandle, &_XA_WM_DELETE_WINDOW, 1);
@@ -1812,7 +1828,7 @@ void YWindow::scrollWindow(int dx, int dy) {
     XRectangle r[2];
     int nr = 0;
 
-    GC scrollGC = XCreateGC(xapp->display(), desktop->handle(), 0, NULL);
+    GC scrollGC = XCreateGC(xapp->display(), handle(), 0, NULL);
 
     XCopyArea(xapp->display(), handle(), handle(), scrollGC,
               dx, dy, width(), height(), 0, 0);
@@ -1902,7 +1918,7 @@ void YDesktop::updateXineramaInfo(int &w, int &h) {
                 si.height = ci->height;
                 xiInfo.append(si);
             }
-	    XRRFreeCrtcInfo(ci);
+            XRRFreeCrtcInfo(ci);
         }
 
         MSG(("xinerama primary screen name: %s", xineramaPrimaryScreenName));
@@ -1914,7 +1930,7 @@ void YDesktop::updateXineramaInfo(int &w, int &h) {
 #ifndef NO_CONFIGURE
             if (xineramaPrimaryScreenName != 0 && oinfo->name != NULL) {
                 if (strcmp(xineramaPrimaryScreenName, oinfo->name) == 0)
-                { 
+                {
                     int s = oinfo->crtc;
                     for (int sc = 0; sc < xiInfo.getCount(); sc++) {
                          if (xiInfo[sc].screen_number == s) {
@@ -1925,9 +1941,9 @@ void YDesktop::updateXineramaInfo(int &w, int &h) {
                 }
             }
 #endif
-	    XRRFreeOutputInfo(oinfo);
+            XRRFreeOutputInfo(oinfo);
         }
-	XRRFreeScreenResources(xrrsr);
+        XRRFreeScreenResources(xrrsr);
     }
 #endif
     if (xiInfo.getCount() < 2) { // use xinerama if no XRANDR screens (nvidia hack)
@@ -1954,8 +1970,8 @@ void YDesktop::updateXineramaInfo(int &w, int &h) {
                 si.height = xsi[i].height;
                 xiInfo.append(si);
             }
-	    if (xsi)
-		    XFree(xsi);
+            if (xsi)
+                    XFree(xsi);
         }
 #endif
     }
@@ -1977,7 +1993,7 @@ void YDesktop::updateXineramaInfo(int &w, int &h) {
                 w = xiInfo[i].width + xiInfo[i].x_org;
             if (xiInfo[i].y_org + xiInfo[i].height > h)
                 h = xiInfo[i].height + xiInfo[i].y_org;
-            
+
             MSG(("screen %d (%d): %d %d %d %d", i, xiInfo[i].screen_number, xiInfo[i].x_org, xiInfo[i].y_org, xiInfo[i].width, xiInfo[i].height));
         }
     }
@@ -2047,3 +2063,5 @@ KeySym YWindow::keyCodeToKeySym(unsigned int keycode, int index) {
 int YDesktop::getScreenCount() {
     return xiInfo.getCount();
 }
+
+// vim: set sw=4 ts=4 et:

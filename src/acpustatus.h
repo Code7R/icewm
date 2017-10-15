@@ -20,9 +20,9 @@ public:
     CPUStatus(
         YSMListener *smActionListener = 0,
         YWindow *aParent = 0,
-	int cpuid = -1);
+        int cpuid = -1);
     virtual ~CPUStatus();
-    
+
     virtual void paint(Graphics &g, const YRect &r);
 
     virtual bool handleTimer(YTimer *t);
@@ -57,3 +57,5 @@ private:
 #endif
 
 #endif
+
+// vim: set sw=4 ts=4 et:

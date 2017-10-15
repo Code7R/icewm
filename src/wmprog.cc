@@ -33,7 +33,7 @@
 #include "argument.h"
 
 DObjectMenuItem::DObjectMenuItem(DObject *object):
-    YMenuItem(object->getName(), -3, null, this, 0)
+    YMenuItem(object->getName(), -3, null, YAction(), 0)
 {
     fObject = object;
 #ifndef LITE
@@ -46,7 +46,7 @@ DObjectMenuItem::~DObjectMenuItem() {
     delete fObject;
 }
 
-void DObjectMenuItem::actionPerformed(YActionListener * /*listener*/, YAction * /*action*/, unsigned int /*modifiers*/) {
+void DObjectMenuItem::actionPerformed(YActionListener * /*listener*/, YAction /*action*/, unsigned int /*modifiers*/) {
 #ifdef CONFIG_GUIEVENTS
     wmapp->signalGuiEvent(geLaunchApp);
 #endif
@@ -126,7 +126,7 @@ DProgram::DProgram(
     const bool restart,
     const char *wmclass,
     upath exe,
-    YStringArray &args)
+    const YStringArray &args)
     : DObject(app, name, icon),
     fRestart(restart),
     fRes(newstr(wmclass)),
@@ -160,7 +160,7 @@ DProgram *DProgram::newProgram(
     const bool restart,
     const char *wmclass,
     upath exe,
-    YStringArray &args)
+    const YStringArray &args)
 {
     if (exe != null) {
         MSG(("LOOKING FOR: %s\n", exe.string().c_str()));
@@ -505,7 +505,7 @@ char *parseMenus(
                     return p;
                 }
 
-                DProgram *prog = DProgram::newProgram(                
+                DProgram *prog = DProgram::newProgram(
                     app,
                     smActionListener,
                     key,
@@ -527,7 +527,7 @@ char *parseMenus(
 }
 
 void loadMenus(
-    IApp *app, 
+    IApp *app,
     YSMListener *smActionListener,
     YActionListener *wmActionListener,
     upath menufile,
@@ -792,7 +792,7 @@ FocusMenu::FocusMenu() {
     struct FocusModelNameAction {
         FocusModels mode;
         const char *name;
-        YAction *action;
+        YAction action;
     } foci[] = {
         { FocusClick, _("_Click to focus"), actionFocusClickToFocus },
         { FocusExplicit, _("_Explicit focus"), actionFocusExplicit },
@@ -1015,3 +1015,5 @@ void StartMenu::refresh() {
     }
 }
 #endif
+
+// vim: set sw=4 ts=4 et:

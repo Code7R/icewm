@@ -30,8 +30,8 @@ YColor *YButton::activeButtonFg = 0;
 ref<YFont> YButton::normalButtonFont;
 ref<YFont> YButton::activeButtonFont;
 
-YButton::YButton(YWindow *parent, YAction *action, YMenu *popup) :
-    YWindow(parent),
+YButton::YButton(YWindow *parent, YAction action, YMenu *popup) :
+    YWindow(parent, 0, xapp->depth(), xapp->visual(), xapp->colormap()),
     fOver(false),
     fAction(action), fPopup(popup),
     fIcon(null),
@@ -123,8 +123,8 @@ void YButton::paint(Graphics &g, const YRect &/*r*/) {
         } else if (wmLook == lookGtk) {
             g.drawBorderG(x, y, w - 1, h - 1, !d);
             x += 1 + d; y += 1 + d; w -= 3; h -= 3;
-	} else if (wmLook == lookFlat){
-	    d = 0;
+        } else if (wmLook == lookFlat){
+            d = 0;
         } else {
             g.drawBorderW(x, y, w - 1, h - 1, !d);
             x += 1 + d; y += 1 + d; w -= 3; h -= 3;
@@ -437,12 +437,12 @@ bool YButton::isFocusTraversable() {
     return true;
 }
 
-void YButton::setAction(YAction *action) {
+void YButton::setAction(YAction action) {
     fAction = action;
 }
 
-void YButton::actionPerformed(YAction *action, unsigned modifiers) {
-    if (fListener && action && fEnabled)
+void YButton::actionPerformed(YAction action, unsigned modifiers) {
+    if (fListener && action != actionNull && fEnabled)
         fListener->actionPerformed(action, modifiers);
 }
 
@@ -475,3 +475,5 @@ void YButton::setEnabled(bool enabled) {
         repaint();
     }
 }
+
+// vim: set sw=4 ts=4 et:

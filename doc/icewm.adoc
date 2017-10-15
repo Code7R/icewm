@@ -1,9 +1,9 @@
 = IceWM Manual
-Marko Macek, <Marko.Macek@gmx.net>
+Marko Macek <Marko.Macek@gmx.net>
 v1.4.1, 2017 July 27
 :homepage: http://www.icewm.org
 :toc:
-:toclevels: 1
+:toclevels: 2
 
 This document is the manual for the *IceWM* X11 window manager.
 It is still incomplete. IceWM and its documentation is
@@ -827,7 +827,7 @@ Each line in the file must be in one of the possible formats:
 * window_name.option: argument
 * window_role.option: argument
 
-Each window on the desktop has (should) *class* and *name* resources associated with it. Some more recent applications will also have a *window role* resource, though not all do.
+Each window on the desktop should have *class* and *name* resources associated with it. Some more recent applications will also have a *window role* resource, though not all do.
 They can be determined using the `xprop` utility.
 
 `xprop` should display a line like this when used on a toplevel window:

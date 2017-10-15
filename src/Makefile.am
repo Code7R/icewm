@@ -123,6 +123,8 @@ libice_la_SOURCES = \
 	ylocale.h \
 	yarray.cc \
 	yarray.h \
+	ycollections.h \
+	ycollections.cc \
 	ypipereader.cc \
 	ypipereader.h \
 	yxembed.cc \
@@ -243,7 +245,6 @@ icewm_SOURCES = \
 	wmstatus.h \
 	wmoption.cc \
 	wmoption.h \
-	wmaction.cc \
 	wmaction.h \
 	wmcontainer.cc \
 	wmcontainer.h \
@@ -443,7 +444,6 @@ icebar_SOURCES = \
 	ascii.h \
 	themes.cc \
 	themes.h \
-	wmaction.cc \
 	wmaction.h \
 	amailbox.cc \
 	amailbox.h \
@@ -579,7 +579,6 @@ testmenus_SOURCES = \
 	prefs.h \
 	wmprog.cc \
 	wmprog.h \
-	wmaction.cc \
 	wmaction.h \
 	ascii.h \
 	themes.cc \
@@ -622,7 +621,7 @@ testlocale_SOURCES = \
 	base.h \
 	ylib.h \
 	testlocale.cc
-testlocale_LDADD = libice.la
+testlocale_LDADD = libice.la $(CORE_LIBS)
 
 testarray_SOURCES = \
 	intl.h \

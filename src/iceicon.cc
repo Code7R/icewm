@@ -568,3 +568,5 @@ int main(int argc, char **argv) {
 
     return app.mainLoop();
 }
+
+// vim: set sw=4 ts=4 et:

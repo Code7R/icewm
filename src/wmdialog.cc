@@ -42,7 +42,7 @@ bool couldRunCommand(const char *cmd) {
 
 bool canLock()
 {
-	return couldRunCommand(lockCommand);
+        return couldRunCommand(lockCommand);
 }
 
 bool canShutdown(bool reboot) {
@@ -85,7 +85,7 @@ CtrlAltDelete::CtrlAltDelete(IApp *app, YWindow *parent): YWindow(parent) {
      * such that tabbing through them is in reading order
      * from left to right then top to bottom.
      */
- 
+
     lockButton = addButton(_("Loc_k Workstation"), w, h);
     suspendButton = addButton(_("_Suspend"), w, h);
     cancelButton = addButton(_("_Cancel"), w, h);
@@ -103,7 +103,7 @@ CtrlAltDelete::CtrlAltDelete(IApp *app, YWindow *parent): YWindow(parent) {
     if (!canLock())
         lockButton->setEnabled(false);
     if (!couldRunCommand(suspendCommand))
-    	suspendButton->setEnabled(false);
+        suspendButton->setEnabled(false);
 
     setSize(HORZ + w + MIDH + w + MIDH + w + HORZ,
             VERT + h + MIDV + h + MIDV + h + VERT);
@@ -137,7 +137,7 @@ CtrlAltDelete::~CtrlAltDelete() {
 }
 
 void CtrlAltDelete::paint(Graphics &g, const YRect &/*r*/) {
-#ifdef CONFIG_GRADIENTS    
+#ifdef CONFIG_GRADIENTS
     YSurface surface(cadBg, logoutPixmap, logoutPixbuf);
 #else
     YSurface surface(cadBg, logoutPixmap);
@@ -147,27 +147,27 @@ void CtrlAltDelete::paint(Graphics &g, const YRect &/*r*/) {
     g.draw3DRect(0, 0, width() - 1, height() - 1, true);
 }
 
-void CtrlAltDelete::actionPerformed(YAction *action, unsigned int /*modifiers*/) {
+void CtrlAltDelete::actionPerformed(YAction action, unsigned int /*modifiers*/) {
     deactivate();
-    if (action == lockButton) {
+    if (action == *lockButton) {
         if (lockCommand && lockCommand[0])
             app->runCommand(lockCommand);
-    } else if (action == logoutButton) {
+    } else if (action == *logoutButton) {
         manager->doWMAction(ICEWM_ACTION_LOGOUT);
-    } else if (action == cancelButton) {
+    } else if (action == *cancelButton) {
         // !!! side-effect, not really nice
         manager->doWMAction(ICEWM_ACTION_CANCEL_LOGOUT);
-    } else if (action == restartButton) {
+    } else if (action == *restartButton) {
         manager->doWMAction(ICEWM_ACTION_RESTARTWM);
-    } else if (action == shutdownButton) {
+    } else if (action == *shutdownButton) {
         manager->doWMAction(ICEWM_ACTION_SHUTDOWN);
-    } else if (action == rebootButton) {
+    } else if (action == *rebootButton) {
         manager->doWMAction(ICEWM_ACTION_REBOOT);
-    } else if (action == suspendButton) {
+    } else if (action == *suspendButton) {
         manager->doWMAction(ICEWM_ACTION_SUSPEND);
-    } else if (action == aboutButton) {
+    } else if (action == *aboutButton) {
         manager->doWMAction(ICEWM_ACTION_ABOUT);
-    } else if (action == windowListButton) {
+    } else if (action == *windowListButton) {
         manager->doWMAction(ICEWM_ACTION_WINDOWLIST);
     }
 }
@@ -175,7 +175,7 @@ void CtrlAltDelete::actionPerformed(YAction *action, unsigned int /*modifiers*/)
 bool CtrlAltDelete::handleKey(const XKeyEvent &key) {
     KeySym k = keyCodeToKeySym(key.keycode);
     int m = KEY_MODMASK(key.state);
-        
+
     if (key.type == KeyPress) {
         if (k == XK_Escape && m == 0) {
             deactivate();
@@ -209,7 +209,7 @@ void CtrlAltDelete::deactivate() {
 
 YActionButton* CtrlAltDelete::addButton(const ustring& str, int& maxW, int& maxH)
 {
-	YActionButton* b = new YActionButton(this);
+        YActionButton* b = new YActionButton(this);
     b->setText(str, -2);
     if (b->width() > maxW) maxW = b->width();
     if (b->height() > maxH) maxH = b->height();
@@ -219,3 +219,5 @@ YActionButton* CtrlAltDelete::addButton(const ustring& str, int& maxW, int& maxH
 }
 
 #endif
+
+// vim: set sw=4 ts=4 et:

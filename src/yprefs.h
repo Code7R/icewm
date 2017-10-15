@@ -66,3 +66,5 @@ XSV(const char *, clrToolTipText,               "rgb:00/00/00")
 XFV(const char *, toolTipFontName,              FONT(120), "sans-serif:size=11")
 
 #endif
+
+// vim: set sw=4 ts=4 et:
