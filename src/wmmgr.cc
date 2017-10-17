@@ -1479,10 +1479,12 @@ YFrameWindow *YWindowManager::manageClient(Window win, bool mapClient) {
     XWindowAttributes wa;
     XGetWindowAttributes(xapp->display(), client->handle(), &wa);
 
-    frame = new YFrameWindow(wmActionListener, 0,
-            wa.depth == 32 ? wa.depth : xapp->depth(),
-            wa.depth == 32 ? wa.visual : xapp->visual(),
-            wa.depth == 32 ? wa.colormap : xapp->colormap());
+    if (wa.depth == 32)
+        frame = new YFrameWindow(wmActionListener, 0,
+                                 wa.depth,
+                                 wa.visual);
+    else
+        frame = new YFrameWindow(wmActionListener);
 
     if (frame == 0) {
         delete client;

@@ -33,7 +33,7 @@ struct DesktopScreenInfo {
 
 class YWindow {
 public:
-    YWindow(YWindow *aParent = 0, Window win = 0, int depth = CopyFromParent, Visual *visual = CopyFromParent, Colormap colormap = CopyFromParent);
+    YWindow(YWindow *aParent = 0, Window win = 0, int depth = CopyFromParent, Visual *visual = CopyFromParent);
     virtual ~YWindow();
 
     void setStyle(unsigned long aStyle);
@@ -57,7 +57,9 @@ public:
     void setGeometry(const YRect &r);
     void setSize(int width, int height);
     void setPosition(int x, int y);
+    void setParentRelative(void);
     virtual void configure(const YRect &r);
+
 
     virtual void paint(Graphics &g, const YRect &r);
     virtual void paintFocus(Graphics &, const YRect &) {}
@@ -142,7 +144,6 @@ public:
     int height() const { return fHeight; }
     int depth() const { return fDepth; }
     Visual *visual() const { return fVisual; }
-    Colormap colormap() const { return fColormap; }
 
     bool visible() const { return (flags & wfVisible); }
     bool created() const { return (flags & wfCreated); }
@@ -238,7 +239,7 @@ private:
 
     int fDepth;
     Visual *fVisual;
-    Colormap fColormap;
+    Colormap fAllocColormap;
 
     YWindow *fParentWindow;
     YWindow *fNextWindow;

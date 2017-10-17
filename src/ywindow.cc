@@ -123,8 +123,8 @@ void YWindow::updateEnterNotifySerial(const XEvent &event) {
 /******************************************************************************/
 /******************************************************************************/
 
-YWindow::YWindow(YWindow *parent, Window win, int depth, Visual *visual, Colormap colormap):
-    fDepth(depth), fVisual(visual), fColormap(colormap),
+YWindow::YWindow(YWindow *parent, Window win, int depth, Visual *visual):
+    fDepth(depth), fVisual(visual), fAllocColormap(None),
     fParentWindow(parent),
     fNextWindow(0), fPrevWindow(0), fFirstWindow(0), fLastWindow(0),
     fFocusedWindow(0),
@@ -185,6 +185,10 @@ YWindow::~YWindow() {
     }
     if (flags & wfCreated)
         destroy();
+    if (fAllocColormap) {
+        XFreeColormap(xapp->display(), fAllocColormap);
+        fAllocColormap = None;
+    }
 }
 
 void YWindow::setWindowFocus() {
@@ -319,8 +323,9 @@ void YWindow::create() {
             attributes.win_gravity = fWinGravity;
             attrmask |= CWWinGravity;
         }
-        if (fColormap != CopyFromParent) {
-            attributes.colormap = fColormap;
+        if (fVisual != CopyFromParent) {
+            fAllocColormap = XCreateColormap(xapp->display(), desktop->handle(), fVisual, AllocNone);
+            attributes.colormap = fAllocColormap;
             attrmask |= CWColormap;
         }
         if (fDepth != CopyFromParent) {
@@ -352,7 +357,6 @@ void YWindow::create() {
         XGetWindowAttributes(xapp->display(), fHandle, &wa);
         fDepth = wa.depth;
         fVisual = wa.visual;
-        fColormap = wa.colormap;
         if (parent() == desktop &&
             !(flags & (wsManager | wsOverrideRedirect)))
             XSetWMProtocols(xapp->display(), fHandle, &_XA_WM_DELETE_WINDOW, 1);
@@ -438,6 +442,8 @@ void YWindow::insertWindow() {
 }
 
 void YWindow::reparent(YWindow *parent, int x, int y) {
+    // ensure window was created before reparenting
+    (void) handle();
     if (flags & wfVisible) {
         addIgnoreUnmap(handle());
     }
@@ -1095,6 +1101,11 @@ void YWindow::setSize(int width, int height) {
 
         configure(YRect(x(), y(), fWidth, fHeight));
     }
+}
+
+void YWindow::setParentRelative(void) {
+    XSetWindowBackgroundPixmap(xapp->display(), handle(), ParentRelative);
+    XClearArea(xapp->display(), handle(), 0, 0, 0, 0, True);
 }
 
 void YWindow::mapToGlobal(int &x, int &y) {
