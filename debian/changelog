@@ -1,14 +1,15 @@
-icewm (1.4.3.0~pre-20171015-1) experimental; urgency=low
+icewm (1.4.3.0~pre-20171017-1) experimental; urgency=low
 
   * New upstream snapshot
     + includes FTBFS fixes (closes: #877613)
-    + various fixes for colormap handling (#261876)
+    + various fixes for colormap handling (#261876 related)
     + manpage updates (mostly in the previous snapshots, closes: #711603)
     + taskbar shouldn't be focusable anymore (closes: #174712)
+
   [ Helmut Grohne ]
   * Fix FTCBFS: Let dh_auto_configure pass cross compilers (closes: #850919)
 
- -- Eduard Bloch <blade@debian.org>  Sun, 15 Oct 2017 13:02:45 +0200
+ -- Eduard Bloch <blade@debian.org>  Tue, 17 Oct 2017 19:49:37 +0200
 
 icewm (1.4.3.0~pre-20171002-2) experimental; urgency=low
 
