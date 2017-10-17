@@ -1,3 +1,316 @@
+commit f7b3732c4005d94213a1935480ce3b74c3778543
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 16 10:06:32 2017 -0600
+
+    update po files
+
+ po/ar.po     |  52 ++++++++++-----------
+ po/be.po     |  52 ++++++++++-----------
+ po/bg.po     |  52 ++++++++++-----------
+ po/ca.po     |  56 +++++++++++-----------
+ po/cs.po     |  52 ++++++++++-----------
+ po/da.po     |  52 ++++++++++-----------
+ po/de.po     |  52 ++++++++++-----------
+ po/el.po     |  52 ++++++++++-----------
+ po/en.po     |  52 ++++++++++-----------
+ po/es.po     |  52 ++++++++++-----------
+ po/fi.po     |  52 ++++++++++-----------
+ po/fr.po     |  52 ++++++++++-----------
+ po/he.po     |  52 ++++++++++-----------
+ po/hr.po     |  52 ++++++++++-----------
+ po/hu.po     |  52 ++++++++++-----------
+ po/icewm.pot |  52 ++++++++++-----------
+ po/id.po     |  52 ++++++++++-----------
+ po/it.po     |  56 +++++++++++-----------
+ po/ja.po     | 138 +++++++++++++++++++++++++++++++++----------------------
+ po/ko.po     |  52 ++++++++++-----------
+ po/lt.po     |  52 ++++++++++-----------
+ po/lv.po     |  52 ++++++++++-----------
+ po/mk.po     |  52 ++++++++++-----------
+ po/nb.po     |  52 ++++++++++-----------
+ po/nl.po     |  52 ++++++++++-----------
+ po/no.po     |  52 ++++++++++-----------
+ po/pl.po     |  52 ++++++++++-----------
+ po/pt_BR.po  |  56 +++++++++++-----------
+ po/ro.po     |  52 ++++++++++-----------
+ po/ru.po     |  52 ++++++++++-----------
+ po/sk.po     |  52 ++++++++++-----------
+ po/sl.po     |  52 ++++++++++-----------
+ po/sv.po     |  52 ++++++++++-----------
+ po/tr.po     |  52 ++++++++++-----------
+ po/uk.po     |  52 ++++++++++-----------
+ po/vi.po     |  52 ++++++++++-----------
+ po/zh_CN.po  |  52 ++++++++++-----------
+ po/zh_TW.po  |  52 ++++++++++-----------
+ 38 files changed, 1051 insertions(+), 1023 deletions(-)
+
+commit 09cfe43b982fb67c4dfd3b0d16879ab5ea9390b9
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 16 07:52:44 2017 -0600
+
+    do not know why this works but it does
+
+ src/wmtaskbar.cc | 3 +++
+ src/yxtray.cc    | 5 ++---
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+commit 103716c2274a954a08b3f5ab3c6681ac489cb4fc
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 16 07:01:10 2017 -0600
+
+    Revert "do not need this function anymore"
+
+    This reverts commit 9598300f5d8a1e9206d389fc18dc396346e1845b.
+
+    Yes we do.
+
+ src/icetray.cc | 2 --
+ 1 file changed, 2 deletions(-)
+
+commit 3c5533ac66903165b9061175fb43c9ea45898c8c
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 16 05:10:12 2017 -0600
+
+    address #160 .png is nicer than .svg
+
+ src/yicon.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 460bd0042624716d7c0c697490945aa0d3bde976
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 16 05:05:36 2017 -0600
+
+    address #149 new focus and order .svg .png .xpm
+
+ lib/Makefile.am           |   2 ++
+ lib/icons/focus_16x16.png | Bin 0 -> 691 bytes
+ lib/icons/focus_32x32.png | Bin 0 -> 1475 bytes
+ src/yicon.cc              |   2 +-
+ 4 files changed, 3 insertions(+), 1 deletion(-)
+
+commit 9598300f5d8a1e9206d389fc18dc396346e1845b
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 16 04:24:23 2017 -0600
+
+    do not need this function anymore
+
+ src/icetray.cc | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit 5262fcbadc09068b95e4b846823866a839c2f619
+Merge: b136512c 34e1510d
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 16 04:05:17 2017 -0600
+
+    Merge branch 'icewm-1-4-BRANCH' of github.com:bbidulock/icewm into
+    icewm-1-4-BRANCH
+
+commit b136512c2a13907c40182d40d1e9d7ba08663819
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 16 04:02:46 2017 -0600
+
+    fix for #72 make windows transparent down to taskbar
+
+    - now if the taskbar has a gradient, it appears under systray icons
+
+ src/icetray.cc |  1 +
+ src/ywindow.cc |  5 +++++
+ src/ywindow.h  |  2 ++
+ src/yxembed.cc |  2 ++
+ src/yxtray.cc  | 18 +++++++++++++++---
+ 5 files changed, 25 insertions(+), 3 deletions(-)
+
+commit 34e1510d1c8a04b9f399c4642b4e1345d207a6c3
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Oct 16 12:00:35 2017 +0200
+
+    Fix documentation of NIC detection pattern
+
+    Fixes #182
+
+ doc/icewm.adoc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 57b2083cd31dd4bab64132d194f142692ceb6f47
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 16 00:46:41 2017 -0600
+
+    Revert "raise input windows"
+
+    This reverts commit b00a371e5ed5244d18c785bebd68e128f72c11ad.
+
+    Doesn't really work to raise these windows: they raise over titlebar
+    buttons.  Also, if they are over the client, bad things happen in the
+    corners.
+
+ src/decorate.cc | 10 ----------
+ 1 file changed, 10 deletions(-)
+
+commit 302189bddb7c64c76a97ad8ee2406bf744e9a6a9
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 16 00:44:23 2017 -0600
+
+    allocate non-default colormaps for frames
+
+ src/wmframe.cc |  4 ++--
+ src/wmframe.h  |  2 +-
+ src/wmmgr.cc   |  3 +--
+ src/ywindow.cc | 14 +++++++++-----
+ src/ywindow.h  |  5 ++---
+ 5 files changed, 15 insertions(+), 13 deletions(-)
+
+commit 04795a62394f676df93028611767c5d4a83f4c6a
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Oct 15 23:48:31 2017 -0600
+
+    Revert "prefer CopyFromParent if possible."
+
+    This reverts commit 6aab9f63976a35121c546383ff4e422530d02db1.
+
+ src/ywindow.cc | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+commit a0f801dbba41c896d78e7868b29db2b436738413
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Oct 15 23:34:11 2017 -0600
+
+    remove debugs
+
+ src/wmframe.cc | 8 --------
+ 1 file changed, 8 deletions(-)
+
+commit b00a371e5ed5244d18c785bebd68e128f72c11ad
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Oct 15 23:33:35 2017 -0600
+
+    raise input windows
+
+ src/decorate.cc | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+commit 4c45dc9255d97f1ded87edaf15117a64e00d9dab
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Oct 15 23:25:23 2017 -0600
+
+    create windows under parent before reparenting
+
+    - general problem was that windows were being reparented
+      before being created.  They must be created before being
+      reparented for CopyFromParent to be determinate.
+
+ src/wmbutton.cc   | 2 --
+ src/wmminiicon.cc | 2 --
+ src/wmtitle.cc    | 2 --
+ src/ywindow.cc    | 2 ++
+ 4 files changed, 2 insertions(+), 6 deletions(-)
+
+commit 71da4befc876a1e4e15e1a58ba964568a642f9e4
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Oct 15 23:19:22 2017 -0600
+
+    create decorations top-level and reparent after creation
+
+     - problem with deferred creation is that the parent can
+       change between creation of the YWindow object and the
+       later call to create (reparent() method does not
+       create the window before reparenting it).
+
+     - nevertheless, this commit creates decorations as a
+       child of "desktop" and then reparents them under the
+       intended parent (the frame).  Thus they wind up with
+       a default depth, visual and colormap instead of that
+       of the frame which can be 32.
+
+ src/wmbutton.cc   | 5 ++++-
+ src/wmminiicon.cc | 5 ++++-
+ src/wmtitle.cc    | 5 ++++-
+ 3 files changed, 12 insertions(+), 3 deletions(-)
+
+commit f38234d10b5fd9466b7ada4d078a4e3b314463a4
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Oct 15 22:50:33 2017 -0600
+
+    Revert "Better initialization of YDesktop window."
+
+    This reverts commit a361ee856953853ef428a5d1d8fe5b7f75be3857.
+
+ src/ywindow.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 0f6e75fdbe43e47495ccb1a6c70b420c1bec5661
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Oct 15 22:24:00 2017 -0600
+
+    create inputOnly windows with correct parameters
+
+ src/wmframe.cc | 35 +++++++++++++++++------------------
+ 1 file changed, 17 insertions(+), 18 deletions(-)
+
+commit ef33bc55a5ff38a50c85e32c9d6ccdd87f7713ef
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Oct 15 20:31:13 2017 -0600
+
+    always report X errors
+
+ src/wmapp.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit a361ee856953853ef428a5d1d8fe5b7f75be3857
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 15 17:59:02 2017 +0200
+
+    Better initialization of YDesktop window.
+
+ src/ywindow.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 6aab9f63976a35121c546383ff4e422530d02db1
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 15 17:07:30 2017 +0200
+
+    prefer CopyFromParent if possible.
+
+ src/ywindow.cc | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+commit d8546f2d53259857cd064a339d327cf3d6802239
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 15 16:28:17 2017 +0200
+
+    prevent disturbing flashing on miniicons
+
+ src/wmminiicon.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit ef69ff639c510b5bdd2b42ab9344a0d1cdc983a8
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 15 15:55:51 2017 +0200
+
+    use CopyFromParent by default as this prevents disturbing flashing on
+    frame borders when switching focus.
+
+ src/wmframe.h |  2 +-
+ src/wmmgr.cc  | 11 +++++++----
+ 2 files changed, 8 insertions(+), 5 deletions(-)
+
+commit 92a4d4bd3473e63ff2176c95e374ab7688fce918
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 15 14:12:20 2017 +0200
+
+    Prevent disturbing flashing when switching focus.
+
+ src/wmtitle.cc | 2 +-
+ src/ybutton.cc | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit b5cb3779b0457884b6c56fe8fe884d202ccf357b
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sun Oct 15 13:11:58 2017 +0200
+
+    Fix list handling in audio library CFLAGS
+
+ src/CMakeLists.txt | 2 ++
+ 1 file changed, 2 insertions(+)
 commit 8cdf7311f57bead9caf03b5883b50da683d7082d
 Author: Bert Gijsbers <gijsbers@science.uva.nl>
 Date:   Sun Oct 15 11:05:47 2017 +0200
