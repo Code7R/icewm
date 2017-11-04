@@ -1,3 +1,14 @@
+commit 666945f85fa5f97557690371c40a881912be31f0
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sat Nov 4 12:47:15 2017 +0100
+
+    Fixing build on architectures without power applet OS code
+
+ src/apppstatus.h | 5 ++---
+ src/base.h       | 9 +++++++++
+ src/wmtaskbar.cc | 4 ++--
+ src/wmtaskbar.h  | 7 ++++++-
+ 4 files changed, 19 insertions(+), 6 deletions(-)
 commit 65646f3b7b1d56a6525e44ab9e29176d66312202
 Author: Eduard Bloch <blade@debian.org>
 Date:   Sat Nov 4 11:52:38 2017 +0100
