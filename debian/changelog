@@ -1,3 +1,9 @@
+icewm (1.4.3.0~pre-20171104-1) experimental; urgency=low
+
+  * New upstream snapshot
+
+ -- Eduard Bloch <blade@debian.org>  Sat, 04 Nov 2017 12:19:47 +0100
+
 icewm (1.4.3.0~pre-20171017-1) experimental; urgency=low
 
   * New upstream snapshot
