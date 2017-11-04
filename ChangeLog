@@ -1,3 +1,1230 @@
+commit 65646f3b7b1d56a6525e44ab9e29176d66312202
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sat Nov 4 11:52:38 2017 +0100
+
+    Fixing LITE build with CMake
+
+    Avoid getIcon call, turn off impossible combinations in configuration.
+
+ src/CMakeLists.txt | 6 +++++-
+ src/atray.cc       | 3 ++-
+ src/wmswitch.cc    | 5 ++++-
+ src/wmwinlist.cc   | 5 +++--
+ 4 files changed, 14 insertions(+), 5 deletions(-)
+
+commit 31557e95f67df6061f9e1260b822ca6c42a92485
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sat Nov 4 11:30:48 2017 +0100
+
+    Force legacy C++ standard for now
+
+ src/CMakeLists.txt | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+commit 118677d7f090bbf0d8a81d7bda76842c3ac4f647
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sat Nov 4 08:47:22 2017 +0100
+
+    add options. -t runs tests on combinations of configure options.
+
+ rebuild.sh | 57 +++++++++++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 53 insertions(+), 4 deletions(-)
+
+commit fdd1c7150080774bf4228e5860b0a5e9a5a83f77
+Author: Arif Budiman <arifpedia@gmail.com>
+Date:   Fri Nov 3 07:12:36 2017 +0000
+
+    Translated using Weblate (Indonesian)
+
+    Currently translated at 88.0% (281 of 319 strings)
+
+ po/id.po | 69 ++++++++++++++++++++++++++++++------------------------------
+ 1 file changed, 34 insertions(+), 35 deletions(-)
+
+commit 7597af09d149f5567879fa5a7350372b5cdc0699
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Thu Nov 2 23:12:18 2017 +0100
+
+    better fix for include is ymenu.h.
+
+ src/yxapp.cc | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+commit f9d54d83e4b2fc2c2d8147e26c2d9ec71d905388
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Thu Nov 2 22:48:50 2017 +0100
+
+    also include ytimer.h.
+
+ src/yxapp.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit f2a7349b06b3dd5e04bd6e4ce5fa49d3c5c226e5
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Thu Nov 2 22:45:02 2017 +0100
+
+    fix includes
+
+ src/apppstatus.h | 1 -
+ src/wmswitch.h   | 1 -
+ src/wmtaskbar.cc | 1 -
+ src/yxapp.cc     | 2 ++
+ 4 files changed, 2 insertions(+), 3 deletions(-)
+
+commit d384254d6ea6367182cf5bdf8f81d62fd7e6f234
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Thu Nov 2 22:43:40 2017 +0100
+
+    fix call to dumpZorder for 2nd arg.
+
+ src/wmmgr.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit ac4ad65f7d593aded3acebc5d13da9b418eca4ad
+Author: Ferdinand Galko <galko.ferdinand@gmail.com>
+Date:   Thu Nov 2 15:31:01 2017 +0000
+
+    Translated using Weblate (Slovak)
+
+    Currently translated at 86.2% (275 of 319 strings)
+
+ po/sk.po | 46 ++++++++++++++++++++++++++++++----------------
+ 1 file changed, 30 insertions(+), 16 deletions(-)
+
+commit 23060f9812eb05218ea3fcc15ecb72511c893a26
+Author: Alessio Adamo <alessio.adamo@gmail.com>
+Date:   Thu Nov 2 10:59:43 2017 +0000
+
+    Translated using Weblate (Italian)
+
+    Currently translated at 84.0% (268 of 319 strings)
+
+ po/it.po | 41 ++++++++++++++++++++---------------------
+ 1 file changed, 20 insertions(+), 21 deletions(-)
+
+commit 8dd7edc407ee39e3bcfa68dba22ef59f5aa59533
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Thu Nov 2 10:12:37 2017 +0100
+
+    prevent illegal window layer.
+
+ src/wmclient.cc | 2 +-
+ src/wmmgr.cc    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 8d8d827f579ce833ba10daabad0252649a4dba91
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Thu Nov 2 05:54:25 2017 +0100
+
+    Move brittle inline frame list manipulations into robust dedicated
+    list class.
+
+ src/wmconfig.cc |   1 +
+ src/wmframe.cc  | 160 +++---------------------------------
+ src/wmframe.h   |  41 +++-------
+ src/wmmgr.cc    | 227 +++++++++++++++++++++++++++++-----------------------
+ src/wmmgr.h     |  54 ++++++-------
+ src/wmprog.cc   |   2 +-
+ src/wmswitch.cc |   8 +-
+ src/ylist.h     | 222 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 8 files changed, 402 insertions(+), 313 deletions(-)
+
+commit b008a4fe39bdd9347a94243f579eb263399c950f
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Nov 1 22:02:53 2017 -0600
+
+    update po files
+
+ po/ar.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/be.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/bg.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/ca.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/cs.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/da.po     | 108 +++++++++++++++++++++++++++----------------------------
+ po/de.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/el.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/en.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/es.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/fi.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/fr.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/he.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/hr.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/hu.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/icewm.pot | 104 ++++++++++++++++++++++++++---------------------------
+ po/id.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/it.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/ja.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/ko.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/lt.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/lv.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/mk.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/nb.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/nl.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/no.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/pl.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/pt_BR.po  | 104 ++++++++++++++++++++++++++---------------------------
+ po/ro.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/ru.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/sk.po     | 108 +++++++++++++++++++++++++++----------------------------
+ po/sl.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/sv.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/tr.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/uk.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/vi.po     | 104 ++++++++++++++++++++++++++---------------------------
+ po/zh_CN.po  | 104 ++++++++++++++++++++++++++---------------------------
+ po/zh_TW.po  | 104 ++++++++++++++++++++++++++---------------------------
+ 38 files changed, 1980 insertions(+), 1980 deletions(-)
+
+commit 1e5eef55087639569c371d11ad0190a8111ded97
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Nov 1 22:00:56 2017 -0600
+
+    added script to AM_INSTALLCHECK_STD_OPTIONS_EXEMPT
+
+    - when distributing a script or program that does not support
+      --help and --version options (or doen't support them properly,
+      such as printing to standard error instead of standard out),
+      they must be added to AM_INSTALLCHECK_STD_OPTIONS_EXEMPT to
+      pass the distcheck target.
+
+ Makefile.am | 3 +++
+ 1 file changed, 3 insertions(+)
+
+commit 114a926549ee2b61b5b35929a13f26ebe7279778
+Author: Ferdinand Galko <galko.ferdinand@gmail.com>
+Date:   Wed Nov 1 17:28:31 2017 +0000
+
+    Translated using Weblate (Slovak)
+
+    Currently translated at 85.8% (274 of 319 strings)
+
+ po/sk.po | 88 ++++++++++++++++++++++++++++++++++++------------------------
+ 1 file changed, 53 insertions(+), 35 deletions(-)
+
+commit e944b7e2f2491ce25c292eca8ce45846f39ea806
+Author: Eduard Bloch <blade@debian.org>
+Date:   Wed Nov 1 10:51:21 2017 +0100
+
+    Use custom macro to access override keyword
+
+    Overriding override causes overriding errors in Xproto header.
+
+ src/apppstatus.h |  7 ++++---
+ src/base.h       |  7 ++++---
+ src/wmprog.cc    | 24 ++++++++++++------------
+ src/wmswitch.cc  |  8 ++++----
+ src/wmswitch.h   |  1 +
+ src/wmtaskbar.cc |  1 +
+ 6 files changed, 26 insertions(+), 22 deletions(-)
+
+commit 6cb15e5da4440c8b5f5f8efb2733249554107bda
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Oct 31 14:31:48 2017 +0100
+
+    Make sure the next inactive monitor becomes the next choice
+
+ contrib/icewm-menu-xrandr | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+commit c5f3fe156b39b1e9a674b1ea1cfc4dc28d91bc50
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Oct 31 14:22:00 2017 +0100
+
+    Fix merge error
+
+    Actually drop unused code.
+
+ src/wmswitch.cc | 63 -----------------------------------------------------
+ 1 file changed, 63 deletions(-)
+
+commit e68d5b84d4e242f5434c71e12b56308548fb586a
+Merge: 325b81c3 9555fba5
+Author: gijsbers <gijsbers@users.noreply.github.com>
+Date:   Tue Oct 31 13:18:34 2017 +0100
+
+    Merge pull request #194 from scootergrisen/patch-4
+
+    flæskesteg med svær
+
+commit 325b81c316aa7b4843e45f81bac60829ebee268d
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Oct 31 12:07:42 2017 +0100
+
+    Install xrandr menu provider
+
+ CMakeLists.txt | 2 +-
+ Makefile.am    | 3 ++-
+ lib/keys.in    | 2 ++
+ 3 files changed, 5 insertions(+), 2 deletions(-)
+
+commit 01275e6e13c6056669b3a3a0c53cb28007ed3c96
+Author: Eduard Bloch <blade@debian.org>
+Date:   Tue Oct 31 11:03:23 2017 +0100
+
+    Monitor mode switch mostly working
+
+ src/wmmgr.cc    | 14 ++++----
+ src/wmprog.cc   | 96 ++++++++++++++++++++++++++++++++++++++++++++++++++---
+ src/wmprog.h    | 22 ++++++++----
+ src/wmswitch.cc | 12 ++++---
+ src/wmswitch.h  |  2 ++
+ 5 files changed, 123 insertions(+), 23 deletions(-)
+
+commit c5b540aef98c73f7840e0effc6646d99aaff0c2b
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Oct 30 18:15:40 2017 +0100
+
+    Use indices instead of obscure void pointers
+
+    Revisited the abstraction of quickswitch window control.
+
+ src/base.h      |   6 ++
+ src/wmswitch.cc | 206 +++++++++++++++-------------------------------------
+ src/wmswitch.h  |  33 ++++++++-
+ 3 files changed, 92 insertions(+), 153 deletions(-)
+
+commit 34f6d3b3c0e3571c0fda08a41d659e57bdbe5b16
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sat Oct 14 15:01:07 2017 +0200
+
+    Improve sysfs parsing
+
+ contrib/icewm-menu-xrandr | 54 ++++++++++++++++++++++++++-----------------
+ 1 file changed, 33 insertions(+), 21 deletions(-)
+
+commit 370ca99fccefa255bfd474eba9d1ed693a6937a0
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sat Oct 14 11:21:12 2017 +0200
+
+    Store quickswitch style in the object
+
+ src/wmapp.cc    | 2 +-
+ src/wmswitch.cc | 8 +++++---
+ src/wmswitch.h  | 6 ++++--
+ 3 files changed, 10 insertions(+), 6 deletions(-)
+
+commit 924f196edf4b3ba6ca05154c336f8baca7f2f613
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sun Oct 8 13:29:51 2017 +0200
+
+    Added sample generator for some predefined xrandr configurations
+
+ contrib/icewm-menu-xrandr | 190 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 190 insertions(+)
+
+commit 0a08273caa31108981879b81754798bad7a4cafc
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sun Oct 8 01:01:12 2017 +0200
+
+    Arch. rework, splitting model and controller in quickswitch
+
+    Preparing for better reusability of quickswitch.
+
+ src/wmswitch.cc | 559 +++++++++++++++++++++++++++++++---------------------
+ src/wmswitch.h  |  33 ++--
+ 2 files changed, 349 insertions(+), 243 deletions(-)
+
+commit 76d618f1d136060508ffe3aba08748bd55232417
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sat Oct 7 23:11:04 2017 +0200
+
+    Better rounding of battery capa percentage
+
+    Only for Linux; stops showing a black pixel line although charging
+    finished, because of rounding errors.
+
+ src/aapm.cc | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+commit e2908906c7fbd960c764306613d992790679c8c0
+Author: scootergrisen <scootergrisen@gmail.com>
+Date:   Tue Oct 31 08:35:40 2017 +0000
+
+    Translated using Weblate (Danish)
+
+    Currently translated at 100.0% (319 of 319 strings)
+
+ po/da.po | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+commit 9555fba560cadcd81ed2bfe5cb83e0fe07f4e182
+Author: scootergrisen <scootergrisen@gmail.com>
+Date:   Tue Oct 31 09:33:23 2017 +0100
+
+    Add name[da]
+
+ lib/icewm-session.desktop | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit ad57ad8a8c86fce2dc346fa29549642dba534ac2
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 30 15:49:36 2017 -0600
+
+    mark it supported here too
+
+ COMPLIANCE | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 6123e49d63fa1dd2773f976790d67d79e8ac53a0
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 29 21:40:25 2017 +0100
+
+    add support for _NET_REQUEST_FRAME_EXTENTS.
+
+ TODO                  |   6 +-
+ src/testnetwmhints.cc | 650 +++++++++++++++++++++++++++++++---------------
+ src/wmapp.cc          |   2 +-
+ src/wmmgr.cc          |  56 ++++
+ src/wmmgr.h           |   2 +-
+ src/yxapp.cc          |   8 +-
+ 6 files changed, 506 insertions(+), 218 deletions(-)
+
+commit 0bb8ada5b9120b69c668fd4d85b9049318c9d9d0
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sun Oct 29 17:25:56 2017 +0100
+
+    Better amixer commands
+
+    Setting volume to zero for muting is nonsense - there is a specific
+    on/off state and a toggle command (this also illuminates the mute LED
+    where available).
+
+    PCM channel is not available with PA but Master should work everywhere.
+
+ lib/keys.in | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+commit 30158eb0296e5ae533ab228698d548ef53329190
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Fri Oct 27 18:53:56 2017 -0600
+
+    restore version file
+
+ VERSION | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit f3217de8328f40c9cd079ec26839338daefc67c1
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Fri Oct 27 18:51:40 2017 -0600
+
+    update po files
+
+ po/ar.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/be.po     | 148 +++++++++++++++++++++++++--------------------------
+ po/bg.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/ca.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/cs.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/da.po     | 150 ++++++++++++++++++++++++++--------------------------
+ po/de.po     | 148 +++++++++++++++++++++++++--------------------------
+ po/el.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/en.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/es.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/fi.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/fr.po     | 148 +++++++++++++++++++++++++--------------------------
+ po/he.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/hr.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/hu.po     | 158 +++++++++++++++++++++++++++----------------------------
+ po/icewm.pot | 146 +++++++++++++++++++++++++-------------------------
+ po/id.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/it.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/ja.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/ko.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/lt.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/lv.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/mk.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/nb.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/nl.po     | 148 +++++++++++++++++++++++++--------------------------
+ po/no.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/pl.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/pt_BR.po  | 146 +++++++++++++++++++++++++-------------------------
+ po/ro.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/ru.po     | 148 +++++++++++++++++++++++++--------------------------
+ po/sk.po     | 150 ++++++++++++++++++++++++++--------------------------
+ po/sl.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/sv.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/tr.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/uk.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/vi.po     | 146 +++++++++++++++++++++++++-------------------------
+ po/zh_CN.po  | 146 +++++++++++++++++++++++++-------------------------
+ po/zh_TW.po  | 146 +++++++++++++++++++++++++-------------------------
+ 38 files changed, 2789 insertions(+), 2789 deletions(-)
+
+commit 0be0b5d058d6eb3ae16074bddc735e816003d73c
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Wed Oct 25 23:00:24 2017 +0200
+
+    option -j#JOBS
+
+ dist.sh | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+commit 353c0bd653dd19172507fb305582fec3eff78496
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Wed Oct 25 20:18:13 2017 +0200
+
+    Only create titlebar buttons and resize pointer windows
+    when it is apparent that they are really required.
+    This prevents superfluous internal windows which were never used.
+    Move titlebar buttons from wmframe.cc to wmtitle.cc.
+    Improve sensitivity of resize handles at top side of title bar.
+    Only create MiniIcon when it is going to be needed.
+
+ src/decorate.cc    | 205 +++++-----------------------
+ src/movesize.cc    |  34 +++--
+ src/wmbutton.cc    |   2 +-
+ src/wmcontainer.cc |   4 +-
+ src/wmframe.cc     | 298 ++++++++++++++++------------------------
+ src/wmframe.h      |  65 ++++-----
+ src/wmtitle.cc     | 364 +++++++++++++++++++++++++++++++++++++++++++++----
+ src/wmtitle.h      |  27 +++-
+ 8 files changed, 558 insertions(+), 441 deletions(-)
+
+commit 992556ed4330d149ce8620846a5b32aa7228ec69
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Wed Oct 25 20:17:17 2017 +0200
+
+    convert from YCursor to Cursor.
+
+ src/ycursor.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit d5241fd364c6493db5f94c49bb2de2f87f664e95
+Merge: 5b084bff 6fc15d9c
+Author: gijsbers <gijsbers@users.noreply.github.com>
+Date:   Wed Oct 25 00:12:35 2017 +0200
+
+    Merge pull request #191 from scootergrisen/patch-4
+
+    Update da.po
+
+commit 6fc15d9c34e7b05653deeee1111308e822024a5e
+Author: scootergrisen <scootergrisen@gmail.com>
+Date:   Tue Oct 24 20:54:17 2017 +0200
+
+    Update da.po
+
+ po/da.po | 78 ++++++++++++++++++++++++++++++++++++------------------------
+ 1 file changed, 47 insertions(+), 31 deletions(-)
+
+commit 5b084bffe32db80d99496a9ec9d398dabca86452
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 23 09:23:37 2017 -0600
+
+    move constants to header
+
+ src/yxembed.cc |  3 ---
+ src/yxembed.h  | 18 ++++++++++++++++++
+ src/yxtray.cc  | 18 ------------------
+ 3 files changed, 18 insertions(+), 21 deletions(-)
+
+commit f54f4fefa38338fb0e2479200abf0d29648496c7
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Mon Oct 23 17:08:52 2017 +0200
+
+    add titles to taskbar for helpful "xwininfo -tree" output.
+
+ src/atray.cc     |  1 +
+ src/icetray.cc   |  1 +
+ src/wmtaskbar.cc | 22 ++++++++++++++++++++--
+ src/yxtray.cc    |  3 +++
+ 4 files changed, 25 insertions(+), 2 deletions(-)
+
+commit c02457ac02a5b7532ef52abf9a0bf900938758df
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 23 08:59:43 2017 -0600
+
+    address #180 and #188 by enhancing system tray
+
+    - IceWM system tray did not support any of the XEMBED protocol.
+      This commit makes it follow at least the necessary part of the
+      protocol (embedding life-cycle) so as to play nicer with toolkits.
+
+ src/yxembed.cc | 43 ++++++++++++++++++++++++++++++++++++++++-
+ src/yxembed.h  |  6 ++++++
+ src/yxtray.cc  | 56 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/yxtray.h   |  1 +
+ 4 files changed, 105 insertions(+), 1 deletion(-)
+
+commit 976b3512c701627a25cebd830eddc0f4d84cccc8
+Merge: 82e13e5b 0921f39b
+Author: openSUSE Weblate <weblate-noreply@opensuse.org>
+Date:   Mon Oct 23 12:38:33 2017 +0000
+
+    Merge remote-tracking branch 'origin/icewm-1-4-BRANCH' into
+    icewm-1-4-BRANCH
+
+commit 82e13e5bc5a09315d28ee199f0cfa2047628ebb2
+Author: Ferdinand Galko <galko.ferdinand@gmail.com>
+Date:   Mon Oct 23 12:21:31 2017 +0000
+
+    Translated using Weblate (Slovak)
+
+    Currently translated at 84.3% (269 of 319 strings)
+
+ po/sk.po | 27 +++++++++++++--------------
+ 1 file changed, 13 insertions(+), 14 deletions(-)
+
+commit 0921f39bcb2975de425ebc7fa320185fec058b2f
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 23 06:36:24 2017 -0600
+
+    remainder of fix for #190 - restore focus
+
+    - Uses the _NET_WM_STATE_FOCUSED state on a window to restore focused
+      window on restart.  This commit also does not hide minimized windows
+      on restart.
+
+ src/wmclient.cc | 12 ++++++++++--
+ src/wmframe.cc  |  5 +++++
+ 2 files changed, 15 insertions(+), 2 deletions(-)
+
+commit ec09ecefc76fdbe3c5b5f10d937e8203919509bf
+Merge: e735002c 7153ded9
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 23 05:59:15 2017 -0600
+
+    Merge branch 'icewm-1-4-BRANCH' of github.com:bbidulock/icewm into
+    icewm-1-4-BRANCH
+
+commit e735002cf1cdfd0abcb621b61d9925df3d63aef4
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 23 05:54:43 2017 -0600
+
+    correct occupy all workspaces for #190
+
+    - IceWM was using the old WIN_STATE_STICKY incorrectly.  A sticky
+      window is one that sticks to the virtual desktop, not a window
+      that appears on all workspaces.  To acheive that, the workspace
+      or desktop must be set to 0xFFFFFFFF.  This commit corrects the
+      behaviour of _WIN_WORKSPACE, _NET_WM_DESKTOP, _WIN_STATE flag
+      WIN_STATE_STICK, atom _NET_WM_STATE atom _NET_WM_STATE_STICKY.
+
+      This should correct that part of #190.  Because the state was
+      not being stored correctly, it was not being retrieved correctly
+      on restart either.
+
+ src/WinMgr.h        |  4 ++--
+ src/decorate.cc     |  4 ++--
+ src/icesh.cc        |  3 +--
+ src/testwinhints.cc |  2 +-
+ src/wmabout.cc      |  2 +-
+ src/wmclient.cc     | 37 +++++++++++++++++++++----------------
+ src/wmclient.h      |  7 ++++---
+ src/wmframe.cc      | 44 +++++++++++++++++---------------------------
+ src/wmframe.h       | 21 +++++++++++----------
+ src/wmmgr.cc        | 39 ++++++++++++++++-----------------------
+ src/wmmgr.h         |  2 +-
+ src/wmsession.cc    |  2 +-
+ src/wmswitch.cc     |  2 +-
+ src/wmtaskbar.cc    |  5 ++---
+ src/wmwinlist.cc    |  9 ++++-----
+ src/ymsgbox.cc      |  2 +-
+ 16 files changed, 86 insertions(+), 99 deletions(-)
+
+commit 7153ded9692d84c5075b3300d93c0acfa03bc688
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Mon Oct 23 12:55:25 2017 +0200
+
+    prevent a SEGV crash in announceWorkArea when restarting from a nonzero
+    workspace.
+
+ src/wmmgr.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit d202107940e985b62ee6ffe963e09c97e6d5d8a1
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Mon Oct 23 07:09:34 2017 +0200
+
+    Set tooltips on taskbar collapse button.
+
+ src/wmtaskbar.cc | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit c253afad397c7506e1ff59c6e143f8d9d3fedc7e
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Mon Oct 23 06:48:32 2017 +0200
+
+    add CONFIG_RENDER to print_configured.
+
+ src/wmapp.cc | 3 +++
+ 1 file changed, 3 insertions(+)
+
+commit 5294024d68f97e5ea1c173553071e64788c63b69
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 23 01:11:16 2017 +0000
+
+    check for xrender
+
+ configure.ac | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+commit b57737057241fdddef2f167a4e4c6c0f82f3f64b
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 23 00:52:18 2017 +0000
+
+    always query version of extensions
+
+ VERSION      |  2 +-
+ src/yxapp.cc | 32 +++++++++++++++++++++-----------
+ 2 files changed, 22 insertions(+), 12 deletions(-)
+
+commit 47f04bf63e22ac38d3f0e1ab41f21571dbd42639
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Mon Oct 23 00:45:21 2017 +0000
+
+    prepare for Xrender
+
+ src/yxapp.cc | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+commit 4f14e5d98edffbd7c9c4cc7626a8faf9b7c66770
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Oct 22 15:37:46 2017 -0600
+
+    should still set frame options on startup
+
+    - just don't mark the window minimized on startup based
+      on initial mapping behavior.
+
+ src/wmframe.cc | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+commit 602d3433a5d876f1756107315297874125337fa3
+Merge: 22f29da8 da9ec580
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Oct 22 15:30:44 2017 -0600
+
+    Merge branch 'icewm-1-4-BRANCH' of github.com:bbidulock/icewm into
+    icewm-1-4-BRANCH
+
+commit 22f29da8b42668ee117f5101af7e28d774842052
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Oct 22 15:27:57 2017 -0600
+
+    try to address #190
+
+    - Ice was always loading _WIN_STATE after _NET_WM_STATE, which is
+      incorrect.  It should only attempt to load _WIN_STATE if the
+      _NET_WM_STATE does not exist.
+
+    - Ice was always setting the iconic state of the window to that
+      requested for initial mapping.  This is not true when restarting
+      and so it is now only checked when not starting.
+
+ src/wmframe.cc | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit da9ec580cc319265afcfc99e0ddee8be59ff3a60
+Merge: ac242fcc 9a8b92e4
+Author: openSUSE Weblate <weblate-noreply@opensuse.org>
+Date:   Sun Oct 22 15:05:51 2017 +0000
+
+    Merge remote-tracking branch 'origin/icewm-1-4-BRANCH' into
+    icewm-1-4-BRANCH
+
+commit ac242fcc1f4f99e45708d433ba12e12869daa829
+Author: Ferdinand Galko <galko.ferdinand@gmail.com>
+Date:   Sun Oct 22 12:52:38 2017 +0000
+
+    Translated using Weblate (Slovak)
+
+    Currently translated at 82.7% (264 of 319 strings)
+
+ po/sk.po | 48 ++++++++++++++++++++++++------------------------
+ 1 file changed, 24 insertions(+), 24 deletions(-)
+
+commit 9a8b92e4899edd7cd216efb5f5327f093018a187
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 22 15:32:58 2017 +0200
+
+    Only set tooltip text once, not twice.
+
+ src/ywindow.cc | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+commit 60332643714645569faccf0bc3decea22fb355cb
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 22 15:31:52 2017 +0200
+
+    Split class YToolTip into a timer and a window. Only create the window
+    when needed. This saves about 25% of windows created (depends on theme).
+
+ src/ytooltip.cc | 93 +++++++++++++++++++++++++++++++----------------------
+ src/ytooltip.h  | 36 ++++++++++++++++-----
+ 2 files changed, 82 insertions(+), 47 deletions(-)
+
+commit f81d328d1a5e00e2e0f18445cf58c4e2d0d7b373
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 22 15:31:29 2017 +0200
+
+    Two convenience functions for easier starting/disabling timers.
+
+ src/ytimer.cc | 21 +++++++++++++++++++++
+ src/ytimer.h  |  2 ++
+ 2 files changed, 23 insertions(+)
+
+commit d0cd99b6408ca82f04bee3865b2270ff7735117c
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 22 15:30:56 2017 +0200
+
+    Change ToolTipDelay from 1000 to 500. (1000 is really tedious).
+
+ src/yprefs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 132d763f03d4924506b27be994ae72104ce00b34
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 22 15:30:18 2017 +0200
+
+    Ignore stray closing form tags. Increase margins. Support WM protocols.
+
+ src/icehelp.cc | 43 ++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 40 insertions(+), 3 deletions(-)
+
+commit 420611d6a0043474e46b2d169d883de98653f70b
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Oct 22 04:02:26 2017 -0600
+
+    update po files again
+
+ po/nl.po    |  6 +++---
+ po/pt_BR.po | 22 +++++++++++-----------
+ 2 files changed, 14 insertions(+), 14 deletions(-)
+
+commit 47fca2fb9304a083348061eb01c0221333e8d34d
+Merge: 57b09488 db1aacbf
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Oct 22 03:59:35 2017 -0600
+
+    Merge branch 'icewm-1-4-BRANCH' of github.com:bbidulock/icewm into
+    icewm-1-4-BRANCH
+
+commit 57b094882e6cac2fc230267c73baacf9301f57e2
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Oct 22 03:57:40 2017 -0600
+
+    update po files
+
+ po/ar.po     | 38 +++++++++++++++++++-------------------
+ po/be.po     | 38 +++++++++++++++++++-------------------
+ po/bg.po     | 38 +++++++++++++++++++-------------------
+ po/ca.po     | 38 +++++++++++++++++++-------------------
+ po/cs.po     | 38 +++++++++++++++++++-------------------
+ po/da.po     | 38 +++++++++++++++++++-------------------
+ po/de.po     | 38 +++++++++++++++++++-------------------
+ po/el.po     | 38 +++++++++++++++++++-------------------
+ po/en.po     | 38 +++++++++++++++++++-------------------
+ po/es.po     | 38 +++++++++++++++++++-------------------
+ po/fi.po     | 38 +++++++++++++++++++-------------------
+ po/fr.po     | 38 +++++++++++++++++++-------------------
+ po/he.po     | 38 +++++++++++++++++++-------------------
+ po/hr.po     | 38 +++++++++++++++++++-------------------
+ po/hu.po     | 38 +++++++++++++++++++-------------------
+ po/icewm.pot | 38 +++++++++++++++++++-------------------
+ po/id.po     | 38 +++++++++++++++++++-------------------
+ po/it.po     | 38 +++++++++++++++++++-------------------
+ po/ja.po     | 38 +++++++++++++++++++-------------------
+ po/ko.po     | 38 +++++++++++++++++++-------------------
+ po/lt.po     | 38 +++++++++++++++++++-------------------
+ po/lv.po     | 38 +++++++++++++++++++-------------------
+ po/mk.po     | 38 +++++++++++++++++++-------------------
+ po/nb.po     | 38 +++++++++++++++++++-------------------
+ po/nl.po     | 38 +++++++++++++++++++-------------------
+ po/no.po     | 38 +++++++++++++++++++-------------------
+ po/pl.po     | 38 +++++++++++++++++++-------------------
+ po/pt_BR.po  | 38 +++++++++++++++++++-------------------
+ po/ro.po     | 38 +++++++++++++++++++-------------------
+ po/ru.po     | 38 +++++++++++++++++++-------------------
+ po/sk.po     | 38 +++++++++++++++++++-------------------
+ po/sl.po     | 38 +++++++++++++++++++-------------------
+ po/sv.po     | 38 +++++++++++++++++++-------------------
+ po/tr.po     | 38 +++++++++++++++++++-------------------
+ po/uk.po     | 38 +++++++++++++++++++-------------------
+ po/vi.po     | 38 +++++++++++++++++++-------------------
+ po/zh_CN.po  | 38 +++++++++++++++++++-------------------
+ po/zh_TW.po  | 38 +++++++++++++++++++-------------------
+ 38 files changed, 722 insertions(+), 722 deletions(-)
+
+commit 2c9d6d97416d6091371d94e799a1a45f8188729d
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Oct 22 03:54:47 2017 -0600
+
+    solve merge conflict better
+
+ src/yxtray.cc | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+commit a1b47bf8ede7cd478e719d25f9f015ddbdcdb453
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Oct 22 03:52:22 2017 -0600
+
+    resolve conflict
+
+ src/yxtray.cc | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+commit 563d73f4c0c90a886675442650daaaff6608f9af
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Oct 22 03:49:42 2017 -0600
+
+    do not need this anymore
+
+ src/wmtaskbar.cc | 3 ---
+ 1 file changed, 3 deletions(-)
+
+commit f550ba4c7d6824fe72b23a963d4a7403bd95ed2b
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Oct 22 03:49:09 2017 -0600
+
+    update compliance
+
+ COMPLIANCE | 69 +++++++++++++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 63 insertions(+), 6 deletions(-)
+
+commit db1aacbfa63f234b50a7c9b5b0cb31f5df1cbf5f
+Author: Luiz Fernando Ranghetti <elchevive68@gmail.com>
+Date:   Thu Oct 19 16:34:28 2017 +0000
+
+    Translated using Weblate (Portuguese (Brazil))
+
+    Currently translated at 100.0% (319 of 319 strings)
+
+ po/pt_BR.po | 44 ++++++++++++++++++++++----------------------
+ 1 file changed, 22 insertions(+), 22 deletions(-)
+
+commit 563c8cbea1d3304981c6ebf09ad179b29b54dd9f
+Author: Luiz Fernando Ranghetti <elchevive68@gmail.com>
+Date:   Wed Oct 18 21:38:50 2017 +0000
+
+    Translated using Weblate (Portuguese (Brazil))
+
+    Currently translated at 100.0% (319 of 319 strings)
+
+ po/pt_BR.po | 33 ++++++++++++++++++++++++++++++++-
+ 1 file changed, 32 insertions(+), 1 deletion(-)
+
+commit 9639670fef8a2dae8d3ba00489cac6e9d4fd400b
+Author: Luiz Fernando Ranghetti <elchevive68@gmail.com>
+Date:   Wed Oct 18 21:38:50 2017 +0000
+
+    Translated using Weblate (Portuguese (Brazil))
+
+    Currently translated at 99.6% (318 of 319 strings)
+
+ po/pt_BR.po | 34 ++++++++++++++++------------------
+ 1 file changed, 16 insertions(+), 18 deletions(-)
+
+commit 3f6a27de6eb5f3f556c622e6f20cbba97344655f
+Author: Freek de Kruijf <freek@opensuse.org>
+Date:   Wed Oct 18 21:20:51 2017 +0000
+
+    Translated using Weblate (Dutch)
+
+    Currently translated at 84.3% (269 of 319 strings)
+
+ po/nl.po | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+commit 6bf8cfa144f4575ce393ee767a80a3109c1bb7d0
+Merge: 3ff115fb 5e8a6bdf
+Author: openSUSE Weblate <weblate-noreply@opensuse.org>
+Date:   Wed Oct 18 21:18:46 2017 +0000
+
+    Merge remote-tracking branch 'origin/icewm-1-4-BRANCH' into
+    icewm-1-4-BRANCH
+
+commit 3ff115fbba415cfd725484c119fbed93fa3f6990
+Author: Freek de Kruijf <freek@opensuse.org>
+Date:   Wed Oct 18 21:18:00 2017 +0000
+
+    Translated using Weblate (Dutch)
+
+    Currently translated at 83.6% (267 of 319 strings)
+
+ po/nl.po | 43 ++++++++++++++++++++-----------------------
+ 1 file changed, 20 insertions(+), 23 deletions(-)
+
+commit 5e8a6bdf8a60d5906f02593734808b09f2bed2fa
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Wed Oct 18 23:16:42 2017 +0200
+
+    It has no use to call setColormap when XColormapEvent is a
+    ColormapUninstalled, but it can lead to X errors.
+
+ src/wmclient.cc | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+commit 25ae2eb14948330bc1c2e3c1b865cd1b18bb4d7c
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Oct 18 03:44:53 2017 -0600
+
+    fix for dark vertical lines mentioned in #184
+
+ src/yxtray.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 078ff1979ce5ee2a8513b16ce2260c1b5bf40831
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Oct 18 03:35:08 2017 -0600
+
+    update po files
+
+ po/ar.po     | 14 +++++++-------
+ po/be.po     | 14 +++++++-------
+ po/bg.po     | 14 +++++++-------
+ po/ca.po     | 14 +++++++-------
+ po/cs.po     | 14 +++++++-------
+ po/da.po     | 14 +++++++-------
+ po/de.po     | 14 +++++++-------
+ po/el.po     | 14 +++++++-------
+ po/en.po     | 14 +++++++-------
+ po/es.po     | 14 +++++++-------
+ po/fi.po     | 14 +++++++-------
+ po/fr.po     | 14 +++++++-------
+ po/he.po     | 14 +++++++-------
+ po/hr.po     | 14 +++++++-------
+ po/hu.po     | 14 +++++++-------
+ po/icewm.pot | 14 +++++++-------
+ po/id.po     | 14 +++++++-------
+ po/it.po     | 14 +++++++-------
+ po/ja.po     | 14 +++++++-------
+ po/ko.po     | 14 +++++++-------
+ po/lt.po     | 14 +++++++-------
+ po/lv.po     | 14 +++++++-------
+ po/mk.po     | 14 +++++++-------
+ po/nb.po     | 14 +++++++-------
+ po/nl.po     | 14 +++++++-------
+ po/no.po     | 14 +++++++-------
+ po/pl.po     | 14 +++++++-------
+ po/pt_BR.po  | 14 +++++++-------
+ po/ro.po     | 14 +++++++-------
+ po/ru.po     | 14 +++++++-------
+ po/sk.po     | 14 +++++++-------
+ po/sl.po     | 14 +++++++-------
+ po/sv.po     | 14 +++++++-------
+ po/tr.po     | 14 +++++++-------
+ po/uk.po     | 14 +++++++-------
+ po/vi.po     | 14 +++++++-------
+ po/zh_CN.po  | 14 +++++++-------
+ po/zh_TW.po  | 14 +++++++-------
+ 38 files changed, 266 insertions(+), 266 deletions(-)
+
+commit d9916e35731af6906da5374019f30f343b4b90c7
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Oct 18 03:33:24 2017 -0600
+
+    fix ca.po again
+
+ po/ca.po | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit 24de67d3f043c40e382ff83a2b247b5afa486980
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Oct 18 03:28:14 2017 -0600
+
+    corrections
+
+ po/ca.po | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+commit cf927a5af379a26eb63c934320ce89fb03672b71
+Merge: 5efc64d0 1255368f
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Oct 18 03:10:31 2017 -0600
+
+    Merge branch 'icewm-1-4-BRANCH' of github.com:bbidulock/icewm into
+    icewm-1-4-BRANCH
+
+commit 5efc64d0fcc3359fee85f731e85d22a7f2ae3eab
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed Oct 18 03:06:32 2017 -0600
+
+    metering to debug #184
+
+    From the looks of it a lot of pixmaps that are generated with the
+    root window depth are created and Icewm just expects frames to have
+    the same depth as the root window.
+
+    What will have to be done is to create a YFrameDecor window as a
+    child of YFrameWindow with a default visual and depth so that frame
+    decorations can be moved to that window.  It only needs to be placed
+    below all of the other children and things will display correctly.
+
+    This is non-trivial and requires creating a new class that takes over
+    all the graphics work of the actual frame.
+
+ src/decorate.cc   |  2 +-
+ src/icewmbg.cc    |  2 +-
+ src/wmbutton.cc   |  5 +++++
+ src/wmframe.cc    |  7 ++++++-
+ src/wmtitle.cc    |  2 +-
+ src/yimage.h      |  2 +-
+ src/yimage_gdk.cc |  7 ++++---
+ src/ypaint.cc     | 44 ++++++++++++++++++++++++++++++++++++++------
+ src/ypaint.h      | 13 +++++--------
+ src/ypixmap.cc    | 20 +++++++++++---------
+ src/ypixmap.h     |  7 +++++--
+ src/ywindow.cc    |  2 +-
+ 12 files changed, 79 insertions(+), 34 deletions(-)
+
+commit 1255368f70f07c2b390c430403e85030f845e546
+Author: Eduard Bloch <blade@debian.org>
+Date:   Wed Oct 18 06:52:55 2017 +0200
+
+    Argh, that API needs extra definitions on kFreeBSD as well
+
+ src/apppstatus.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 0865edd60b0ce3503e4765f6733838743ba74d06
+Merge: 430b1654 6bd07a62
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Oct 17 19:53:10 2017 -0600
+
+    Merge branch 'icewm-1-4-BRANCH' of github.com:bbidulock/icewm into
+    icewm-1-4-BRANCH
+
+commit 430b165470f2263240d2f3579cf44d8de1309376
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Oct 17 19:52:27 2017 -0600
+
+    final fix for #184 reconfigure client too
+
+ src/yxtray.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 25deed71296c419d2f3adf1a777a11f910da8ef0
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Oct 17 19:31:06 2017 -0600
+
+    this is workable but tray 2 pixels too high with bevel
+
+ src/yxtray.cc | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+commit b7dc944ab442854129edfb8929eadf76a99103e0
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Oct 17 18:59:33 2017 -0600
+
+    remove unused code
+
+ src/yxtray.cc | 28 ----------------------------
+ 1 file changed, 28 deletions(-)
+
+commit 6bd07a62bf8007d4183be2eb9b73ac521aa4f8d2
+Merge: 7af0965b 8c5bca30
+Author: openSUSE Weblate <weblate-noreply@opensuse.org>
+Date:   Tue Oct 17 19:37:38 2017 +0000
+
+    Merge remote-tracking branch 'origin/icewm-1-4-BRANCH' into
+    icewm-1-4-BRANCH
+
+commit 7af0965b38ee38f4ad18eaa19778fa8d4ea6319e
+Author: Luiz Fernando Ranghetti <elchevive68@gmail.com>
+Date:   Tue Oct 17 19:36:38 2017 +0000
+
+    Translated using Weblate (Portuguese (Brazil))
+
+    Currently translated at 99.3% (317 of 319 strings)
+
+ po/pt_BR.po | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+commit 8c5bca30b954dd2bf793ab8ae045d91f1ac82861
+Merge: 0ab485db dc7c525b
+Author: Stanislav Brabec <sbrabec@suse.com>
+Date:   Tue Oct 17 21:31:21 2017 +0200
+
+    Merge remote-tracking branch 'weblate/icewm-1-4-BRANCH' into
+    icewm-1-4-BRANCH
+
+commit dc7c525b51dac9f4c44b48188581015ef0436ce9
+Author: Luiz Fernando Ranghetti <elchevive68@gmail.com>
+Date:   Tue Oct 17 19:04:20 2017 +0000
+
+    Translated using Weblate (Portuguese (Brazil))
+
+    Currently translated at 99.0% (316 of 319 strings)
+
+ po/pt_BR.po | 201 ++++++++++++++++++++++++++++++++------------------------
+ 1 file changed, 116 insertions(+), 85 deletions(-)
+
+commit 88eb37696cc92a9269aac26f26ff888b21bffa8e
+Author: David Medina <medipas@gmail.com>
+Date:   Mon Oct 16 16:07:42 2017 +0000
+
+    Translated using Weblate (Catalan)
+
+    Currently translated at 100.0% (319 of 319 strings)
+
+ po/ca.po | 31 +++++++++++++------------------
+ 1 file changed, 13 insertions(+), 18 deletions(-)
+
+commit 0ab485dbfdf40e52894bb1b48d952682075041e6
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Oct 17 21:18:52 2017 +0200
+
+    Don't attempt to resize destroyed windows as this is needless
+    and only causes X errors.
+
+ src/wmmgr.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit a585b3ad569b6e17324535b5b4c6615c953a8904
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Oct 17 21:14:40 2017 +0200
+
+    SaveSet only applies to adopted clients, not to icewm internal windows.
+    Only call XRemoveFromSaveSet and XAddToSaveSet if the frame is adopted.
+    This saves needless operations which only result in X errors.
+    When a window is destroyed then prevent it from being focused.
+    Check the return value of XGetWindowAttributes as this may fail
+    if window was destroyed.
+    Fix a swapped parameter order for XSelectInput.
+
+ src/wmframe.cc | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
+
+commit 94de0a0f3884ea36f25a4995e11e64e88f971def
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Oct 17 21:12:52 2017 +0200
+
+    When an unmap event is due to a destroy and we have the DestroyNotify
+    then set the wfDestroyed flag. This will prevent some operations
+    which are invalid for destroyed windows and only cause X errors.
+
+ src/wmclient.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit fc146cc170eb2802fb40bdeb2f71526e6bef1d5b
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Oct 17 21:11:23 2017 +0200
+
+    Don't layout resize indicators when window is fullscreen, because then
+    window widths/heights will be zero, which causes X errors.
+
+ src/decorate.cc | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+commit e601faa3bd74e5c4180cc9c33befd44b5aa37561
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Oct 17 21:10:41 2017 +0200
+
+    When printing X errors use tlog instead of warn so we get the time in ms.
+
+ src/wmapp.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit d4d30066c39e4659c90d5b1fd7f46fb747401f17
+Author: David Medina <medipas@gmail.com>
+Date:   Mon Oct 16 15:57:29 2017 +0000
+
+    Translated using Weblate (Catalan)
+
+    Currently translated at 99.6% (318 of 319 strings)
+
+ po/ca.po | 174 ++++++++++++++++++++++++++++++++++++++++-------------------
+ 1 file changed, 120 insertions(+), 54 deletions(-)
 commit f7b3732c4005d94213a1935480ce3b74c3778543
 Author: Brian Bidulock <bidulock@openss7.org>
 Date:   Mon Oct 16 10:06:32 2017 -0600
