@@ -55,8 +55,8 @@ private:
     void handleTimer(const void* sharedData, bool forceDown);
 
     // methods overridden from superclasses
-    virtual void handleClick(const XButtonEvent &up, int count);
-    virtual void paint(Graphics & g, const YRect &r);
+    virtual void handleClick(const XButtonEvent &up, int count) OVERRIDE;
+    virtual void paint(Graphics & g, const YRect &r) OVERRIDE;
 };
 
 class NetStatusControl : public YTimerListener, public refcounted {
@@ -84,7 +84,7 @@ public:
     ~NetStatusControl();
     YVec<NetStatus*>::iterator getIterator() { return fNetStatus.getIterator();}
     // subclassing method overrides
-    virtual bool handleTimer(YTimer *t);
+    virtual bool handleTimer(YTimer *t) OVERRIDE;
 };
 
 #else // __linux__ || __FreeBSD__ || __NetBSD__

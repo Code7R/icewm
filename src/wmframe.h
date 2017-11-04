@@ -1,17 +1,11 @@
 #ifndef __WMFRAME_H
 #define __WMFRAME_H
 
-#include "ywindow.h"
-#include "ymenu.h"
-#include "ytimer.h"
 #include "ymsgbox.h"
-#include "yaction.h"
-#include "wmclient.h"
-#include "wmbutton.h"
 #include "wmoption.h"
-#include "WinMgr.h"
 #include "wmmgr.h"
 #include "yicon.h"
+#include "ylist.h"
 
 class YClientContainer;
 class MiniIcon;
@@ -19,7 +13,17 @@ class TaskBarApp;
 class TrayApp;
 class YFrameTitleBar;
 
-class YFrameWindow: public YWindow, public YActionListener, public YTimerListener, public YPopDownListener, public YMsgBoxListener, public ClientData {
+class YFrameWindow:
+    public YWindow,
+    public YActionListener,
+    public YTimerListener,
+    public YPopDownListener,
+    public YMsgBoxListener,
+    public ClientData,
+    public YLayeredNode,
+    public YCreatedNode,
+    public YFocusedNode
+{
 public:
     YFrameWindow(YActionListener *wmActionListener, YWindow *parent = 0, int depth = CopyFromParent, Visual *visual = CopyFromParent);
     virtual ~YFrameWindow();
@@ -30,6 +34,7 @@ public:
     void unmanage(bool reparent = true);
     void sendConfigure();
 
+    Window createPointerWindow(Cursor cursor, Window parent);
     void createPointerWindows();
     void grabKeys();
 
@@ -54,6 +59,7 @@ public:
 
     virtual void actionPerformed(YAction action, unsigned int modifiers);
     virtual void handleMsgBox(YMsgBox *msgbox, int operation);
+    virtual YFrameWindow* frame() { return this; }
 
     void wmRestore();
     void wmMinimize();
@@ -78,9 +84,9 @@ public:
     void wmSize();
     void wmOccupyAll();
     void wmOccupyAllOrCurrent();
-    void wmOccupyWorkspace(long workspace);
-    void wmOccupyOnlyWorkspace(long workspace);
-    void wmMoveToWorkspace(long workspace);
+    void wmOccupyWorkspace(int workspace);
+    void wmOccupyOnlyWorkspace(int workspace);
+    void wmMoveToWorkspace(int workspace);
     void wmSetLayer(long layer);
 #ifdef CONFIG_TRAY
     void wmSetTrayOption(long option);
@@ -104,15 +110,14 @@ public:
     void updateFocusOnMap(bool &doActivate);
 
     YFrameClient *client() const { return fClient; }
-    YFrameTitleBar *titlebar() const { return fTitleBar; }
+    YFrameTitleBar *titlebar();
     YClientContainer *container() const { return fClientContainer; }
 
 #ifdef WMSPEC_HINTS
-    void startMoveSize(int x, int y,
-                                     int direction);
+    void startMoveSize(int x, int y, int direction);
 #endif
 
-    void startMoveSize(int doMove, int byMouse,
+    void startMoveSize(bool doMove, bool byMouse,
                        int sideX, int sideY,
                        int mouseXroot, int mouseYroot);
     void endMoveSize();
@@ -156,10 +161,6 @@ public:
     void removeFrame();
     void setAbove(YFrameWindow *aboveFrame); // 0 = at the bottom
     void setBelow(YFrameWindow *belowFrame); // 0 = at the top
-    YFrameWindow *next() const { return fNextFrame; }
-    YFrameWindow *prev() const { return fPrevFrame; }
-    void setNext(YFrameWindow *next) { fNextFrame = next; }
-    void setPrev(YFrameWindow *prev) { fPrevFrame = prev; }
 
     typedef enum {
         fwfVisible    = 1 << 0, // visible windows only
@@ -179,13 +180,6 @@ public:
 
     YFrameWindow *findWindow(int flag);
 
-    YFrameButton *menuButton() const { return fMenuButton; }
-    YFrameButton *closeButton() const { return fCloseButton; }
-    YFrameButton *minimizeButton() const { return fMinimizeButton; }
-    YFrameButton *maximizeButton() const { return fMaximizeButton; }
-    YFrameButton *hideButton() const { return fHideButton; }
-    YFrameButton *rollupButton() const { return fRollupButton; }
-    YFrameButton *depthButton() const { return fDepthButton; }
     void updateMenu();
 
     virtual void raise();
@@ -208,7 +202,7 @@ public:
     void setShape();
 #endif
 
-    enum {
+    enum YFrameFunctions {
         ffMove          = (1 << 0),
         ffResize        = (1 << 1),
         ffClose         = (1 << 2),
@@ -216,9 +210,9 @@ public:
         ffMaximize      = (1 << 4),
         ffHide          = (1 << 5),
         ffRollup        = (1 << 6)
-    } YFrameFunctions;
+    };
 
-    enum {
+    enum YFrameDecors {
         fdTitleBar      = (1 << 0),
         fdSysMenu       = (1 << 1),
         fdBorder        = (1 << 2),
@@ -229,7 +223,7 @@ public:
         fdHide          = (1 << 7),
         fdRollup        = (1 << 8),
         fdDepth         = (1 << 9)
-    } YFrameDecors;
+    };
 
     /// !!! needs refactoring (some are not optional right now)
     /// should be #ifndef NO_WINDOW_OPTIONS
@@ -257,9 +251,9 @@ public:
         foIgnoreUrgent          = (1 << 19)
     };
 
-    unsigned long frameFunctions() const { return fFrameFunctions; }
-    unsigned long frameDecors() const { return fFrameDecors; }
-    unsigned long frameOptions() const { return fFrameOptions; }
+    unsigned frameFunctions() const { return fFrameFunctions; }
+    unsigned frameDecors() const { return fFrameDecors; }
+    unsigned frameOptions() const { return fFrameOptions; }
     void updateAllowed();
     void updateNetWMState();
     void getFrameHints();
@@ -365,8 +359,8 @@ public:
     void setWindowType(enum WindowType winType) { fWindowType = winType; }
     bool isTypeDock(void) { return (fWindowType == wtDock); }
 
-    long getWorkspace() const { return fWinWorkspace; }
-    void setWorkspace(long workspace);
+    int getWorkspace() const { return fWinWorkspace; }
+    void setWorkspace(int workspace);
     void setWorkspaceHint(long workspace);
     long getActiveLayer() const { return fWinActiveLayer; }
     void setRequestedLayer(long layer);
@@ -386,7 +380,8 @@ public:
     bool isSkipPager() const { return (getState() & WinStateSkipPager) ? true : false; }
     bool isSkipTaskBar() const { return (getState() & WinStateSkipTaskBar) ? true : false; }
     bool isRollup() const { return (getState() & WinStateRollup) ? true : false; }
-    bool isSticky() const { return (getState() & WinStateAllWorkspaces) ? true : false; }
+    bool isSticky() const { return (getState() & WinStateSticky) ? true : false; }
+    bool isAllWorkspaces() const { return (getWorkspace() == -1) ? true : false; }
     //bool isHidWorkspace() { return (getState() & WinStateHidWorkspace) ? true : false; }
     //bool isHidTransient() { return (getState() & WinStateHidTransient) ? true : false; }
 
@@ -395,15 +390,15 @@ public:
 
     bool isIconic() const { return isMinimized() && fMiniIcon; }
 
-    MiniIcon *getMiniIcon() const { return fMiniIcon; }
+    MiniIcon *getMiniIcon();
 
     bool isManaged() const { return fManaged; }
     void setManaged(bool isManaged) { fManaged = isManaged; }
 
-    void setSticky(bool sticky);
+    void setAllWorkspaces(void);
 
-    bool visibleOn(long workspace) const {
-        return (isSticky() || getWorkspace() == workspace);
+    bool visibleOn(int workspace) const {
+        return (isAllWorkspaces() || getWorkspace() == workspace);
     }
     bool visibleNow() const { return visibleOn(manager->activeWorkspace()); }
 
@@ -428,10 +423,6 @@ public:
     virtual ustring getTitle() const { return client()->windowTitle(); }
     virtual ustring getIconTitle() const { return client()->iconTitle(); }
 
-    YFrameButton *getButton(char c);
-    void positionButton(YFrameButton *b, int &xPos, bool onRight);
-    bool isButton(char c);
-
 #ifdef WMSPEC_HINTS
     void updateNetWMStrut();
     void updateNetWMStrutPartial();
@@ -446,20 +437,6 @@ public:
     int strutTop() { return fStrutTop; }
     int strutBottom() { return fStrutBottom; }
 
-    YFrameWindow *nextCreated() { return fNextCreatedFrame; }
-    YFrameWindow *prevCreated() { return fPrevCreatedFrame; }
-    void setNextCreated(YFrameWindow *f) { fNextCreatedFrame = f; }
-    void setPrevCreated(YFrameWindow *f) { fPrevCreatedFrame = f; }
-
-    YFrameWindow *nextFocus() { return fNextFocusFrame; }
-    YFrameWindow *prevFocus() { return fPrevFocusFrame; }
-    void setNextFocus(YFrameWindow *f) { fNextFocusFrame = f; }
-    void setPrevFocus(YFrameWindow *f) { fPrevFocusFrame = f; }
-
-    void insertFocusFrame(bool focus);
-    void insertLastFocusFrame();
-    void removeFocusFrame();
-
     void updateUrgency();
     void setWmUrgency(bool wmUrgency);
     bool isUrgent() { return fWmUrgency || fClientUrgency; }
@@ -468,6 +445,11 @@ public:
 
     long getOldLayer() { return fOldLayer; }
     void saveOldLayer() { fOldLayer = fWinActiveLayer; }
+
+    bool hasIndicators() const { return indicatorsCreated; }
+    Window topSideIndicator() const { return topSide; }
+    Window topLeftIndicator() const { return topLeft; }
+    Window topRightIndicator() const { return topRight; }
 
 private:
     /*typedef enum {
@@ -479,9 +461,9 @@ private:
     } FrameStateFlags;*/
 
     bool fFocused;
-    unsigned long fFrameFunctions;
-    unsigned long fFrameDecors;
-    unsigned long fFrameOptions;
+    unsigned fFrameFunctions;
+    unsigned fFrameDecors;
+    unsigned fFrameOptions;
 
     int normalX, normalY, normalW, normalH;
     int posX, posY, posW, posH;
@@ -492,13 +474,6 @@ private:
     YFrameClient *fClient;
     YClientContainer *fClientContainer;
     YFrameTitleBar *fTitleBar;
-    YFrameButton *fCloseButton;
-    YFrameButton *fMenuButton;
-    YFrameButton *fMaximizeButton;
-    YFrameButton *fMinimizeButton;
-    YFrameButton *fHideButton;
-    YFrameButton *fRollupButton;
-    YFrameButton *fDepthButton;
 
     YPopupWindow *fPopupActive;
 
@@ -508,18 +483,10 @@ private:
     int sizeByMouse;
     int origX, origY, origW, origH;
 
-    YFrameWindow *fNextFrame; // window below this one
-    YFrameWindow *fPrevFrame; // window above this one
-
-    YFrameWindow *fNextCreatedFrame;
-    YFrameWindow *fPrevCreatedFrame;
-
-    YFrameWindow *fNextFocusFrame;
-    YFrameWindow *fPrevFocusFrame;
-
     Window topSide, leftSide, rightSide, bottomSide;
-    Window topLeftCorner, topRightCorner, bottomLeftCorner, bottomRightCorner;
-    int indicatorsVisible;
+    Window topLeft, topRight, bottomLeft, bottomRight;
+    bool indicatorsCreated;
+    bool indicatorsVisible;
 
 #ifdef CONFIG_TASKBAR
     TaskBarApp *fTaskBarApp;
@@ -543,7 +510,7 @@ private:
     static YTimer *fAutoRaiseTimer;
     static YTimer *fDelayFocusTimer;
 
-    long fWinWorkspace;
+    int fWinWorkspace;
     long fWinRequestedLayer;
     long fWinActiveLayer;
 #ifdef CONFIG_TRAY

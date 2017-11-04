@@ -5,6 +5,8 @@
 #include "yfull.h"
 
 #include "wmprog.h"
+#include "yaction.h"
+#include "ymenu.h"
 #include "wmmgr.h"
 #include "MwmUtil.h"
 #include "prefs.h"
@@ -193,15 +195,23 @@ Atom XA_XdndStatus;
 YColor *YColor::black(NULL);
 YColor *YColor::white(NULL);
 
+#ifdef CONFIG_RENDER
+int renderSupported;
+int renderEventBase, renderErrorBase;
+int renderVersionMajor, renderVersionMinor;
+#endif
+
 #ifdef CONFIG_SHAPE
 int shapesSupported;
 int shapeEventBase, shapeErrorBase;
+int shapeVersionMajor, shapeVersionMinor;
 #endif
 
 #ifdef CONFIG_XRANDR
 int xrandrSupported;
-bool xrandr12 = false;
 int xrandrEventBase, xrandrErrorBase;
+int xrandrVersionMajor, xrandrVersionMinor;
+bool xrandr12 = false;
 #endif
 
 #ifdef DEBUG
@@ -964,22 +974,32 @@ YXApplication::YXApplication(int *argc, char ***argv, const char *displayName):
     initColors();
 
 #ifdef CONFIG_SHAPE
-    shapesSupported = XShapeQueryExtension(display(),
-                                           &shapeEventBase, &shapeErrorBase);
-#endif
-#ifdef CONFIG_XRANDR
-    xrandrSupported = XRRQueryExtension(display(),
-                                        &xrandrEventBase, &xrandrErrorBase);
+    if ((shapesSupported = XShapeQueryExtension(display(),
+                                           &shapeEventBase, &shapeErrorBase)))
     {
-        int major = 0;
-        int minor = 0;
-        XRRQueryVersion(display(), &major, &minor);
+        XShapeQueryVersion(display(),
+                &shapeVersionMajor, &shapeVersionMinor);
+    }
+#endif
 
-        MSG(("XRRVersion: %d %d", major, minor));
-        if (major > 1 || (major == 1 && minor >= 2)) {
-            xrandrSupported = 1;
+#ifdef CONFIG_RENDER
+    if ((renderSupported = XRenderQueryExtension(display(),
+                    &renderEventBase, &renderErrorBase)))
+    {
+        XRenderQueryVersion(display(),
+                &renderVersionMajor, &renderVersionMinor);
+    }
+#endif
+
+#ifdef CONFIG_XRANDR
+    if ((xrandrSupported = XRRQueryExtension(display(),
+                                        &xrandrEventBase, &xrandrErrorBase)))
+    {
+        XRRQueryVersion(display(), &xrandrVersionMajor, &xrandrVersionMinor);
+
+        MSG(("XRRVersion: %d %d", xrandrVersionMajor, xrandrVersionMinor));
+        if (xrandrVersionMajor > 1 || (xrandrVersionMajor == 1 && xrandrVersionMinor >= 2))
             xrandr12 = true;
-        }
     }
 #endif
 }
@@ -1086,7 +1106,13 @@ void YXApplication::handleWindowEvent(Window xwindow, XEvent &xev) {
                 xev.xmaprequest.parent,
                 xev.xmaprequest.window);
             desktop->handleEvent(xev);
-        } else if (xev.type != DestroyNotify) {
+        }
+        else if (xev.type == ClientMessage &&
+                 xev.xclient.message_type == _XA_NET_REQUEST_FRAME_EXTENTS) {
+            if (desktop)
+                desktop->handleEvent(xev);
+        }
+        else if (xev.type != DestroyNotify) {
             MSG(("unknown window 0x%lX event=%d", xev.xany.window, xev.type));
         }
     }

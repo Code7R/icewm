@@ -78,7 +78,7 @@ void YFrameButton::handleClick(const XButtonEvent &up, int count) {
 void YFrameButton::handleBeginDrag(const XButtonEvent &down, const XMotionEvent &/*motion*/) {
     if (down.button == 3 && getFrame()->canMove()) {
         if (!isPopupActive())
-            getFrame()->startMoveSize(1, 1,
+            getFrame()->startMoveSize(true, true,
                                       0, 0,
                                       down.x + x() + getFrame()->titlebar()->x(),
                                       down.y + y() + getFrame()->titlebar()->y());
@@ -160,6 +160,11 @@ void YFrameButton::paint(Graphics &g, const YRect &/*r*/) {
     ref<YPixmap> pixmap = getPixmap(pn);
     if (pixmap == null && pn) {
         pixmap = getPixmap(0);
+    }
+
+    if (pixmap->depth() != g.rdepth()) {
+        tlog("YFrameButton::%s: attempt to use pixmap 0x%lx of depth %d with gc of depth %d\n",
+                __func__, pixmap->pixmap(), pixmap->depth(), g.rdepth());
     }
 
     if (wmLook == lookWarp4) {

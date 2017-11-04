@@ -49,6 +49,11 @@ if(CXX_VIHI)
         _append(CXXFLAGS_COMMON -fvisibility-inlines-hidden)
 endif()
 
+CHECK_CXX_COMPILER_FLAG(-std=gnu++98 CXX_FORCELEGACY)
+if(CXX_VIHI)
+        _append(CXXFLAGS_COMMON -std=gnu++98)
+endif()
+
 option(CONFIG_XPM "Legacy XPM image loader" off)
 option(CONFIG_IMLIB "(Deprecated) IMLIB image loader" off)
 option(CONFIG_GDK_PIXBUF_XLIB "LIBGDKPIXBUF based image loader" on)
@@ -302,7 +307,10 @@ option(NO_KEYBIND "Define to disable keybinding support")
 option(NO_CONFIGURE_MENUS "Define to disable configurable menu support")
 option(NO_WINDOW_OPTIONS "Define to disable configurable window options support")
 option(LITE "Lite version (overrides certain options)")
-if(NOT LITE)
+if(LITE)
+	set(CONFIG_ADDRESSBAR off)
+	set(CONFIG_WINLIST off)
+else()
 	option(CONFIG_TOOLTIP "Define to support tooltips" on)
 	option(CONFIG_WINLIST "Define for OS/2 like window list" on)
 	option(CONFIG_TASKBAR "Define to enable builtin taskbar" on)
@@ -468,6 +476,7 @@ endif()
 foreach (_variableName 
 		PACKAGE
 		VERSION
+    LITE
 		DATADIR LIBDIR LOCDIR DOCDIR CFGDIR ICEHELPIDX
 		CONFIG_XPM
 		CONFIG_IMLIB 

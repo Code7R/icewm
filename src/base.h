@@ -7,6 +7,13 @@
 #define __attribute__(a)
 #endif
 
+// use override helper keyword where available
+#if __cplusplus < 201103L
+#define OVERRIDE
+#else
+#define OVERRIDE override
+#endif
+
 /*** Atomar Data Types ********************************************************/
 
 #ifdef NEED_BOOL

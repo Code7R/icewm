@@ -688,7 +688,7 @@ void YWindow::handleEvent(const XEvent &event) {
 
 ref<YPixmap> YWindow::beginPaint(YRect &r) {
     //    return new YPixmap(width(), height());
-    ref<YPixmap> pix = YPixmap::create(r.width(), r.height());
+    ref<YPixmap> pix = YPixmap::create(r.width(), r.height(), depth());
     return pix;
 }
 
@@ -926,11 +926,9 @@ void YWindow::setToolTip(const ustring &tip) {
             fToolTip->repaint();
         }
     }
-    if (tip != null) {
-        if (fToolTip == NULL)
-            fToolTip = new YToolTip();
-        if (fToolTip)
-            fToolTip->setText(tip);
+    else if (tip != null) {
+        fToolTip = new YToolTip();
+        fToolTip->setText(tip);
     }
 #endif
 }

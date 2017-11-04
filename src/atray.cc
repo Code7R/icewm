@@ -63,6 +63,7 @@ TrayApp::TrayApp(ClientData *frame, YWindow *aParent): YWindow(aParent) {
     selected = 0;
     fShown = true;
     setToolTip(frame->getTitle());
+    setTitle(cstring(frame->getTitle()));
     //setDND(true);
 }
 
@@ -152,12 +153,13 @@ void TrayApp::paint(Graphics &g, const YRect &/*r*/) {
             }
         }
     }
-
+#ifndef LITE
     ref<YIcon> icon(getFrame()->getIcon());
 
     if (icon != null) {
         icon->draw(g, 2, 2, YIcon::smallSize());
     }
+#endif
 }
 
 void TrayApp::handleButton(const XButtonEvent &button) {

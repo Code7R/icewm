@@ -6,9 +6,51 @@
 class YFrameWindow;
 class YWindowManager;
 
-class SwitchWindow: public YPopupWindow {
+// XXX: this only exists because there are no lambda functions
+class IClosablePopup
+{
 public:
-    SwitchWindow(YWindow *parent = 0);
+    // report true if window was up; close in any case
+    virtual bool close()=0;
+    virtual ~IClosablePopup(){};
+};
+
+// data model, default implementation is list of windows
+//class ISwitchItems;
+class ISwitchItems
+{
+public:
+    virtual void updateList() =0;
+    virtual int getCount() =0;
+    virtual ~ISwitchItems() {}
+
+    // move the focused target up or down and return the new focused element
+    virtual int moveTarget(bool zdown)=0;
+    /// Show changed focus preview to user
+    virtual void displayFocusChange(int idxFocused)=0;
+
+    // set target cursor and implementation specific stuff in the beginning
+    virtual void begin(bool zdown)=0;
+    virtual void cancel()=0;
+    virtual void accept(IClosablePopup *parent)=0;
+
+    // XXX: convert to iterator
+    virtual int getActiveItem()=0;
+    virtual ustring getTitle(int idx) =0;
+    virtual ref<YIcon> getIcon(int idx) =0;
+
+    // Manager notification about windows disappearing under the fingers
+    virtual void destroyedItem(void* framePtr) =0;
+
+    virtual bool isKey(KeySym k, unsigned int mod) =0;
+};
+
+class SwitchWindow: public YPopupWindow, IClosablePopup {
+    ISwitchItems* zItems;
+    bool m_verticalStyle;
+public:
+    SwitchWindow(YWindow *parent = 0,
+                 ISwitchItems *items = 0, bool verticalStyle=true);
     virtual ~SwitchWindow();
 
     virtual void paint(Graphics &g, const YRect &r);
@@ -24,9 +66,6 @@ public:
     void destroyedFrame(YFrameWindow *frame);
 
 private:
-    YWindowManager *fRoot;
-    YFrameWindow *fActiveWindow;
-    YFrameWindow *fLastWindow;
 
 #ifdef CONFIG_GRADIENTS
     ref<YImage> fGradient;
@@ -47,19 +86,10 @@ private:
     bool isModKey(KeyCode c);
     void resize(int xiscreen);
 
-    int getZListCount();
-    int getZList(YFrameWindow **list, int max);
-    int GetZListWorkspace(YFrameWindow **list, int max,
-                          bool workspaceOnly, int workspace);
-    void updateZList();
-    void freeZList();
-    int zCount;
-    int zTarget;
-    YFrameWindow **zList;
-
     void cancel();
+    bool close();
     void accept();
-    void displayFocus(YFrameWindow *frame);
+    void displayFocus(int itemIdx);
     //YFrameWindow *nextWindow(YFrameWindow *from, bool zdown, bool next);
     YFrameWindow *nextWindow(bool zdown);
 

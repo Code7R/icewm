@@ -414,6 +414,7 @@ void YFrameClient::handleUnmap(const XUnmapEvent &unmap) {
     XEvent ev;
     if (XCheckTypedWindowEvent(xapp->display(), unmap.window,
                                DestroyNotify, &ev)) {
+        YWindow::handleDestroyWindow(ev.xdestroywindow);
         manager->destroyedClient(unmap.window);
     } else {
         manager->unmanageClient(unmap.window, false);
@@ -589,9 +590,13 @@ void YFrameClient::handleProperty(const XPropertyEvent &property) {
 }
 
 void YFrameClient::handleColormap(const XColormapEvent &colormap) {
-    setColormap(colormap.colormap); //(colormap.state == ColormapInstalled && colormap.c_new == True)
-    //                ? colormap.colormap
-    //                : None);
+    if (colormap.colormap == None ||
+        colormap.c_new == True ||
+        colormap.state == ColormapInstalled)
+    {
+        setColormap(colormap.colormap);
+    }
+    // else if (colormap.state == ColormapUninstalled) {}
 }
 
 
@@ -740,6 +745,8 @@ long getMask(Atom a) {
         mask |= WinStateSkipPager;
     if (a == _XA_NET_WM_STATE_SKIP_TASKBAR)
         mask |= WinStateSkipTaskBar;
+    if (a == _XA_NET_WM_STATE_STICKY)
+        mask |= WinStateSticky;
 #if 0
     /* controlled by WM only */
     if (a == _XA_NET_WM_STATE_FOCUSED)
@@ -871,12 +878,9 @@ void YFrameClient::handleClientMessage(const XClientMessageEvent &message) {
         else
             setWinWorkspaceHint(message.data.l[0]);
     } else if (message.message_type == _XA_NET_WM_DESKTOP) {
-        if (getFrame()) {
-            if ((unsigned long)message.data.l[0] == 0xFFFFFFFFUL)
-                getFrame()->setSticky(true);
-            else
-                getFrame()->setWorkspace(message.data.l[0]);
-        } else
+        if (getFrame())
+            getFrame()->setWorkspace(message.data.l[0]);
+        else
             setWinWorkspaceHint(message.data.l[0]);
     } else if (message.message_type == _XA_WIN_LAYER) {
         if (getFrame())
@@ -1361,7 +1365,7 @@ bool YFrameClient::getWinLayerHint(long *layer) {
     {
         if (r_type == XA_CARDINAL && r_format == 32 && count == 1U) {
             long l = *(long *)prop;
-            if (l < WinLayerCount) {
+            if (inrange(l, 0L, WinLayerCount - 1L)) {
                 *layer = l;
                 XFree(prop);
                 return true;
@@ -1476,6 +1480,8 @@ void YFrameClient::setWinStateHint(long mask, long state) {
         a[i++] = _XA_NET_WM_STATE_SKIP_PAGER;
     if (state & WinStateSkipTaskBar)
         a[i++] = _XA_NET_WM_STATE_SKIP_TASKBAR;
+    if (state & WinStateSticky)
+        a[i++] = _XA_NET_WM_STATE_STICKY;
 
     if (state & WinStateRollup)
         a[i++] = _XA_NET_WM_STATE_SHADED;
@@ -1526,45 +1532,57 @@ bool YFrameClient::getNetWMStateHint(long *mask, long *state) {
             for (unsigned long i = 0; i < count; i++) {
                 // can start hidden
                 if (s[i] == _XA_NET_WM_STATE_HIDDEN) {
-                    (*state) |= WinStateHidden;
-                    (*mask) |= WinStateHidden;
-                }
+                    if (manager->wmState() != YWindowManager::wmSTARTUP) {
+                        (*state) |= WinStateHidden;
+                        (*mask) |= WinStateHidden;
+                    }
+                } else
+                if (s[i] == _XA_NET_WM_STATE_FOCUSED) {
+                    if (manager->wmState() == YWindowManager::wmSTARTUP) {
+                        (*state) |= WinStateFocused;
+                        (*mask) |= WinStateFocused;
+                    }
+                } else
                 if (s[i] == _XA_NET_WM_STATE_FULLSCREEN) {
                     (*state) |= WinStateFullscreen;
                     (*mask) |= WinStateFullscreen;
-                }
+                } else
                 if (s[i] == _XA_NET_WM_STATE_ABOVE) {
                     (*state) |= WinStateAbove;
                     (*mask) |= WinStateAbove;
-                }
+                } else
                 if (s[i] == _XA_NET_WM_STATE_BELOW) {
                     (*state) |= WinStateBelow;
                     (*mask) |= WinStateBelow;
-                }
+                } else
                 if (s[i] == _XA_NET_WM_STATE_SHADED) {
                     (*state) |= WinStateRollup;
                     (*mask) |= WinStateRollup;
-                }
+                } else
                 if (s[i] == _XA_NET_WM_STATE_MODAL) {
                     (*state) |= WinStateModal;
                     (*mask) |= WinStateModal;
-                }
+                } else
                 if (s[i] == _XA_NET_WM_STATE_MAXIMIZED_VERT) {
                     (*state) |= WinStateMaximizedVert;
                     (*mask) |= WinStateMaximizedVert;
-                }
+                } else
                 if (s[i] == _XA_NET_WM_STATE_MAXIMIZED_HORZ) {
                     (*state) |= WinStateMaximizedHoriz;
                     (*mask) |= WinStateMaximizedHoriz;
-                }
+                } else
                 if (s[i] == _XA_NET_WM_STATE_SKIP_TASKBAR) {
                     (*state) |= WinStateSkipTaskBar;
                     (*mask) |= WinStateSkipTaskBar;
-                }
+                } else
+                if (s[i] == _XA_NET_WM_STATE_STICKY) {
+                    (*state) |= WinStateSticky;
+                    (*mask) |= WinStateSticky;
+                } else
                 if (s[i] == _XA_NET_WM_STATE_SKIP_PAGER) {
                     (*state) |= WinStateSkipPager;
                     (*mask) |= WinStateSkipPager;
-                }
+                } else
                 if (s[i] == _XA_NET_WM_STATE_DEMANDS_ATTENTION) {
                     (*state) |= WinStateUrgent;
                     (*mask) |= WinStateUrgent;

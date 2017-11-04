@@ -89,6 +89,7 @@ YXTrayProxy::YXTrayProxy(const YAtom& atom, YXTray *tray, YWindow *aParent):
     _NET_SYSTEM_TRAY_S0(atom),
     fTray(tray)
 {
+    setTitle("YXTrayProxy");
     setParentRelative();
     if (isExternal()) {
         long orientation = SYSTEM_TRAY_ORIENTATION_HORZ;
@@ -277,6 +278,7 @@ void YXTrayProxy::handleClientMessage(const XClientMessageEvent &message) {
 YXTrayEmbedder::YXTrayEmbedder(YXTray *tray, Window win): YXEmbed(tray) {
     fTray = tray;
     setStyle(wsManager);
+    setTitle("YXTrayEmbedder");
     fDocked = new YXEmbedClient(this, this, win);
 
     XSetWindowBorderWidth(xapp->display(),
@@ -286,6 +288,39 @@ YXTrayEmbedder::YXTrayEmbedder(YXTray *tray, Window win): YXEmbed(tray) {
     XAddToSaveSet(xapp->display(), client_handle());
 
     fDocked->reparent(this, 0, 0);
+
+    YAtom _XEMBED("_XEMBED");
+    XClientMessageEvent xev = {};
+
+    long info[2] = { XEMBED_PROTOCOL_VERSION, XEMBED_MAPPED };
+
+    XChangeProperty(xapp->display(), win,
+            YAtom("_XEMBED_INFO"),
+            XA_CARDINAL, 32, PropModeReplace,
+            (unsigned char *) &info, 2);
+
+    xev.type = ClientMessage;
+    xev.window = win;
+    xev.message_type = _XEMBED;
+    xev.format = 32;
+    xev.data.l[0] = CurrentTime;
+    xev.data.l[1] = XEMBED_EMBEDDED_NOTIFY;
+    xev.data.l[2] = 0; // no detail
+    xev.data.l[3] = handle();
+    xev.data.l[4] = XEMBED_PROTOCOL_VERSION;
+    xapp->send(xev, win, NoEventMask);
+
+    xev.type = ClientMessage;
+    xev.window = win;
+    xev.message_type = _XEMBED;
+    xev.format = 32;
+    xev.data.l[0] = CurrentTime;
+    xev.data.l[1] = XEMBED_WINDOW_ACTIVATE;
+    xev.data.l[2] = 0; // no detail
+    xev.data.l[3] = 0; // no data1
+    xev.data.l[4] = 0; // no data2
+    xapp->send(xev, win, NoEventMask);
+
     fVisible = true;
     fDocked->show();
 }
@@ -313,14 +348,12 @@ void YXTrayEmbedder::handleClientUnmap(Window win) {
     fTray->showClient(win, false);
 }
 
+void YXTrayEmbedder::handleClientMap(Window win) {
+    fDocked->show();
+    fTray->showClient(win, true);
+}
+
 void YXTrayEmbedder::paint(Graphics &g, const YRect &/*r*/) {
-#if 0
-#ifdef CONFIG_TASKBAR
-    ClearArea(xapp->display(), handle(), 0, 0, 0, 0, True);
-    g.setColor(getTaskBarBg());
-#endif
-    g.fillRect(0, 0, width(), height());
-#endif
 }
 
 void YXTrayEmbedder::configure(const YRect &r) {
@@ -344,17 +377,10 @@ YXTray::YXTray(YXTrayNotifier *notifier,
                YWindow *aParent):
     YWindow(aParent), fNotifier(notifier), fInternal(internal)
 {
+    setTitle("YXTray");
     setParentRelative();
     fTrayProxy = new YXTrayProxy(atom, this);
     show();
-#if 0
-#ifndef LITE
-#ifdef CONFIG_TASKBAR
-    XSetWindowBackground(xapp->display(), handle(), getTaskBarBg()->pixel());
-#endif
-    XClearArea(xapp->display(), handle(), 0, 0, 0, 0, True);
-#endif
-#endif
 }
 
 YXTray::~YXTray() {
@@ -468,13 +494,10 @@ void YXTray::detachTray() {
 
 
 void YXTray::paint(Graphics &g, const YRect &/*r*/) {
-    if (fInternal)
+    if (!fInternal)
         return;
 #ifdef CONFIG_TASKBAR
     g.setColor(getTaskBarBg());
-#endif
-#if 0
-    g.fillRect(0, 0, width(), height());
 #endif
     if (trayDrawBevel && fDocked.getCount())
         g.draw3DRect(0, 0, width() - 1, height() - 1, false);
@@ -488,18 +511,8 @@ void YXTray::configure(const YRect &r) {
 void YXTray::backgroundChanged() {
     if (fInternal)
         return;
-#if 0
-#ifdef CONFIG_TASKBAR
-    unsigned long bg = getTaskBarBg()->pixel();
-    XSetWindowBackground(xapp->display(), handle(), bg);
-#endif
-#endif
     for (IterType ec = fDocked.iterator(); ++ec; ) {
 #ifdef CONFIG_TASKBAR
-#if 0
-        XSetWindowBackground(xapp->display(), ec->handle(), bg);
-        XSetWindowBackground(xapp->display(), ec->client_handle(), bg);
-#endif
         /* something is not clearing which background changes */
         XClearArea(xapp->display(), ec->client_handle(), 0, 0, 0, 0, True);
 #endif
@@ -512,8 +525,9 @@ void YXTray::backgroundChanged() {
 void YXTray::relayout() {
     int aw = 0;
     int h  = trayIconMaxHeight;
-    if (!fInternal && trayDrawBevel)
-        aw+=1;
+    if (fInternal && trayDrawBevel) {
+        h+=2;
+    }
     int cnt = 0;
 
     /*
@@ -536,14 +550,14 @@ void YXTray::relayout() {
         int eh(h), ew=ec->width(), ay(0);
         if (!fInternal) {
             ew = min(trayIconMaxWidth, ec->width());
-            if (trayDrawBevel) {
-                eh-=2; ay=1;
-            }
+        } else if (trayDrawBevel) {
+                ay=1; aw=1; eh-=2;
         }
         ec->setGeometry(YRect(aw,ay,ew,eh));
+        ec->client()->setGeometry(YRect(0,0,ew,eh));
         aw += ew;
     }
-    if (!fInternal && trayDrawBevel)
+    if (fInternal && trayDrawBevel)
         aw+=1;
 
     int w = aw;
@@ -551,7 +565,7 @@ void YXTray::relayout() {
         if (w < 1)
             w = 1;
     } else {
-        if (w < 2)
+        if (w < 4)
             w = 0;
     }
     if (cnt == 0) {

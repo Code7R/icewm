@@ -5,28 +5,20 @@
  */
 
 #include "config.h"
-#include "yfull.h"
 #include "wmframe.h"
 
 #include "yprefs.h"
 #include "prefs.h"
 #include "atasks.h"
 #include "atray.h"
-#include "aaddressbar.h"
-#include "wmaction.h"
-#include "wmclient.h"
 #include "wmcontainer.h"
 #include "wmtitle.h"
-#include "wmbutton.h"
 #include "wmminiicon.h"
 #include "wmswitch.h"
 #include "wmtaskbar.h"
 #include "wmwinlist.h"
-#include "wmmgr.h"
 #include "wmapp.h"
-#include "sysdep.h"
 #include "yrect.h"
-#include "yicon.h"
 #include "wpixmaps.h"
 #include "aworkspaces.h"
 
@@ -41,14 +33,6 @@ YTimer *YFrameWindow::fDelayFocusTimer = 0;
 extern XContext windowContext;
 extern XContext frameContext;
 extern XContext clientContext;
-
-bool YFrameWindow::isButton(char c) {
-    if (strchr(titleButtonsSupported, c) == 0)
-        return false;
-    if (strchr(titleButtonsRight, c) != 0 || strchr(titleButtonsLeft, c) != 0)
-        return true;
-    return false;
-}
 
 YFrameWindow::YFrameWindow(
     YActionListener *wmActionListener,
@@ -71,11 +55,17 @@ YFrameWindow::YFrameWindow(
     setDoubleBuffer(false);
     fClient = 0;
     fFocused = false;
-    fNextFrame = fPrevFrame = 0;
-    fNextCreatedFrame = 0;
-    fPrevCreatedFrame = 0;
-    fNextFocusFrame = 0;
-    fPrevFocusFrame = 0;
+
+    topSide = None;
+    leftSide = None;
+    rightSide = None;
+    bottomSide = None;
+    topLeft = None;
+    topRight = None;
+    bottomLeft = None;
+    bottomRight = None;
+    indicatorsCreated = false;
+    indicatorsVisible = false;
 
     fPopupActive = 0;
     fWmUrgency = false;
@@ -94,7 +84,6 @@ YFrameWindow::YFrameWindow(
     iconY = -1;
     movingWindow = 0;
     sizingWindow = 0;
-    indicatorsVisible = 0;
     fFrameFunctions = 0;
     fFrameDecors = 0;
     fFrameOptions = 0;
@@ -120,6 +109,7 @@ YFrameWindow::YFrameWindow(
     fStrutRight = 0;
     fStrutTop = 0;
     fStrutBottom = 0;
+    fTitleBar = 0;
 
     fUserTimeWindow = None;
 
@@ -141,88 +131,10 @@ YFrameWindow::YFrameWindow(
     fWinState = 0;
     fWinOptionMask = ~0;
 
-    createPointerWindows();
-
     fClientContainer = new YClientContainer(this, this);
     fClientContainer->show();
-
-    fTitleBar = new YFrameTitleBar(this, this);
-    fTitleBar->show();
-
-    if (!isButton('m')) /// optimize strchr (flags)
-        fMaximizeButton = 0;
-    else {
-        fMaximizeButton = new YFrameButton(fTitleBar, this, actionMaximize, actionMaximizeVert);
-        //fMaximizeButton->setWinGravity(NorthEastGravity);
-        fMaximizeButton->show();
-        fMaximizeButton->setToolTip(_("Maximize"));
-    }
-
-    if (!isButton('i'))
-        fMinimizeButton = 0;
-    else {
-        fMinimizeButton = new YFrameButton(fTitleBar, this,
-#ifndef CONFIG_PDA
-                                           actionMinimize, actionHide);
-#else
-                                           actionMinimize, actionNull);
-#endif
-        //fMinimizeButton->setWinGravity(NorthEastGravity);
-        fMinimizeButton->setToolTip(_("Minimize"));
-        fMinimizeButton->show();
-    }
-
-    if (!isButton('x'))
-        fCloseButton = 0;
-    else {
-        fCloseButton = new YFrameButton(fTitleBar, this, actionClose, actionKill);
-        //fCloseButton->setWinGravity(NorthEastGravity);
-        fCloseButton->setToolTip(_("Close"));
-        fCloseButton->show();
-    }
-
-#ifndef CONFIG_PDA
-    if (!isButton('h'))
-#endif
-        fHideButton = 0;
-#ifndef CONFIG_PDA
-    else {
-        fHideButton = new YFrameButton(fTitleBar, this, actionHide, actionHide);
-        //fHideButton->setWinGravity(NorthEastGravity);
-        fHideButton->setToolTip(_("Hide"));
-        fHideButton->show();
-    }
-#endif
-
-    if (!isButton('r'))
-        fRollupButton = 0;
-    else {
-        fRollupButton = new YFrameButton(fTitleBar, this, actionRollup, actionRollup);
-        //fRollupButton->setWinGravity(NorthEastGravity);
-        fRollupButton->setToolTip(_("Rollup"));
-        fRollupButton->show();
-    }
-
-    if (!isButton('d'))
-        fDepthButton = 0;
-    else {
-        fDepthButton = new YFrameButton(fTitleBar, this, actionDepth, actionDepth);
-        //fDepthButton->setWinGravity(NorthEastGravity);
-        fDepthButton->setToolTip(_("Raise/Lower"));
-        fDepthButton->show();
-    }
-
-    if (!isButton('s'))
-        fMenuButton = 0;
-    else {
-        fMenuButton = new YFrameButton(fTitleBar, this, actionNull);
-        fMenuButton->show();
-        fMenuButton->setActionListener(this);
-    }
-#ifndef LITE
-    if (minimizeToDesktop)
-        fMiniIcon = new MiniIcon(this, this);
-#endif
+    fClientContainer->setTitle("Container");
+    setTitle("Frame");
 }
 
 YFrameWindow::~YFrameWindow() {
@@ -284,25 +196,14 @@ YFrameWindow::~YFrameWindow() {
     // perhaps should be done another way
     removeTransients();
     removeAsTransient();
-    removeFocusFrame();
+    manager->removeFocusFrame(this);
     manager->removeClientFrame(this);
-    {
-        // !!! consider having an array instead
-        if (fNextCreatedFrame)
-            fNextCreatedFrame->setPrevCreated(fPrevCreatedFrame);
-        else
-            manager->setLastFrame(fPrevCreatedFrame);
-
-        if (fPrevCreatedFrame)
-            fPrevCreatedFrame->setNextCreated(fNextCreatedFrame);
-        else
-            manager->setFirstFrame(fNextCreatedFrame);
-    }
+    manager->removeCreatedFrame(this);
     removeFrame();
     if (wmapp->hasSwitchWindow())
         wmapp->getSwitchWindow()->destroyedFrame(this);
     if (fClient != 0) {
-        if (!fClient->destroyed())
+        if (!fClient->destroyed() && fClient->adopted())
             XRemoveFromSaveSet(xapp->display(), client()->handle());
         XDeleteContext(xapp->display(), client()->handle(), frameContext);
     }
@@ -319,23 +220,21 @@ YFrameWindow::~YFrameWindow() {
 
     delete fClient; fClient = 0;
     delete fClientContainer; fClientContainer = 0;
-    delete fMenuButton; fMenuButton = 0;
-    delete fCloseButton; fCloseButton = 0;
-    delete fMaximizeButton; fMaximizeButton = 0;
-    delete fMinimizeButton; fMinimizeButton = 0;
-    delete fHideButton; fHideButton = 0;
-    delete fRollupButton; fRollupButton = 0;
-    delete fDepthButton; fDepthButton = 0;
+
+    /* if (indicatorsCreated) {
+        // do we really need to explicitly destroy these?
+        XDestroyWindow(xapp->display(), topSide);
+        XDestroyWindow(xapp->display(), leftSide);
+        XDestroyWindow(xapp->display(), rightSide);
+        XDestroyWindow(xapp->display(), bottomSide);
+        XDestroyWindow(xapp->display(), topLeft);
+        XDestroyWindow(xapp->display(), topRight);
+        XDestroyWindow(xapp->display(), bottomLeft);
+        XDestroyWindow(xapp->display(), bottomRight);
+    } */
+
     delete fTitleBar; fTitleBar = 0;
 
-    XDestroyWindow(xapp->display(), topSide);
-    XDestroyWindow(xapp->display(), leftSide);
-    XDestroyWindow(xapp->display(), rightSide);
-    XDestroyWindow(xapp->display(), bottomSide);
-    XDestroyWindow(xapp->display(), topLeftCorner);
-    XDestroyWindow(xapp->display(), topRightCorner);
-    XDestroyWindow(xapp->display(), bottomLeftCorner);
-    XDestroyWindow(xapp->display(), bottomRightCorner);
     manager->updateClientList();
 
 #ifdef CONFIG_TASKBAR
@@ -345,6 +244,15 @@ YFrameWindow::~YFrameWindow() {
         taskBar->workspacesPane()->repaint();
     }
 #endif
+}
+
+YFrameTitleBar* YFrameWindow::titlebar() {
+    bool titleVisible = (titleY() > 0);
+    if (fTitleBar == 0 && titleVisible) {
+        fTitleBar = new YFrameTitleBar(this, this);
+        fTitleBar->show();
+    }
+    return fTitleBar;
 }
 
 void YFrameWindow::doManage(YFrameClient *clientw, bool &doActivate, bool &requestFocus) {
@@ -387,17 +295,10 @@ void YFrameWindow::doManage(YFrameClient *clientw, bool &doActivate, bool &reque
     updateIcon();
 #endif
     manage(fClient);
-    {
-        if (manager->lastFrame())
-            manager->lastFrame()->setNextCreated(this);
-        else
-            manager->setFirstFrame(this);
-        setPrevCreated(manager->lastFrame());
-        manager->setLastFrame(this);
-    }
+    manager->appendCreatedFrame(this);
     bool isRunning = manager->wmState() == YWindowManager::wmRUNNING;
     insertFrame(!isRunning);
-    insertFocusFrame(!isRunning);
+    manager->insertFocusFrame(this, !isRunning);
 
     getFrameHints();
 
@@ -414,7 +315,7 @@ void YFrameWindow::doManage(YFrameClient *clientw, bool &doActivate, bool &reque
             {
 /// TODO #warning "this needs some cleanup"
                 setWindowType(wtDesktop);
-                setSticky(true);
+                setAllWorkspaces();
             } else
             if (net_wm_window_type == _XA_NET_WM_WINDOW_TYPE_DIALOG)
             {
@@ -427,7 +328,7 @@ void YFrameWindow::doManage(YFrameClient *clientw, bool &doActivate, bool &reque
             if (net_wm_window_type == _XA_NET_WM_WINDOW_TYPE_DOCK)
             {
                 setWindowType(wtDock);
-                setSticky(true);
+                setAllWorkspaces();
             } else
             if (net_wm_window_type == _XA_NET_WM_WINDOW_TYPE_DROPDOWN_MENU)
             {
@@ -499,7 +400,7 @@ void YFrameWindow::doManage(YFrameClient *clientw, bool &doActivate, bool &reque
 #ifdef WMSPEC_HINTS
     if (client()->getNetWMStateHint(&state_mask, &state)) {
         setState(state_mask, state);
-    }
+    } else
 #endif
     if (client()->getWinStateHint(&state_mask, &state)) {
         setState(state_mask, state);
@@ -518,7 +419,8 @@ void YFrameWindow::doManage(YFrameClient *clientw, bool &doActivate, bool &reque
         switch (st) {
         case IconicState:
             fFrameOptions |= foMinimized;
-            setState(WinStateMinimized, WinStateMinimized);
+            if (manager->wmState() != YWindowManager::wmSTARTUP)
+                setState(WinStateMinimized, WinStateMinimized);
             break;
 
         case NormalState:
@@ -528,15 +430,12 @@ void YFrameWindow::doManage(YFrameClient *clientw, bool &doActivate, bool &reque
     }
 
 #ifdef WMSPEC_HINTS
-    if (client()->getNetWMDesktopHint(&workspace)) {
-        if (workspace == (long)0xFFFFFFFF)
-            setSticky(true);
-        else
-            setWorkspace(workspace);
-    } else
+    if (client()->getNetWMDesktopHint(&workspace))
+        setWorkspace(workspace);
+    else
 #endif
 #ifdef GNOME1_HINTS
-       if (client()->getWinWorkspaceHint(&workspace))
+    if (client()->getWinWorkspaceHint(&workspace))
         setWorkspace(workspace);
 #endif
 
@@ -586,60 +485,48 @@ void YFrameWindow::afterManage() {
 #endif
 }
 
-// create 8 windows that are used to show the proper pointer
-// on frame (for resize)
-void YFrameWindow::createPointerWindows() {
+// create a window to show a resize pointer on the frame border
+Window YFrameWindow::createPointerWindow(Cursor cursor, Window parent) {
     XSetWindowAttributes attributes;
-    unsigned int attrmask = 0;
-    unsigned int klass = InputOnly;
-
     attributes.event_mask = 0;
-    attrmask |= CWEventMask;
+    attributes.cursor = cursor;
+    return XCreateWindow(xapp->display(), parent, 0, 0, 1, 1, 0,
+                         0, InputOnly, CopyFromParent,
+                         CWEventMask | CWCursor, &attributes);
+}
 
-    attrmask |= CWCursor;
+// create 8 resize pointer indicator windows
+void YFrameWindow::createPointerWindows() {
 
-    attributes.cursor = YWMApp::sizeTopPointer.handle();
-    topSide = XCreateWindow(xapp->display(), handle(), 0, 0, 1, 1, 0,
-                            0, klass, None,
-                            attrmask, &attributes);
+    // There is a competition for mouse input between
+    // the resize handles, the titlebar and its buttons.
+    // The following solution positions the three top resize
+    // handles between the titlebar and the titlebar buttons.
+    Window titleWin = titlebar() ? titlebar()->handle() : handle();
 
-    attributes.cursor = YWMApp::sizeLeftPointer.handle();
-    leftSide = XCreateWindow(xapp->display(), handle(), 0, 0, 1, 1, 0,
-                            0, klass, None,
-                            attrmask, &attributes);
+    topSide = createPointerWindow(YWMApp::sizeTopPointer,
+                                  titleWin);
+    leftSide = createPointerWindow(YWMApp::sizeLeftPointer,
+                                   handle());
+    rightSide = createPointerWindow(YWMApp::sizeRightPointer,
+                                    handle());
+    bottomSide = createPointerWindow(YWMApp::sizeBottomPointer,
+                                     handle());
 
-    attributes.cursor = YWMApp::sizeRightPointer.handle();
-    rightSide = XCreateWindow(xapp->display(), handle(), 0, 0, 1, 1, 0,
-                            0, klass, None,
-                            attrmask, &attributes);
+    topLeft = createPointerWindow(YWMApp::sizeTopLeftPointer,
+                                  titleWin);
+    topRight = createPointerWindow(YWMApp::sizeTopRightPointer,
+                                   titleWin);
+    bottomLeft = createPointerWindow(YWMApp::sizeBottomLeftPointer,
+                                     handle());
+    bottomRight = createPointerWindow(YWMApp::sizeBottomRightPointer,
+                                      handle());
 
-    attributes.cursor = YWMApp::sizeBottomPointer.handle();
-    bottomSide = XCreateWindow(xapp->display(), handle(), 0, 0, 1, 1, 0,
-                            0, klass, None,
-                            attrmask, &attributes);
+    indicatorsCreated = true;
 
-    attributes.cursor = YWMApp::sizeTopLeftPointer.handle();
-    topLeftCorner = XCreateWindow(xapp->display(), handle(), 0, 0, 1, 1, 0,
-                                  0, klass, None,
-                                  attrmask, &attributes);
-
-    attributes.cursor = YWMApp::sizeTopRightPointer.handle();
-    topRightCorner = XCreateWindow(xapp->display(), handle(), 0, 0, 1, 1, 0,
-                                   0, klass, None,
-                                   attrmask, &attributes);
-
-    attributes.cursor = YWMApp::sizeBottomLeftPointer.handle();
-    bottomLeftCorner = XCreateWindow(xapp->display(), handle(), 0, 0, 1, 1, 0,
-                                     0, klass, None,
-                                     attrmask, &attributes);
-
-    attributes.cursor = YWMApp::sizeBottomRightPointer.handle();
-    bottomRightCorner = XCreateWindow(xapp->display(), handle(), 0, 0, 1, 1, 0,
-                                      0, klass, None,
-                                      attrmask, &attributes);
-
-    XMapSubwindows(xapp->display(), handle());
-    indicatorsVisible = 1;
+    if (titlebar()) {
+        titlebar()->raiseButtons();
+    }
 }
 
 void YFrameWindow::grabKeys() {
@@ -704,7 +591,8 @@ void YFrameWindow::manage(YFrameClient *client) {
     }
 #endif
 
-    XAddToSaveSet(xapp->display(), client->handle());
+    if (client->adopted())
+        XAddToSaveSet(xapp->display(), client->handle());
 
     client->reparent(fClientContainer, 0, 0);
 
@@ -746,7 +634,7 @@ void YFrameWindow::unmanage(bool reparent) {
         if (manager->wmState() != YWindowManager::wmSHUTDOWN)
             client()->setFrameState(WithdrawnState);
 
-        if (!client()->destroyed())
+        if (!client()->destroyed() && client()->adopted())
             XRemoveFromSaveSet(xapp->display(), client()->handle());
     }
 
@@ -1114,19 +1002,7 @@ void YFrameWindow::removeFrame() {
 #ifdef DEBUG
     if (debug_z) dumpZorder("before removing", this);
 #endif
-    if (prev())
-        prev()->setNext(next());
-    else
-        manager->setTop(getActiveLayer(), next());
-
-    if (next())
-        next()->setPrev(prev());
-    else
-        manager->setBottom(getActiveLayer(), prev());
-
-    setPrev(0);
-    setNext(0);
-
+    manager->removeLayeredFrame(this);
 #ifdef DEBUG
     if (debug_z) dumpZorder("after removing", this);
 #endif
@@ -1137,21 +1013,9 @@ void YFrameWindow::insertFrame(bool top) {
     if (debug_z) dumpZorder("before inserting", this);
 #endif
     if (top) {
-        setNext(manager->top(getActiveLayer()));
-        setPrev(0);
         manager->setTop(getActiveLayer(), this);
-        if (next())
-            next()->setPrev(this);
-        else
-            manager->setBottom(getActiveLayer(), this);
     } else {
-        setPrev(manager->bottom(getActiveLayer()));
-        setNext(0);
         manager->setBottom(getActiveLayer(), this);
-        if (prev())
-            prev()->setNext(this);
-        else
-            manager->setTop(getActiveLayer(), this);
     }
 #ifdef DEBUG
     if (debug_z) dumpZorder("after inserting", this);
@@ -1159,98 +1023,11 @@ void YFrameWindow::insertFrame(bool top) {
 }
 
 void YFrameWindow::setAbove(YFrameWindow *aboveFrame) {
-    if (aboveFrame != 0 &&
-        getActiveLayer() != aboveFrame->getActiveLayer())
-    {
-        MSG(("ignore z-order change between layers: win=0x%lX (above: 0x%lX) ", handle(), aboveFrame->client()->handle()));
-        return;
-    }
-
-#ifdef DEBUG
-    if (debug_z) dumpZorder("before setAbove", this, aboveFrame);
-#endif
-    if (aboveFrame != next() && aboveFrame != this) {
-        if (prev())
-            prev()->setNext(next());
-        else
-            manager->setTop(getActiveLayer(), next());
-
-        if (next())
-            next()->setPrev(prev());
-        else
-            manager->setBottom(getActiveLayer(), prev());
-
-        setNext(aboveFrame);
-        if (next()) {
-            setPrev(next()->prev());
-            next()->setPrev(this);
-        } else {
-            setPrev(manager->bottom(getActiveLayer()));
-            manager->setBottom(getActiveLayer(), this);
-        }
-        if (prev())
-            prev()->setNext(this);
-        else
-            manager->setTop(getActiveLayer(), this);
-#ifdef DEBUG
-        if (debug_z) dumpZorder("after setAbove", this, aboveFrame);
-#endif
-    }
-    manager->updateFullscreenLayer();
+    manager->setAbove(this, aboveFrame);
 }
 
 void YFrameWindow::setBelow(YFrameWindow *belowFrame) {
-    if (belowFrame != 0 &&
-        getActiveLayer() != belowFrame->getActiveLayer())
-    {
-        MSG(("ignore z-order change between layers: win=0x%lX (below %ld)", handle(), belowFrame->client()->handle()));
-        return;
-    }
-    if (belowFrame != prev() && belowFrame != this)
-        setAbove(belowFrame ? belowFrame->next() : 0);
-}
-
-void YFrameWindow::insertFocusFrame(bool focus) {
-    if (focus || manager->lastFocusFrame() == 0) {
-        if (manager->lastFocusFrame())
-            manager->lastFocusFrame()->setNextFocus(this);
-        else
-            manager->setFirstFocusFrame(this);
-        setPrevFocus(manager->lastFocusFrame());
-        manager->setLastFocusFrame(this);
-    } else {
-        setPrevFocus(manager->lastFocusFrame()->prevFocus());
-        setNextFocus(manager->lastFocusFrame());
-        manager->lastFocusFrame()->setPrevFocus(this);
-        if (prevFocus() == 0)
-            manager->setFirstFocusFrame(this);
-        else
-            prevFocus()->setNextFocus(this);
-    }
-}
-
-void YFrameWindow::insertLastFocusFrame() {
-    setPrevFocus(0);
-    setNextFocus(manager->firstFocusFrame());
-    manager->setFirstFocusFrame(this);
-    if (nextFocus() == 0)
-        manager->setLastFocusFrame(this);
-    else
-        nextFocus()->setPrevFocus(this);
-}
-
-void YFrameWindow::removeFocusFrame() {
-    if (fNextFocusFrame)
-        fNextFocusFrame->setPrevFocus(fPrevFocusFrame);
-    else
-        manager->setLastFocusFrame(fPrevFocusFrame);
-
-    if (fPrevFocusFrame)
-        fPrevFocusFrame->setNextFocus(fNextFocusFrame);
-    else
-        manager->setFirstFocusFrame(fNextFocusFrame);
-    fNextFocusFrame = 0;
-    fPrevFocusFrame = 0;
+    manager->setBelow(this, belowFrame);
 }
 
 YFrameWindow *YFrameWindow::findWindow(int flags) {
@@ -1280,7 +1057,7 @@ YFrameWindow *YFrameWindow::findWindow(int flags) {
             goto next;
 #endif
 #endif
-        if (!p->client()->adopted())
+        if (!p->client()->adopted() || p->client()->destroyed())
             goto next;
 
         return p;
@@ -1306,7 +1083,7 @@ YFrameWindow *YFrameWindow::findWindow(int flags) {
         return 0;
     if ((flags & fwfWorkspace) && !p->visibleNow())
         return 0;
-    if (!p->client()->adopted())
+    if (!p->client()->adopted() || p->client()->destroyed())
         return 0;
 
     return this;
@@ -1484,13 +1261,13 @@ void YFrameWindow::wmMove() {
         wx = x();
     if (wy < y())
         wy = y();
-    startMoveSize(1, 0,
+    startMoveSize(true, false,
                   0, 0,
                   wx - x(), wy - y());
 }
 
 void YFrameWindow::wmSize() {
-    startMoveSize(0, 0,
+    startMoveSize(false, false,
                   0, 0,
                   0, 0);
 }
@@ -1650,16 +1427,13 @@ void YFrameWindow::wmHide() {
 
 void YFrameWindow::wmLower() {
     if (this != manager->bottom(getActiveLayer())) {
-        YFrameWindow *w = this;
-
         manager->lockFocus();
 #ifdef CONFIG_GUIEVENTS
         if (getState() ^ WinStateMinimized)
             wmapp->signalGuiEvent(geWindowLower);
 #endif
-        while (w) {
+        for (YFrameWindow *w = this; w; w = w->owner()) {
             w->doLower();
-            w = w->owner();
         }
         manager->restackWindows(this);
         manager->unlockFocus();
@@ -1669,8 +1443,7 @@ void YFrameWindow::wmLower() {
 
 void YFrameWindow::doLower() {
     setAbove(0);
-    removeFocusFrame();
-    insertLastFocusFrame();
+    manager->lowerFocusFrame(this);
 }
 
 void YFrameWindow::wmRaise() {
@@ -1807,10 +1580,11 @@ void YFrameWindow::loseWinFocus() {
                 if (fClientContainer)
                     fClientContainer->grabButtons();
         if (isIconic())
-            fMiniIcon->repaint();
+            getMiniIcon()->repaint();
         else {
             repaint();
-            titlebar()->deactivate();
+            if (titlebar())
+                titlebar()->deactivate();
         }
 #ifdef CONFIG_TASKBAR
         updateTaskBar();
@@ -1824,9 +1598,10 @@ void YFrameWindow::setWinFocus() {
 
         setState(WinStateFocused, WinStateFocused);
         if (isIconic())
-            fMiniIcon->repaint();
+            getMiniIcon()->repaint();
         else {
-            titlebar()->activate();
+            if (titlebar())
+                titlebar()->activate();
             repaint();
         }
 #ifdef CONFIG_TASKBAR
@@ -1958,10 +1733,22 @@ void YFrameWindow::activateWindow(bool raise) {
     activate(true);
 }
 
+MiniIcon *YFrameWindow::getMiniIcon() {
+#ifndef LITE
+    if (minimizeToDesktop && fMiniIcon == 0)
+        fMiniIcon = new MiniIcon(this, this);
+#endif
+    return fMiniIcon;
+}
 
 void YFrameWindow::paint(Graphics &g, const YRect &/*r*/) {
     YColor *bg;
 
+    if (g.rdepth() != depth()) {
+        tlog("YFrameWindow::%s: attempt to use gc of depth %d on window 0x%lx of depth %d\n",
+                __func__, g.rdepth(), handle(), depth());
+        return;
+    }
     if (!(frameDecors() & (fdResize | fdBorder)))
         return ;
 
@@ -2113,9 +1900,13 @@ void YFrameWindow::handlePopDown(YPopupWindow *popup) {
 
 void YFrameWindow::popupSystemMenu(YWindow *owner) {
     if (fPopupActive == 0) {
-        if (fMenuButton && fMenuButton->visible() &&
-            fTitleBar && fTitleBar->visible())
-            fMenuButton->popupMenu();
+        if (titlebar() &&
+            titlebar()->visible() &&
+            titlebar()->menuButton() &&
+            titlebar()->menuButton()->visible())
+        {
+            titlebar()->menuButton()->popupMenu();
+        }
         else {
             int ax = x() + container()->x();
             int ay = y() + container()->y();
@@ -2144,7 +1935,8 @@ void YFrameWindow::popupSystemMenu(YWindow *owner, int x, int y,
 }
 
 void YFrameWindow::updateTitle() {
-    titlebar()->repaint();
+    if (titlebar())
+        titlebar()->repaint();
     layoutShape();
     updateIconTitle();
 #ifdef CONFIG_WINLIST
@@ -2173,16 +1965,15 @@ void YFrameWindow::updateIconTitle() {
         fTrayApp->setToolTip(client()->windowTitle());
 #endif
     if (isIconic()) {
-        fMiniIcon->repaint();
+        getMiniIcon()->repaint();
     }
 }
 
 void YFrameWindow::wmOccupyAllOrCurrent() {
-    if (isSticky()) {
+    if (isAllWorkspaces()) {
         mainOwner()->setWorkspace(manager->activeWorkspace());
-        setSticky(false);
     } else {
-        setSticky(true);
+        setAllWorkspaces();
     }
 #ifdef CONFIG_TASKBAR
     if (taskBar)
@@ -2195,7 +1986,8 @@ void YFrameWindow::wmOccupyAllOrCurrent() {
 }
 
 void YFrameWindow::wmOccupyAll() {
-    setSticky(!isSticky());
+    if (!isAllWorkspaces())
+        setAllWorkspaces();
     if (affectsWorkArea())
         manager->updateWorkArea();
 #ifdef CONFIG_TASKBAR
@@ -2208,18 +2000,17 @@ void YFrameWindow::wmOccupyAll() {
 #endif
 }
 
-void YFrameWindow::wmOccupyWorkspace(long workspace) {
+void YFrameWindow::wmOccupyWorkspace(int workspace) {
     PRECONDITION(workspace < workspaceCount);
     mainOwner()->setWorkspace(workspace);
 }
 
-void YFrameWindow::wmOccupyOnlyWorkspace(long workspace) {
+void YFrameWindow::wmOccupyOnlyWorkspace(int workspace) {
     PRECONDITION(workspace < workspaceCount);
     mainOwner()->setWorkspace(workspace);
-    setSticky(false);
 }
 
-void YFrameWindow::wmMoveToWorkspace(long workspace) {
+void YFrameWindow::wmMoveToWorkspace(int workspace) {
     wmOccupyOnlyWorkspace(workspace);
 }
 
@@ -2531,7 +2322,7 @@ ref<YIcon> newClientIcon(int count, int reclen, long * elem) {
         }
         MSG(("client icon: %ld %d %d %d %d", pixmap, w, h, depth, xapp->depth()));
         if (depth == 1) {
-            ref<YPixmap> img = YPixmap::create(w, h);
+            ref<YPixmap> img = YPixmap::create(w, h, xapp->depth());
             Graphics g(img, 0, 0);
 
             g.setColorPixel(0xffffff);
@@ -2679,7 +2470,8 @@ void YFrameWindow::updateIcon() {
     }
 
 // !!! BAH, we need an internal signaling framework
-    if (menuButton()) menuButton()->repaint();
+    if (titlebar() && titlebar()->menuButton())
+        titlebar()->menuButton()->repaint();
     if (getMiniIcon()) getMiniIcon()->repaint();
 #ifdef CONFIG_TRAY
     if (fTrayApp) fTrayApp->repaint();
@@ -2695,7 +2487,7 @@ void YFrameWindow::updateIcon() {
 #endif
 
 YFrameWindow *YFrameWindow::nextLayer() {
-    if (fNextFrame) return fNextFrame;
+    if (next()) return next();
 
     for (long l(getActiveLayer() - 1); l > -1; --l)
         if (manager->top(l)) return manager->top(l);
@@ -2704,7 +2496,7 @@ YFrameWindow *YFrameWindow::nextLayer() {
 }
 
 YFrameWindow *YFrameWindow::prevLayer() {
-    if (fPrevFrame) return fPrevFrame;
+    if (prev()) return prev();
 
     for (long l(getActiveLayer() + 1); l < WinLayerCount; ++l)
         if (manager->bottom(l)) return manager->bottom(l);
@@ -2859,8 +2651,8 @@ bool YFrameWindow::getInputFocusHint() {
 }
 
 
-void YFrameWindow::setWorkspace(long workspace) {
-    if (workspace >= workspaceCount || workspace < 0)
+void YFrameWindow::setWorkspace(int workspace) {
+    if (workspace >= workspaceCount || workspace < -1)
         return ;
     if (workspace != fWinWorkspace) {
         fWinWorkspace = workspace;
@@ -3330,7 +3122,8 @@ void YFrameWindow::updateLayout() {
         if (iconX == -1 && iconY == -1)
             manager->getIconPosition(this, &iconX, &iconY);
 
-        setWindowGeometry(YRect(iconX, iconY, fMiniIcon->width(), fMiniIcon->height()));
+        setWindowGeometry(YRect(iconX, iconY,
+                          getMiniIcon()->width(), getMiniIcon()->height()));
     } else {
         if (isFullscreen()) {
             // for _NET_WM_FULLSCREEN_MONITORS
@@ -3415,12 +3208,6 @@ void YFrameWindow::setState(long mask, long state) {
 
     fWinState = fNewState;
 
-    if ((fOldState ^ fNewState) & WinStateAllWorkspaces) {
-        MSG(("WinStateAllWorkspaces: %d", isSticky()));
-#ifdef CONFIG_TASKBAR
-        updateTaskBar();
-#endif
-    }
     MSG(("setState: oldState: %lX, newState: %lX, mask: %lX, state: %lX",
          fOldState, fNewState, mask, state));
     //msg("normal1: (%d:%d %dx%d)", normalX, normalY, normalWidth, normalHeight);
@@ -3429,13 +3216,14 @@ void YFrameWindow::setState(long mask, long state) {
     {
         MSG(("WinStateMaximized: %d", isMaximized()));
 
-        if (fMaximizeButton) {
+        YFrameButton* maximize = titlebar() ? titlebar()->maximizeButton() : 0;
+        if (maximize) {
             if (isMaximized()) {
-                fMaximizeButton->setActions(actionRestore, actionRestore);
-                fMaximizeButton->setToolTip(_("Restore"));
+                maximize->setActions(actionRestore, actionRestore);
+                maximize->setToolTip(_("Restore"));
             } else {
-                fMaximizeButton->setActions(actionMaximize, actionMaximizeVert);
-                fMaximizeButton->setToolTip(_("Maximize"));
+                maximize->setActions(actionMaximize, actionMaximizeVert);
+                maximize->setToolTip(_("Maximize"));
             }
         }
     }
@@ -3446,12 +3234,12 @@ void YFrameWindow::setState(long mask, long state) {
         else if (owner() && owner()->isMinimized())
             owner()->setState(WinStateMinimized, 0);
 
-        if (minimizeToDesktop && fMiniIcon) {
+        if (minimizeToDesktop && getMiniIcon()) {
             if (isIconic()) {
-                fMiniIcon->raise();
-                fMiniIcon->show();
+                getMiniIcon()->raise();
+                getMiniIcon()->show();
             } else {
-                fMiniIcon->hide();
+                getMiniIcon()->hide();
                 iconX = x();
                 iconY = y();
             }
@@ -3464,13 +3252,14 @@ void YFrameWindow::setState(long mask, long state) {
     }
     if ((fOldState ^ fNewState) & WinStateRollup) {
         MSG(("WinStateRollup: %d", isRollup()));
-        if (fRollupButton) {
+        YFrameButton* rollup = titlebar() ? titlebar()->rollupButton() : 0;
+        if (rollup) {
             if (isRollup()) {
-                fRollupButton->setToolTip(_("Rolldown"));
+                rollup->setToolTip(_("Rolldown"));
             } else {
-                fRollupButton->setToolTip(_("Rollup"));
+                rollup->setToolTip(_("Rollup"));
             }
-            fRollupButton->repaint();
+            rollup->repaint();
         }
         layoutResizeIndicators();
     }
@@ -3526,10 +3315,15 @@ void YFrameWindow::setState(long mask, long state) {
             activate();
         }
     }
+    if ((fOldState ^ fNewState) & WinStateFocused) {
+        if ((fNewState & WinStateFocused) &&
+             this != manager->getFocus())
+            manager->setFocus(this);
+    }
 }
 
-void YFrameWindow::setSticky(bool sticky) {
-    setState(WinStateAllWorkspaces, sticky ? WinStateAllWorkspaces : 0);
+void YFrameWindow::setAllWorkspaces() {
+    setWorkspace(-1);
 
 #ifdef CONFIG_WINLIST
     windowList->updateWindowListApp(fWinListItem);
@@ -3743,8 +3537,9 @@ void YFrameWindow::updateNetWMUserTimeWindow() {
             XSaveContext(xapp->display(), window,
                     windowContext, (XPointer)client());
             XWindowAttributes wa;
-            XGetWindowAttributes(xapp->display(), window, &wa);
-            XSelectInput(xapp->display(), wa.your_event_mask | PropertyChangeMask, window);
+            if (XGetWindowAttributes(xapp->display(), window, &wa))
+                XSelectInput(xapp->display(), window,
+                             wa.your_event_mask | PropertyChangeMask);
         }
         updateNetWMUserTime();
     }

@@ -247,7 +247,7 @@ static void registerProtocols2(Window xid) {
         _XA_NET_MOVERESIZE_WINDOW,
         _XA_NET_NUMBER_OF_DESKTOPS,
 //      _XA_NET_PROPERTIES,
-//      _XA_NET_REQUEST_FRAME_EXTENTS,
+        _XA_NET_REQUEST_FRAME_EXTENTS,
         _XA_NET_RESTACK_WINDOW,
         _XA_NET_SHOWING_DESKTOP,
         _XA_NET_STARTUP_ID,
@@ -506,7 +506,7 @@ CtrlAltDelete* YWMApp::getCtrlAltDelete() {
 
 SwitchWindow* YWMApp::getSwitchWindow() {
     if (switchWindow == 0 && quickSwitch) {
-        switchWindow = new SwitchWindow(manager);
+        switchWindow = new SwitchWindow(manager, NULL, quickSwitchVertical);
     }
     return switchWindow;
 }
@@ -730,7 +730,7 @@ int handler(Display *display, XErrorEvent *xev) {
                           Success)
             *message = '\0';
 
-        warn("X error %s(0x%lX): %s", req, xev->resourceid, message);
+        tlog("X error %s(0x%lX): %s", req, xev->resourceid, message);
     }
     return 0;
 }
@@ -1660,6 +1660,9 @@ static void print_configured(const char *argv0) {
 #endif
 #ifdef CONFIG_XRANDR
     " xrandr"
+#endif
+#ifdef CONFIG_RENDER
+    " xrender"
 #endif
     "\n";
     printf(_("%s configured options:%s\n"), argv0,

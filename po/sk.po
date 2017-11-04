@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icewm-1.2.22\n"
 "Report-Msgid-Bugs-To: https://github.com/bbidulock/icewm/issues\n"
-"POT-Creation-Date: 2017-10-16 10:00-0600\n"
-"PO-Revision-Date: 2017-06-17 19:54+0100\n"
+"POT-Creation-Date: 2017-11-01 21:50-0600\n"
+"PO-Revision-Date: 2017-11-02 16:29+0100\n"
 "Last-Translator: Ferdinand Galko <galko.ferdinand@gmail.com>\n"
 "Language-Team: Slovak <opensuse-translation-sk@opensuse.org>\n"
 "Language: sk\n"
@@ -17,24 +17,24 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: Lokalize 2.0\n"
 
-#: src/aapm.cc:176 src/aapm.cc:457 src/aapm.cc:675 src/aapm.cc:791
+#: src/aapm.cc:180 src/aapm.cc:461 src/aapm.cc:681 src/aapm.cc:797
 msgid " - Power"
 msgstr " - Napájanie"
 
-#: src/aapm.cc:178 src/aapm.cc:460 src/aapm.cc:678
+#: src/aapm.cc:182 src/aapm.cc:464 src/aapm.cc:684
 msgid "P"
 msgstr "N"
 
-#: src/aapm.cc:182 src/aapm.cc:434 src/aapm.cc:658 src/aapm.cc:765
+#: src/aapm.cc:186 src/aapm.cc:438 src/aapm.cc:664 src/aapm.cc:771
 #, c-format
 msgid " - Charging"
 msgstr " - Dobíjanie"
 
-#: src/aapm.cc:184 src/aapm.cc:436 src/aapm.cc:660
+#: src/aapm.cc:188 src/aapm.cc:440 src/aapm.cc:666
 msgid "C"
 msgstr "D"
 
-#: src/aapm.cc:438
+#: src/aapm.cc:442
 msgid " - Full"
 msgstr " - Plné"
 
@@ -147,27 +147,27 @@ msgstr "%ld poštových správ."
 
 #: src/amemstatus.cc:134
 msgid "GB"
-msgstr ""
+msgstr "GB"
 
 #: src/amemstatus.cc:138
 msgid "MB"
-msgstr ""
+msgstr "MB"
 
 #: src/amemstatus.cc:142
 msgid "kB"
-msgstr ""
+msgstr "kB"
 
 #: src/amemstatus.cc:146
 msgid "bytes"
-msgstr ""
+msgstr "bajtov"
 
 #: src/amemstatus.cc:170
 msgid "Memory Total: "
-msgstr ""
+msgstr "Celková pamäť: "
 
 #: src/amemstatus.cc:171
 msgid "Free: "
-msgstr ""
+msgstr "Voľná: "
 
 #: src/amemstatus.cc:172
 msgid "Cached: "
@@ -268,88 +268,86 @@ msgstr "Editory"
 msgid "Other"
 msgstr "Iné"
 
-#: src/icehelp.cc:1144
+#: src/icehelp.cc:1156
 msgid "Back"
 msgstr "Späť"
 
-#: src/icehelp.cc:1144
+#: src/icehelp.cc:1156
 msgid "Alt+Left"
 msgstr "Alt+Vľavo"
 
-#: src/icehelp.cc:1146
+#: src/icehelp.cc:1158
 msgid "Forward"
 msgstr "Dopredu"
 
-#: src/icehelp.cc:1146
+#: src/icehelp.cc:1158
 msgid "Alt+Right"
 msgstr "Alt+Vpravo"
 
-#: src/icehelp.cc:1149
+#: src/icehelp.cc:1161
 msgid "Previous"
 msgstr "Predchádzajúce"
 
-#: src/icehelp.cc:1150
+#: src/icehelp.cc:1162
 msgid "Next"
 msgstr "Nasledujúce"
 
-#: src/icehelp.cc:1152
+#: src/icehelp.cc:1164
 msgid "Contents"
 msgstr "Obsah"
 
-#: src/icehelp.cc:1153
+#: src/icehelp.cc:1165
 msgid "Index"
 msgstr "Index"
 
-#: src/icehelp.cc:1156 src/icesame.cc:62 src/iceview.cc:72 src/wmframe.cc:180
+#: src/icehelp.cc:1168 src/icesame.cc:62 src/iceview.cc:72 src/wmtitle.cc:101
 msgid "Close"
 msgstr "Zavrieť"
 
-#: src/icehelp.cc:1156 src/icesame.cc:62 src/iceview.cc:72
+#: src/icehelp.cc:1168 src/icesame.cc:62 src/iceview.cc:72
 msgid "Ctrl+Q"
 msgstr "Ctrl+Q"
 
-#: src/icehelp.cc:1828
-#, fuzzy
+#: src/icehelp.cc:1865
 msgid "Unsupported protocol."
-msgstr "Nepodporované rozhranie: %s."
+msgstr "Nepodporovaný protokol."
 
-#: src/icehelp.cc:1853
+#: src/icehelp.cc:1890
 #, c-format
 msgid "Invalid path: %s\n"
 msgstr "Neplatná cesta: %s\n"
 
-#: src/icehelp.cc:1876
+#: src/icehelp.cc:1913
 msgid "Path does not refer to a file."
 msgstr ""
 
-#: src/icehelp.cc:1881
+#: src/icehelp.cc:1918
 msgid "Failed to open file for reading."
 msgstr ""
 
-#: src/icehelp.cc:1910
-#, fuzzy
+#: src/icehelp.cc:1947
 msgid "Failed to create a temporary file"
-msgstr "Zlyhalo otvorenie nepomenovanej rúry: %s"
+msgstr "Zlyhalo vytvorenie dočasného súboru"
 
-#: src/icehelp.cc:2002
+#: src/icehelp.cc:2039
 #, c-format
 msgid "Failed to execute system(%s) (%d)"
 msgstr ""
 
-#: src/icehelp.cc:2025
-#, fuzzy, c-format
+#: src/icehelp.cc:2062
+#, c-format
 msgid "Failed to decompress %s"
-msgstr "Zlyhalo načítanie témy %s"
+msgstr "Zlyhalo rozbalenie %s"
 
-#: src/icehelp.cc:2033
+#: src/icehelp.cc:2070
 msgid "Could not locate curl or wget in PATH"
 msgstr ""
 
-#: src/icehelp.cc:2037
+#: src/icehelp.cc:2074
 msgid "Unsafe characters in URL"
 msgstr ""
 
-#: src/icehelp.cc:2053
+#: src/icehelp.cc:2090
 #, c-format
 msgid ""
 "Usage: %s [OPTIONS] [ FILENAME | URL ]\n"
@@ -383,10 +381,10 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/icehelp.cc:2115
-#, fuzzy, c-format
+#: src/icehelp.cc:2152
+#, c-format
 msgid "Ignoring option '%s'"
-msgstr "Neznáma voľba '%s'"
+msgstr "Ignorovanie voľby '%s'"
 
 #: src/icelist.cc:80
 msgid "List View"
@@ -438,22 +436,22 @@ msgstr "Akcia `%s' vyžaduje najmenej %d argumentov."
 msgid "Invalid expression: `%s'"
 msgstr "Neplatný výraz: `%s'"
 
-#: src/icesh.cc:316
+#: src/icesh.cc:315
 #, c-format
 msgid "Named symbols of the domain `%s' (numeric range: %ld-%ld):\n"
 msgstr "Pomenované znaky domény `%s' (číselný rozsah: %ld-%ld):\n"
 
-#: src/icesh.cc:429
+#: src/icesh.cc:428
 #, c-format
 msgid "Invalid workspace name: `%s'"
 msgstr "Neplatný názov plochy: `%s'"
 
-#: src/icesh.cc:435
+#: src/icesh.cc:434
 #, c-format
 msgid "Workspace out of range: %ld"
 msgstr "Pracovná plocha je mimo rozsah: %ld"
 
-#: src/icesh.cc:569
+#: src/icesh.cc:568
 #, c-format
 msgid ""
 "Usage: %s [OPTIONS] ACTIONS\n"
@@ -545,53 +543,53 @@ msgstr ""
 "  EXPRESSION ::= SYMBOL | EXPRESSION ( `+' | `|' ) SYMBOL\n"
 "\n"
 
-#: src/icesh.cc:608
+#: src/icesh.cc:607
 msgid "GNOME window state"
 msgstr "GNOME stav okna"
 
-#: src/icesh.cc:609
+#: src/icesh.cc:608
 msgid "GNOME window hint"
 msgstr "GNOME tip okna"
 
-#: src/icesh.cc:610
+#: src/icesh.cc:609
 msgid "GNOME window layer"
 msgstr "GNOME vrstva okna"
 
-#: src/icesh.cc:611
+#: src/icesh.cc:610
 msgid "IceWM tray option"
 msgstr "IceWM nastavenia lišty"
 
-#: src/icesh.cc:616
+#: src/icesh.cc:615
 msgid "Usage error: "
 msgstr "Chybné použitie: "
 
-#: src/icesh.cc:696
+#: src/icesh.cc:695
 #, c-format
 msgid "Invalid argument: `%s'."
 msgstr "Neplatná hodnota: `%s'."
 
-#: src/icesh.cc:702
+#: src/icesh.cc:701
 msgid "No actions specified."
 msgstr "Nebola zadaná žiadna akcia."
 
-#: src/icesh.cc:709 src/icesound.cc:942 src/icewmhint.cc:91 src/yxapp.cc:947
+#: src/icesh.cc:708 src/icesound.cc:942 src/icewmhint.cc:91 src/yxapp.cc:955
 #, c-format
 msgid "Can't open display: %s. X must be running and $DISPLAY set."
 msgstr ""
 "Neide otvoriť displej: %s. Server X musí byť spustený a premenná $DISPLAY "
 "nastavená."
 
-#: src/icesh.cc:749
+#: src/icesh.cc:748
 #, c-format
 msgid "Invalid window identifier: `%s'"
 msgstr "Neplatné označenie okna: `%s'"
 
-#: src/icesh.cc:902
+#: src/icesh.cc:901
 #, c-format
 msgid "workspace #%d: `%s'\n"
 msgstr "pracovná plocha #%d: `%s'\n"
 
-#: src/icesh.cc:920
+#: src/icesh.cc:919
 #, c-format
 msgid "Unknown action: `%s'"
 msgstr "Neznáma akcia: `%s'"
@@ -602,7 +600,6 @@ msgid "Socket error: %d"
 msgstr "Chyba soketu: %d"
 
 #: src/icesm.cc:50
-#, fuzzy
 msgid ""
 "  -c, --config=FILE   Let IceWM load preferences from FILE.\n"
 "  -t, --theme=FILE    Let IceWM load the theme from FILE.\n"
@@ -613,11 +610,14 @@ msgid ""
 "  -n, --notray        Do not start icewmtray.\n"
 "  -s, --sound         Also start icesound.\n"
 msgstr ""
-"  -c, --config=SÚBOR    Umožní IceWM načítať predvoľby zo SÚBORU.\n"
-"  -t, --theme=SÚBOR    Umožní IceWM načítať tému zo SÚBORU.\n"
+"  -c, --config=SÚBOR    Umožní IceWM načítať predvoľby zo SÚBOR-u.\n"
+"  -t, --theme=SÚBOR    Umožní IceWM načítať tému zo SÚBOR-u.\n"
 "\n"
-"  --display=NÁZOV      Použite NÁZOV pre pripojenie k X serveru.\n"
-"  --sync              Synchronizujte komunikáciu s X11 serverom.\n"
+"  --display=NÁZOV      Použije NÁZOV pre pripojenie k X serveru.\n"
+"  --sync              Synchronizuje komunikáciu s X11 serverom.\n"
+"  \n"
+"  -n, --notray        Nespustí icewmtray.\n"
+"  -s, --sound         Tiež spustí icesound.\n"
 
 #: src/icesm.cc:107
 #, c-format
@@ -662,14 +662,13 @@ msgid "OSS incomplete write (%d/%d)"
 msgstr ""
 
 #: src/icesound.cc:373
-#, fuzzy
 msgid "Could not post OSS"
-msgstr "Nemôžem nahrať sadu písma \"%s\"."
+msgstr "Nebolo možné odoslať OSS"
 
 #: src/icesound.cc:402
-#, fuzzy, c-format
+#, c-format
 msgid "Could not open OSS device %s"
-msgstr "Nie je možné nájsť obrázok %s"
+msgstr "Nebolo možné otvoriť zariadenie OSS %s"
 
 #: src/icesound.cc:407
 msgid "Could not set OSS stereo"
@@ -688,7 +687,7 @@ msgstr ""
 msgid "Can't connect to ESound daemon: %s"
 msgstr "Nedá sa spojiť s ESound démonom: %s"
 
-#: src/icesound.cc:491 src/icewmhint.cc:93 src/yxapp.cc:948
+#: src/icesound.cc:491 src/icewmhint.cc:93 src/yxapp.cc:956
 msgid "<none>"
 msgstr "<žiadny>"
 
@@ -703,9 +702,9 @@ msgid "Sample <%d> uploaded as `%s:%s'"
 msgstr "Vzorka <%d> bola nahraná ako `%s:%s'"
 
 #: src/icesound.cc:573
-#, fuzzy, c-format
+#, c-format
 msgid "Playing sample #%d: %d"
-msgstr "Prehrávanie vzorky #%d"
+msgstr "Prehrávanie ukážky #%d: %d"
 
 #: src/icesound.cc:648
 #, c-format
@@ -727,7 +726,7 @@ msgid "Unrecognized argument: %s\n"
 msgstr "Nerozpoznaný parameter: %s\n"
 
 #: src/icesound.cc:833
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Usage: %s [OPTION]...\n"
 "\n"
@@ -783,32 +782,52 @@ msgstr ""
 "Použitie: %s [VOĽBA]…\n"
 "\n"
 "Pri GUI udalostiach vyvolaných IceWM hrá zvukové súbory.\n"
+"Aktuálne nakonfigurované zvukové rozhrania sú:% s.\n"
+"Icesound si vyberie prvé z nich, ktoré je použiteľný.\n"
 "\n"
 "Voľby:\n"
 "\n"
-"-d, --display=DISPLEJ         Displej používaný IceWM (predvolené: "
-"$DISPLAY).\n"
-"-s, --sample-dir=ADR      Určuje adresár, ktorý obsahuje zvukové\n"
-"                              súbory (t.j. ~/.icewm/sounds).\n"
-"-i, --interface=CIEĽ         Určuje výstupné zvukové výstupné\n"
-"                              rozhranie, jedno z ALSA, OSS, YIFF, ESD\n"
-"-D, --device=ZARIADENIE         (ALSA & OSS) určuje zariadenie, ktoré sa "
-"použije\n"
-"                              (OSS predvolené: /dev/dsp; ALSA: predvolené).\n"
-"-S, --server=ADRESA:PORT      (ESD a YIFF) určuje adresu servera "
-"a                              číslo portu (predvolený pre ESD "
-"je                              localhost:16001\n"
-"                              a pre YIFF je localhost:9433).\n"
-"-m, --audio-mode[=REŽIM]      (iba YIFF) určuje Zvukový režim (zoznam\n"
-"                              režimov získate neuvedením režimu).\n"
-"--audio-mode-auto             (iba YIFF) za behu zmení Zvukový režim na \n"
-"                              najvhodnejšie vzorkové Audio (môže spôsobiť\n"
-"                              problémy s ostatnými Y klientmi, prepisuje\n"
-"                              --audio-mode).\n"
-"-v, --verbose                 Podrobnejšie (vypíše každú zvukovú udalosť\n"
-"                              na stdout).\n"
-"-V, --version                 Vypíše informácie o verzii a skončí.\n"
-"-h, --help                    Vypíše (túto) obrazovku pomocníka a skončí.\n"
+"-d, --display=DISPLEJ   X11 displej používaný IceWM (predvolené: $DISPLAY).\n"
+"\n"
+"-s, --sample-dir=ADR      Určuje adresár so zvukovými súbormi\n"
+"                         Predvolený je $HOME/.config/icewm/sounds.\n"
+"\n"
+"-i, --interface=ZOZNAM         Určuje výstupné zvukové rozhranie. Jedno "
+"alebo viac z:\n"
+"                         %s oddelené čiarkami.\n"
+"\n"
+"-D, --device=ZARIADENIE         Len spätná kompatibilita: predvolené "
+"zariadenie. \n"
+"                         Uprednostnite jednu z možností -A/-O/-S.\n"
+"\n"
+" -O, --oss=ZARIADENIE        Určuje zariadenie OSS (predvolené: \"%s\").\n"
+"\n"
+" -A, --alsa=ZARIADENIE       Určuje zariadenie ALSA (predvolené: \"%s\").\n"
+"\n"
+"-S, --server=ADRESA:PORT  Určuje adresu a číslo portu pre ESD server.\n"
+"                         Predvolené pre ESD je \"localhost:16001\".\n"
+" \n"
+" -z, --snooze=millisek  Určuje interval oneskorenia medzi zvukovými "
+"udalosťami\n"
+"                         v milisekundách. Predvolených je Default is 500 "
+"millisekúnd.\n"
+"\n"
+" -p, --play=zvuk        Prehrá daný zvuk (názov alebo číslo) a skončí.\n"
+"\n"
+" -l, --list-files        Zobrazí zoznam dostupných ciest zvukových súborov a "
+"skončí.\n"
+"\n"
+"     --list-sounds       Zobrazí zoznam názvov podporovaných zvukových "
+"súborov a skončí.\n"
+"\n"
+"     --list-interfaces   Zobrazí zoznam podporovaných audio rozhraní a "
+"skončí.\n"
+"\n"
+"-v, --verbose           Podrobnejšie vypíše každú zvukovú udalosť\n"
+"\n"
+"-V, --version           Vypíše informácie o verzii a skončí.\n"
+"\n"
+"-h, --help              Vypíše túto obrazovku pomocníka a skončí.\n"
 "\n"
 "Návratové hodnoty:\n"
 "\n"
@@ -858,17 +877,16 @@ msgid "Using %s audio."
 msgstr ""
 
 #: src/icesound.cc:1083
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to connect to audio interfaces %s."
-msgstr "Zlyhalo načítanie témy %s"
+msgstr "Zlyhalo pripojenie k audio rozhraniam %s."
 
 #: src/icesound.cc:1095
-#, fuzzy, c-format
+#, c-format
 msgid "Received signal %s: Terminating..."
-msgstr "Prijatý signál %d: Končím..."
+msgstr "Prijatý signál %s: Ukončenie..."
 
-#: src/icetray.cc:252
-#, fuzzy
+#: src/icetray.cc:253
 msgid ""
 "  -n, --notify        Notify parent process by sending signal USR1.\n"
 "  --display=NAME      Use NAME to connect to the X server.\n"
@@ -878,11 +896,11 @@ msgid ""
 "  -t, --theme=FILE    Load the theme from FILE.\n"
 msgstr ""
 "  --notify            Upozorní rodičovský proces odosielaním signálu USR1.\n"
-"  --display=NAME      Use NAME to connect to the X server.\n"
-"  --sync              Synchronize communication with X11 server.\n"
+"  --display=NAME      Požije NÁZOV pre pripojenie k X serveru.\n"
+"  --sync              Synchronizuje komunikáciu s X11 serverom.\n"
 "\n"
-"  -c, --config=SÚBOR   Načíta predvoľby zo SÚBORU.\n"
-"  -t, --theme=SÚBOR    Načíta tému zo SÚBORU.\n"
+"  -c, --config=SÚBOR   Načíta predvoľby zo SÚBOR-u.\n"
+"  -t, --theme=SÚBOR    Načíta tému zo SÚBOR-u.\n"
 
 #: src/iceview.cc:68
 msgid "Hex View"
@@ -909,12 +927,11 @@ msgid "Ctrl+W"
 msgstr "Ctrl+W"
 
 #: src/icewmbg.cc:73
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to load image '%s'."
-msgstr "Zlyhalo načítanie témy %s"
+msgstr "Zlyhalo načítanie obrázka: '%s'."
 
 #: src/icewmbg.cc:706
-#, fuzzy
 msgid ""
 "Usage: icewmbg [OPTIONS]\n"
 "Where multiple values can be given they are separated by commas.\n"
@@ -961,13 +978,26 @@ msgid ""
 "\n"
 msgstr ""
 "Použitie: icewmbg [VOĽBY]\n"
+"Ak je možné uviesť viac hodnôt, sú oddelené čiarkami.\n"
+"Keď je obrázok adresár, použijú sa všetky obrázky z tohto adresára.\n"
 "\n"
 "Voľby:\n"
-"  -r, --restart         Reštartuje icewmbg\n"
-"  -q, --quit          Ukončí icewmbg\n"
+"  -p, --replace        Nahradí existujúci icewmbg.\n"
+"  -q, --quit          Oznámi spustenému icewmbg, aby sa ukončil.\n"
+"  -r, --restart         Oznámi spustenému icewmbg, aby sa reštartoval.\n"
 "\n"
 "  -c, --config=SÚBOR   Načíta predvoľby zo SÚBORU.\n"
-"  -t, --theme=SÚBOR    Načíta tému zo SÚBORU.\n"
+"  -t, --theme=NÁZOV    Načíta tému s názvom NÁZOV.\n"
+"\n"
+"  -i, --image=SÚBOR(Y)  Načíta obrázok(y) pozadia zo SÚBORU(OV).\n"
+"  -k, --color=NÁZOV(Y)  Použije farbu(y) pozadia z NÁZOV(Y).\n"
+"\n"
+"  -s, --semis=SÚBOR(Y)  Načíta  obrázok(y) transparentnosti zo SÚBORU(OV).\n"
+"  -x, --trans=NÁZOV(Y)  Použije farbu(y) transparentnosti z NÁZOV(Y).\n"
+"\n"
+"  -e, --center=0/1     Zakáže/Povolí centrovanie pozadia.\n"
+"  -a, --scaled=0/1     Zakáže/Povolí škálované pozadie.\n"
+"  -m, --multi=0/1      Zakáže/Povolí viacstranné pozadie.\n"
 "\n"
 "  --display=NÁZOV      Použite NÁZOV pre pripojenie k X serveru.\n"
 "  --sync              Synchronizujte komunikáciu s X11 serverom.\n"
@@ -977,15 +1007,18 @@ msgstr ""
 "\n"
 "Načíta pozadie plochy podľa súboru predvolieb\n"
 " DesktopBackgroundCenter  - Zobrazí pozadie plochy vycentrované\n"
-" DesktopBackgroundScaled  - Zobrazí pozadie plochy zväčšené\n"
+" DesktopBackgroundScaled  - Zobrazí pozadie plochy škálované\n"
+" DesktopBackgroundColor   - Farba(y) pozadia plochy\n"
+" DesktopBackgroundImage   - Obrázok(y) pozadia plochy\n"
 " SupportSemitransparency  - Podpora polopriehľadných terminálov\n"
-" DesktopBackgroundColor   - Farba pozadia plochy\n"
-" DesktopBackgroundImage   - Obrázok pozadia plochy\n"
-" DesktopTransparencyColor - Farba podporujúca polopriehľadné okná\n"
-" DesktopTransparencyImage - Obrázok podporujúci polopriehľadné okná\n"
+" DesktopTransparencyColor - Polopriehľadné farba(y) pozadia\n"
+" DesktopTransparencyImage - Polopriehľadné obrázok(y) pozadia\n"
+" DesktopBackgroundMultihead - Jedno pozadie cez všetky monitory\n"
 "\n"
-"center:0 scaled:0 = dlaždice\n"
-"center:1 scaled:1 = ponechať pomer strán\n"
+" center:0 scaled:0 = dlaždice\n"
+" center:1 scaled:0 = centrovanie\n"
+" center:1 scaled:1 = vyplní jeden rozmer a zachová pomer strán\n"
+" center:0 scaled:1 = vyplní oba rozmery a zachová pomer strán\n"
 "\n"
 
 #: src/icewmbg.cc:754
@@ -1026,7 +1059,7 @@ msgstr ""
 "  -h, --help          Vypíše túto obrazovku o použití a skončí.\n"
 "\n"
 
-#: src/movesize.cc:901
+#: src/movesize.cc:899
 #, c-format
 msgid "Unknown direction in move/resize request: %d"
 msgstr "Neznámy smer pri požiadavke posun/zmena veľkosti: %d"
@@ -1064,9 +1097,8 @@ msgid "icewm - About"
 msgstr "icewm - O Aplikácii"
 
 #: src/wmapp.cc:118
-#, fuzzy
 msgid "A window manager is already running, use --replace to replace it"
-msgstr "Iný window manažér beží, končím..."
+msgstr "Už je spustený správca okien, ak ho chcete nahradiť, použite --replace"
 
 #: src/wmapp.cc:136
 #, c-format
@@ -1330,21 +1362,21 @@ msgstr ""
 msgid "%s configuration directories:\n"
 msgstr "%s konfiguračné adresáre:\n"
 
-#: src/wmapp.cc:1662
+#: src/wmapp.cc:1665
 #, c-format
 msgid "%s configured options:%s\n"
 msgstr "%s nakonfigurované voľby: %s\n"
 
-#: src/wmapp.cc:1711
-#, fuzzy, c-format
+#: src/wmapp.cc:1714
+#, c-format
 msgid "Unrecognized option '%s'."
-msgstr "Nerozpoznaná voľba: %s\n"
+msgstr "Nerozpoznaná voľba: '%s'."
 
-#: src/wmapp.cc:1753
+#: src/wmapp.cc:1756
 msgid "Confirm Logout"
 msgstr "Potvrdiť odhlásenie"
 
-#: src/wmapp.cc:1754
+#: src/wmapp.cc:1757
 msgid ""
 "Logout will close all active applications.\n"
 "Proceed?"
@@ -1385,8 +1417,8 @@ msgstr "Zamknúť pracovnú _stanicu"
 msgid "_Cancel"
 msgstr "_Zrušiť"
 
-#: src/wmdialog.cc:92 src/wmprog.cc:1005 src/wmprog.cc:1007 src/wmprog.cc:1011
-#: src/wmprog.cc:1013 src/wmtaskbar.cc:328 src/wmtaskbar.cc:330
+#: src/wmdialog.cc:92 src/wmprog.cc:1091 src/wmprog.cc:1093 src/wmprog.cc:1097
+#: src/wmprog.cc:1099 src/wmtaskbar.cc:326 src/wmtaskbar.cc:328
 msgid "_Logout..."
 msgstr "Odh_lásenie..."
 
@@ -1394,36 +1426,16 @@ msgstr "Odh_lásenie..."
 msgid "_Restart icewm"
 msgstr "_Reštartovať icewm"
 
-#: src/wmdialog.cc:97 src/wmprog.cc:948 src/wmprog.cc:950 src/wmtaskbar.cc:320
-#: src/wmtaskbar.cc:323
+#: src/wmdialog.cc:97 src/wmprog.cc:1034 src/wmprog.cc:1036
+#: src/wmtaskbar.cc:318 src/wmtaskbar.cc:321
 msgid "_About"
 msgstr "O _aplikacii"
 
-#: src/wmframe.cc:158 src/wmframe.cc:3438
-msgid "Maximize"
-msgstr "Maximalizovať"
-
-#: src/wmframe.cc:171
-msgid "Minimize"
-msgstr "Minimalizovať"
-
-#: src/wmframe.cc:192
-msgid "Hide"
-msgstr "Skryť"
-
-#: src/wmframe.cc:202 src/wmframe.cc:3471
-msgid "Rollup"
-msgstr "Z_rolovať"
-
-#: src/wmframe.cc:211
-msgid "Raise/Lower"
-msgstr "Zdvihnúť/Znížiť"
-
-#: src/wmframe.cc:1743
+#: src/wmframe.cc:1654
 msgid "Kill Client: "
 msgstr "Zabiť klienta: "
 
-#: src/wmframe.cc:1752
+#: src/wmframe.cc:1663
 msgid ""
 "WARNING! All unsaved changes will be lost when\n"
 "this client is killed. Do you wish to proceed?"
@@ -1431,13 +1443,21 @@ msgstr ""
 "VAROVANIE! Ak bude tento klient zabitý, budú\n"
 "všetky neuložené dáta stratené. Chcete pokračovať?"
 
-#: src/wmframe.cc:3435
+#: src/wmframe.cc:3361
 msgid "Restore"
 msgstr "Obnoviť"
 
-#: src/wmframe.cc:3469
+#: src/wmframe.cc:3364 src/wmtitle.cc:71
+msgid "Maximize"
+msgstr "Maximalizovať"
+
+#: src/wmframe.cc:3396
 msgid "Rolldown"
 msgstr "Rozbaliť"
+
+#: src/wmframe.cc:3398 src/wmtitle.cc:127
+msgid "Rollup"
+msgstr "Z_rolovať"
 
 #: src/wmoption.cc:242
 #, c-format
@@ -1457,50 +1477,50 @@ msgstr "Syntaktická chyba vo voľbách okna"
 msgid "Out of memory for window options"
 msgstr "Málo pamäte pre voľby okna"
 
-#: src/wmprog.cc:198
+#: src/wmprog.cc:199
 msgid "Missing command argument"
 msgstr "Chýba hodnota príkazu"
 
-#: src/wmprog.cc:216
+#: src/wmprog.cc:217
 #, c-format
 msgid "Bad argument %d to command '%s'"
 msgstr "Zlý argument %d pre príkaz '%s'"
 
-#: src/wmprog.cc:251
+#: src/wmprog.cc:336
 msgid "Missing filename argument to include statement"
 msgstr "Chýbajúci argument názvu súboru pre príkaz include"
 
-#: src/wmprog.cc:317
+#: src/wmprog.cc:402
 #, c-format
 msgid "Error at %s '%s'"
 msgstr "Chyba v %s '%s'"
 
-#: src/wmprog.cc:368
+#: src/wmprog.cc:453
 #, c-format
 msgid "Unexepected menu keyword: '%s'"
 msgstr "Neočakávané kľúčové slovo menu: '%s'"
 
-#: src/wmprog.cc:414
+#: src/wmprog.cc:499
 #, c-format
 msgid "Error at menuprog '%s'"
 msgstr "Chyba v menuprog '%s'"
 
-#: src/wmprog.cc:455
+#: src/wmprog.cc:540
 #, c-format
 msgid "Error at %s: '%s'"
 msgstr "Chyba v %s: '%s'"
 
-#: src/wmprog.cc:480
+#: src/wmprog.cc:565
 #, c-format
 msgid "Unknown keyword '%s'"
 msgstr "Neznáme kľúčové slovo '%s'"
 
-#: src/wmprog.cc:504
+#: src/wmprog.cc:590
 #, c-format
 msgid "Error at keyword '%s' for %s"
 msgstr "Chyba v kľúčovom slove '%s' pre %s"
 
-#: src/wmprog.cc:520
+#: src/wmprog.cc:606
 #, c-format
 msgid ""
 "Unknown keyword for a non-container: '%s'.\n"
@@ -1509,79 +1529,78 @@ msgstr ""
 "Neznáme kľúčové slovo pre non-container: '%s'.\n"
 "Očakáva sa tu buď 'key' alebo 'runonce'.\n"
 
-#: src/wmprog.cc:649
+#: src/wmprog.cc:735
 #, c-format
 msgid "'%s' produces no output"
 msgstr "'%s' nevytára žiadny výstup"
 
-#: src/wmprog.cc:797
+#: src/wmprog.cc:883
 msgid "_Click to focus"
 msgstr "Aktivovať _kliknutím"
 
-#: src/wmprog.cc:798
+#: src/wmprog.cc:884
 #, fuzzy
 msgid "_Explicit focus"
 msgstr "Aktivovať _kliknutím"
 
-#: src/wmprog.cc:799
+#: src/wmprog.cc:885
 msgid "_Sloppy mouse focus"
 msgstr "Aktivovať _presunom myši"
 
-#: src/wmprog.cc:800
+#: src/wmprog.cc:886
 #, fuzzy
 msgid "S_trict mouse focus"
 msgstr "Aktivovať _presunom myši"
 
-#: src/wmprog.cc:801
-#, fuzzy
+#: src/wmprog.cc:887
 msgid "_Quiet sloppy focus"
-msgstr "Aktivovať _presunom myši"
+msgstr "Aktivovať pokojným _presunom"
 
-#: src/wmprog.cc:802
+#: src/wmprog.cc:888
 msgid "Custo_m"
 msgstr "Vlast_né"
 
-#: src/wmprog.cc:824
+#: src/wmprog.cc:910
 msgid "_Manual"
 msgstr ""
 
-#: src/wmprog.cc:825
+#: src/wmprog.cc:911
 msgid "_Icewm(1)"
 msgstr ""
 
-#: src/wmprog.cc:826
+#: src/wmprog.cc:912
 msgid "Icewm_Bg(1)"
 msgstr ""
 
-#: src/wmprog.cc:827
+#: src/wmprog.cc:913
 msgid "Ice_Sound(1)"
 msgstr ""
 
-#: src/wmprog.cc:900 src/wmprog.cc:902
+#: src/wmprog.cc:986 src/wmprog.cc:988
 msgid "Programs"
 msgstr "Programy"
 
-#: src/wmprog.cc:909 src/wmprog.cc:911
+#: src/wmprog.cc:995 src/wmprog.cc:997
 msgid "_Run..."
 msgstr "_Spustiť..."
 
-#: src/wmprog.cc:920 src/wmprog.cc:922 src/wmtaskbar.cc:308
+#: src/wmprog.cc:1006 src/wmprog.cc:1008 src/wmtaskbar.cc:306
 msgid "_Windows"
 msgstr "_Okná"
 
-#: src/wmprog.cc:959 src/wmprog.cc:961
+#: src/wmprog.cc:1045 src/wmprog.cc:1047
 msgid "_Help"
 msgstr "_Pomocník"
 
-#: src/wmprog.cc:975 src/wmprog.cc:977
+#: src/wmprog.cc:1061 src/wmprog.cc:1063
 msgid "_Focus"
 msgstr "_Aktivovať"
 
-#: src/wmprog.cc:986 src/wmprog.cc:988
+#: src/wmprog.cc:1072 src/wmprog.cc:1074
 msgid "_Themes"
 msgstr "_Témy"
 
-#: src/wmprog.cc:995 src/wmprog.cc:997
+#: src/wmprog.cc:1081 src/wmprog.cc:1083
 msgid "Se_ttings"
 msgstr "Nas_tavenia"
 
@@ -1590,61 +1609,73 @@ msgstr "Nas_tavenia"
 msgid "Session Manager: Unknown line %s"
 msgstr "Manažér sedení: Neznámy riadok %s"
 
-#: src/wmtaskbar.cc:171 src/wmtaskbar.cc:172
+#: src/wmtaskbar.cc:170 src/wmtaskbar.cc:171
 msgid "Task Bar"
 msgstr "Panel úloh"
 
-#: src/wmtaskbar.cc:297 src/wmwinlist.cc:314 src/wmwinlist.cc:327
+#: src/wmtaskbar.cc:295 src/wmwinlist.cc:314 src/wmwinlist.cc:327
 msgid "Tile _Vertically"
 msgstr "Zarovnať _vertikálne"
 
-#: src/wmtaskbar.cc:298 src/wmwinlist.cc:315 src/wmwinlist.cc:328
+#: src/wmtaskbar.cc:296 src/wmwinlist.cc:315 src/wmwinlist.cc:328
 msgid "T_ile Horizontally"
 msgstr "Zarovnať _horizontálne"
 
-#: src/wmtaskbar.cc:299 src/wmwinlist.cc:316 src/wmwinlist.cc:329
+#: src/wmtaskbar.cc:297 src/wmwinlist.cc:316 src/wmwinlist.cc:329
 msgid "Ca_scade"
 msgstr "Zarovnať do _kaskády"
 
-#: src/wmtaskbar.cc:300 src/wmwinlist.cc:317 src/wmwinlist.cc:330
+#: src/wmtaskbar.cc:298 src/wmwinlist.cc:317 src/wmwinlist.cc:330
 msgid "_Arrange"
 msgstr "_Usporiadať"
 
-#: src/wmtaskbar.cc:301 src/wmwinlist.cc:319 src/wmwinlist.cc:331
+#: src/wmtaskbar.cc:299 src/wmwinlist.cc:319 src/wmwinlist.cc:331
 msgid "_Minimize All"
 msgstr "_Minimalizovať všetko"
 
-#: src/wmtaskbar.cc:302 src/wmwinlist.cc:320 src/wmwinlist.cc:332
+#: src/wmtaskbar.cc:300 src/wmwinlist.cc:320 src/wmwinlist.cc:332
 msgid "_Hide All"
 msgstr "_Skryť všetko"
 
-#: src/wmtaskbar.cc:303 src/wmwinlist.cc:321 src/wmwinlist.cc:333
+#: src/wmtaskbar.cc:301 src/wmwinlist.cc:321 src/wmwinlist.cc:333
 msgid "_Undo"
 msgstr "_Vrátiť"
 
-#: src/wmtaskbar.cc:305
+#: src/wmtaskbar.cc:303
 msgid "Arrange _Icons"
 msgstr "Usporiadať _Ikony"
 
-#: src/wmtaskbar.cc:311
+#: src/wmtaskbar.cc:309
 msgid "_Refresh"
 msgstr "_Obnoviť"
 
-#: src/wmtaskbar.cc:318
+#: src/wmtaskbar.cc:316
 msgid "_License"
 msgstr "_Licencia"
 
-#: src/wmtaskbar.cc:435
+#: src/wmtaskbar.cc:440
 msgid "Favorite applications"
 msgstr "Obľúbené aplikácie"
 
-#: src/wmtaskbar.cc:452
+#: src/wmtaskbar.cc:459
 msgid "Window list menu"
 msgstr "Menu zoznamu okien"
 
-#: src/wmtaskbar.cc:461
+#: src/wmtaskbar.cc:469
 msgid "Show Desktop"
 msgstr "Ukáž plochu"
+
+#: src/wmtitle.cc:89
+msgid "Minimize"
+msgstr "Minimalizovať"
+
+#: src/wmtitle.cc:114
+msgid "Hide"
+msgstr "Skryť"
+
+#: src/wmtitle.cc:139
+msgid "Raise/Lower"
+msgstr "Zdvihnúť/Znížiť"
 
 #: src/wmwinlist.cc:61
 msgid "All Workspaces"
@@ -1852,7 +1883,7 @@ msgstr "\"%s\" neodpovedá bežnému internetovému schému"
 msgid "\"%s\" contains no scheme description"
 msgstr "\"%s\" neobsahuje popis schémy"
 
-#: src/yxapp.cc:904
+#: src/yxapp.cc:912
 msgid ""
 "  --display=NAME      NAME of the X server to use.\n"
 "  --sync              Synchronize X11 commands.\n"
