@@ -240,7 +240,7 @@ static void registerProtocols2(Window xid) {
         _XA_NET_CLOSE_WINDOW,
         _XA_NET_CURRENT_DESKTOP,
         _XA_NET_DESKTOP_GEOMETRY,
-//      _XA_NET_DESKTOP_LAYOUT,
+        _XA_NET_DESKTOP_LAYOUT,
         _XA_NET_DESKTOP_NAMES,
         _XA_NET_DESKTOP_VIEWPORT,
         _XA_NET_FRAME_EXTENTS,
@@ -285,7 +285,7 @@ static void registerProtocols2(Window xid) {
         _XA_NET_WM_NAME,
 //      _XA_NET_WM_OPAQUE_REGION,
         _XA_NET_WM_PID,                     // trivial support
-//      _XA_NET_WM_PING,
+        _XA_NET_WM_PING,
         _XA_NET_WM_STATE,
         _XA_NET_WM_STATE_ABOVE,
         _XA_NET_WM_STATE_BELOW,

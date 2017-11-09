@@ -25,9 +25,16 @@ YFrameClient::YFrameClient(YWindow *parent, YFrameWindow *frame, Window win): YW
     fIconTitle = null;
     fColormap = None;
     fShaped = false;
+#ifdef WMSPEC_HINTS
+    fPinging = false;
+    fPingTime = 0;
+    fPingTimer = 0;
+#endif
     fHints = 0;
     fWinHints = 0;
-    //fSavedFrameState =
+    fSavedFrameState = InvalidFrameState;
+    fSavedWinState[0] = 0;
+    fSavedWinState[1] = 0;
     fSizeHints = XAllocSizeHints();
     fClassHint = XAllocClassHint();
     fTransientFor = 0;
@@ -90,6 +97,13 @@ YFrameClient::~YFrameClient() {
     if (fMwmHints) { XFree(fMwmHints); fMwmHints = 0; }
     fWMWindowRole = null;
     fWindowRole = null;
+
+#ifdef WMSPEC_HINTS
+    if (fPingTimer) {
+        delete fPingTimer;
+        fPingTimer = 0;
+    }
+#endif
 }
 
 void YFrameClient::getProtocols(bool force) {
@@ -97,18 +111,18 @@ void YFrameClient::getProtocols(bool force) {
         return;
 
     Atom *wmp = 0;
-    int count;
+    int count = 0;
 
-    fProtocols = fProtocols & wpDeleteWindow; // always keep WM_DELETE_WINDOW
+    fProtocols &= wpDeleteWindow; // always keep WM_DELETE_WINDOW
 
-    if (XGetWMProtocols(xapp->display(),
-                        handle(),
-                        &wmp, &count) && wmp)
-    {
+    if (XGetWMProtocols(xapp->display(), handle(), &wmp, &count) && wmp) {
         prop.wm_protocols = true;
         for (int i = 0; i < count; i++) {
-            if (wmp[i] == _XA_WM_DELETE_WINDOW) fProtocols |= wpDeleteWindow;
-            if (wmp[i] == _XA_WM_TAKE_FOCUS) fProtocols |= wpTakeFocus;
+            fProtocols |=
+                (wmp[i] == _XA_WM_DELETE_WINDOW) ? wpDeleteWindow :
+                (wmp[i] == _XA_WM_TAKE_FOCUS) ? wpTakeFocus :
+                (wmp[i] == _XA_NET_WM_PING) ? wpPing :
+                0;
         }
         XFree(wmp);
     }
@@ -341,6 +355,96 @@ bool YFrameClient::sendDelete() {
     return false;
 }
 
+bool YFrameClient::sendPing() {
+    bool sent = false;
+#ifdef WMSPEC_HINTS
+    if (hasbit(protocols(), wpPing) && fPinging == false) {
+        XClientMessageEvent xev = {};
+        xev.type = ClientMessage;
+        xev.window = handle();
+        xev.message_type = _XA_WM_PROTOCOLS;
+        xev.format = 32;
+        xev.data.l[0] = (long) _XA_NET_WM_PING;
+        xev.data.l[1] = xapp->getEventTime("sendPing");
+        xev.data.l[2] = (long) handle();
+        xev.data.l[3] = (long) this;
+        xev.data.l[4] = (long) fFrame;
+        xapp->send(xev, handle(), SubstructureNotifyMask);
+        fPinging = true;
+        fPingTime = xev.data.l[1];
+        fPingTimer = new YTimer(1000L, this, true);
+        sent = true;
+    }
+#endif
+    return sent;
+}
+
+#ifdef WMSPEC_HINTS
+bool YFrameClient::handleTimer(YTimer* timer) {
+    if (timer == 0 || timer != fPingTimer) {
+        return false;
+    }
+
+    delete fPingTimer;
+    fPingTimer = 0;
+    fPinging = false;
+
+    if (destroyed() || getFrame() == 0) {
+        return false;
+    }
+
+    Atom type = 0;
+    int format = 0;
+    unsigned long nitems = 0;
+    unsigned long after = 0;
+    unsigned char* prop = 0;
+    if (XGetWindowProperty(xapp->display(), handle(),
+                           _XA_NET_WM_PID, 0, 1, False, XA_CARDINAL,
+                           &type, &format, &nitems, &after,
+                           &prop) == Success && prop)
+    {
+        if (type == XA_CARDINAL && format == 32 && nitems == 1) {
+            long pid = *(long *)prop;
+            XTextProperty text = {};
+            if (XGetWMClientMachine(xapp->display(), handle(), &text)) {
+                char myhost[HOST_NAME_MAX + 1] = {};
+                gethostname(myhost, HOST_NAME_MAX);
+                int len = (int) strnlen(myhost, HOST_NAME_MAX);
+                char* theirs = (char *) text.value;
+                if (strncmp(myhost, theirs, len) == 0 &&
+                    (theirs[len] == 0 || theirs[len] == '.'))
+                {
+                    kill(pid, SIGTERM);
+                }
+                XFree(text.value);
+            }
+        }
+        XFree(prop);
+    }
+
+    return false;
+}
+#endif
+
+void YFrameClient::recvPing(const XClientMessageEvent &message) {
+#ifdef WMSPEC_HINTS
+    const long* l = message.data.l;
+    if (fPinging &&
+        l[0] == (long) _XA_NET_WM_PING &&
+        l[1] == fPingTime &&
+        l[2] == (long) handle() &&
+        // l[3] == (long) this &&
+        // l[4] == (long) fFrame &&
+        l[0] && l[1] && l[2])
+    {
+        fPinging = false;
+        fPingTime = xapp->getEventTime("recvPing");
+        delete fPingTimer;
+        fPingTimer = 0;
+    }
+#endif
+}
+
 void YFrameClient::setFrame(YFrameWindow *newFrame) {
     if (newFrame != getFrame()) {
         XDeleteContext(xapp->display(), handle(),
@@ -353,13 +457,6 @@ void YFrameClient::setFrame(YFrameWindow *newFrame) {
 }
 
 void YFrameClient::setFrameState(FrameState state) {
-    unsigned long arg[2];
-
-    arg[0] = (unsigned long) state;
-    arg[1] = (unsigned long) None;
-
-    //msg("setting frame state to %d", arg[0]);
-
     if (state == WithdrawnState) {
         if (manager->wmState() != YWindowManager::wmSHUTDOWN) {
             MSG(("deleting window properties id=%lX", handle()));
@@ -376,18 +473,25 @@ void YFrameClient::setFrameState(FrameState state) {
 #endif
             XDeleteProperty(xapp->display(), handle(), _XA_WIN_STATE);
             XDeleteProperty(xapp->display(), handle(), _XA_WM_STATE);
+            fSavedFrameState = InvalidFrameState;
+            fSavedWinState[0] = fSavedWinState[1] = 0;
         }
-    } else {
+    }
+    else if (state != fSavedFrameState) {
+        long arg[2] = { state, None };
         XChangeProperty(xapp->display(), handle(),
                         _XA_WM_STATE, _XA_WM_STATE,
                         32, PropModeReplace,
                         (unsigned char *)arg, 2);
+        fSavedFrameState = state;
     }
 }
 
 FrameState YFrameClient::getFrameState() {
     if (!prop.wm_state)
         return WithdrawnState;
+
+    fSavedFrameState = InvalidFrameState;
 
     FrameState st = WithdrawnState;
     Atom type;
@@ -396,11 +500,12 @@ FrameState YFrameClient::getFrameState() {
     unsigned char *propdata(0);
 
     if (XGetWindowProperty(xapp->display(), handle(),
-                           _XA_WM_STATE, 0, 3, False, _XA_WM_STATE,
+                           _XA_WM_STATE, 0, 2, False, _XA_WM_STATE,
                            &type, &format, &nitems, &lbytes,
                            &propdata) == Success && propdata)
     {
-        st = *(long *)propdata;
+        if (format == 32 && nitems >= 1)
+            fSavedFrameState = st = *(long *)propdata;
         XFree(propdata);
     }
     return st;
@@ -760,24 +865,16 @@ long getMask(Atom a) {
 }
 
 void YFrameClient::setNetWMFullscreenMonitors(int top, int bottom, int left, int right) {
-    // why do i have to do this?
-    unsigned long data[4] = { 0, 0, 0, 0 };
-    data[0] = (unsigned long) top;;
-    data[1] = (unsigned long) bottom;
-    data[2] = (unsigned long) left;
-    data[3] = (unsigned long) right;
+    long data[4] = { top, bottom, left, right };
     XChangeProperty (xapp->display(), handle(),
                         _XA_NET_WM_FULLSCREEN_MONITORS, XA_CARDINAL,
                         32, PropModeReplace,
                         (unsigned char *) data, 4);
 }
+
 #ifdef WMSPEC_HINTS
 void YFrameClient::setNetFrameExtents(int left, int right, int top, int bottom) {
-    unsigned long data[4] = { 0, 0, 0, 0 };
-    data[0] = (unsigned long) left;
-    data[1] = (unsigned long) right;
-    data[2] = (unsigned long) top;
-    data[3] = (unsigned long) bottom;
+    long data[4] = { left, right, top, bottom };
     XChangeProperty(xapp->display(), handle(),
                         _XA_NET_FRAME_EXTENTS, XA_CARDINAL,
                         32, PropModeReplace,
@@ -870,6 +967,9 @@ void YFrameClient::handleClientMessage(const XClientMessageEvent &message) {
         } else {
             warn("_NET_WM_STATE unknown command: %ld", message.data.l[0]);
         }
+    } else if (message.message_type == _XA_WM_PROTOCOLS &&
+               message.data.l[0] == (long) _XA_NET_WM_PING) {
+        recvPing(message);
 #endif
 #ifdef GNOME1_HINTS
     } else if (message.message_type == _XA_WIN_WORKSPACE) {
@@ -1437,32 +1537,34 @@ bool YFrameClient::getWinStateHint(long *mask, long *state) {
             if (count >= 2U)
                 m = ((long *)prop)[1];
 
-            *state = s;
-            *mask = m;
+            fSavedWinState[0] = *state = s;
+            fSavedWinState[1] = *mask = m;
             XFree(prop);
             return true;
         }
         MSG(("bad state"));
         XFree(prop);
     }
+    fSavedWinState[0] = 0;
+    fSavedWinState[1] = 0;
     return false;
 }
 
 void YFrameClient::setWinStateHint(long mask, long state) {
-    long s[2];
-
-    s[0] = state & mask;
-    s[1] = mask;
-
     MSG(("set state=%lX mask=%lX", state, mask));
 
 #ifdef GNOME1_HINTS
-    XChangeProperty(xapp->display(),
-                    handle(),
-                    _XA_WIN_STATE,
-                    XA_CARDINAL,
-                    32, PropModeReplace,
-                    (unsigned char *)&s, 2);
+    if ((state & mask) != fSavedWinState[0] || mask != fSavedWinState[1]) {
+        fSavedWinState[0] = (state & mask);
+        fSavedWinState[1] = mask;
+
+        XChangeProperty(xapp->display(),
+                        handle(),
+                        _XA_WIN_STATE,
+                        XA_CARDINAL,
+                        32, PropModeReplace,
+                        (unsigned char *) fSavedWinState, 2);
+    }
 
 #endif
 #ifdef WMSPEC_HINTS

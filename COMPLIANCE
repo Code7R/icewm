@@ -27,7 +27,7 @@ Section 4: Client to Window Manager Communication
 
 4.1.3  Window Manager Properties:
 	4.1.3.1  WM_STATE:		compliant
-	4.1.3.2  WM_ICON_SIZE:		NOT supported
+	4.1.3.2  WM_ICON_SIZE:		supported
 
 4.1.4  Changing Window State:		compliant
 4.1.5  Configuring the Window:		compliant
@@ -100,7 +100,7 @@ _NET_ACTIVE_WINDOW:			supported
 _NET_WORKAREA:				supported
 _NET_SUPPORTING_WM_CHECK:		supported
 _NET_VIRTUAL_ROOTS:			NOT supported (n/a)
-_NET_DESKTOP_LAYOUT:			NOT supported
+_NET_DESKTOP_LAYOUT:			supported
 _NET_SHOWING_DESKTOP:			supported
 
 
@@ -176,7 +176,7 @@ _NET_WM_BYPASS_COMPOSITOR:		NOT supported (n/a)
 
 Section 6: Window Manager Protocols
 
-_NET_WM_PING:				NOT supported
+_NET_WM_PING:				supported
 _NET_WM_SYNC_REQUEST:			NOT supported
 _NET_WM_SYNC_REQUEST_COUNTER:		NOT supported
 _NET_WM_FULLSCREEN_MONITORS:		supported

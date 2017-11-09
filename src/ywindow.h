@@ -4,6 +4,7 @@
 #include "ypaint.h"
 #include "ycursor.h"
 #include "yarray.h"
+#include "ylist.h"
 
 class YPopupWindow;
 class YToolTip;
@@ -31,12 +32,12 @@ struct DesktopScreenInfo {
     int height;
 };
 
-class YWindow {
+class YWindow : private YWindowNode, private YWindowList {
 public:
     YWindow(YWindow *aParent = 0, Window win = 0, int depth = CopyFromParent, Visual *visual = CopyFromParent);
     virtual ~YWindow();
 
-    void setStyle(unsigned long aStyle);
+    void setStyle(unsigned aStyle);
 
     void show();
     void hide();
@@ -126,6 +127,7 @@ public:
 
     Window handle();
     YWindow *parent() const { return fParentWindow; }
+    YWindow *window() { return this; }
 
     ref<YPixmap> beginPaint(YRect &r);
     void endPaint(Graphics &g, ref<YPixmap> pixmap, YRect &r);
@@ -153,7 +155,7 @@ public:
 
     virtual void donePopup(YPopupWindow * /*command*/);
 
-    typedef enum {
+    enum WindowStyle {
         wsOverrideRedirect = 1 << 0,
         wsSaveUnder        = 1 << 1,
         wsManager          = 1 << 2,
@@ -161,7 +163,7 @@ public:
         wsOutputOnly       = 1 << 4,
         wsPointerMotion    = 1 << 5,
         wsDesktopAware     = 1 << 6
-    } WindowStyle;
+    };
 
     virtual bool isFocusTraversable();
     bool isFocused();
@@ -220,14 +222,14 @@ public:
     static unsigned long getLastEnterNotifySerial();
 
 private:
-    typedef enum {
+    enum WindowFlags {
         wfVisible   = 1 << 0,
         wfCreated   = 1 << 1,
         wfAdopted   = 1 << 2,
         wfDestroyed = 1 << 3,
         wfNullSize  = 1 << 5,
         wfFocused   = 1 << 6
-    } WindowFlags;
+    };
 
     void create();
     void destroy();
@@ -242,15 +244,11 @@ private:
     Colormap fAllocColormap;
 
     YWindow *fParentWindow;
-    YWindow *fNextWindow;
-    YWindow *fPrevWindow;
-    YWindow *fFirstWindow;
-    YWindow *fLastWindow;
     YWindow *fFocusedWindow;
 
     Window fHandle;
-    unsigned long flags;
-    unsigned long fStyle;
+    unsigned flags;
+    unsigned fStyle;
     int fX, fY;
     int fWidth, fHeight;
     YCursor fPointer;
@@ -263,12 +261,12 @@ private:
     bool fToplevel;
     bool fDoubleBuffer;
 
-    typedef struct _YAccelerator {
+    struct YAccelerator {
         unsigned key;
         unsigned mod;
         YWindow *win;
-        struct _YAccelerator *next;
-    } YAccelerator;
+        YAccelerator *next;
+    };
 
     YAccelerator *accel;
 #ifdef CONFIG_TOOLTIP
