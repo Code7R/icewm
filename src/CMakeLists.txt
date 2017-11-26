@@ -56,6 +56,7 @@ endif()
 
 option(CONFIG_XPM "Legacy XPM image loader" off)
 option(CONFIG_IMLIB "(Deprecated) IMLIB image loader" off)
+option(CONFIG_LIBPNG "(Experimental) PNGLIB image loader" on)
 option(CONFIG_GDK_PIXBUF_XLIB "LIBGDKPIXBUF based image loader" on)
 option(CONFIG_I18N "Define to enable internationalization" on)
 option(ENABLE_NLS "Enable Native Language Support" on)
@@ -69,6 +70,13 @@ IF("" STREQUAL "${CONFIG_UNICODE_SET}")
 ELSE()
 	MESSAGE(STATUS "Configured custom unicode set: ${CONFIG_UNICODE_SET}.")
 ENDIF()
+
+if(NOT CONFIG_GDK_PIXBUF_XLIB AND NOT CONFIG_LIBPNG AND NOT CONFIG_XPM)
+        MESSAGE(FATAL_ERROR "At least one working image loader must be selected")
+else()
+        set(CONFIG_LIBPNG off)
+endif()
+
 
 # TODO: find some common helper to handle that variables
 if(ENABLE_NLS OR CONFIG_I18N)
@@ -170,6 +178,13 @@ pkg_check_modules(xext xext)
 pkg_check_modules(x11 x11)
 if(CONFIG_GDK_PIXBUF_XLIB)
 	pkg_check_modules(pixbuf gdk-pixbuf-xlib-2.0)
+endif()
+
+if(CONFIG_LIBPNG)
+	pkg_check_modules(libpng libpng)
+ 	 if(NOT libpng_FOUND AND NOT pixbuf_FOUND AND NOT CONFIG_XPM)
+     	     message(FATAL_ERROR "No viable image loader found")
+ 	 endif()
 endif()
 
 IF(CONFIG_SESSION)
@@ -353,7 +368,7 @@ SET(ICE_COMMON_SRCS mstring.cc udir.cc upath.cc yapp.cc yxapp.cc ytimer.cc
  ywindow.cc ypaint.cc ypopup.cc misc.cc ycursor.cc ysocket.cc ypaths.cc
  ylocale.cc yarray.cc ycollections.cc ypipereader.cc yxembed.cc yconfig.cc
  yprefs.cc yfont.cc ypixmap.cc
- yimage_gdk.cc ytooltip.cc)
+ yimage_gdk.cc yximage.cc ytooltip.cc)
 
 if(CONFIG_XFREETYPE)
 	list(APPEND ICE_COMMON_SRCS yfontxft.cc)
@@ -377,9 +392,9 @@ SET(ICEWM_SRCS ${ICE_COMMON_SRCS} ${ITK_SRCS}
 
 
 ADD_EXECUTABLE(icewm${EXEEXT} ${ICEWM_SRCS})
-set(icewm_pc_flags "${fontconfig_CFLAGS} ${x11_CFLAGS} ${xext_CFLAGS} ${pixbuf_CFLAGS} ${xft_CFLAGS} ${xrandr_CFLAGS} ${xrender_CFLAGS} ${xinerama_CFLAGS} ${fribidi_CFLAGS}")
+set(icewm_pc_flags "${fontconfig_CFLAGS} ${x11_CFLAGS} ${xext_CFLAGS} ${libpng_CFLAGS} ${pixbuf_CFLAGS} ${xft_CFLAGS} ${xrandr_CFLAGS} ${xrender_CFLAGS} ${xinerama_CFLAGS} ${fribidi_CFLAGS}")
 SET_TARGET_PROPERTIES(icewm${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
-set(icewm_libs ${sm_LIBS} ${nls_LIBS} ${lsd_LDFLAGS} ${pixbuf_LDFLAGS} ${fontconfig_LDFLAGS} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS} ${xrender_LDFLAGS} ${xinerama_LDFLAGS} ${fribidi_LDFLAGS} ${EXTRA_LIBS})
+set(icewm_libs ${sm_LIBS} ${nls_LIBS} ${lsd_LDFLAGS} ${libpng_LDFLAGS} ${pixbuf_LDFLAGS} ${fontconfig_LDFLAGS} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS} ${xrender_LDFLAGS} ${xinerama_LDFLAGS} ${fribidi_LDFLAGS} ${EXTRA_LIBS})
 TARGET_LINK_LIBRARIES(icewm${EXEEXT} ${icewm_libs})
 
 ADD_EXECUTABLE(genpref${EXEEXT} genpref.cc misc.cc)
@@ -444,6 +459,7 @@ foreach (_variableName
 		DATADIR LIBDIR LOCDIR DOCDIR CFGDIR ICEHELPIDX
 		CONFIG_XPM
 		CONFIG_IMLIB
+    		CONFIG_LIBPNG
 		CONFIG_GDK_PIXBUF_XLIB
 		CONFIG_XFREETYPE
 		CONFIG_COREFONTS
