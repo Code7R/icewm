@@ -44,10 +44,12 @@ build_normal:
 
 config_lite:
 	mkdir -p $(BDIR)-lite
-	dh_auto_configure --builddirectory=$(BDIR)-lite -- $(cmakeargs) -DLITE=on -DEXEEXT=-lite -DCONFIG_XFREETYPE=off -DCONFIG_COREFONTS=on -DXINERAMA=on -DCONFIG_XRANDR=off -DCONFIG_TASKBAR=off -DCONFIG_FDO_MENUS=off -DSKIP_TRANSLATIONS=on
+	# this fails on prefering cmake :-( dh_auto_configure --builddirectory=$(BDIR)-lite -- 
+	cd $(BDIR)-lite && cmake .. -DCMAKE_BUILD_TYPE=None $(cmakeargs) -DLITE=on -DEXEEXT=-lite -DCONFIG_XFREETYPE=off -DCONFIG_COREFONTS=on -DXINERAMA=on -DCONFIG_XRANDR=off -DCONFIG_TASKBAR=off -DCONFIG_FDO_MENUS=off -DSKIP_TRANSLATIONS=on
 
 config_normal:
-	dh_auto_configure --builddirectory=$(BDIR)-normal -- $(cmakeargs) -DCONFIG_XRANDR=on -DCONFIG_GUIEVENTS=on
+	mkdir -p $(BDIR)-normal
+	cd $(BDIR)-normal && cmake .. -DCMAKE_BUILD_TYPE=None $(cmakeargs) -DCONFIG_XRANDR=on -DCONFIG_GUIEVENTS=on
 
 override_dh_auto_configure:
 	$(MAKE) -f debian/rules -j2 config_normal config_lite
@@ -82,11 +84,11 @@ override_dh_install:
 	cd $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ && sgml2html $(CURDIR)/debian/FAQ/source/*.sgml
 	sgml2txt $(CURDIR)/debian/FAQ/source/*.sgml && col -bx < IceWM-FAQ.txt > $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ/IceWM-FAQ.txt
 	# making -experimental compat symlinks
-	for x in icewm-session icewm icewmhint icehelp icewmtray icewmbg icesh icesound ; do ln -s $$x $(ICEWM_EXP)/usr/bin/$$x-experimental ; done
+	for x in icewm-session icewm icewmhint icehelp icewmbg icesh icesound ; do ln -s $$x $(ICEWM_EXP)/usr/bin/$$x-experimental ; done
 	# Install undocumented manpages
 	for v in "" -experimental -lite ; do \
 		mkdir -p debian/icewm$$v/usr/share/man/man1 ; \
-			for f in icewm icehelp icewmbg icewmhint icesh icewmtray icewm-session ; do \
+			for f in icewm icehelp icewmbg icewmhint icesh icewm-session ; do \
 				test "$$f$$v.1.gz" = icewm.1.gz || ln -s icewm.1.gz debian/icewm$$v/usr/share/man/man1/$$f$$v.1.gz ; \
 		done ; \
 	done
