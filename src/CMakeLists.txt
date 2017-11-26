@@ -54,10 +54,10 @@ if(CXX_VIHI)
     _append(CXXFLAGS_COMMON -std=gnu++98)
 endif()
 
-option(CONFIG_XPM "Legacy XPM image loader" off)
-option(CONFIG_IMLIB "(Deprecated) IMLIB image loader" off)
 option(CONFIG_LIBPNG "(Experimental) PNGLIB image loader" on)
-option(CONFIG_GDK_PIXBUF_XLIB "LIBGDKPIXBUF based image loader" on)
+option(CONFIG_GDK_PIXBUF_XLIB "LIBGDKPIXBUF based image loader" off)
+option(CONFIG_XPM "(Optional) XPM image loader" on)
+option(CONFIG_IMLIB "(Deprecated) IMLIB image loader" off)
 option(CONFIG_I18N "Define to enable internationalization" on)
 option(CONFIG_RENDER "Define to enable XRENDER extension" on)
 option(CONFIG_XRANDR "Define to enable XRANDR extension" on)
@@ -73,12 +73,15 @@ ELSE()
     MESSAGE(STATUS "Configured custom unicode set: ${CONFIG_UNICODE_SET}.")
 ENDIF()
 
-if(NOT CONFIG_GDK_PIXBUF_XLIB AND NOT CONFIG_LIBPNG AND NOT CONFIG_XPM)
-    MESSAGE(FATAL_ERROR "At least one working image loader must be selected")
+if(CONFIG_GDK_PIXBUF_XLIB AND NOT CONFIG_LIBPNG AND NOT CONFIG_XPM AND NOT CONFIG_IMLIB)
+    #ok
+elseif(CONFIG_IMLIB AND NOT CONFIG_XPM AND NOT CONFIG_LIBPNG AND NOT CONFIG_GDK_PIXBUF_XLIB)
+    #ok
+elseif(CONFIG_XPM AND CONFIG_LIBPNG AND NOT CONFIG_GDK_PIXBUF_XLIB AND NOT CONFIG_IMLIB)
+    #ok
 else()
-    set(CONFIG_LIBPNG off)
+    MESSAGE(FATAL_ERROR "Possible combination of image loaders are: imlib, xpm+png, pixbuf")
 endif()
-
 
 # TODO: find some common helper to handle that variables
 if(ENABLE_NLS OR CONFIG_I18N)
@@ -182,10 +185,17 @@ if(CONFIG_GDK_PIXBUF_XLIB)
     pkg_check_modules(pixbuf gdk-pixbuf-xlib-2.0)
 endif()
 
+if(CONFIG_XPM)
+    pkg_check_modules(libxpm xpm)
+    if(NOT libxpm_FOUND)
+        message(FATAL_ERROR "XPM image loader selected but libxpm dev files not found.")
+    endif()
+endif()
+
 if(CONFIG_LIBPNG)
     pkg_check_modules(libpng libpng)
-    if(NOT libpng_FOUND AND NOT pixbuf_FOUND AND NOT CONFIG_XPM)
-        message(FATAL_ERROR "No viable image loader found")
+    if(NOT libpng_FOUND)
+        message(FATAL_ERROR "PNG image loader selected but libpng dev files not found.")
     endif()
 endif()
 
@@ -392,10 +402,11 @@ SET(ICEWM_SRCS ${ICE_COMMON_SRCS} ${ITK_SRCS}
 
 
 ADD_EXECUTABLE(icewm${EXEEXT} ${ICEWM_SRCS})
-set(icewm_pc_flags "${fontconfig_CFLAGS} ${x11_CFLAGS} ${xext_CFLAGS} ${libpng_CFLAGS} ${pixbuf_CFLAGS} ${xft_CFLAGS} ${xrandr_CFLAGS} ${xrender_CFLAGS} ${xinerama_CFLAGS} ${fribidi_CFLAGS}")
+set(icewm_pc_flags "${fontconfig_CFLAGS} ${x11_CFLAGS} ${xext_CFLAGS} ${libpng_CFLAGS} ${libxpm_CFLAGS} ${pixbuf_CFLAGS} ${xft_CFLAGS} ${xrandr_CFLAGS} ${xrender_CFLAGS} ${xinerama_CFLAGS} ${fribidi_CFLAGS}")
 SET_TARGET_PROPERTIES(icewm${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
-set(icewm_libs ${sm_LIBS} ${nls_LIBS} ${lsd_LDFLAGS} ${libpng_LDFLAGS} ${pixbuf_LDFLAGS} ${fontconfig_LDFLAGS} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS} ${xrender_LDFLAGS} ${xinerama_LDFLAGS} ${fribidi_LDFLAGS} ${EXTRA_LIBS})
-TARGET_LINK_LIBRARIES(icewm${EXEEXT} ${icewm_libs})
+set(icewm_libs ${sm_LIBS} ${nls_LIBS} ${lsd_LDFLAGS} ${fontconfig_LDFLAGS} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS} ${xinerama_LDFLAGS} ${fribidi_LDFLAGS} ${EXTRA_LIBS})
+set(icewm_img_libs ${xrender_LDFLAGS} ${libpng_LDFLAGS} ${libxpm_LDFLAGS} ${pixbuf_LDFLAGS}) 
+TARGET_LINK_LIBRARIES(icewm${EXEEXT} ${icewm_libs} ${icewm_img_libs})
 
 ADD_EXECUTABLE(genpref${EXEEXT} genpref.cc misc.cc)
 TARGET_LINK_LIBRARIES(genpref${EXEEXT} ${EXTRA_LIBS})
@@ -421,7 +432,7 @@ TARGET_LINK_LIBRARIES(icesh${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${nls_LIBS} 
 
 ADD_EXECUTABLE(icewmbg${EXEEXT} icewmbg.cc ref.cc ${ICE_COMMON_SRCS})
 SET_TARGET_PROPERTIES(icewmbg${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
-TARGET_LINK_LIBRARIES(icewmbg${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS} ${xrender_LDFLAGS} ${pixbuf_LDFLAGS} ${xinerama_LDFLAGS} ${nls_LIBS} ${EXTRA_LIBS})
+TARGET_LINK_LIBRARIES(icewmbg${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS}  ${icewm_img_libs} ${xinerama_LDFLAGS} ${nls_LIBS} ${EXTRA_LIBS})
 
 IF(ENABLE_ALSA OR ENABLE_AO OR ENABLE_ESD OR ENABLE_OSS)
     ADD_EXECUTABLE(icesound${EXEEXT} icesound.cc upath.cc misc.cc mstring.cc ytimer.cc yapp.cc yprefs.cc yarray.cc ref.cc)
@@ -432,14 +443,15 @@ ENDIF()
 
 ADD_EXECUTABLE(icehelp${EXEEXT} icehelp.cc ${ICE_COMMON_SRCS} yscrollbar.cc ref.cc yicon.cc wmconfig.cc ymenu.cc ymenuitem.cc yprefs.cc yscrollview.cc)
 SET_TARGET_PROPERTIES(icehelp${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
-TARGET_LINK_LIBRARIES(icehelp${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS} ${xrender_LDFLAGS} ${pixbuf_LDFLAGS} ${xinerama_LDFLAGS} ${nls_LIBS} ${EXTRA_LIBS})
+TARGET_LINK_LIBRARIES(icehelp${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS} ${icewm_img_libs} ${xinerama_LDFLAGS} ${nls_LIBS} ${EXTRA_LIBS})
 INSTALL(TARGETS icehelp${EXEEXT} DESTINATION ${BINDIR})
 
-ADD_EXECUTABLE(icewmtray${EXEEXT} icetray.cc ref.cc wmconfig.cc yxtray.cc ${ICE_COMMON_SRCS})
-SET_TARGET_PROPERTIES(icewmtray${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
-TARGET_LINK_LIBRARIES(icewmtray${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS} ${xrender_LDFLAGS} ${pixbuf_LDFLAGS} ${xinerama_LDFLAGS} ${nls_LIBS} ${EXTRA_LIBS})
+# TBD. Internal tray is better, this is probably not needed anymore.
+#ADD_EXECUTABLE(icewmtray${EXEEXT} icetray.cc ref.cc wmconfig.cc yxtray.cc ${ICE_COMMON_SRCS})
+#SET_TARGET_PROPERTIES(icewmtray${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
+#TARGET_LINK_LIBRARIES(icewmtray${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS} ${xinerama_LDFLAGS} ${nls_LIBS} ${icewm_img_libs} ${EXTRA_LIBS})
 
-INSTALL(TARGETS icewm${EXEEXT} icesh${EXEEXT} icewm-session${EXEEXT} icewmhint${EXEEXT} icewmbg${EXEEXT} icewmtray${EXEEXT} DESTINATION ${BINDIR})
+INSTALL(TARGETS icewm${EXEEXT} icesh${EXEEXT} icewm-session${EXEEXT} icewmhint${EXEEXT} icewmbg${EXEEXT} DESTINATION ${BINDIR})
 
 if(NOT CMAKE_CROSSCOMPILING)
     ADD_CUSTOM_COMMAND(TARGET genpref${EXEEXT}
