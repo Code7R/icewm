@@ -8,10 +8,11 @@
 #ifndef ATRAY_H_
 #define ATRAY_H_
 
-#ifdef CONFIG_TRAY
-
 #include "ywindow.h"
-#include "wmclient.h"
+#include "ypointer.h"
+#include "ytimer.h"
+
+class ClientData;
 
 class TrayApp: public YWindow, public YTimerListener {
 public:
@@ -33,23 +34,15 @@ public:
     void setShown(bool show);
     bool getShown() const { return fShown; }
 
-    TrayApp *getNext() const { return fNext; }
-    TrayApp *getPrev() const { return fPrev; }
-    void setNext(TrayApp *next) { fNext = next; }
-    void setPrev(TrayApp *prev) { fPrev = prev; }
-
 private:
     ClientData *fFrame;
-    TrayApp *fPrev, *fNext;
     bool fShown;
     int selected;
-    static YTimer *fRaiseTimer;
+    osmart<YTimer> fRaiseTimer;
 
-#ifdef CONFIG_GRADIENTS
     static ref<YImage> taskMinimizedGradient;
     static ref<YImage> taskActiveGradient;
     static ref<YImage> taskNormalGradient;
-#endif
 };
 
 class IAppletContainer;
@@ -59,12 +52,8 @@ public:
     TrayPane(IAppletContainer *taskBar, YWindow *parent);
     ~TrayPane();
 
-    void insert(TrayApp *tapp);
-    void remove(TrayApp *tapp);
     TrayApp *addApp(YFrameWindow *frame);
     void removeApp(YFrameWindow *frame);
-    TrayApp *getFirst() const { return fFirst; }
-    TrayApp *getLast() const { return fLast; }
     int getRequiredWidth();
 
     void relayout() { fNeedRelayout = true; }
@@ -72,14 +61,15 @@ public:
 
     virtual void handleClick(const XButtonEvent &up, int count);
     virtual void paint(Graphics &g, const YRect &r);
+
 private:
     IAppletContainer *fTaskBar;
-    TrayApp *fFirst, *fLast;
-    int fCount;
     bool fNeedRelayout;
-};
 
-#endif
+    typedef YObjectArray<TrayApp> AppsType;
+    typedef AppsType::IterType IterType;
+    AppsType fApps;
+};
 
 #endif
 

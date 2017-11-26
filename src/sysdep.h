@@ -1,20 +1,15 @@
 #ifndef __SYSDEP_H
 #define __SYSDEP_H
 
-#ifdef __EMX__
-#define PATHSEP ';'
-#define SLASH '\\'
-#define ISSLASH(c) ((c) == '/' || (c) == '\\')
-#else
 #define PATHSEP ':'
 #define SLASH '/'
-#define ISSLASH(c) ((c) == '/')
-#endif
+#define ISSLASH(c) ((c) == SLASH)
 
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <signal.h>
 #include <errno.h>
 #include <sys/types.h>
 #ifdef NEED_TIME_H

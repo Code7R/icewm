@@ -1,4 +1,10 @@
 
+########
+########    WARNING: DO NOT CHANGE THIS FILE WITHOUT RUNNING dist.sh SUCCESSFULLY
+########    BEFORE PUSHING YOUR CHANGES!
+########
+
+
 AM_CPPFLAGS = -include ../config.h
 AM_CXXFLAGS = $(CORE_CFLAGS) $(XSM_CFLAGS) $(IMAGE_CFLAGS) $(AUDIO_CFLAGS) $(GNOME1_CFLAGS) $(GNOME2_CFLAGS) $(GIO_CFLAGS) -DEXEEXT=$(EXEEXT)
 
@@ -23,7 +29,6 @@ EXTRA_PROGRAMS = \
 	iceicon \
 	icerun \
 	icelist \
-	icebar \
 	strtest \
 	iceskt \
 	iceclock
@@ -36,9 +41,12 @@ bin_PROGRAMS = \
 	icewm \
 	icewm-session \
 	icesh \
+	icehelp \
 	icewmhint \
 	icewmbg \
 	icewmtray
+
+AM_INSTALLCHECK_STD_OPTIONS_EXEMPT = icewmtray
 
 noinst_PROGRAMS = \
 	genpref
@@ -56,12 +64,7 @@ noinst_PROGRAMS += \
 	iceicon \
 	icerun \
 	icelist \
-	icebar \
 	strtest
-endif
-
-if BUILD_HELP
-bin_PROGRAMS += icehelp
 endif
 
 if BUILD_SOUND
@@ -106,6 +109,7 @@ libice_la_SOURCES = \
 	ytimer.cc \
 	ytimer.h \
 	ascii.h \
+	ylist.h \
 	ywindow.cc \
 	ywindow.h \
 	ypaint.cc \
@@ -142,8 +146,7 @@ libice_la_SOURCES = \
 	ypixmap.h \
 	yimage.h \
 	yimage_gdk.cc \
-	yimage_imlib.cc \
-	yimage_xpm.cc \
+	yximage.cc \
 	ytooltip.cc \
 	ytooltip.h
 
@@ -186,7 +189,10 @@ libitk_la_SOURCES = \
 	yicon.cc \
 	yicon.h \
 	wmconfig.cc \
-	wmconfig.h
+	wmconfig.h \
+	wpixmaps.h \
+	wpixres.cc \
+	wpixres.h
 libitk_la_LIBADD = libice.la
 
 genpref_SOURCES = \
@@ -198,7 +204,7 @@ genpref_SOURCES = \
 	themable.h \
 	default.h \
 	genpref.cc
-genpref_LDADD = misc.$(OBJEXT)
+genpref_LDADD = misc.$(OBJEXT) @LIBINTL@
 
 icewm_SOURCES = \
 	intl.h \
@@ -255,9 +261,6 @@ icewm_SOURCES = \
 	wmmgr.h \
 	appnames.h \
 	guievent.h \
-	wpixmaps.h \
-	wpixres.cc \
-	wpixres.h \
 	wmapp.cc \
 	wmapp.h \
 	wmframe.cc \
@@ -313,7 +316,7 @@ icesh_SOURCES = \
 	WinMgr.h \
 	ylib.h \
 	icesh.cc
-icesh_LDADD = libice.la $(CORE_LIBS)
+icesh_LDADD = libice.la $(CORE_LIBS) @LIBINTL@
 
 icewm_session_SOURCES = \
 	appnames.h \
@@ -323,7 +326,7 @@ icewm_session_SOURCES = \
 	sysdep.h \
 	yapp.h \
 	icesm.cc
-icewm_session_LDADD = libice.la
+icewm_session_LDADD = libice.la @LIBINTL@
 
 icewmhint_SOURCES = \
 	intl.h \
@@ -332,7 +335,7 @@ icewmhint_SOURCES = \
 	base.h \
 	guievent.h \
 	icewmhint.cc
-icewmhint_LDADD = misc.$(OBJEXT) $(CORE_LIBS)
+icewmhint_LDADD = misc.$(OBJEXT) $(CORE_LIBS) @LIBINTL@
 
 icewmbg_SOURCES = \
 	intl.h \
@@ -346,7 +349,7 @@ icewmbg_SOURCES = \
 	yfull.h \
 	icewmbg.cc \
 	icewmbg_prefs.h
-icewmbg_LDADD = libice.la $(IMAGE_LIBS) $(CORE_LIBS)
+icewmbg_LDADD = libice.la $(IMAGE_LIBS) $(CORE_LIBS) @LIBINTL@
 
 icesound_SOURCES = \
 	base.h \
@@ -358,7 +361,7 @@ icesound_SOURCES = \
 	ypointer.h \
 	ytimer.h \
 	icesound.cc
-icesound_LDADD = libice.la $(AUDIO_LIBS) $(CORE_LIBS)
+icesound_LDADD = libice.la $(AUDIO_LIBS) $(CORE_LIBS) @LIBINTL@
 
 icewm_menu_gnome1_SOURCES = \
 	intl.h \
@@ -405,7 +408,7 @@ icehelp_SOURCES = \
 	ypoint.h \
 	yrect.h \
 	icehelp.cc
-icehelp_LDADD = libitk.la libice.la $(IMAGE_LIBS) $(CORE_LIBS)
+icehelp_LDADD = libitk.la libice.la $(IMAGE_LIBS) $(CORE_LIBS) @LIBINTL@
 
 iceclock_SOURCES = \
 	intl.h \
@@ -419,48 +422,7 @@ iceclock_SOURCES = \
 	prefs.h \
 	aclock.cc \
 	aclock.h
-iceclock_LDADD = libitk.la libice.la $(IMAGE_LIBS) $(CORE_LIBS)
-
-icebar_SOURCES = \
-	intl.h \
-	debug.h \
-	sysdep.h \
-	base.h \
-	obj.h \
-	yaction.h \
-	objmenu.h \
-	bindkey.h \
-	themable.h \
-	default.h \
-	prefs.h \
-	objbutton.h \
-	ylib.h \
-	wmtaskbar.cc \
-	wmtaskbar.h \
-	wmprog.cc \
-	wmprog.h \
-	browse.cc \
-	browse.h \
-	ascii.h \
-	themes.cc \
-	themes.h \
-	wmaction.h \
-	amailbox.cc \
-	amailbox.h \
-	aclock.cc \
-	aclock.h \
-	acpustatus.cc \
-	acpustatus.h \
-	amemstatus.cc \
-	amemstatus.h \
-	apppstatus.cc \
-	apppstatus.h \
-	aaddressbar.cc \
-	aaddressbar.h \
-	objbar.cc \
-	objbar.h
-#	icebar.cc
-icebar_LDADD = libitk.la libice.la $(IMAGE_LIBS) $(CORE_LIBS)
+iceclock_LDADD = libitk.la libice.la $(IMAGE_LIBS) $(CORE_LIBS) @LIBINTL@
 
 strtest_SOURCES = \
 	intl.h \
@@ -621,7 +583,7 @@ testlocale_SOURCES = \
 	base.h \
 	ylib.h \
 	testlocale.cc
-testlocale_LDADD = libice.la $(CORE_LIBS)
+testlocale_LDADD = libice.la $(CORE_LIBS) @LIBINTL@
 
 testarray_SOURCES = \
 	intl.h \
@@ -630,7 +592,7 @@ testarray_SOURCES = \
 	base.h \
 	ylib.h \
 	testarray.cc
-testarray_LDADD = libice.la
+testarray_LDADD = libice.la @LIBINTL@
 
 nodist_pkgdata_DATA = \
 	preferences

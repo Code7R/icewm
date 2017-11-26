@@ -73,9 +73,7 @@ Atom _XA_WIN_LAYER;
 Atom _XA_WIN_PROTOCOLS;
 Atom _XA_WIN_STATE;
 Atom _XA_WIN_SUPPORTING_WM_CHECK;
-#ifdef CONFIG_TRAY
 Atom _XA_WIN_TRAY;
-#endif
 Atom _XA_WIN_WORKAREA;
 Atom _XA_WIN_WORKSPACE_COUNT;
 Atom _XA_WIN_WORKSPACE_NAMES;
@@ -354,9 +352,7 @@ void YXApplication::initAtoms() {
         { &_XA_WIN_PROTOCOLS                    , XA_WIN_PROTOCOLS                      },
         { &_XA_WIN_STATE                        , XA_WIN_STATE                          },
         { &_XA_WIN_SUPPORTING_WM_CHECK          , XA_WIN_SUPPORTING_WM_CHECK            },
-#ifdef CONFIG_TRAY
         { &_XA_WIN_TRAY                         , XA_WIN_TRAY                           },
-#endif
         { &_XA_WIN_WORKAREA                     , XA_WIN_WORKAREA                       },
         { &_XA_WIN_WORKSPACE_COUNT              , XA_WIN_WORKSPACE_COUNT                },
         { &_XA_WIN_WORKSPACE_NAMES              , XA_WIN_WORKSPACE_NAMES                },
@@ -470,7 +466,6 @@ void YXApplication::initAtoms() {
     };
     unsigned int i;
 
-#ifdef HAVE_XINTERNATOMS
     const char *names[ACOUNT(atom_info)];
     Atom atoms[ACOUNT(atom_info)];
 
@@ -481,11 +476,6 @@ void YXApplication::initAtoms() {
 
     for (i = 0; i < ACOUNT(atom_info); i++)
         *(atom_info[i].atom) = atoms[i];
-#else
-    for (i = 0; i < ACOUNT(atom_info); i++)
-        *(atom_info[i].atom) = XInternAtom(xapp->display(),
-                                           atom_info[i].name, False);
-#endif
 }
 
 void YXApplication::initPointers() {
@@ -1112,9 +1102,12 @@ void YXApplication::handleWindowEvent(Window xwindow, XEvent &xev) {
             if (mesg == _XA_NET_REQUEST_FRAME_EXTENTS) {
                 desktop->handleEvent(xev);
             }
-            else MSG(("Unknown client message %ld, win 0x%lX, data %ld,%ld",
+            else
+            {
+                MSG(("Unknown client message %ld, win 0x%lX, data %ld,%ld",
                      mesg, xev.xclient.window,
                      xev.xclient.data.l[0], xev.xclient.data.l[1]));
+            }
         }
         else if (xev.type != DestroyNotify) {
             MSG(("unknown window 0x%lX event=%d", xev.xany.window, xev.type));

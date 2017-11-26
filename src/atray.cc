@@ -14,16 +14,10 @@
 
 #include "config.h"
 
-#ifdef CONFIG_TRAY
-#ifdef CONFIG_TASKBAR
-
-#include "ylib.h"
 #include "atray.h"
 #include "wmtaskbar.h"
 #include "yprefs.h"
 #include "prefs.h"
-#include "yxapp.h"
-#include "wmmgr.h"
 #include "wmframe.h"
 #include "wmwinlist.h"
 #include "wpixmaps.h"
@@ -40,11 +34,9 @@ static YColor *invisibleTrayAppBg = 0;
 static ref<YFont> normalTrayFont;
 static ref<YFont> activeTrayFont;
 
-#ifdef CONFIG_GRADIENTS
 ref<YImage> TrayApp::taskMinimizedGradient;
 ref<YImage> TrayApp::taskActiveGradient;
 ref<YImage> TrayApp::taskNormalGradient;
-#endif
 
 TrayApp::TrayApp(ClientData *frame, YWindow *aParent): YWindow(aParent) {
     if (normalTrayAppFg == 0) {
@@ -60,7 +52,6 @@ TrayApp::TrayApp(ClientData *frame, YWindow *aParent): YWindow(aParent) {
         activeTrayFont = YFont::getFont(XFA(activeTaskBarFontName));
     }
     fFrame = frame;
-    fPrev = fNext = 0;
     selected = 0;
     fShown = true;
     setToolTip(frame->getTitle());
@@ -69,10 +60,6 @@ TrayApp::TrayApp(ClientData *frame, YWindow *aParent): YWindow(aParent) {
 }
 
 TrayApp::~TrayApp() {
-    if (fRaiseTimer && fRaiseTimer->getTimerListener() == this) {
-        fRaiseTimer->stopTimer();
-        fRaiseTimer->setTimerListener(0);
-    }
 }
 
 bool TrayApp::isFocusTraversable() {
@@ -88,11 +75,8 @@ void TrayApp::setShown(bool ashow) {
 void TrayApp::paint(Graphics &g, const YRect &/*r*/) {
     YColor *bg;
     ref<YPixmap> bgPix;
-#ifdef CONFIG_GRADIENTS
     ref<YImage> bgGrad;
-#endif
 
-#ifdef CONFIG_GRADIENTS
     int sx(parent() ? x() + parent()->x() : x());
     int sy(parent() ? y() + parent()->y() : y());
 
@@ -100,38 +84,29 @@ void TrayApp::paint(Graphics &g, const YRect &/*r*/) {
                  parent()->parent() : this)->width());
     unsigned sh((parent() && parent()->parent() ?
                  parent()->parent() : this)->height());
-#endif
 
     if (!getFrame()->visibleNow()) {
         bg = invisibleTrayAppBg;
         bgPix = taskbackPixmap;
-#ifdef CONFIG_GRADIENTS
         bgGrad = getGradient();
-#endif
     } else if (getFrame()->isMinimized()) {
         bg = minimizedTrayAppBg;
         bgPix = taskbuttonminimizedPixmap;
-#ifdef CONFIG_GRADIENTS
         if (taskMinimizedGradient == null && taskbuttonminimizedPixbuf != null)
             taskMinimizedGradient = taskbuttonminimizedPixbuf->scale(sw, sh);
         bgGrad = taskMinimizedGradient;
-#endif
     } else if (getFrame()->focused()) {
         bg = activeTrayAppBg;
         bgPix = taskbuttonactivePixmap;
-#ifdef CONFIG_GRADIENTS
         if (taskActiveGradient == null && taskbuttonactivePixbuf != null)
             taskActiveGradient = taskbuttonactivePixbuf->scale(sw, sh);
         bgGrad = taskActiveGradient;
-#endif
     } else {
         bg = normalTrayAppBg;
         bgPix = taskbuttonPixmap;
-#ifdef CONFIG_GRADIENTS
         if (taskNormalGradient == null && taskbuttonPixbuf != null)
             taskNormalGradient = taskbuttonPixbuf->scale(sw, sh);
         bgGrad = taskNormalGradient;
-#endif
     }
 
     if (selected == 3) {
@@ -141,11 +116,9 @@ void TrayApp::paint(Graphics &g, const YRect &/*r*/) {
         g.fillRect(1, 1, width() - 2, height() - 2);
     } else {
         if (width() > 0 && height() > 0) {
-#ifdef CONFIG_GRADIENTS
             if (bgGrad != null)
                 g.drawImage(bgGrad, sx, sy, width(), height(), 0, 0);
             else
-#endif
             if (bgPix != null)
                 g.fillPixmap(bgPix, 0, 0, width(), height(), 0, 0);
             else {
@@ -154,13 +127,11 @@ void TrayApp::paint(Graphics &g, const YRect &/*r*/) {
             }
         }
     }
-#ifndef LITE
     ref<YIcon> icon(getFrame()->getIcon());
 
     if (icon != null) {
         icon->draw(g, 2, 2, YIcon::smallSize());
     }
-#endif
 }
 
 void TrayApp::handleButton(const XButtonEvent &button) {
@@ -220,27 +191,27 @@ void TrayApp::handleClick(const XButtonEvent &up, int /*count*/) {
 }
 
 void TrayApp::handleDNDEnter() {
-    if (fRaiseTimer == 0)
-        fRaiseTimer = new YTimer(autoRaiseDelay);
     if (fRaiseTimer) {
-        fRaiseTimer->setTimerListener(this);
         fRaiseTimer->startTimer();
     }
+    else
+        fRaiseTimer = new YTimer(autoRaiseDelay, this, true);
+
     selected = 3;
     repaint();
 }
 
 void TrayApp::handleDNDLeave() {
-    if (fRaiseTimer && fRaiseTimer->getTimerListener() == this) {
-        fRaiseTimer->stopTimer();
-        fRaiseTimer->setTimerListener(0);
-    }
+    if (fRaiseTimer)
+        fRaiseTimer = 0;
+
     selected = 0;
     repaint();
 }
 
 bool TrayApp::handleTimer(YTimer *t) {
     if (t == fRaiseTimer) {
+        fRaiseTimer = 0;
         getFrame()->wmRaise();
     }
     return false;
@@ -248,51 +219,17 @@ bool TrayApp::handleTimer(YTimer *t) {
 
 TrayPane::TrayPane(IAppletContainer *taskBar, YWindow *parent): YWindow(parent) {
     fTaskBar = taskBar;
-    fFirst = fLast = 0;
-    fCount = 0;
     fNeedRelayout = true;
 }
 
 TrayPane::~TrayPane() {
 }
 
-void TrayPane::insert(TrayApp *tapp) {
-    fCount++;
-    tapp->setNext(0);
-    tapp->setPrev(fLast);
-    if (fLast)
-        fLast->setNext(tapp);
-    else
-        fFirst = tapp;
-    fLast = tapp;
-}
-
-void TrayPane::remove(TrayApp *tapp) {
-    fCount--;
-
-    if (tapp->getPrev())
-        tapp->getPrev()->setNext(tapp->getNext());
-    else
-        fFirst = tapp->getNext();
-
-    if (tapp->getNext())
-        tapp->getNext()->setPrev(tapp->getPrev());
-    else
-        fLast = tapp->getPrev();
-}
-
 TrayApp *TrayPane::addApp(YFrameWindow *frame) {
-#ifdef CONFIG_WINLIST
-    if (frame->client() == windowList)
-        return 0;
-#endif
-    if (frame->client() == taskBar)
-        return 0;
-
     TrayApp *tapp = new TrayApp(frame, this);
 
     if (tapp != 0) {
-        insert(tapp);
+        fApps.append(tapp);
         tapp->show();
 
         if (!(frame->visibleOn(manager->activeWorkspace()) ||
@@ -305,11 +242,10 @@ TrayApp *TrayPane::addApp(YFrameWindow *frame) {
 }
 
 void TrayPane::removeApp(YFrameWindow *frame) {
-    for (TrayApp *icon(fFirst); NULL != icon; icon = icon->getNext()) {
+    for (IterType icon = fApps.iterator(); ++icon; ) {
         if (icon->getFrame() == frame) {
             icon->hide();
-            remove(icon);
-            delete icon;
+            icon.remove();
 
             relayout();
             return;
@@ -320,7 +256,7 @@ void TrayPane::removeApp(YFrameWindow *frame) {
 int TrayPane::getRequiredWidth() {
     int tc = 0;
 
-    for (TrayApp *a(fFirst); a != NULL; a = a->getNext())
+    for (IterType a = fApps.iterator(); ++a; )
         if (a->getShown()) tc++;
 
     return (tc ? 4 + tc * (height() - 4) : 1);
@@ -332,24 +268,25 @@ void TrayPane::relayoutNow() {
 
     fNeedRelayout = false;
 
-    int nw = getRequiredWidth();
+    unsigned nw = getRequiredWidth();
     if (nw != width()) {
         MSG(("tray: nw=%d x=%d w=%d", nw, x(), width()));
         setGeometry(YRect(x() + width() - nw, y(), nw, height()));
         fTaskBar->relayout();
     }
 
-    int x, y, w, h;
+    int x, y;
+    unsigned w, h;
     int tc = 0;
 
-    for (TrayApp *a(fFirst); a != NULL; a = a->getNext())
+    for (IterType a = fApps.iterator(); ++a; )
         if (a->getShown()) tc++;
 
     w = h = height() - 4;
     x = width() - 2 - tc * w;
     y = 2;
 
-    for (TrayApp *f(fFirst); f != NULL; f = f->getNext()) {
+    for (IterType f = fApps.iterator(); ++f; ) {
         if (f->getShown()) {
             f->setGeometry(YRect(x, y, w, h));
             f->show();
@@ -371,13 +308,11 @@ void TrayPane::paint(Graphics &g, const YRect &/*r*/) {
 
     g.setColor(getTaskBarBg());
 
-#ifdef CONFIG_GRADIENTS
     ref<YImage> gradient(parent() ? parent()->getGradient() : null);
 
     if (gradient != null)
         g.drawImage(gradient, x(), y(), w, h, 0, 0);
     else
-#endif
     if (taskbackPixmap != null)
         g.fillPixmap(taskbackPixmap, 0, 0, w, h, x(), y());
     else
@@ -390,8 +325,5 @@ void TrayPane::paint(Graphics &g, const YRect &/*r*/) {
             g.draw3DRect(0, 0, w - 1, h - 1, false);
     }
 }
-
-#endif
-#endif
 
 // vim: set sw=4 ts=4 et:

@@ -43,11 +43,9 @@ void YFrameWindow::updateMenu() {
         windowMenu->disableCommand(actionSize);
     if (!(func & ffMinimize))
         windowMenu->disableCommand(actionMinimize);
-#ifndef CONFIG_PDA
     if (!(func & ffHide))
         windowMenu->disableCommand(actionHide);
-#endif
-    if (!(func & ffRollup) || !titlebar()->visible())
+    if (!(func & ffRollup) || !titlebar() || !titlebar()->visible())
         windowMenu->disableCommand(actionRollup);
     if (!(func & ffMaximize))
         windowMenu->disableCommand(actionMaximize);
@@ -86,12 +84,14 @@ void YFrameWindow::updateMenu() {
             }
     }
 
-#ifdef CONFIG_TRAY
 ///    if (trayMenu) {
         for (int k = 0; k < windowMenu->itemCount(); k++) {
             item = windowMenu->getItem(k);
             if (item->getAction() == actionToggleTray) {
-                item->setChecked(getTrayOption() != WinTrayIgnore);
+                bool enabled = false == (frameOptions() & foIgnoreTaskBar);
+                bool checked = enabled && (getTrayOption() != WinTrayIgnore);
+                item->setChecked(checked);
+                item->setEnabled(enabled);
             }
         }
 ///    }
@@ -105,7 +105,6 @@ void YFrameWindow::updateMenu() {
                 item->setChecked(e);
             }
     }
-#endif
 #endif
 }
 
@@ -152,11 +151,7 @@ void YFrameWindow::setShape() {
 
             if (titleY() > 0) {
                 rect[nrect].x = borderX();
-#ifdef TITLEBAR_BOTTOM
-                rect[nrect].y = height() - borderY() - titleY();
-#else
                 rect[nrect].y = borderY();
-#endif
                 rect[nrect].width  = width() - 2 * borderX();
                 rect[nrect].height = titleY();
                 nrect++;
@@ -170,11 +165,7 @@ void YFrameWindow::setShape() {
             XShapeCombineShape(xapp->display(), handle(),
                                ShapeBounding,
                                borderX(),
-                               borderY()
-#ifndef TITLEBAR_BOTTOM
-                               + titleY()
-#endif
-                               ,
+                               borderY() + titleY(),
                                client()->handle(),
                                ShapeBounding, nrect ? ShapeUnion : ShapeSet);
         }
@@ -196,7 +187,7 @@ void YFrameWindow::layoutShape() {
         fShapeBorderX = borderX();
         fShapeBorderY = borderY();
 
-#ifdef CONFIG_SHAPED_DECORATION
+#ifdef CONFIG_SHAPE
         if (shapesSupported &&
             (frameDecors() & fdBorder) &&
             !(isIconic() || isFullscreen()))
@@ -210,18 +201,16 @@ void YFrameWindow::layoutShape() {
             g.setColorPixel(1);
             g.fillRect(0, 0, width(), height());
 
-            const int xTL(frameTL[t][a] != null ? frameTL[t][a]->width() : 0),
-                xTR(width() -
-                    (frameTR[t][a] != null ? frameTR[t][a]->width() : 0)),
+            const int
+                xTL(frameTL[t][a] != null ? frameTL[t][a]->width() : 0),
+                xTR(width() - (frameTR[t][a] != null ? frameTR[t][a]->width() : 0)),
                 xBL(frameBL[t][a] != null ? frameBL[t][a]->width() : 0),
-                xBR(width() -
-                    (frameBR[t][a] != null ? frameBR[t][a]->width() : 0));
-            const int yTL(frameTL[t][a] != null ? frameTL[t][a]->height() : 0),
-                yBL(height() -
-                    (frameBL[t][a] != null ? frameBL[t][a]->height() : 0)),
+                xBR(width() - (frameBR[t][a] != null ? frameBR[t][a]->width() : 0));
+            const int
+                yTL(frameTL[t][a] != null ? frameTL[t][a]->height() : 0),
+                yBL(height() - (frameBL[t][a] != null ? frameBL[t][a]->height() : 0)),
                 yTR(frameTR[t][a] != null ? frameTR[t][a]->height() : 0),
-                yBR(height() -
-                    (frameBR[t][a] != null ? frameBR[t][a]->height() : 0));
+                yBR(height() - (frameBR[t][a] != null ? frameBR[t][a]->height() : 0));
 
             if (frameTL[t][a] != null) {
                 g.copyDrawable(frameTL[t][a]->mask(), 0, 0,
@@ -324,11 +313,7 @@ void YFrameWindow::layoutTitleBar() {
         int title_width = width() - 2 * borderX();
         titlebar()->setGeometry(
             YRect(borderX(),
-                  borderY()
-#ifdef TITLEBAR_BOTTOM
-                  + height() - titleY() - 2 * borderY()
-#endif
-                  ,
+                  borderY(),
                   max(1, title_width),
                   titleY()));
 
@@ -404,12 +389,7 @@ void YFrameWindow::layoutClient() {
 
 
         fClientContainer->setGeometry(
-            YRect(borderX(), borderY()
-#ifndef TITLEBAR_BOTTOM
-                  + titleY()
-#endif
-                  , w, h));
-
+            YRect(borderX(), borderY() + titleY(), w, h));
         fClient->setGeometry(YRect(0, 0, w, h));
     }
 }

@@ -1,8 +1,6 @@
 #ifndef __THEMES_H
 #define __THEMES_H
 
-#ifndef NO_CONFIGURE_MENUS
-
 #include "objmenu.h"
 #include "obj.h"
 
@@ -27,8 +25,8 @@ public:
     ThemesMenu(IApp *app, YSMListener *smActionListener, YActionListener *wmActionListener, YWindow *parent = 0);
     virtual ~ThemesMenu();
 
-    void updatePopup();
-    void refresh();
+    virtual void updatePopup();
+    virtual void refresh();
 
 private:
     void findThemes(const upath& path, YMenu *container);
@@ -57,8 +55,6 @@ private:
     YActionListener *wmActionListener;
     IApp *app;
 };
-
-#endif
 
 #endif
 

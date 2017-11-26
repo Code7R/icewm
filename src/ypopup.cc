@@ -48,7 +48,9 @@ void YXApplication::popdown(YPopupWindow *popdown) {
 
 YPopupWindow::YPopupWindow(YWindow *aParent): YWindow(aParent) {
     fForWindow = 0;
+    fPopDownListener = 0;
     fPrevPopup = 0;
+    fOwner = 0;
     fFlags = 0;
     fUp = false;
     fXiScreen = -1;
@@ -118,7 +120,8 @@ bool YPopupWindow::popup(YWindow *owner,
 /// TODO #warning "FIXME: this logic needs rethink"
     MSG(("x: %d y: %d x_delta: %d y_delta: %d", x, y, x_delta, y_delta));
 
-    int dx, dy, dw, dh;
+    int dx, dy;
+    unsigned dw, dh;
     desktop->getScreenGeometry(&dx, &dy, &dw, &dh, xiScreen);
 
     { // check available space on left and right

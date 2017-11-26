@@ -109,6 +109,7 @@ public:
 
     YArray(): YBaseArray(sizeof(DataType)) {}
     YArray(YArray &other): YBaseArray((YBaseArray&)other) {}
+    explicit YArray(SizeType capacity) { setCapacity(capacity); }
 
     void append(const DataType &item) {
         YBaseArray::append(&item);
@@ -161,11 +162,9 @@ class YObjectArray: public YArray<DataType *> {
 public:
     typedef YArray<DataType *> BaseType;
     typedef typename BaseType::SizeType SizeType;
+    using BaseType::getCount;
+    using BaseType::getItem;
 
-    YObjectArray() {}
-    explicit YObjectArray(SizeType capacity) {
-        setCapacity(capacity);
-    }
     virtual ~YObjectArray() {
         clear();
     }
@@ -177,14 +176,6 @@ public:
         }
     }
 
-    SizeType getCount() const {
-        return BaseType::getCount();
-    }
-
-    DataType* getItem(const SizeType index) const {
-        return BaseType::getItem(index);
-    }
-
     virtual void clear() {
         for (SizeType n = getCount(); n > 0; )
             delete getItem(--n);
@@ -194,7 +185,7 @@ public:
     virtual void shrink(int reducedCount) {
         for (SizeType n = getCount(); n > reducedCount; )
             delete getItem(--n);
-        BaseType::clear();
+        BaseType::shrink(reducedCount);
     }
 };
 
@@ -251,7 +242,10 @@ private:
 
 class YStringArray: public YArray<const char *> {
 public:
-    YStringArray(YStringArray &other): YArray((YArray&)other) {}
+    typedef YArray<const char *> BaseType;
+    typedef BaseType::IterType IterType;
+
+    YStringArray(YStringArray &other): BaseType((BaseType&)other) { }
     YStringArray(const YStringArray &other);
 
     explicit YStringArray(SizeType capacity = 0) {
@@ -298,14 +292,18 @@ public:
 template <class DataType>
 class YStack: public YArray<DataType> {
 public:
+    using YArray<DataType>::getCount;
+
     const DataType &getTop() const {
-        return getItem(YArray<DataType>::getCount() - 1);
+        PRECONDITION(getCount() > 0);
+        return getItem(getCount() - 1);
     }
     const DataType &operator*() const { return getTop(); }
 
     virtual void push(const DataType &item) { append(item); }
     void pop() {
-        remove(YArray<DataType>::getCount() - 1);
+        PRECONDITION(getCount() > 0);
+        remove(getCount() - 1);
     }
 };
 
@@ -317,9 +315,7 @@ template <class DataType>
 class YStackSet: public YStack<DataType> {
 public:
     virtual void push(const DataType &item) {
-        const typename YArray<DataType *>::SizeType index = find(item);
-
-        remove(index);
+        findRemove(*this, item);
         YStack<DataType>::push(item);
     }
 };
@@ -331,10 +327,6 @@ public:
 #ifdef __MSTRING_H
 class MStringArray: public YArray<mstring> {
 public:
-    MStringArray() {}
-    explicit MStringArray(SizeType capacity) {
-        setCapacity(capacity);
-    }
     virtual ~MStringArray() { clear(); }
 
     void append(mstring& item) {
@@ -394,7 +386,7 @@ private:
     int index;
 
     bool validate(int extra) const {
-        return inrange((int) index + extra, (int) 0, (int) array->getCount() - 1);
+        return inrange(index + extra, 0, (int) array->getCount() - 1);
     }
     IterType& move(int amount) {
         index += amount;

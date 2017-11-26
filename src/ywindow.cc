@@ -17,6 +17,7 @@
 
 #include "ytimer.h"
 #include "ypopup.h"
+#include <typeinfo>
 
 /******************************************************************************/
 /******************************************************************************/
@@ -137,9 +138,7 @@ YWindow::YWindow(YWindow *parent, Window win, int depth, Visual *visual):
     fEnabled(true), fToplevel(false),
     fDoubleBuffer(doubleBuffer),
     accel(0),
-#ifdef CONFIG_TOOLTIP
     fToolTip(0),
-#endif
     fDND(false), XdndDragSource(None), XdndDropTarget(None)
 {
     if (fHandle != None) {
@@ -167,7 +166,6 @@ YWindow::~YWindow() {
         delete accel;
         accel = next;
     }
-#ifdef CONFIG_TOOLTIP
     if (fToolTip) {
         fToolTip->hide();
         if (fToolTipTimer && fToolTipTimer->getTimerListener() == fToolTip) {
@@ -176,7 +174,6 @@ YWindow::~YWindow() {
         }
         delete fToolTip; fToolTip = 0;
     }
-#endif
     if (fClickWindow == this)
         fClickWindow = 0;
     if (fGraphics) {
@@ -263,12 +260,23 @@ void YWindow::repaintFocus() {
 ///    }
 }
 
+bool YWindow::getWindowAttributes(XWindowAttributes* attr) {
+    if (fHandle == None)
+        return false;
+
+    if (XGetWindowAttributes(xapp->display(), fHandle, attr))
+        return true;
+
+    flags |= wfDestroyed;
+    return false;
+}
+
 void YWindow::readAttributes() {
     XWindowAttributes attributes;
 
-    XGetWindowAttributes(xapp->display(),
-                         fHandle,
-                         &attributes);
+    if (!getWindowAttributes(&attributes))
+        return;
+
     fX = attributes.x;
     fY = attributes.y;
     fWidth = attributes.width;
@@ -450,7 +458,7 @@ Window YWindow::handle() {
 }
 
 void YWindow::show() {
-    if (!(flags & wfVisible)) {
+    if (!(flags & (wfVisible | wfDestroyed))) {
         flags |= wfVisible;
         if (!(flags & wfNullSize))
             XMapWindow(xapp->display(), handle());
@@ -460,7 +468,7 @@ void YWindow::show() {
 void YWindow::hide() {
     if (flags & wfVisible) {
         flags &= ~wfVisible;
-        if (!(flags & wfNullSize)) {
+        if (!(flags & (wfNullSize | wfDestroyed))) {
             addIgnoreUnmap(handle());
             XUnmapWindow(xapp->display(), handle());
         }
@@ -588,7 +596,7 @@ void YWindow::handleEvent(const XEvent &event) {
                                  &new_event) == True)
              {
                  if (event.type != new_event.type ||
-                     event.xmotion.window != new_event.xmotion.window)
+                     event.xconfigure.window != new_event.xconfigure.window)
                  {
                      XPutBackEvent(xapp->display(), &new_event);
                      break;
@@ -713,19 +721,19 @@ void YWindow::paintExpose(int ex, int ey, int ew, int eh) {
         ey -= ee;
         eh += ee;
     }
-    if (ex + ew < width()) {
+    if (ex + ew < (int) width()) {
         ew += ee;
     } else {
         ew = width() - ex;
     }
-    if (ey + eh + ee < height()) {
+    if (ey + eh + ee < (int) height()) {
         eh += ee;
     } else {
         eh = height() - ey;
     }
 
-    YRect r1(ex, ey, ew, eh);
-    if (r1.width() > 0 && r1.height() > 0) {
+    if (ew > 0 && eh > 0) {
+        YRect r1(ex, ey, ew, eh);
         if (fDoubleBuffer) {
             ref<YPixmap> pixmap = beginPaint(r1);
             Graphics g1(pixmap, ex, ey);
@@ -757,8 +765,8 @@ void YWindow::handleConfigure(const XConfigureEvent &configure) {
     if (configure.window == handle()) {
         if (configure.x != fX ||
             configure.y != fY ||
-            configure.width != fWidth ||
-            configure.height != fHeight)
+            (unsigned) configure.width != fWidth ||
+            (unsigned) configure.height != fHeight)
         {
             fX = configure.x;
             fY = configure.y;
@@ -806,7 +814,6 @@ bool YWindow::handleKey(const XKeyEvent &key) {
 }
 
 void YWindow::handleButton(const XButtonEvent &button) {
-#ifdef CONFIG_TOOLTIP
     if (fToolTip) {
         fToolTip->hide();
         if (fToolTipTimer && fToolTipTimer->getTimerListener() == fToolTip) {
@@ -814,7 +821,6 @@ void YWindow::handleButton(const XButtonEvent &button) {
             fToolTipTimer->setTimerListener(0);
         }
     }
-#endif
 
     int const dx(abs(button.x_root - fClickEvent.x_root));
     int const dy(abs(button.y_root - fClickEvent.y_root));
@@ -893,9 +899,6 @@ void YWindow::handleMotion(const XMotionEvent &motion) {
     }
 }
 
-#ifndef CONFIG_TOOLTIP
-void YWindow::setToolTip(const ustring &/*tip*/) {
-#else
 YTimer *YWindow::fToolTipTimer = 0;
 
 void YWindow::setToolTip(const ustring &tip) {
@@ -911,23 +914,15 @@ void YWindow::setToolTip(const ustring &tip) {
         fToolTip = new YToolTip();
         fToolTip->setText(tip);
     }
-#endif
 }
 
 bool YWindow::toolTipVisible() {
-#ifdef CONFIG_TOOLTIP
     return (fToolTip && fToolTip->visible());
-#else
-    return false;
-#endif
 }
 
 void YWindow::updateToolTip() {
 }
 
-#ifndef CONFIG_TOOLTIP
-void YWindow::handleCrossing(const XCrossingEvent &/*crossing*/) {
-#else
 void YWindow::handleCrossing(const XCrossingEvent &crossing) {
     if (fToolTip) {
         if (crossing.type == EnterNotify && crossing.mode == NotifyNormal) {
@@ -948,7 +943,6 @@ void YWindow::handleCrossing(const XCrossingEvent &crossing) {
             }
         }
     }
-#endif
 }
 
 void YWindow::handleClientMessage(const XClientMessageEvent &message) {
@@ -1001,7 +995,10 @@ void YWindow::handleUnmapNotify(const XUnmapEvent &xunmap) {
 void YWindow::handleUnmap(const XUnmapEvent &) {
 }
 
-void YWindow::handleConfigureRequest(const XConfigureRequestEvent & /*configureRequest*/) {
+void YWindow::handleConfigureRequest(const XConfigureRequestEvent&) {
+}
+
+void YWindow::handleMapRequest(const XMapRequestEvent&) {
 }
 
 void YWindow::handleDestroyWindow(const XDestroyWindowEvent &destroyWindow) {
@@ -1016,12 +1013,7 @@ void YWindow::paint(Graphics &g, const YRect &r) {
 }
 
 bool YWindow::nullGeometry() {
-    bool zero;
-
-    if (fWidth == 0 || fHeight == 0)
-        zero = true;
-    else
-        zero = false;
+    bool zero = (fWidth == 0 || fHeight == 0);
 
     if (zero && !(flags & wfNullSize)) {
         flags |= wfNullSize;
@@ -1069,7 +1061,7 @@ void YWindow::setPosition(int x, int y) {
     }
 }
 
-void YWindow::setSize(int width, int height) {
+void YWindow::setSize(unsigned width, unsigned height) {
     if (width != fWidth || height != fHeight) {
         fWidth = width;
         fHeight = height;
@@ -1645,11 +1637,16 @@ YDesktop::YDesktop(YWindow *aParent, Window win):
 {
     desktop = this;
     setDoubleBuffer(false);
-    int w, h;
+    unsigned w, h;
     updateXineramaInfo(w, h);
 }
 
 YDesktop::~YDesktop() {
+    for (YWindow* w; (w = firstWindow()) != 0; delete w) {
+        char* name = demangle(typeid(*w).name());
+        INFO("deleting stray %s", name);
+        free(name);
+    }
 }
 
 void YDesktop::resetColormapFocus(bool /*active*/) {
@@ -1883,7 +1880,7 @@ void YWindow::scrollWindow(int dx, int dy) {
     }
 }
 
-void YDesktop::updateXineramaInfo(int &w, int &h) {
+void YDesktop::updateXineramaInfo(unsigned &w, unsigned &h) {
     xiInfo.clear();
 
 #ifdef CONFIG_XRANDR
@@ -1917,7 +1914,6 @@ void YDesktop::updateXineramaInfo(int &w, int &h) {
 
             MSG(("output: %s -> %lu", oinfo->name, oinfo->crtc));
 
-#ifndef NO_CONFIGURE
             if (xineramaPrimaryScreenName != 0 && oinfo->name != NULL) {
                 if (strcmp(xineramaPrimaryScreenName, oinfo->name) == 0)
                 {
@@ -1930,7 +1926,6 @@ void YDesktop::updateXineramaInfo(int &w, int &h) {
                     }
                 }
             }
-#endif
             XRRFreeOutputInfo(oinfo);
         }
         XRRFreeScreenResources(xrrsr);
@@ -1992,7 +1987,7 @@ void YDesktop::updateXineramaInfo(int &w, int &h) {
 
 
 void YDesktop::getScreenGeometry(int *x, int *y,
-                                 int *width, int *height,
+                                 unsigned *width, unsigned *height,
                                  int screen_no)
 {
     if (screen_no == -1)
@@ -2018,7 +2013,7 @@ void YDesktop::getScreenGeometry(int *x, int *y,
     *height = desktop->height();
 }
 
-int YDesktop::getScreenForRect(int x, int y, int width, int height) {
+int YDesktop::getScreenForRect(int x, int y, unsigned width, unsigned height) {
     int screen = -1;
     long coverage = -1;
 

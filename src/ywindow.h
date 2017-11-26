@@ -18,26 +18,22 @@ extern "C" {
 }
 #endif
 
-#ifdef CONFIG_GRADIENTS
-#define INIT_GRADIENT(Member, Value) , Member(Value)
-#else
-#define INIT_GRADIENT(Member, Value)
-#endif
-
 struct DesktopScreenInfo {
     int screen_number;
     int x_org;
     int y_org;
-    int width;
-    int height;
+    unsigned width;
+    unsigned height;
 };
 
-class YWindow : private YWindowNode, private YWindowList {
+class YWindow : protected YWindowList, private YWindowNode {
 public:
     YWindow(YWindow *aParent = 0, Window win = 0, int depth = CopyFromParent, Visual *visual = CopyFromParent);
     virtual ~YWindow();
 
     void setStyle(unsigned aStyle);
+    unsigned getStyle() const { return fStyle; }
+    long getEventMask() const { return fEventMask; }
 
     void show();
     void hide();
@@ -49,6 +45,7 @@ public:
     void repaintSync();
     void readAttributes();
     void reparent(YWindow *parent, int x, int y);
+    bool getWindowAttributes(XWindowAttributes* attr);
 
     void setWindowFocus();
 
@@ -56,7 +53,7 @@ public:
     void setClassHint(char const * rName, char const * rClass);
 
     void setGeometry(const YRect &r);
-    void setSize(int width, int height);
+    void setSize(unsigned width, unsigned height);
     void setPosition(int x, int y);
     void setParentRelative(void);
     virtual void configure(const YRect &r);
@@ -91,7 +88,7 @@ public:
     virtual void handleDestroyWindow(const XDestroyWindowEvent &destroyWindow);
     virtual void handleReparentNotify(const XReparentEvent &) {}
     virtual void handleConfigureRequest(const XConfigureRequestEvent &);
-    virtual void handleMapRequest(const XMapRequestEvent &) {}
+    virtual void handleMapRequest(const XMapRequestEvent &);
 #ifdef CONFIG_SHAPE
     virtual void handleShapeNotify(const XShapeEvent &) {}
 #endif
@@ -135,16 +132,14 @@ public:
 
     Graphics & getGraphics();
 
-#ifdef CONFIG_GRADIENTS
     virtual ref<YImage> getGradient() const {
         return (parent() ? parent()->getGradient() : null); }
-#endif
 
     int x() const { return fX; }
     int y() const { return fY; }
-    int width() const { return fWidth; }
-    int height() const { return fHeight; }
-    int depth() const { return fDepth; }
+    unsigned width() const { return fWidth; }
+    unsigned height() const { return fHeight; }
+    unsigned depth() const { return fDepth; }
     Visual *visual() const { return fVisual; }
 
     bool visible() const { return (flags & wfVisible); }
@@ -239,7 +234,7 @@ private:
 
     bool nullGeometry();
 
-    int fDepth;
+    unsigned fDepth;
     Visual *fVisual;
     Colormap fAllocColormap;
 
@@ -250,7 +245,7 @@ private:
     unsigned flags;
     unsigned fStyle;
     int fX, fY;
-    int fWidth, fHeight;
+    unsigned fWidth, fHeight;
     YCursor fPointer;
     int unmapCount;
     Graphics *fGraphics;
@@ -269,9 +264,7 @@ private:
     };
 
     YAccelerator *accel;
-#ifdef CONFIG_TOOLTIP
     YToolTip *fToolTip;
-#endif
 
     static XButtonEvent fClickEvent;
     static YWindow *fClickWindow;
@@ -302,12 +295,12 @@ public:
 
     virtual void resetColormapFocus(bool active);
 
-    void updateXineramaInfo(int &w, int &h);
+    void updateXineramaInfo(unsigned &w, unsigned &h);
 
     void getScreenGeometry(int *x, int *y,
-                           int *width, int *height,
+                           unsigned *width, unsigned *height,
                            int screen_no = -1);
-    int getScreenForRect(int x, int y, int width, int height);
+    int getScreenForRect(int x, int y, unsigned width, unsigned height);
 
     int getScreenCount();
 

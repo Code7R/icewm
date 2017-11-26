@@ -1,7 +1,5 @@
 #include "config.h"
 
-#ifdef CONFIG_TASKBAR
-
 #include "ylib.h"
 #include "aworkspaces.h"
 #include "wmtaskbar.h"
@@ -34,21 +32,18 @@ WorkspaceButton::WorkspaceButton(long ws, YWindow *parent):
 {
     fWorkspace = ws;
     //setDND(true);
+    setTitle(manager->workspaceName(ws));
 }
 
 void WorkspaceButton::handleClick(const XButtonEvent &up, int /*count*/) {
     switch (up.button) {
-#ifdef CONFIG_WINLIST
         case 2:
             if (windowList)
                 windowList->showFocused(-1, -1);
             break;
-#endif
-#ifdef CONFIG_WINMENU
         case 3:
             manager->popupWindowListMenu(this, up.x_root, up.y_root);
             break;
-#endif
         case 4:
             manager->switchToPrevWorkspace(false);
             break;
@@ -299,17 +294,12 @@ YSurface WorkspaceButton::getSurface() {
             new YColor(*clrWorkspaceNormalButton
                        ? clrWorkspaceNormalButton : clrNormalButton);
 
-#ifdef CONFIG_GRADIENTS
     return (isPressed() ? YSurface(activeButtonBg,
                                    workspacebuttonactivePixmap,
                                    workspacebuttonactivePixbuf)
             : YSurface(normalButtonBg,
                        workspacebuttonPixmap,
                        workspacebuttonPixbuf));
-#else
-    return (isPressed() ? YSurface(activeButtonBg, workspacebuttonactivePixmap)
-            : YSurface(normalButtonBg, workspacebuttonPixmap));
-#endif
 }
 
 mstring WorkspaceButton::baseName() {
@@ -350,7 +340,7 @@ void WorkspaceButton::paint(Graphics &g, const YRect &/*r*/) {
             x += 1; y += 1; w -= 2; h -= 2;
         }
 
-        int wx, wy, ww, wh;
+        unsigned wx, wy, ww, wh;
         double sf = (double) desktop->width() / w;
 
         ref<YIcon> icon;
@@ -368,12 +358,14 @@ void WorkspaceButton::paint(Graphics &g, const YRect &/*r*/) {
                 yfw = yfw->prevLayer()) {
             if (yfw->isHidden() ||
                     !yfw->visibleOn(fWorkspace) ||
-                    (yfw->frameOptions() & YFrameWindow::foIgnoreWinList))
+                    hasbit(yfw->frameOptions(),
+                        YFrameWindow::foIgnoreWinList |
+                        YFrameWindow::foIgnorePagerPreview))
                 continue;
-            wx = (int) round(yfw->x() / sf) + x;
-            wy = (int) round(yfw->y() / sf) + y;
-            ww = (int) round(yfw->width() / sf);
-            wh = (int) round(yfw->height()  / sf);
+            wx = (unsigned) round(yfw->x() / sf) + x;
+            wy = (unsigned) round(yfw->y() / sf) + y;
+            ww = (unsigned) round(yfw->width() / sf);
+            wh = (unsigned) round(yfw->height()  / sf);
             if (ww < 1 || wh < 1)
                 continue;
             if (yfw->isMaximizedVert()) { // !!! hack
@@ -391,7 +383,6 @@ void WorkspaceButton::paint(Graphics &g, const YRect &/*r*/) {
                         g.setColor(colors[2]);
                     g.fillRect(wx+1, wy+1, ww-2, wh-2);
 
-#ifndef LITE
                     if (pagerShowWindowIcons && ww > smallIconSize+1 &&
                             wh > smallIconSize+1 && (icon = yfw->clientIcon()) != null &&
                             icon->small() != null) {
@@ -399,7 +390,6 @@ void WorkspaceButton::paint(Graphics &g, const YRect &/*r*/) {
                                     wx + (ww-smallIconSize)/2,
                                     wy + (wh-smallIconSize)/2);
                     }
-#endif
                 }
                 g.setColor(colors[5]);
             }
@@ -434,7 +424,5 @@ void WorkspaceButton::paint(Graphics &g, const YRect &/*r*/) {
         }
     }
 }
-
-#endif
 
 // vim: set sw=4 ts=4 et:

@@ -75,6 +75,8 @@ char *newstr(char const *str, int len);
 char *newstr(char const *str, char const *delim);
 char *cstrJoin(char const *str, ...);
 
+char* demangle(const char* str);
+
 #if 0
 /*
  * Convert unsigned to string
@@ -144,14 +146,7 @@ void show_backtrace();
 #define DIR_DELIMINATOR '/'
 #endif
 
-extern "C" {
-#ifdef __EMX__
-char* __XOS2RedirRoot(char const*);
-#define REDIR_ROOT(path) __XOS2RedirRoot(path)
-#else
 #define REDIR_ROOT(path) (path)
-#endif
-}
 
 //!!! clean these up
 #define KEY_MODMASK(x) ((x) & (xapp->KeyMask))

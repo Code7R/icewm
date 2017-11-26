@@ -1,5 +1,5 @@
 
-#if defined(__linux__) || defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || (defined(__NetBSD__) && defined(i386))
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || (defined(__NetBSD__) && defined(i386)) || defined(__OpenBSD__)
 
 #include "ywindow.h"
 #include "ytimer.h"
@@ -77,8 +77,6 @@ private:
 
     void updateState();
 };
-#else
-#undef CONFIG_APPLET_APM
 #endif
 
 // vim: set sw=4 ts=4 et:

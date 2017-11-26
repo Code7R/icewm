@@ -61,8 +61,6 @@ bool canShutdown(bool reboot) {
     return true;
 }
 
-#ifndef LITE
-
 #define HORZ 10
 #define MIDH 10
 #define VERT 10
@@ -72,7 +70,7 @@ static YColor *cadBg = 0;
 
 CtrlAltDelete::CtrlAltDelete(IApp *app, YWindow *parent): YWindow(parent) {
     this->app = app;
-    int w = 0, h = 0;
+    unsigned w = 0, h = 0;
 
     if (cadBg == 0)
         cadBg = new YColor(clrDialog);
@@ -108,7 +106,8 @@ CtrlAltDelete::CtrlAltDelete(IApp *app, YWindow *parent): YWindow(parent) {
     setSize(HORZ + w + MIDH + w + MIDH + w + HORZ,
             VERT + h + MIDV + h + MIDV + h + VERT);
 
-    int dx, dy, dw, dh;
+    int dx, dy;
+    unsigned dw, dh;
     manager->getScreenGeometry(&dx, &dy, &dw, &dh);
     setPosition(dx + (dw - width()) / 2,
                 dy + (dh - height()) / 2);
@@ -137,11 +136,7 @@ CtrlAltDelete::~CtrlAltDelete() {
 }
 
 void CtrlAltDelete::paint(Graphics &g, const YRect &/*r*/) {
-#ifdef CONFIG_GRADIENTS
     YSurface surface(cadBg, logoutPixmap, logoutPixbuf);
-#else
-    YSurface surface(cadBg, logoutPixmap);
-#endif
     g.setColor(surface.color);
     g.drawSurface(surface, 1, 1, width() - 2, height() - 2);
     g.draw3DRect(0, 0, width() - 1, height() - 1, true);
@@ -207,7 +202,7 @@ void CtrlAltDelete::deactivate() {
     //manager->setFocus(manager->getFocus());
 }
 
-YActionButton* CtrlAltDelete::addButton(const ustring& str, int& maxW, int& maxH)
+YActionButton* CtrlAltDelete::addButton(const ustring& str, unsigned& maxW, unsigned& maxH)
 {
         YActionButton* b = new YActionButton(this);
     b->setText(str, -2);
@@ -217,7 +212,5 @@ YActionButton* CtrlAltDelete::addButton(const ustring& str, int& maxW, int& maxH
     b->show();
     return b;
 }
-
-#endif
 
 // vim: set sw=4 ts=4 et:

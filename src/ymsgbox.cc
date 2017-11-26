@@ -7,8 +7,6 @@
  */
 #include "config.h"
 
-#ifndef LITE
-
 #include "ylib.h"
 #include "ymsgbox.h"
 
@@ -49,13 +47,9 @@ YMsgBox::YMsgBox(int buttons, YWindow *owner): YDialog(owner) {
         }
     }
     autoSize();
-#if defined(GNOME1_HINTS) || defined(WMSPEC_HINTS)
     setWinLayerHint(WinLayerAboveDock);
     setWinWorkspaceHint(-1);
-#endif
-#if defined(GNOME1_HINTS)
     setWinHintsHint(WinHintsSkipWindowMenu);
-#endif
     {
 
         Atom protocols[2];
@@ -64,20 +58,12 @@ YMsgBox::YMsgBox(int buttons, YWindow *owner): YDialog(owner) {
         XSetWMProtocols(xapp->display(), handle(), protocols, 2);
         getProtocols(true);
     }
-    {
-        MwmHints mwm;
-
-        memset(&mwm, 0, sizeof(mwm));
-        mwm.flags =
-            MWM_HINTS_FUNCTIONS |
-            MWM_HINTS_DECORATIONS;
-        mwm.functions =
-            MWM_FUNC_MOVE | MWM_FUNC_CLOSE;
-        mwm.decorations =
-            MWM_DECOR_BORDER | MWM_DECOR_TITLE | MWM_DECOR_MENU;
-
-        setMwmHints(mwm);
-    }
+    setMwmHints(MwmHints(
+       MWM_HINTS_FUNCTIONS | MWM_HINTS_DECORATIONS,
+       MWM_FUNC_MOVE | MWM_FUNC_CLOSE,
+       MWM_DECOR_BORDER | MWM_DECOR_TITLE | MWM_DECOR_MENU,
+       0,
+       0));
 }
 
 YMsgBox::~YMsgBox() {
@@ -87,10 +73,10 @@ YMsgBox::~YMsgBox() {
 }
 
 void YMsgBox::autoSize() {
-    int lw = fLabel ? fLabel->width() : 0;
-    int w = lw + 24, h;
+    unsigned lw = fLabel ? fLabel->width() : 0;
+    unsigned w = lw + 24, h;
 
-    w = clamp(w, 240, desktop->width());
+    w = clamp(w, 240U, desktop->width());
 
     h = 12;
     if (fLabel) {
@@ -165,7 +151,8 @@ void YMsgBox::showFocused() {
     if (getFrame() == 0)
         manager->manageClient(handle(), false);
     if (getFrame()) {
-        int dx, dy, dw, dh;
+        int dx, dy;
+        unsigned dw, dh;
         desktop->getScreenGeometry(&dx, &dy, &dw, &dh);
         getFrame()->setNormalPositionOuter(
             dx + dw / 2 - getFrame()->width() / 2,
@@ -173,6 +160,5 @@ void YMsgBox::showFocused() {
         getFrame()->activateWindow(true);
     }
 }
-#endif
 
 // vim: set sw=4 ts=4 et:

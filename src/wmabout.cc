@@ -7,7 +7,6 @@
  */
 #include "config.h"
 
-#ifndef LITE
 #include "ylib.h"
 #include "wmabout.h"
 
@@ -64,20 +63,20 @@ AboutDlg::AboutDlg(): YDialog() {
     fLanguageS->show();
     fLanguage->show();
 
+    setTitle("About");
     setWindowTitle(_("icewm - About"));
     //setIconTitle("icewm - About");
-#if defined(GNOME1_HINTS) || defined(WMSPEC_HINTS)
+    setClassHint("about", "IceWM");
+
     setWinLayerHint(WinLayerAboveDock);
     setWinWorkspaceHint(-1);
-#endif
-#if defined(GNOME1_HINTS)
     setWinHintsHint(WinHintsSkipWindowMenu);
-#endif
-    setMwmHints( (MwmHints) {
-       .flags = MWM_HINTS_FUNCTIONS | MWM_HINTS_DECORATIONS,
-       .functions = MWM_FUNC_MOVE | MWM_FUNC_CLOSE,
-       .decorations = MWM_DECOR_BORDER | MWM_DECOR_TITLE | MWM_DECOR_MENU,
-    });
+    setMwmHints(MwmHints(
+       MWM_HINTS_FUNCTIONS | MWM_HINTS_DECORATIONS,
+       MWM_FUNC_MOVE | MWM_FUNC_CLOSE,
+       MWM_DECOR_BORDER | MWM_DECOR_TITLE | MWM_DECOR_MENU,
+       0,
+       0));
 }
 
 AboutDlg::~AboutDlg() {
@@ -179,7 +178,8 @@ void AboutDlg::autoSize() {
 }
 
 void AboutDlg::showFocused() {
-    int dx, dy, dw, dh;
+    int dx, dy;
+    unsigned dw, dh;
     manager->getScreenGeometry(&dx, &dy, &dw, &dh);
 
     if (getFrame() == 0)
@@ -196,6 +196,5 @@ void AboutDlg::handleClose() {
     if (!getFrame()->isHidden())
         getFrame()->wmHide();
 }
-#endif
 
 // vim: set sw=4 ts=4 et:

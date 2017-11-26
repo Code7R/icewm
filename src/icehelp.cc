@@ -937,7 +937,7 @@ private:
     ActionItem& operator=(const ActionItem&);
 public:
     ActionItem() : item(0) {}
-    ~ActionItem() { delete item; }
+    ~ActionItem() { }
     void operator=(YMenuItem* menuItem) { item = menuItem; }
     YMenuItem* operator->() { return item; }
 };
@@ -980,10 +980,10 @@ public:
     }
 
 
-    void par(int &state, int &x, int &y, int &h, const int left);
-    void epar(int &state, int &x, int &y, int &h, const int left);
+    void par(int &state, int &x, int &y, unsigned &h, const int left);
+    void epar(int &state, int &x, int &y, unsigned &h, const int left);
     void layout();
-    void layout(node *parent, node *n1, int left, int right, int &x, int &y, int &w, int &h, int flags, int &state);
+    void layout(node *parent, node *n1, int left, int right, int &x, int &y, unsigned &w, unsigned &h, int flags, int &state);
     void draw(Graphics &g, node *n1, bool isHref = false);
     node *find_node(node *n, int x, int y, node *&anchor, node::node_type type);
     void find_fragment(const char *frag);
@@ -1033,10 +1033,10 @@ public:
             setPos(tx, pos);
     }
 
-    int contentWidth() {
+    unsigned contentWidth() {
         return conWidth;
     }
-    int contentHeight() {
+    unsigned contentHeight() {
         return conHeight;
     }
     YWindow *getWindow() { return this; }
@@ -1085,8 +1085,8 @@ private:
     node *fRoot;
 
     int tx, ty;
-    int conWidth;
-    int conHeight;
+    unsigned conWidth;
+    unsigned conHeight;
 
     FontRef font;
     int fontFlag, fontSize;
@@ -1229,7 +1229,7 @@ void HTextView::find_link(node *n) {
 void HTextView::find_fragment(const char *frag) {
     node *n = fRoot->find_attr(attr::id | attr::name, frag);
     if (n) {
-        int y = max(0, min(n->yr, contentHeight() - height()));
+        int y = max(0, min(n->yr, (int) contentHeight() - (int) height()));
         setPos(0, y);
         fVerticalScroll->setValue(y);
         fHorizontalScroll->setValue(0);
@@ -1256,7 +1256,7 @@ void removeState(int &state, int value) {
     //msg("removeState=%d %d", state, value);
 }
 
-void HTextView::par(int &state, int &x, int &y, int &h, const int left) {
+void HTextView::par(int &state, int &x, int &y, unsigned &h, const int left) {
     if (!(state & sfPar)) {
         h += font->height();
         x = left;
@@ -1265,7 +1265,7 @@ void HTextView::par(int &state, int &x, int &y, int &h, const int left) {
     }
 }
 
-void HTextView::epar(int &state, int &x, int &y, int &h, const int left) {
+void HTextView::epar(int &state, int &x, int &y, unsigned &h, const int left) {
     if ((x > left) || ((state & (sfText | sfPar)) == sfText)) {
         h += font->height();
         x = left;
@@ -1277,7 +1277,7 @@ void HTextView::epar(int &state, int &x, int &y, int &h, const int left) {
 
 void HTextView::layout(
         node *parent, node *n1, int left, int right,
-        int &x, int &y, int &w, int &h,
+        int &x, int &y, unsigned &w, unsigned &h,
         int flags, int &state)
 {
     ///puts("{");
@@ -1372,11 +1372,11 @@ void HTextView::layout(
 
                     n->wrap.add(new text_node(b, c - b, flags,
                                 x, y, wc, font->height()));
-                    if (y + (int)font->height() > h)
+                    if (y + (int)font->height() > (int)h)
                         h = y + font->height();
 
                     x += wc;
-                    if (x > w)
+                    if (x > (int)w)
                         w = x;
 
                     if ((flags & PRE)) {
@@ -1724,7 +1724,10 @@ void HTextView::handleClick(const XButtonEvent &up, int /*count*/) {
 class FileView: public YWindow, public HTListener {
 public:
     FileView(YApplication *app, const char *path);
-    ~FileView() {}
+    ~FileView() {
+        delete view;
+        delete scroll;
+    }
 
     void activateURL(const cstring& url, bool relative = false);
 
@@ -1792,10 +1795,10 @@ FileView::FileView(YApplication *iapp, const char *path)
     char hostname[256] = {};
     gethostname(hostname, sizeof hostname);
     XTextProperty hname = {
-        .value = (unsigned char *) hostname,
-        .encoding = XA_STRING,
-        .format = 8,
-        .nitems = strnlen(hostname, sizeof hostname)
+        (unsigned char *) hostname,
+        XA_STRING,
+        8,
+        strnlen(hostname, sizeof hostname)
     };
     XSetWMClientMachine(xapp->display(), handle(), &hname);
 
@@ -2084,6 +2087,27 @@ bool FileView::loadHttp(const upath& path) {
     return false;
 }
 
+static int handler(Display *display, XErrorEvent *xev) {
+    if (true) {
+        char message[80], req[80], number[80];
+
+        snprintf(number, 80, "%d", xev->request_code);
+        XGetErrorDatabaseText(display, "XRequest",
+                              number, "",
+                              req, sizeof(req));
+        if (req[0] == 0)
+            snprintf(req, 80, "[request_code=%d]", xev->request_code);
+
+        if (XGetErrorText(display, xev->error_code, message, 80) != Success)
+            *message = '\0';
+
+        tlog("X error %s(0x%lX): %s. #%lu, +%lu, -%lu.",
+             req, xev->resourceid, message, xev->serial,
+             NextRequest(display), LastKnownRequestProcessed(display));
+    }
+    return 0;
+}
+
 static void print_help()
 {
     printf(_(
@@ -2160,6 +2184,8 @@ int main(int argc, char **argv) {
     if (helpfile == 0) {
         helpfile = ICEHELPIDX;
     }
+
+    XSetErrorHandler(handler);
 
     YXApplication app(&argc, &argv);
 

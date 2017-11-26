@@ -17,7 +17,7 @@ class YXTrayNotifier {
 public:
     virtual void trayChanged() = 0;
 protected:
-    virtual ~YXTrayNotifier() {};
+    virtual ~YXTrayNotifier() {}
 };
 
 class YXTrayEmbedder: public YXEmbed {
@@ -27,14 +27,14 @@ public:
     virtual void paint(Graphics &g, const YRect &r);
     virtual void handleConfigureRequest(const XConfigureRequestEvent &configureRequest);
     virtual bool destroyedClient(Window win);
-    void detach();
+    virtual void handleClientUnmap(Window win);
+    virtual void handleClientMap(Window win);
+    virtual void handleMapRequest(const XMapRequestEvent &mapRequest);
     virtual void configure(const YRect &r);
+    void detach();
 
     Window client_handle() { return fDocked->handle(); }
     YXEmbedClient *client() { return fDocked; }
-    void handleClientUnmap(Window win);
-    void handleClientMap(Window win);
-    virtual void handleMapRequest(const XMapRequestEvent &mapRequest);
 
     bool fVisible;
 private:
@@ -64,7 +64,7 @@ public:
 
     bool destroyedClient(Window win);
 private:
-    static void getScaleSize(int *ww, int *hh);
+    static void getScaleSize(unsigned& w, unsigned& h);
 
     YXTrayProxy *fTrayProxy;
     typedef YObjectArray<YXTrayEmbedder> DockedType;

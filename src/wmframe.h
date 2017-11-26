@@ -88,10 +88,8 @@ public:
     void wmOccupyOnlyWorkspace(int workspace);
     void wmMoveToWorkspace(int workspace);
     void wmSetLayer(long layer);
-#ifdef CONFIG_TRAY
     void wmSetTrayOption(long option);
     void wmToggleTray();
-#endif
 #if DO_NOT_COVER_OLD
     void wmToggleDoNotCover();
 #endif
@@ -113,9 +111,7 @@ public:
     YFrameTitleBar *titlebar();
     YClientContainer *container() const { return fClientContainer; }
 
-#ifdef WMSPEC_HINTS
     void startMoveSize(int x, int y, int direction);
-#endif
 
     void startMoveSize(bool doMove, bool byMouse,
                        int sideX, int sideY,
@@ -162,7 +158,7 @@ public:
     void setAbove(YFrameWindow *aboveFrame); // 0 = at the bottom
     void setBelow(YFrameWindow *belowFrame); // 0 = at the top
 
-    typedef enum {
+    enum FindWindowFlags {
         fwfVisible    = 1 << 0, // visible windows only
         fwfCycle      = 1 << 1, // cycle when bottom(top) reached
         fwfBackward   = 1 << 2, // go up in zorder (default=down)
@@ -176,7 +172,7 @@ public:
         fwfUnminimized = 1 << 10, // normal/rolledup only
         fwfHidden     = 1 << 11, // hidden
         fwfNotHidden  = 1 << 12 // not hidden
-    } FindWindowFlags;
+    };
 
     YFrameWindow *findWindow(int flag);
 
@@ -225,30 +221,28 @@ public:
         fdDepth         = (1 << 9)
     };
 
-    /// !!! needs refactoring (some are not optional right now)
-    /// should be #ifndef NO_WINDOW_OPTIONS
-
     enum YFrameOptions {
-        foAllWorkspaces         = (1 << 0),
-        foIgnoreTaskBar         = (1 << 1),
-        foIgnoreWinList         = (1 << 2),
-        foFullKeys              = (1 << 3),
-        foIgnoreQSwitch         = (1 << 4),
-        foNoFocusOnAppRaise     = (1 << 5),
-        foIgnoreNoFocusHint     = (1 << 6),
-        foIgnorePosition        = (1 << 7),
-        foDoNotCover            = (1 << 8),
-        foFullscreen            = (1 << 9),
-        foMaximizedVert         = (1 << 10),
-        foMaximizedHorz         = (1 << 11),
-        foNonICCCMConfigureRequest = (1 << 12),
-        foMinimized             = (1 << 13),
-        foDoNotFocus            = (1 << 14),
-        foForcedClose           = (1 << 15),
-        foNoFocusOnMap          = (1 << 16),
-        foNoIgnoreTaskBar       = (1 << 17),
-        foAppTakesFocus         = (1 << 18),
-        foIgnoreUrgent          = (1 << 19)
+        foAllWorkspaces            = (1 << 0),
+        foAppTakesFocus            = (1 << 1),
+        foDoNotCover               = (1 << 2),
+        foDoNotFocus               = (1 << 3),
+        foForcedClose              = (1 << 4),
+        foFullKeys                 = (1 << 5),
+        foFullscreen               = (1 << 6),
+        foIgnoreNoFocusHint        = (1 << 7),
+        foIgnorePagerPreview       = (1 << 8),
+        foIgnorePosition           = (1 << 9),
+        foIgnoreQSwitch            = (1 << 10),
+        foIgnoreTaskBar            = (1 << 11),
+        foIgnoreUrgent             = (1 << 12),
+        foIgnoreWinList            = (1 << 13),
+        foMaximizedHorz            = (1 << 14),
+        foMaximizedVert            = (1 << 15),
+        foMinimized                = (1 << 16),
+        foNoFocusOnAppRaise        = (1 << 17),
+        foNoFocusOnMap             = (1 << 18),
+        foNoIgnoreTaskBar          = (1 << 19),
+        foNonICCCMConfigureRequest = (1 << 20),
     };
 
     unsigned frameFunctions() const { return fFrameFunctions; }
@@ -257,10 +251,8 @@ public:
     void updateAllowed();
     void updateNetWMState();
     void getFrameHints();
-#ifndef NO_WINDOW_OPTIONS
     void getWindowOptions(WindowOption &opt, bool remove); /// !!! fix kludges
     void getWindowOptions(WindowOptions *list, WindowOption &opt, bool remove);
-#endif
 
     YMenu *windowMenu();
 
@@ -288,10 +280,8 @@ public:
 
     YFrameWindow *nextLayer();
     YFrameWindow *prevLayer();
-#ifdef CONFIG_WINLIST
     WindowListItem *winListItem() const { return fWinListItem; }
     void setWinListItem(WindowListItem *i) { fWinListItem = i; }
-#endif
 
     void addAsTransient();
     void removeAsTransient();
@@ -306,10 +296,8 @@ public:
     YFrameWindow *owner() const { return fOwner; }
     YFrameWindow *mainOwner();
 
-#ifndef LITE
     ref<YIcon> getClientIcon() const { return fFrameIcon; }
     ref<YIcon> clientIcon() const;
-#endif
 
     void getNormalGeometryInner(int *x, int *y, int *w, int *h);
     void setNormalGeometryOuter(int x, int y, int w, int h);
@@ -323,9 +311,7 @@ public:
 
     void updateTitle();
     void updateIconTitle();
-#ifndef LITE
     void updateIcon();
-#endif
     void updateState();
     void updateLayer(bool restack = true);
     //void updateWorkspace();
@@ -335,9 +321,7 @@ public:
 
     void updateMwmHints();
     void updateProperties();
-#ifdef CONFIG_TASKBAR
     void updateTaskBar();
-#endif
 
     enum WindowType {
         wtCombo,
@@ -364,10 +348,8 @@ public:
     void setWorkspaceHint(long workspace);
     long getActiveLayer() const { return fWinActiveLayer; }
     void setRequestedLayer(long layer);
-#ifdef CONFIG_TRAY
     long getTrayOption() const { return fWinTrayOption; }
     void setTrayOption(long option);
-#endif
     void setDoNotCover(bool flag);
     bool isMaximized() const { return (getState() &
                                  (WinStateMaximizedHoriz |
@@ -416,14 +398,11 @@ public:
         return (frameOptions() & foDoNotCover) ? true : false;
     }
 
-#ifndef LITE
     virtual ref<YIcon> getIcon() const { return clientIcon(); }
-#endif
 
     virtual ustring getTitle() const { return client()->windowTitle(); }
     virtual ustring getIconTitle() const { return client()->iconTitle(); }
 
-#ifdef WMSPEC_HINTS
     void updateNetWMStrut();
     void updateNetWMStrutPartial();
     void updateNetStartupId();
@@ -431,7 +410,7 @@ public:
     void updateNetWMUserTimeWindow();
     void updateNetWMWindowOpacity();
     void updateNetWMFullscreenMonitors(int, int, int, int);
-#endif
+
     int strutLeft() { return fStrutLeft; }
     int strutRight() { return fStrutRight; }
     int strutTop() { return fStrutTop; }
@@ -479,8 +458,7 @@ private:
 
     int buttonDownX, buttonDownY;
     int grabX, grabY;
-    int movingWindow, sizingWindow;
-    int sizeByMouse;
+    bool movingWindow, sizingWindow;
     int origX, origY, origW, origH;
 
     Window topSide, leftSide, rightSide, bottomSide;
@@ -488,19 +466,11 @@ private:
     bool indicatorsCreated;
     bool indicatorsVisible;
 
-#ifdef CONFIG_TASKBAR
     TaskBarApp *fTaskBarApp;
-#endif
-#ifdef CONFIG_TRAY
     TrayApp *fTrayApp;
-#endif
     MiniIcon *fMiniIcon;
-#ifdef CONFIG_WINLIST
     WindowListItem *fWinListItem;
-#endif
-#ifndef LITE
     ref<YIcon> fFrameIcon;
-#endif
 
     YFrameWindow *fOwner;
     YFrameWindow *fTransient;
@@ -513,11 +483,8 @@ private:
     int fWinWorkspace;
     long fWinRequestedLayer;
     long fWinActiveLayer;
-#ifdef CONFIG_TRAY
     long fWinTrayOption;
-#endif
     long fWinState;
-    long fWinStateMask;
     bool fManaged;
     long fWinOptionMask;
     long fOldLayer;
@@ -539,8 +506,8 @@ private:
     UserTime fUserTime;
     Window fUserTimeWindow;
 
-    int fShapeWidth;
-    int fShapeHeight;
+    unsigned fShapeWidth;
+    unsigned fShapeHeight;
     int fShapeTitleY;
     int fShapeBorderX;
     int fShapeBorderY;

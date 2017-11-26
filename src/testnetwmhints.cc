@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <ctype.h>
+#include <libgen.h>
 #include <limits.h>
 #include <signal.h>
 #include <stdarg.h>
@@ -19,6 +20,8 @@
 #include <X11/XKBlib.h>
 
 #include "WinMgr.h"
+#define GUI_EVENT_NAMES
+#include "guievent.h"
 
 /// _SET would be nice to have
 #define _NET_WM_STATE_REMOVE 0
@@ -104,8 +107,11 @@ public:
         atom = XInternAtom(display, name, False); }
 };
 
+static TAtom _XA_ICEWM_GUI_EVENT("ICEWM_GUI_EVENT");
 static TAtom _XA_WM_STATE("WM_STATE");
+static TAtom _XA_WIN_TRAY("WIN_TRAY");
 static TAtom _XA_WIN_WORKSPACE("_WIN_WORKSPACE");
+static TAtom _XA_WIN_WORKSPACE_COUNT("_WIN_WORKSPACE_COUNT");
 static TAtom _XA_WIN_WORKSPACE_NAMES("_WIN_WORKSPACE_NAMES");
 static TAtom _XA_WIN_STATE("_WIN_STATE");
 static TAtom _XA_WIN_LAYER("_WIN_LAYER");
@@ -346,10 +352,10 @@ int main(int argc, char **argv) {
     char hostname[HOST_NAME_MAX + 1] = {};
     gethostname(hostname, HOST_NAME_MAX);
     XTextProperty hname = {
-        .value = (unsigned char *) hostname,
-        .encoding = XA_STRING,
-        .format = 8,
-        .nitems = strnlen(hostname, HOST_NAME_MAX),
+        (unsigned char *) hostname,
+        XA_STRING,
+        8,
+        strnlen(hostname, HOST_NAME_MAX),
     };
     XSetWMClientMachine(display, window, &hname);
 
@@ -600,6 +606,17 @@ int main(int argc, char **argv) {
         if (property.window == root &&
             property.atom == _XA_WIN_WORKSPACE) {
             if (XGetWindowProperty(display, root,
+                                   _XA_WIN_WORKSPACE_COUNT,
+                                   0, 1, False, AnyPropertyType,
+                                   &r_type, &r_format,
+                                   &count, &bytes_remain,
+                                   &prop) == Success && prop)
+            {
+                TEST(r_type == XA_CARDINAL && r_format == 32 && count == 1);
+                workspaceCount = ((long *)prop)[0];
+                XFree(prop);
+            }
+            if (XGetWindowProperty(display, root,
                                    _XA_WIN_WORKSPACE,
                                    0, 1, False, AnyPropertyType,
                                    &r_type, &r_format,
@@ -637,6 +654,17 @@ int main(int argc, char **argv) {
 #endif
         else if (property.window == window &&
                  property.atom == _XA_WIN_WORKSPACE) {
+            if (XGetWindowProperty(display, root,
+                                   _XA_WIN_WORKSPACE_COUNT,
+                                   0, 1, False, AnyPropertyType,
+                                   &r_type, &r_format,
+                                   &count, &bytes_remain,
+                                   &prop) == Success && prop)
+            {
+                TEST(r_type == XA_CARDINAL && r_format == 32 && count == 1);
+                workspaceCount = ((long *)prop)[0];
+                XFree(prop);
+            }
             if (XGetWindowProperty(display, window,
                                    _XA_WIN_WORKSPACE,
                                    0, 1, False, AnyPropertyType,
@@ -715,7 +743,22 @@ int main(int argc, char **argv) {
                 XFree(prop);
             }
         }
-        /*else if (property.atom == _XA_WIN_TRAY) {
+        else if (property.atom == _XA_ICEWM_GUI_EVENT) {
+            if (XGetWindowProperty(display, window,
+                                   _XA_ICEWM_GUI_EVENT,
+                                   0, 1, False, AnyPropertyType,
+                                   &r_type, &r_format,
+                                   &count, &bytes_remain,
+                                   &prop) == Success && prop)
+            {
+                TEST(r_type == _XA_ICEWM_GUI_EVENT && r_format == 8 && count == 1);
+                if (*prop >= 0 && *prop < COUNT(gui_event_names))
+                    tell("IceWM GUI event %s\n", gui_event_names[*prop]);
+                else
+                    tell("IceWM GUI event %d\n", *prop);
+            }
+        }
+        else if (property.atom == _XA_WIN_TRAY) {
             if (XGetWindowProperty(display, window,
                                    _XA_WIN_TRAY,
                                    0, 1, False, AnyPropertyType,
@@ -727,7 +770,7 @@ int main(int argc, char **argv) {
                 long tray = ((long *)prop)[0];
                 tell("tray option=%d\n", tray);
             }
-        }*/
+        }
         else {
             Atom atom = property.atom;
             Window w = property.window;

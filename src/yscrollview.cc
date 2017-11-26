@@ -5,8 +5,6 @@
  */
 #include "config.h"
 
-#ifndef LITE
-
 #include "yscrollview.h"
 
 #include "ylistbox.h"
@@ -37,8 +35,8 @@ void YScrollView::setView(YScrollable *s) {
 }
 
 void YScrollView::getGap(int &dx, int &dy) {
-    int const cw(scrollable->contentWidth());
-    int const ch(scrollable->contentHeight());
+    unsigned const cw(scrollable->contentWidth());
+    unsigned const ch(scrollable->contentHeight());
 
     ///msg("content %d %d this %d %d", cw, ch, width(), height());
     dx = dy = 0;
@@ -92,7 +90,5 @@ void YScrollView::paint(Graphics &g, const YRect &r) {
 
     YWindow::paint(g, r);
 }
-
-#endif
 
 // vim: set sw=4 ts=4 et:

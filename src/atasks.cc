@@ -1,7 +1,5 @@
 #include "config.h"
 
-#ifdef CONFIG_TASKBAR
-
 #include "ylib.h"
 #include "atasks.h"
 #include "wmtaskbar.h"
@@ -95,9 +93,7 @@ void TaskBarApp::setFlash(bool flashing) {
 void TaskBarApp::paint(Graphics &g, const YRect &/*r*/) {
     YColor *bg, *fg;
     ref<YPixmap> bgPix;
-#ifdef CONFIG_GRADIENTS
     ref<YImage> bgGrad;
-#endif
 
     int p(0);
     int style = 0;
@@ -114,47 +110,35 @@ void TaskBarApp::paint(Graphics &g, const YRect &/*r*/) {
             bg = activeTaskBarAppBg;
             fg = activeTaskBarAppFg;
             bgPix = taskbuttonactivePixmap;
-#ifdef CONFIG_GRADIENTS
             bgGrad = taskbuttonactivePixbuf;
-#endif
             style = 1;
         } else {
             bg = normalTaskBarAppBg;
             fg = normalTaskBarAppFg;
             bgPix = taskbuttonPixmap;
-#ifdef CONFIG_GRADIENTS
             bgGrad = taskbuttonPixbuf;
-#endif
             style = 1;
         }
     } else if (!getFrame()->visibleNow()) {
         bg = invisibleTaskBarAppBg;
         fg = invisibleTaskBarAppFg;
         bgPix = taskbackPixmap;
-#ifdef CONFIG_GRADIENTS
         bgGrad = taskbackPixbuf;
-#endif
     } else if (getFrame()->isMinimized()) {
         bg = minimizedTaskBarAppBg;
         fg = minimizedTaskBarAppFg;
         bgPix = taskbuttonminimizedPixmap;
-#ifdef CONFIG_GRADIENTS
         bgGrad = taskbuttonminimizedPixbuf;
-#endif
     } else if (getFrame()->focused()) {
         bg = activeTaskBarAppBg;
         fg = activeTaskBarAppFg;
         bgPix = taskbuttonactivePixmap;
-#ifdef CONFIG_GRADIENTS
         bgGrad = taskbuttonactivePixbuf;
-#endif
     } else {
         bg = normalTaskBarAppBg;
         fg = normalTaskBarAppFg;
         bgPix = taskbuttonPixmap;
-#ifdef CONFIG_GRADIENTS
         bgGrad = taskbuttonPixbuf;
-#endif
     }
 
     if (style == 3) {
@@ -190,12 +174,10 @@ void TaskBarApp::paint(Graphics &g, const YRect &/*r*/) {
         int const dp(wmLook == lookFlat ? 0: wmLook == lookMetal ? 2 : p);
         int const ds(wmLook == lookFlat ? 0: wmLook == lookMetal ? 4 : 3);
 
-        if (width() > ds && height() > ds) {
-#ifdef CONFIG_GRADIENTS
+        if ((int) width() > ds && (int) height() > ds) {
             if (bgGrad != null)
                 g.drawGradient(bgGrad, dp, dp, width() - ds, height() - ds);
             else
-#endif
             if (bgPix != null)
                 g.fillPixmap(bgPix, dp, dp, width() - ds, height() - ds);
             else
@@ -203,7 +185,6 @@ void TaskBarApp::paint(Graphics &g, const YRect &/*r*/) {
         }
     }
 
-#ifndef LITE
     ref<YIcon> icon(getFrame()->getIcon());
 
     if (taskBarShowWindowIcons && icon != null) {
@@ -213,7 +194,6 @@ void TaskBarApp::paint(Graphics &g, const YRect &/*r*/) {
                      ((wmLook == lookMetal) ? 1 : 0)) / 2);
         icon->draw(g, p + 1, p + 1 + y, iconSize);
     }
-#endif
 
     ustring str = getFrame()->getIconTitle();
     if (str == null || str.length() == 0)
@@ -229,14 +209,12 @@ void TaskBarApp::paint(Graphics &g, const YRect &/*r*/) {
 
             int iconSize = 0;
             int pad = 1;
-#ifndef LITE
             if (taskBarShowWindowIcons && icon != null) {
                 iconSize = YIcon::smallSize();
                 pad = 3;
             }
-#endif
             int const tx = pad + iconSize;
-            int const ty = max(2,
+            int const ty = max(2U,
                                (height() + font->height() -
                                 ((wmLook == lookMetal || wmLook == lookFlat) ? 2 : 1)) / 2 -
                                font->descent());
@@ -386,13 +364,6 @@ void TaskPane::remove(TaskBarApp *tapp) {
 }
 
 TaskBarApp *TaskPane::addApp(YFrameWindow *frame) {
-#ifdef CONFIG_WINLIST
-    if (frame->client() == windowList)
-        return 0;
-#endif
-    if (frame->client() == taskBar)
-        return 0;
-
     TaskBarApp *tapp = new TaskBarApp(frame, this, this);
 
     if (tapp != 0) {
@@ -470,14 +441,12 @@ void TaskPane::paint(Graphics &g, const YRect &/*r*/) {
     //g.draw3DRect(0, 0, width() - 1, height() - 1, true);
 
     // When TaskBarDoubleHeight=1 this draws the lower half.
-#ifdef CONFIG_GRADIENTS
     ref<YImage> gradient = parent()->getGradient();
 
     if (gradient != null)
         g.drawImage(gradient, 0, taskBarDoubleHeight ? 0 : y(),
                     width(), height(), 0, 0);
     else
-#endif
     if (taskbackPixmap != null)
         g.fillPixmap(taskbackPixmap, 0, 0, width(), height(), x(), y());
     else
@@ -533,7 +502,7 @@ void TaskPane::processDrag(int mx, int my) {
         if (task->getShown()) {
             if (task == fDragging)
                 drag = task.where();
-            else if (inrange(cx, task->x(), task->x() + task->width() - 1))
+            else if (inrange(cx, task->x(), task->x() + (int) task->width() - 1))
                 drop = task.where();
         }
     }
@@ -554,6 +523,5 @@ void TaskPane::endDrag() {
         relayoutNow();
     }
 }
-#endif
 
 // vim: set sw=4 ts=4 et:

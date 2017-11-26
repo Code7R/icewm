@@ -1,8 +1,6 @@
 #ifndef __WMPROG_H
 #define __WMPROG_H
 
-#ifndef NO_CONFIGURE_MENUS
-
 #include "upath.h"
 #include "objmenu.h"
 #include "yarray.h"
@@ -31,7 +29,7 @@ public:
         const bool restart,
         const char *wmclass,
         upath exe,
-        const YStringArray &args);
+        YStringArray &args);
 
 protected:
     DProgram(
@@ -42,7 +40,7 @@ protected:
         const bool restart,
         const char *wmclass,
         upath exe,
-        const YStringArray &args);
+        YStringArray &args);
 
 private:
     const bool fRestart;
@@ -185,8 +183,6 @@ private:
     // sequence and this object here is cached over process lifetime anyway.
     SwitchWindow *pSwitchWindow;
 };
-
-#endif /* NO_CONFIGURE_MENUS */
 
 #endif
 

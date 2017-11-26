@@ -61,6 +61,7 @@ YFrameTitleBar::YFrameTitleBar(YWindow *parent, YFrameWindow *frame):
 
     initTitleColorsFonts();
     setTitle("TitleBar");
+    setWinGravity(NorthGravity);
 }
 
 YFrameButton* YFrameTitleBar::maximizeButton() {
@@ -79,11 +80,7 @@ YFrameButton* YFrameTitleBar::minimizeButton() {
     if (fMinimizeButton == 0 && isButton('i')) {
         fMinimizeButton = new YFrameButton(this,
                 getFrame(), actionMinimize,
-#ifdef CONFIG_PDA
-                actionNull
-#else
                 actionHide
-#endif
                 );
         //fMinimizeButton->setWinGravity(NorthEastGravity);
         fMinimizeButton->setToolTip(_("Minimize"));
@@ -106,7 +103,6 @@ YFrameButton* YFrameTitleBar::closeButton() {
 }
 
 YFrameButton* YFrameTitleBar::hideButton() {
-#ifndef CONFIG_PDA
     if (fHideButton == 0 && isButton('h')) {
         fHideButton = new YFrameButton(this,
                 getFrame(), actionHide, actionHide);
@@ -115,7 +111,6 @@ YFrameButton* YFrameTitleBar::hideButton() {
         fHideButton->setTitle("Hide");
         fHideButton->show();
     }
-#endif
     return fHideButton;
 }
 
@@ -235,7 +230,6 @@ void YFrameTitleBar::handleButton(const XButtonEvent &button) {
                 getFrame()->wmRaise();
         }
     }
-#ifdef CONFIG_WINLIST
     else if (button.type == ButtonRelease) {
         if (button.button == 1 &&
             IS_BUTTON(BUTTON_MODMASK(button.state), Button1Mask + Button3Mask))
@@ -244,7 +238,6 @@ void YFrameTitleBar::handleButton(const XButtonEvent &button) {
                 windowList->showFocused(button.x_root, button.y_root);
         }
     }
-#endif
     YWindow::handleButton(button);
 }
 
@@ -369,6 +362,9 @@ void YFrameTitleBar::positionButton(YFrameButton *b, int &xPos, bool onRight) {
         b->setGeometry(YRect(xPos, 0, titleY, titleY));
         if (!onRight) xPos += titleY;
     }
+
+    if (onRight)
+        b->setWinGravity(NorthEastGravity);
 }
 
 void YFrameTitleBar::layoutButtons() {
@@ -524,13 +520,8 @@ void YFrameTitleBar::paint(Graphics &g, const YRect &/*r*/) {
         break;
     case lookWarp3:
         {
-#ifdef TITLEBAR_BOTTOM
-            int y = 1;
-            int y2 = 0;
-#else
             int y = 0;
             int y2 = height() - 1;
-#endif
 
             g.fillRect(0, y, width(), height() - 1);
             g.setColor(getFrame()->focused() ? fg->darker() : bg->darker());
@@ -588,19 +579,17 @@ void YFrameTitleBar::paint(Graphics &g, const YRect &/*r*/) {
         lRight = stringOffset + tlen;
 
         if (lLeft < lRight) {
-#ifdef CONFIG_GRADIENTS
             if (rgbTitleT[pi] != null) {
                 int const gx(titleBarJoinLeft ? lLeft - onLeft : 0);
                 int const gw((titleBarJoinRight ? onRight : lRight) -
                              (titleBarJoinLeft ? onLeft : lLeft));
                 g.drawGradient(rgbTitleT[pi], lLeft, 0,
                                lRight - lLeft, height(), gx, 0, gw, height());
-            } else
-#endif
-                if (titleT[pi] != null)
-                    g.repHorz(titleT[pi], lLeft, 0, lRight - lLeft);
-                else
-                    g.fillRect(lLeft, 0, lRight - lLeft, height());
+            }
+            else if (titleT[pi] != null)
+                g.repHorz(titleT[pi], lLeft, 0, lRight - lLeft);
+            else
+                g.fillRect(lLeft, 0, lRight - lLeft, height());
         }
 
         if (titleP[pi] != null) {
@@ -613,21 +602,18 @@ void YFrameTitleBar::paint(Graphics &g, const YRect &/*r*/) {
         }
 
         if (onLeft < lLeft) {
-#ifdef CONFIG_GRADIENTS
             if (rgbTitleS[pi] != null) {
                 int const gw((titleBarJoinLeft ? titleBarJoinRight ?
                               onRight : lRight : lLeft) - onLeft);
                 g.drawGradient(rgbTitleS[pi], onLeft, 0,
                                lLeft - onLeft, height(), 0, 0, gw, height());
-            } else
-#endif
-                if (titleS[pi] != null)
-                    g.repHorz(titleS[pi], onLeft, 0, lLeft - onLeft);
-                else
-                    g.fillRect(onLeft, 0, lLeft - onLeft, height());
+            }
+            else if (titleS[pi] != null)
+                g.repHorz(titleS[pi], onLeft, 0, lLeft - onLeft);
+            else
+                g.fillRect(onLeft, 0, lLeft - onLeft, height());
         }
         if (lRight < onRight) {
-#ifdef CONFIG_GRADIENTS
             if (rgbTitleB[pi] != null) {
                 int const gx(titleBarJoinRight ? titleBarJoinLeft ?
                              lRight - onLeft: lRight - lLeft : 0);
@@ -636,12 +622,11 @@ void YFrameTitleBar::paint(Graphics &g, const YRect &/*r*/) {
 
                 g.drawGradient(rgbTitleB[pi], lRight, 0,
                                onRight - lRight, height(), gx, 0, gw, height());
-            } else
-#endif
-                if (titleB[pi] != null)
-                    g.repHorz(titleB[pi], lRight, 0, onRight - lRight);
-                else
-                    g.fillRect(lRight, 0, onRight - lRight, height());
+            }
+            else if (titleB[pi] != null)
+                g.repHorz(titleB[pi], lRight, 0, onRight - lRight);
+            else
+                g.fillRect(lRight, 0, onRight - lRight, height());
         }
 
         if (titleJ[pi] != null)
@@ -668,7 +653,7 @@ void YFrameTitleBar::paint(Graphics &g, const YRect &/*r*/) {
     }
 }
 
-#ifdef CONFIG_SHAPED_DECORATION
+#ifdef CONFIG_SHAPE
 void YFrameTitleBar::renderShape(Pixmap shape) {
     if (LOOK(lookPixmap | lookMetal | lookGtk | lookFlat))
     {

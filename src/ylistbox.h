@@ -68,8 +68,8 @@ public:
     bool isSelected(int item);
     bool isSelected(YListItem *item);
 
-    virtual int contentWidth();
-    virtual int contentHeight();
+    virtual unsigned contentWidth();
+    virtual unsigned contentHeight();
     virtual YWindow *getWindow();
 
     void focusSelectItem(int no) { setFocusedItem(no, true, false, false); }
@@ -111,9 +111,7 @@ private:
     void focusVisible();
     void ensureVisibility(int item);
 
-#ifdef CONFIG_GRADIENTS
     ref<YImage> fGradient;
-#endif
 };
 
 #endif

@@ -1,63 +1,67 @@
 #include "config.h"
 
-#ifdef CONFIG_IMLIB
-
 #include "yimage.h"
 #include "yxapp.h"
 
-void image_init() {
-}
+#ifdef CONFIG_XPM
 
-class YImageImlib: public YImage {
+#include <X11/xpm.h>
+
+class YImageXpm: public YImageXImage {
 public:
-    YImageImlib(int width, int height, XImage *ximage, XImage *xmask): YImage(width, height) {
-        fXImage = ximage;
-        fXMask = xmask;
-    }
-    virtual ~YImageImlib() {
-        if (fXImage != 0) {
-            XDestroyImage(fXImage);
-            fXImage = 0;
-        }
-        if (fXMask != 0) {
-            XDestroyImage(fXMask);
-            fXMask = 0;
-        }
+    static ref<YImage> create(int width, int height);
+    static ref<YImage> load(upath filename);
+    static ref<YImage> createFromPixmap(ref<YPixmap> image);
+    static ref<YImage> createFromPixmapAndMask(Pixmap pix, Pixmap mask, int width, int height);
+    static ref<YImage> createFromPixmapAndMaskScaled(Pixmap pix, Pixmap mask, int width, int height, int nw, int nh);
+    static ref<YImage> createFromIconProperty(long *pixels, int width, int height);
+
+    YImageXpm(int width, int height, XImage *ximage): YImageX(width, height), fImage(ximage) { }
+    virtual ~YImageXpm() {
+        if (fImage != 0)
+            XDestroyImage(fImage);
     }
     virtual ref<YPixmap> renderToPixmap();
     virtual ref<YImage> scale(int width, int height);
     virtual void draw(Graphics &g, int x, int y);
+    virtual bool valid() const { return fImage != 0; }
 private:
-    XImage *fXImage;
-    XImage *fXMask;
+    XImage *fImage;
 };
+
+ref<YImage> YImageXpm::create(int width, int height) {
+}
+ref<YImage> YImageXpm::load(upath filename);
+ref<YImage> YImageXpm::createFromPixmap(ref<YPixmap> image);
+ref<YImage> YImageXpm::createFromPixmapAndMask(Pixmap pix, Pixmap mask, int width, int height);
+ref<YImage> YImageXpm::createFromPixmapAndMaskScaled(Pixmap pix, Pixmap mask, int width, int height, int nw, int nh);
+ref<YImage> YImageXpm::createFromIconProperty(long *pixels, int width, int height);
 
 ref<YImage> YImage::load(upath filename) {
     ref<YImage> image;
-#if 0
-    XImage *ximage = 0;
+    XImage *xdraw = 0;
     XImage *xmask = 0;
+    XImage *ximage = 9;
 
     XpmAttributes xpmAttributes;
     xpmAttributes.colormap  = xapp->colormap();
     xpmAttributes.closeness = 65535;
     xpmAttributes.valuemask = XpmSize|XpmReturnPixels|XpmColormap|XpmCloseness;
 
-    int rc = XpmReadFileToImage(xapp->display(), (char *)filename,
-                                &ximage, &xmask,
+    int rc = XpmReadFileToImage(xapp->display(), (char *)cstring(filename.path()).c_str(),
+                                &xdraw, &xmask,
                                 &xpmAttributes);
 
     if (rc == XpmSuccess) {
-        image.init(new YImageImlib(xpmAttributes.width,
+        image.init(new YImageXpm(xpmAttributes.width,
                                  xpmAttributes.height,
                                  ximage, xmask));
         XpmFreeAttributes(&xpmAttributes);
     }
-#endif
     return image;
 }
 
-ref<YImage> YImageImlib::scale(int w, int h) {
+ref<YImage> YImageXpm::scale(int w, int h) {
     ref<YImage> image;
 
     image.init(this);
@@ -76,7 +80,6 @@ ref<YImage> YImage::createFromPixmapAndMask(Pixmap pixmap, Pixmap mask,
                                             int width, int height)
 {
     ref<YImage> image;
-#if 0
     XImage *ximage = 0;
     XImage *xmask = 0;
 
@@ -92,10 +95,9 @@ ref<YImage> YImage::createFromPixmapAndMask(Pixmap pixmap, Pixmap mask,
     }
 
     if (ximage != 0) {
-        image.init(new YImageImlib(width, height,
+        image.init(new YImageXpm(width, height,
                                  ximage, xmask));
     }
-#endif
     return image;
 }
 
@@ -109,10 +111,9 @@ ref<YImage> YImage::createFromPixmapAndMaskScaled(Pixmap pix, Pixmap mask,
     return image;
 }
 
-ref<YPixmap> YImageImlib::renderToPixmap() {
+ref<YPixmap> YImageXpm::renderToPixmap() {
     ref<YPixmap> pixmap = YPixmap::create(width(), height(), true);
 
-#if 0
     GC gc1 = XCreateGC(xapp->display(), pixmap->pixmap(), 0, 0);
 
     if (fXImage != 0)
@@ -125,7 +126,7 @@ ref<YPixmap> YImageImlib::renderToPixmap() {
         XPutImage(xapp->display(), pixmap->mask(),
                   gc2, fXMask, 0, 0, 0, 0, width(), height());
     XFreeGC(xapp->display(), gc2);
-#endif
+
     return pixmap;
 }
 
@@ -136,9 +137,32 @@ ref<YPixmap> YImage::createPixmap(Pixmap pixmap, Pixmap mask, int w, int h) {
     return n;
 }
 
-void YImageImlib::draw(Graphics &g, int x, int y) {
+void YImageXpm::draw(Graphics &g, int x, int y) {
 }
 
-#endif
+void image_init() {
+}
+
+#endif              /* CONFIG_XPM */
+
+#ifdef CONFIG_LIBPNG
+
+class YImagePng: public YImage {
+public:
+    YImageXpm(int width, int height, XImage *ximage): YImage(width, height), fImage(ximage) { }
+    virtual ~YImageXpm() {
+        if (fImage != 0)
+            XDestroyImage(fImage);
+    }
+    virtual ref<YPixmap> renderToPixmap();
+    virtual ref<YImage> scale(int width, int height);
+    virtual void draw(Graphics &g, int x, int y);
+    virtual bool valid() const { return fImage != 0; }
+private:
+    XImage *fImage;
+}
+
+#endif				/* CONFIG_LIBPNG */
+
 
 // vim: set sw=4 ts=4 et:

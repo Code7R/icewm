@@ -14,10 +14,6 @@
 #include "argument.h"
 
 upath findPath(ustring path, int mode, upath name, bool /*path_relative*/) {
-#ifdef __EMX__
-    if (mode & X_OK)
-        name = name.addExtension(".exe");
-#endif
     if (name.isAbsolute()) { // check for root in XFreeOS/2
         if (name.fileExists() && name.access(mode) == 0)
             return name;
@@ -48,8 +44,6 @@ upath findPath(ustring path, int mode, upath name, bool /*path_relative*/) {
     }
     return null;
 }
-
-#if !defined(NO_CONFIGURE) || !defined(NO_CONFIGURE_MENUS)
 
 char *YConfig::getArgument(Argument *dest, char *source, bool comma) {
     char *p = source;
@@ -86,8 +80,6 @@ char *YConfig::getArgument(Argument *dest, char *source, bool comma) {
     }
     return p;
 }
-
-#endif
 
 // FIXME: P1 - parse keys later, not when loading
 bool YConfig::parseKey(const char *arg, KeySym *key, unsigned int *mod) {
@@ -150,7 +142,6 @@ bool YConfig::parseKey(const char *arg, KeySym *key, unsigned int *mod) {
     return true;
 }
 
-#ifndef NO_CONFIGURE
 
 static char *setOption(cfoption *options, char *name, const char *arg, bool append, char *rest) {
     unsigned int a;
@@ -190,6 +181,19 @@ static char *setOption(cfoption *options, char *name, const char *arg, bool appe
                 return rest;
             }
             break;
+        case cfoption::CF_UINT:
+            if (options[a].v.u.uint_value) {
+                unsigned const v(strtoul(arg, NULL, 0));
+
+                if (v >= options[a].v.u.min && v <= options[a].v.u.max)
+                    *(options[a].v.u.uint_value) = v;
+                else {
+                    msg(_("Bad argument: %s for %s"), arg, name);
+                    return rest;
+                }
+                return rest;
+            }
+            break;
         case cfoption::CF_STR:
             if (options[a].v.s.string_value) {
                 if (!options[a].v.s.initial)
@@ -199,7 +203,6 @@ static char *setOption(cfoption *options, char *name, const char *arg, bool appe
                 return rest;
             }
             break;
-#ifndef NO_KEYBIND
         case cfoption::CF_KEY:
             if (options[a].v.k.key_value) {
                 WMKey *wk = options[a].v.k.key_value;
@@ -213,7 +216,6 @@ static char *setOption(cfoption *options, char *name, const char *arg, bool appe
                 return rest;
             }
             break;
-#endif
         case cfoption::CF_NONE:
             break;
         }
@@ -318,7 +320,5 @@ bool YConfig::findLoadThemeFile(IApp *app, cfoption *options, upath name) {
 size_t YConfig::cfoptionSize() {
     return sizeof(cfoption);
 }
-
-#endif
 
 // vim: set sw=4 ts=4 et:
