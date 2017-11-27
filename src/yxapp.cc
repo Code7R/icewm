@@ -14,6 +14,10 @@
 #include "yconfig.h"
 #include "ypointer.h"
 
+#ifdef CONFIG_RENDER
+#include <X11/extensions/Xrender.h>
+#endif
+
 #include <sys/resource.h>
 #include <stdlib.h>
 
@@ -466,6 +470,7 @@ void YXApplication::initAtoms() {
     };
     unsigned int i;
 
+#ifdef HAVE_XINTERNATOMS
     const char *names[ACOUNT(atom_info)];
     Atom atoms[ACOUNT(atom_info)];
 
@@ -476,6 +481,11 @@ void YXApplication::initAtoms() {
 
     for (i = 0; i < ACOUNT(atom_info); i++)
         *(atom_info[i].atom) = atoms[i];
+#else
+    for (i = 0; i < ACOUNT(atom_info); i++)
+        *(atom_info[i].atom) = XInternAtom(xapp->display(),
+                                           atom_info[i].name, False);
+#endif
 }
 
 void YXApplication::initPointers() {

@@ -80,7 +80,13 @@ elseif(CONFIG_IMLIB AND NOT CONFIG_XPM AND NOT CONFIG_LIBPNG AND NOT CONFIG_GDK_
 elseif(CONFIG_XPM AND CONFIG_LIBPNG AND NOT CONFIG_GDK_PIXBUF_XLIB AND NOT CONFIG_IMLIB)
     #ok
 else()
-    MESSAGE(FATAL_ERROR "Possible combination of image loaders are: imlib, xpm+png, pixbuf")
+    MESSAGE(FATAL_ERROR "Possible combination of image loaders are:
+    -DCONFIG_XPM=on -DCONFIG_LIBPNG=on -DCONFIG_IMLIB=off -DCONFIG_GDK_PIXBUF_XLIB=off
+    or
+    -DCONFIG_XPM=off -DCONFIG_LIBPNG=off -DCONFIG_IMLIB=off -DCONFIG_GDK_PIXBUF_XLIB=on
+    or
+    -DCONFIG_XPM=off -DCONFIG_LIBPNG=off -DCONFIG_IMLIB=on -DCONFIG_GDK_PIXBUF_XLIB=off
+")
 endif()
 
 # TODO: find some common helper to handle that variables
@@ -138,6 +144,8 @@ CHECK_FUNCTION_EXISTS(sysctlbyname HAVE_SYSCTLBYNAME)
 CHECK_FUNCTION_EXISTS(sysinfo HAVE_SYSINFO)
 CHECK_FUNCTION_EXISTS(uname HAVE_UNAME)
 CHECK_FUNCTION_EXISTS(wordexp HAVE_WORDEXP)
+
+CHECK_LIBRARY_EXISTS (X11 XInternAtoms "" HAVE_XINTERNATOMS)
 
 # perl -e 'do { s/\.|\//_/g; $_=uc $_;  print "#cmakedefine HAVE_$_\n"} for @ARGV' `cat headersDa`
 # perl -e 'do {my $orig=$_; s/\.|\//_/g; $_=uc $_; print "CHECK_INCLUDE_FILE_CXX($orig HAVE_$_)\n"} for @ARGV' `cat headersDa`
