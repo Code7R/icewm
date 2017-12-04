@@ -1,9 +1,9 @@
-icewm (1.4.3.0~pre-20171104-1) experimental; urgency=low
+icewm (1.4.3.0~pre-20171204-1) experimental; urgency=low
 
   * New upstream snapshot
     - dropped icewmtray binary (not built-in feature)
 
- -- Eduard Bloch <blade@debian.org>  Sat, 04 Nov 2017 12:19:47 +0100
+ -- Eduard Bloch <blade@debian.org>  Mon, 04 Dec 2017 19:07:38 +0100
 
 icewm (1.4.3.0~pre-20171017-1) experimental; urgency=low
 
