@@ -45,7 +45,7 @@ build_normal:
 config_lite:
 	mkdir -p $(BDIR)-lite
 	# this fails on prefering cmake :-( dh_auto_configure --builddirectory=$(BDIR)-lite -- 
-	cd $(BDIR)-lite && cmake .. -DCMAKE_BUILD_TYPE=None $(cmakeargs) -DLITE=on -DEXEEXT=-lite -DCONFIG_XFREETYPE=off -DCONFIG_COREFONTS=on -DXINERAMA=on -DCONFIG_XRANDR=off -DCONFIG_TASKBAR=off -DCONFIG_FDO_MENUS=off -DSKIP_TRANSLATIONS=on
+	cd $(BDIR)-lite && cmake .. -DCMAKE_BUILD_TYPE=None $(cmakeargs) -DLITE=on -DEXEEXT=-lite -DCONFIG_XFREETYPE=off -DCONFIG_COREFONTS=on -DXINERAMA=on -DCONFIG_XRANDR=off -DCONFIG_TASKBAR=off -DCONFIG_FDO_MENUS=off -DSKIP_TRANSLATIONS=on -DICESOUND=off
 
 config_normal:
 	mkdir -p $(BDIR)-normal
