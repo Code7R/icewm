@@ -20,6 +20,12 @@
 #include <X11/Xft/Xft.h>
 #endif
 
+#ifdef DEBUG
+/* since recently sometimes copy area for NULL pixmap is done: */
+#define XCopyArea(a,b,c,d,e,f,g,h,i,j) \
+    do { Drawable B(b),C(c); PRECONDITION(B); PRECONDITION(C); ::XCopyArea(a,B,C,d,e,f,g,h,i,j); } while(0)
+#endif
+
 static inline Display* display()  { return xapp->display(); }
 static inline Colormap colormap() { return xapp->colormap(); }
 static inline Visual*  visual()   { return xapp->visual(); }
@@ -309,6 +315,9 @@ void Graphics::copyDrawable(Drawable const d,
                             const int x, const int y, const unsigned w, const unsigned h,
                             const int dx, const int dy)
 {
+    if (d == None)
+        return;
+
     XCopyArea(display(), d, drawable(), gc,
               x, y, w, h,
               dx - xOrigin, dy - yOrigin);
@@ -951,14 +960,20 @@ void Graphics::drawOutline(int l, int t, int r, int b, unsigned iw, unsigned ih)
             fillRect(li, bi, ri - li, b - bi);
 }
 
-void Graphics::repHorz(Drawable d, unsigned pw, unsigned ph, int x, int y, unsigned w) {
+void Graphics::repHorz(Drawable d, unsigned pw, unsigned ph, int x, int y, unsigned width) {
     if (d == None)
         return;
 #if 1
     XSetTile(xapp->display(), gc, d);
-    XSetTSOrigin(xapp->display(), gc, x - xOrigin, y - yOrigin);
-    XSetFillStyle(xapp->display(), gc, FillTiled);
-    XFillRectangle(xapp->display(), drawable(), gc, x - xOrigin, y - yOrigin, w, ph);
+    // test for #203: width per 256 pixels
+    while (inrange(width, 1U, (unsigned) SHRT_MAX)) {
+        int w = max(256, (int) width);
+        XSetTSOrigin(xapp->display(), gc, x - xOrigin, y - yOrigin);
+        XSetFillStyle(xapp->display(), gc, FillTiled);
+        XFillRectangle(xapp->display(), drawable(), gc, x - xOrigin, y - yOrigin, w, ph);
+        x += w;
+        width -= (unsigned) w;
+    }
     XSetFillStyle(xapp->display(), gc, FillSolid);
 #else
     while (w > 0) {

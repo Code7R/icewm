@@ -565,10 +565,23 @@ static void initMenus(
     moveMenu = new YMenu();
     assert(moveMenu != 0);
     moveMenu->setShared(true);
-    for (int w = 0; w < workspaceCount; w++) {
+    for (int w = 1; w <= workspaceCount; w++) {
         char s[128];
-        snprintf(s, sizeof s, "%lu. %s", (unsigned long)(w + 1), workspaceNames[w]);
-        moveMenu->addItem(s, 0, null, workspaceActionMoveTo[w]);
+        snprintf(s, sizeof s, "%2d.  %s ", w, workspaceNames[w - 1]);
+        moveMenu->addItem(s, 1,
+                w ==  1 ? KEY_NAME(gKeySysWorkspace1TakeWin)  :
+                w ==  2 ? KEY_NAME(gKeySysWorkspace2TakeWin)  :
+                w ==  3 ? KEY_NAME(gKeySysWorkspace3TakeWin)  :
+                w ==  4 ? KEY_NAME(gKeySysWorkspace4TakeWin)  :
+                w ==  5 ? KEY_NAME(gKeySysWorkspace5TakeWin)  :
+                w ==  6 ? KEY_NAME(gKeySysWorkspace6TakeWin)  :
+                w ==  7 ? KEY_NAME(gKeySysWorkspace7TakeWin)  :
+                w ==  8 ? KEY_NAME(gKeySysWorkspace8TakeWin)  :
+                w ==  9 ? KEY_NAME(gKeySysWorkspace9TakeWin)  :
+                w == 10 ? KEY_NAME(gKeySysWorkspace10TakeWin) :
+                w == 11 ? KEY_NAME(gKeySysWorkspace11TakeWin) :
+                w == 12 ? KEY_NAME(gKeySysWorkspace12TakeWin) :
+                "", workspaceActionMoveTo[w - 1]);
     }
 
     if (strchr(winMenuItems, 'r'))
@@ -657,11 +670,10 @@ int handler(Display *display, XErrorEvent *xev) {
                           Success)
             *message = '\0';
 
-        tlog("X error %s(0x%lX): %s", req, xev->resourceid, message);
-        tlog("\tResource id 0x%lx\n", xev->resourceid);
-        tlog("\tFailed request %lu\n", xev->serial);
-        tlog("\tNext request now %lu\n", NextRequest(display));
-        tlog("\tLast processed %lu\n", LastKnownRequestProcessed(display));
+        tlog("X error %s(0x%lX): %s, #%lu, %+ld, %+ld.",
+             req, xev->resourceid, message,
+             xev->serial, (long) NextRequest(display) - (long) xev->serial,
+             (long) LastKnownRequestProcessed(display) - (long) xev->serial);
     }
     return 0;
 }
@@ -978,6 +990,10 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
     mainArgv(*argv)
 {
     if (restart_wm) {
+        if (overrideTheme && *overrideTheme) {
+            mstring themeContent("Theme=\"" + mstring(overrideTheme) + "\"");
+            WMConfig::setDefault("theme", cstring(themeContent));
+        }
         YWindowManager::doWMAction(ICEWM_ACTION_RESTARTWM);
         XFlush(xapp->display());
         ::exit(0);
@@ -1040,6 +1056,7 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
     catchSignal(SIGQUIT);
     catchSignal(SIGHUP);
     catchSignal(SIGCHLD);
+    catchSignal(SIGUSR2);
 
     loadWinOptions(findConfigFile("winoptions"));
     loadMenus(this, this, this, findConfigFile("keys"), 0);
@@ -1125,6 +1142,8 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
 
     statusMoveSize = new MoveSizeStatus(manager);
     statusWorkspace = WorkspaceStatus::createInstance(manager);
+
+    windowList = new WindowList(manager, this);
     if (showTaskBar) {
         taskBar = new TaskBar(this, manager, this, this);
         if (taskBar)
@@ -1132,7 +1151,6 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
     } else {
         taskBar = 0;
     }
-    windowList = new WindowList(manager, this);
     //windowList->show();
 
     manager->initWorkspaces();
@@ -1208,6 +1226,10 @@ void YWMApp::handleSignal(int sig) {
 
     case SIGHUP:
         restartClient(0, 0);
+        break;
+
+    case SIGUSR2:
+        tlog("logEvents %s", boolstr(toggleLogEvents()));
         break;
 
     default:
@@ -1320,7 +1342,7 @@ static void print_usage(const char *argv0) {
              "Starts the IceWM window manager.\n"
              "\n"
              "Options:\n"
-             "  --display=NAME      NAME of the X server to use.\n"
+             "  -d, --display=NAME  NAME of the X server to use.\n"
              "%s"
              "  --sync              Synchronize X11 commands.\n"
              "%s"
@@ -1497,7 +1519,7 @@ int main(int argc, char **argv) {
                 print_version_exit(VERSION);
             else if (is_long_switch(*arg, "sync"))
             { /* handled by Xt */ }
-            else if (GetLongArgument(value, "display", arg, &value))
+            else if (GetArgument(value, "d", "display", arg, &value))
             { /* handled by Xt */ }
             else
                 warn(_("Unrecognized option '%s'."), *arg);

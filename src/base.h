@@ -58,6 +58,12 @@ inline T abs(T v) {
     return (v < 0 ? -v : v);
 }
 
+// https://en.wikipedia.org/wiki/Elvis_operator
+template <class T>
+inline T Elvis(T a, T b) {
+    return a ? a : b;
+}
+
 /*** String Functions *********************************************************/
 
 /* Prefer this as a safer alternative over strcpy. Return strlen(from). */
@@ -131,7 +137,7 @@ void fail(char const *msg, ...) __attribute__((format(printf, 1, 2) ));
 void msg(char const *msg, ...) __attribute__((format(printf, 1, 2) ));
 void tlog(char const *msg, ...) __attribute__((format(printf, 1, 2) ));
 void precondition(const char *expr, const char *file, int line);
-void show_backtrace();
+void show_backtrace(const int limit = 0);
 
 #define DEPRECATE(x) \
     do { \
@@ -213,7 +219,7 @@ inline unsigned lowbit(T mask) {
     asm ("bsf %1,%0" : "=r" (bit) : "r" (mask));
 #else
     unsigned bit(0);
-    while(!(mask & (1 << bit)) && bit < sizeof(mask) * 8) ++bit;
+    while(!(mask & (((T) 1) << bit)) && bit < sizeof(mask) * 8) ++bit;
 #endif
 
     return bit;
@@ -230,7 +236,7 @@ inline unsigned highbit(T mask) {
     asm ("bsr %1,%0" : "=r" (bit) : "r" (mask));
 #else
     unsigned bit(sizeof(mask) * 8 - 1);
-    while(!(mask & (1 << bit)) && bit > 0) --bit;
+    while(!(mask & (((T) 1) << bit)) && bit > 0) --bit;
 #endif
 
     return bit;
@@ -270,6 +276,10 @@ char* load_text_file(const char *filename);
 /******************************************************************************/
 
 #include "debug.h"
+
+void logEvent(const union _XEvent &xev);
+void setLogEvent(int evtype, bool enable);
+bool toggleLogEvents();
 
 inline int intersection(int s1, int e1, int s2, int e2) {
     return max(0, 1 + min(e1, e2) - max(s1, s2));

@@ -786,8 +786,6 @@ int YXApplication::grabEvents(YWindow *win, Cursor ptr, unsigned int eventMask, 
     }
     XAllowEvents(xapp->display(), SyncPointer, CurrentTime);
 
-    desktop->resetColormapFocus(false);
-
     fXGrabWindow = win;
     fGrabWindow = win;
     return 1;
@@ -804,7 +802,7 @@ int YXApplication::releaseEvents() {
         fGrabMouse = 0;
     }
     XUngrabKeyboard(display(), CurrentTime);
-    desktop->resetColormapFocus(true);
+
     return 1;
 }
 
@@ -868,10 +866,6 @@ Time YXApplication::getEventTime(const char */*debug*/) const {
     return lastEventTime;
 }
 
-
-extern void logEvent(const XEvent &xev);
-
-
 bool YXApplication::hasColormap() {
     XVisualInfo pattern;
     pattern.screen = DefaultScreen(display());
@@ -911,7 +905,7 @@ void YXApplication::setClipboardText(const ustring &data) {
 
 const char* YXApplication::getHelpText() {
     return _(
-    "  --display=NAME      NAME of the X server to use.\n"
+    "  -d, --display=NAME  NAME of the X server to use.\n"
     "  --sync              Synchronize X11 commands.\n"
     );
 }
@@ -940,7 +934,7 @@ YXApplication::YXApplication(int *argc, char ***argv, const char *displayName):
             else if (is_version_switch(*arg)) {
                 print_version_exit(VERSION);
             }
-            else if (GetLongArgument(value, "display", arg, *argv+*argc)) {
+            else if (GetArgument(value, "d", "display", arg, *argv+*argc)) {
                 displayName = value;
             }
             else if (is_long_switch(*arg, "sync"))
@@ -1025,19 +1019,18 @@ bool YXApplication::handleXEvents() {
 
         saveEventTime(xev);
 
-#ifdef DEBUG
-        DBG logEvent(xev);
-#endif
+        logEvent(xev);
+
         if (filterEvent(xev)) {
             ;
         } else {
-            int ge = (xev.type == ButtonPress ||
+            bool ge = xev.type == ButtonPress ||
                       xev.type == ButtonRelease ||
                       xev.type == MotionNotify ||
                       xev.type == KeyPress ||
                       xev.type == KeyRelease /*||
                       xev.type == EnterNotify ||
-                      xev.type == LeaveNotify*/) ? 1 : 0;
+                      xev.type == LeaveNotify*/;
 
             fReplayEvent = false;
 
@@ -1049,7 +1042,9 @@ bool YXApplication::handleXEvents() {
                 handleWindowEvent(xev.xany.window, xev);
             }
             if (fGrabWindow) {
-                if (xev.type == ButtonPress || xev.type == ButtonRelease || xev.type == MotionNotify)
+                if (xev.type == ButtonPress ||
+                    xev.type == ButtonRelease ||
+                    xev.type == MotionNotify)
                 {
                     if (!fReplayEvent) {
                         XAllowEvents(xapp->display(), SyncPointer, CurrentTime);
