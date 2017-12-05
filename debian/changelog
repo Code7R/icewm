@@ -1,3 +1,9 @@
+icewm (1.4.3.0~pre-20171204-3) experimental; urgency=low
+
+  * Upstream patch: Fix the build in case where icesound is not enabled
+
+ -- Eduard Bloch <blade@debian.org>  Tue, 05 Dec 2017 20:04:51 +0100
+
 icewm (1.4.3.0~pre-20171204-2) experimental; urgency=low
 
   * Patch and actually build fix: Back to PIXBUF as default image loader, the
