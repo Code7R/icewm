@@ -92,6 +92,9 @@ void setLogEvent(int evtype, bool enable) {
         loggedEvents[evtype] = enable;
     else if (evtype == -1)
         memset(loggedEvents, enable, sizeof loggedEvents);
+#else
+    (void) evtype;
+    (void) enable;
 #endif
 }
 
@@ -299,6 +302,8 @@ void logEvent(const XEvent &xev) {
         break;
     }
 #undef msg
+#else
+    (void) xev;
 #endif
 }
 
