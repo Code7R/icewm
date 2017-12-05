@@ -63,9 +63,9 @@ if(CXX_LINKER_GOLD)
 endif()
 
 
-option(CONFIG_LIBPNG "(Experimental) PNGLIB image loader" on)
-option(CONFIG_GDK_PIXBUF_XLIB "LIBGDKPIXBUF based image loader" off)
-option(CONFIG_XPM "(Optional) XPM image loader" on)
+option(CONFIG_LIBPNG "(Experimental) PNGLIB image loader" off)
+option(CONFIG_GDK_PIXBUF_XLIB "LIBGDKPIXBUF based image loader" on)
+option(CONFIG_XPM "(Optional) XPM image loader" off)
 option(CONFIG_I18N "Define to enable internationalization" on)
 option(CONFIG_RENDER "Define to enable XRENDER extension" on)
 option(CONFIG_XRANDR "Define to enable XRANDR extension" on)
