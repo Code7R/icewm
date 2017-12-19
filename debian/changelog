@@ -1,3 +1,9 @@
+icewm (1.4.3.0~pre-20171219-1) UNRELEASED; urgency=medium
+
+  * New upstream snapshot
+
+ -- Eduard Bloch <blade@debian.org>  Tue, 19 Dec 2017 17:32:29 +0100
+
 icewm (1.4.3.0~pre-20171204-3) experimental; urgency=low
 
   * Upstream patch: Fix the build in case where icesound is not enabled
