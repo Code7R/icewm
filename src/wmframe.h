@@ -269,13 +269,9 @@ public:
     int titleY() const;
 
     void layoutTitleBar();
-    void layoutButtons();
     void layoutResizeIndicators();
     void layoutShape();
     void layoutClient();
-
-    //void workspaceShow();
-    //void workspaceHide();
 
     YFrameWindow *nextLayer();
     YFrameWindow *prevLayer();
@@ -462,6 +458,7 @@ private:
 
     Window topSide, leftSide, rightSide, bottomSide;
     Window topLeft, topRight, bottomLeft, bottomRight;
+    Window topLeftSide, topRightSide;
     bool indicatorsCreated;
     bool indicatorsVisible;
 

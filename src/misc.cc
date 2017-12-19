@@ -12,6 +12,9 @@
 #include "ref.h"
 #include <time.h>
 
+#ifdef CONFIG_SHAPE
+#include <X11/extensions/shape.h>
+#endif
 #ifdef HAVE_LIBGEN_H
 #include <libgen.h>
 #endif
@@ -35,6 +38,48 @@ bool loggedEventsInited;
 #ifdef LOGEVENTS
 bool loggedEvents[LASTEvent];
 #endif
+
+static const char eventNames[][17] = {
+    "KeyPress",             //  2
+    "KeyRelease",           //  3
+    "ButtonPress",          //  4
+    "ButtonRelease",        //  5
+    "MotionNotify",         //  6
+    "EnterNotify",          //  7
+    "LeaveNotify",          //  8
+    "FocusIn",              //  9
+    "FocusOut",             // 10
+    "KeymapNotify",         // 11
+    "Expose",               // 12
+    "GraphicsExpose",       // 13
+    "NoExpose",             // 14
+    "VisibilityNotify",     // 15
+    "CreateNotify",         // 16
+    "DestroyNotify",        // 17
+    "UnmapNotify",          // 18
+    "MapNotify",            // 19
+    "MapRequest",           // 20
+    "ReparentNotify",       // 21
+    "ConfigureNotify",      // 22
+    "ConfigureRequest",     // 23
+    "GravityNotify",        // 24
+    "ResizeRequest",        // 25
+    "CirculateNotify",      // 26
+    "CirculateRequest",     // 27
+    "PropertyNotify",       // 28
+    "SelectionClear",       // 29
+    "SelectionRequest",     // 30
+    "SelectionNotify",      // 31
+    "ColormapNotify",       // 32
+    "ClientMessage",        // 33
+    "MappingNotify",        // 34
+    "GenericEvent",         // 35
+};
+const char* eventName(int eventType) {
+    if (inrange(eventType, KeyPress, GenericEvent))
+        return eventNames[eventType - KeyPress];
+    return "UnknownEvent!";
+}
 
 bool initLogEvents() {
 #ifdef LOGEVENTS
@@ -98,7 +143,91 @@ void setLogEvent(int evtype, bool enable) {
 #endif
 }
 
-void logEvent(const XEvent &xev) {
+#undef msg
+#define msg tlog
+
+inline const char* boolStr(Bool aBool) {
+    return aBool ? "True" : "False";
+}
+
+void logButton(const XEvent& xev) {
+    msg("window=0x%lX: %s root=0x%lX, subwindow=0x%lX, time=%ld, "
+        "(%d:%d %d:%d) state=0x%X button=0x%X same_screen=%s",
+        xev.xbutton.window,
+        eventName(xev.type),
+        xev.xbutton.root,
+        xev.xbutton.subwindow,
+        xev.xbutton.time,
+        xev.xbutton.x, xev.xbutton.y,
+        xev.xbutton.x_root, xev.xbutton.y_root,
+        xev.xbutton.state,
+        xev.xbutton.button,
+        boolStr(xev.xbutton.same_screen));
+}
+
+void logCrossing(const XEvent& xev) {
+    msg("window=0x%lX: %s serial=%10lu root=0x%lX, subwindow=0x%lX, time=%ld, "
+        "(%d:%d %d:%d) mode=%d detail=%d same_screen=%s, focus=%s state=0x%X",
+        xev.xcrossing.window,
+        eventName(xev.type),
+        (unsigned long) xev.xany.serial,
+        xev.xcrossing.root,
+        xev.xcrossing.subwindow,
+        xev.xcrossing.time,
+        xev.xcrossing.x, xev.xcrossing.y,
+        xev.xcrossing.x_root, xev.xcrossing.y_root,
+        xev.xcrossing.mode,
+        xev.xcrossing.detail,
+        xev.xcrossing.same_screen ? "True" : "False",
+        xev.xcrossing.focus ? "True" : "False",
+        xev.xcrossing.state);
+}
+
+void logFocus(const XEvent& xev) {
+    msg("window=0x%lX: %s mode=%s, detail=%s",
+        xev.xfocus.window,
+        eventName(xev.type),
+        xev.xfocus.mode == NotifyNormal ? "NotifyNormal" :
+        xev.xfocus.mode == NotifyWhileGrabbed ? "NotifyWhileGrabbed" :
+        xev.xfocus.mode == NotifyGrab ? "NotifyGrab" :
+        xev.xfocus.mode == NotifyUngrab ? "NotifyUngrab" : "???",
+        xev.xfocus.detail == NotifyAncestor ? "NotifyAncestor" :
+        xev.xfocus.detail == NotifyVirtual ? "NotifyVirtual" :
+        xev.xfocus.detail == NotifyInferior ? "NotifyInferior" :
+        xev.xfocus.detail == NotifyNonlinear ? "NotifyNonlinear" :
+        xev.xfocus.detail == NotifyNonlinearVirtual ? "NotifyNonlinearVirtual" :
+        xev.xfocus.detail == NotifyPointer ? "NotifyPointer" :
+        xev.xfocus.detail == NotifyPointerRoot ? "NotifyPointerRoot" :
+        xev.xfocus.detail == NotifyDetailNone ? "NotifyDetailNone" : "???");
+}
+
+void logMotion(const XEvent& xev) {
+    msg("window=0x%lX: %s root=0x%lX, subwindow=0x%lX, time=%ld, "
+        "(%d:%d %d:%d) state=0x%X is_hint=%s same_screen=%s",
+        xev.xmotion.window,
+        eventName(xev.type),
+        xev.xmotion.root,
+        xev.xmotion.subwindow,
+        xev.xmotion.time,
+        xev.xmotion.x, xev.xmotion.y,
+        xev.xmotion.x_root, xev.xmotion.y_root,
+        xev.xmotion.state,
+        xev.xmotion.is_hint == NotifyHint ? "NotifyHint" : "",
+        xev.xmotion.same_screen ? "True" : "False");
+}
+
+void logShape(const XEvent& xev) {
+#ifdef CONFIG_SHAPE
+    const XShapeEvent &shp = (const XShapeEvent &)xev;
+    msg("window=0x%lX: %s kind=%s %d:%d=%dx%d shaped=%s time=%ld",
+        shp.window, "ShapeEvent",
+        shp.kind == ShapeBounding ? "ShapeBounding" :
+        shp.kind == ShapeClip ? "ShapeClip" : "unknown_shape_kind",
+        shp.x, shp.y, shp.width, shp.height, boolstr(shp.shaped), shp.time);
+#endif
+}
+
+void logEvent(const XEvent& xev) {
 #ifdef LOGEVENTS
     if (loggingEvents == false || (size_t) xev.type >= sizeof loggedEvents)
         return;
@@ -106,9 +235,6 @@ void logEvent(const XEvent &xev) {
         return;
     if (loggedEvents[xev.type] == false)
         return;
-
-#undef msg
-#define msg tlog
 
     switch (xev.type) {
 
@@ -170,11 +296,7 @@ void logEvent(const XEvent &xev) {
 
     case FocusIn:
     case FocusOut:
-        msg("window=0x%lX: %s mode=%d, detail=%d",
-            xev.xfocus.window,
-            (xev.type == FocusIn) ? "focusIn" : "focusOut",
-            xev.xfocus.mode,
-            xev.xfocus.detail);
+        logFocus(xev);
         break;
 
     case ColormapNotify:
@@ -207,6 +329,13 @@ void logEvent(const XEvent &xev) {
             xev.xconfigure.override_redirect ? "True" : "False");
         break;
 
+    case GravityNotify:
+        msg("window=0x%lX: gravityNotify serial=%10lu, x=%+d, y=%+d",
+            xev.xgravity.window,
+            (unsigned long) xev.xany.serial,
+            xev.xgravity.x, xev.xgravity.y);
+        break;
+
     case VisibilityNotify:
         msg("window=0x%lX: visibilityNotify state=%d",
             xev.xvisibility.window,
@@ -230,55 +359,23 @@ void logEvent(const XEvent &xev) {
 
     case ButtonPress:
     case ButtonRelease:
-        msg("window=0x%lX: %s root=0x%lX, subwindow=0x%lX, time=%ld, (%d:%d %d:%d) state=0x%X detail=0x%X same_screen=%s",
-            xev.xbutton.window,
-            (xev.type == ButtonPress) ? "buttonPress" : "buttonRelease",
-            xev.xbutton.root,
-            xev.xbutton.subwindow,
-            xev.xbutton.time,
-            xev.xbutton.x, xev.xbutton.y,
-            xev.xbutton.x_root, xev.xbutton.y_root,
-            xev.xbutton.state,
-            xev.xbutton.button,
-            xev.xbutton.same_screen ? "True" : "False");
+        logButton(xev);
         break;
 
     case MotionNotify:
-        msg("window=0x%lX: motionNotify root=0x%lX, subwindow=0x%lX, time=%ld, (%d:%d %d:%d) state=0x%X is_hint=%c same_screen=%s",
-            xev.xmotion.window,
-            xev.xmotion.root,
-            xev.xmotion.subwindow,
-            xev.xmotion.time,
-            xev.xmotion.x, xev.xmotion.y,
-            xev.xmotion.x_root, xev.xmotion.y_root,
-            xev.xmotion.state,
-            xev.xmotion.is_hint,
-            xev.xmotion.same_screen ? "True" : "False");
+        logMotion(xev);
         break;
 
     case EnterNotify:
     case LeaveNotify:
-        msg("window=0x%lX: %s serial=%10lu root=0x%lX, subwindow=0x%lX, time=%ld, (%d:%d %d:%d) mode=%d detail=%d same_screen=%s, focus=%s state=0x%X",
-            xev.xcrossing.window,
-            (xev.type == EnterNotify) ? "enterNotify" : "leaveNotify",
-            (unsigned long) xev.xany.serial,
-            xev.xcrossing.root,
-            xev.xcrossing.subwindow,
-            xev.xcrossing.time,
-            xev.xcrossing.x, xev.xcrossing.y,
-            xev.xcrossing.x_root, xev.xcrossing.y_root,
-            xev.xcrossing.mode,
-            xev.xcrossing.detail,
-            xev.xcrossing.same_screen ? "True" : "False",
-            xev.xcrossing.focus ? "True" : "False",
-            xev.xcrossing.state);
+        logCrossing(xev);
         break;
 
     case KeyPress:
     case KeyRelease:
         msg("window=0x%lX: %s root=0x%lX, subwindow=0x%lX, time=%ld, (%d:%d %d:%d) state=0x%X keycode=0x%x same_screen=%s",
             xev.xkey.window,
-            (xev.type == KeyPress) ? "keyPress" : "keyRelease",
+            eventName(xev.type),
             xev.xkey.root,
             xev.xkey.subwindow,
             xev.xkey.time,
@@ -301,10 +398,8 @@ void logEvent(const XEvent &xev) {
              xev.type, boolstr(xev.xany.send_event), xev.xany.serial);
         break;
     }
-#undef msg
-#else
-    (void) xev;
 #endif
+#undef msg
 }
 
 static void endMsg(const char *msg) {
@@ -530,8 +625,8 @@ char* demangle(const char* str) {
  *              "--interface=/tmp" "--interface"
  */
 int strpcmp(char const * str, char const * pfx, char const * delim) {
-    if(str == NULL || pfx == NULL) return -1;
-    while(*pfx == *str && *pfx != '\0') ++str, ++pfx;
+    if (str == NULL || pfx == NULL) return -1;
+    while (*pfx == *str && *pfx != '\0') ++str, ++pfx;
 
     return (*pfx == '\0' && strchr(delim, *str) ? 0 : *str - *pfx);
 }
@@ -546,14 +641,14 @@ char const * strnxt(const char * str, const char * delim) {
 bool GetShortArgument(char* &ret, const char *name, char** &argpp, char **endpp)
 {
         unsigned int alen=strlen(name);
-        if(**argpp != '-' || strncmp((*argpp)+1, name, alen))
+        if (**argpp != '-' || strncmp((*argpp)+1, name, alen))
                 return false;
-        if(*((*argpp)+1+alen))
+        if (*((*argpp)+1+alen))
         {
                 ret=(*argpp)+1+alen;
                 return true;
         }
-        else if(argpp+1>=endpp)
+        else if (argpp+1>=endpp)
                 return false;
         ++argpp;
         ret=*argpp;
@@ -563,14 +658,14 @@ bool GetShortArgument(char* &ret, const char *name, char** &argpp, char **endpp)
 bool GetLongArgument(char* &ret, const char *name, char** &argpp, char **endpp)
 {
         unsigned int alen=strlen(name);
-        if(strncmp(*argpp, "--", 2) || strncmp((*argpp)+2, name, alen))
+        if (strncmp(*argpp, "--", 2) || strncmp((*argpp)+2, name, alen))
                 return false;
-        if(*((*argpp)+2+alen) == '=')
+        if (*((*argpp)+2+alen) == '=')
         {
                 ret=(*argpp)+3+alen;
                 return true;
         }
-        if(argpp+1>=endpp)
+        if (argpp+1>=endpp)
                 return false;
         ++argpp;
         ret = *argpp;
@@ -605,6 +700,11 @@ bool is_switch(const char *arg, const char *short_name, const char *long_name)
     return is_short_switch(arg, short_name) || is_long_switch(arg, long_name);
 }
 
+bool is_copying_switch(const char *arg)
+{
+    return is_switch(arg, "C", "copying");
+}
+
 bool is_help_switch(const char *arg)
 {
     return is_switch(arg, "h", "help") || is_switch(arg, "?", "?");
@@ -621,6 +721,7 @@ void print_help_exit(const char *help)
              "Options:\n"
              "%s"
              "\n"
+             "  -C, --copying       Prints license information and exits.\n"
              "  -V, --version       Prints version information and exits.\n"
              "  -h, --help          Prints this usage screen and exits.\n"
              "\n"),
@@ -635,6 +736,15 @@ void print_version_exit(const char *version)
     exit(0);
 }
 
+void print_copying_exit()
+{
+    printf("%s\n",
+    "IceWM is licensed under the GNU Library General Public License. "
+    "See the file COPYING in the distribution for full details."
+    );
+    exit(0);
+}
+
 void check_help_version(const char *arg, const char *help, const char *version)
 {
     if (is_help_switch(arg)) {
@@ -642,6 +752,9 @@ void check_help_version(const char *arg, const char *help, const char *version)
     }
     if (is_version_switch(arg)) {
         print_version_exit(version);
+    }
+    if (is_copying_switch(arg)) {
+        print_copying_exit();
     }
 }
 

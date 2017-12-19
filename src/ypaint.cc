@@ -23,7 +23,7 @@
 #ifdef DEBUG
 /* since recently sometimes copy area for NULL pixmap is done: */
 #define XCopyArea(a,b,c,d,e,f,g,h,i,j) \
-    do { Drawable B(b),C(c); PRECONDITION(B); PRECONDITION(C); ::XCopyArea(a,B,C,d,e,f,g,h,i,j); } while(0)
+    do { Drawable B(b),C(c); PRECONDITION(B); PRECONDITION(C); ::XCopyArea(a,B,C,d,e,f,g,h,i,j); } while (0)
 #endif
 
 static inline Display* display()  { return xapp->display(); }
@@ -77,7 +77,7 @@ YColor::~YColor() {
 
 #ifdef CONFIG_XFREETYPE
     if (xftColor) {
-        if(display()) XftColorFree (display(), visual(), colormap(), xftColor);
+        if (display()) XftColorFree (display(), visual(), colormap(), xftColor);
         delete xftColor;
     }
 #endif
@@ -215,7 +215,7 @@ Graphics::Graphics(YWindow & window,
 {
     rWidth = window.width();
     rHeight = window.height();
-    rDepth = window.depth();
+    rDepth = (window.depth() ? window.depth() : xapp->depth());
     gc = XCreateGC(display(), drawable(), vmask, gcv);
 #ifdef CONFIG_XFREETYPE
     fXftDraw = 0;
@@ -229,7 +229,7 @@ Graphics::Graphics(YWindow & window):
  {
     rWidth = window.width();
     rHeight = window.height();
-    rDepth = window.depth();
+    rDepth = (window.depth() ? window.depth() : xapp->depth());
     XGCValues gcv; gcv.graphics_exposures = False;
     gc = XCreateGC(display(), drawable(), GCGraphicsExposures, &gcv);
 #ifdef CONFIG_XFREETYPE
@@ -960,20 +960,14 @@ void Graphics::drawOutline(int l, int t, int r, int b, unsigned iw, unsigned ih)
             fillRect(li, bi, ri - li, b - bi);
 }
 
-void Graphics::repHorz(Drawable d, unsigned pw, unsigned ph, int x, int y, unsigned width) {
+void Graphics::repHorz(Drawable d, unsigned pw, unsigned ph, int x, int y, unsigned w) {
     if (d == None)
         return;
 #if 1
     XSetTile(xapp->display(), gc, d);
-    // test for #203: width per 256 pixels
-    while (inrange(width, 1U, (unsigned) SHRT_MAX)) {
-        int w = max(256, (int) width);
-        XSetTSOrigin(xapp->display(), gc, x - xOrigin, y - yOrigin);
-        XSetFillStyle(xapp->display(), gc, FillTiled);
-        XFillRectangle(xapp->display(), drawable(), gc, x - xOrigin, y - yOrigin, w, ph);
-        x += w;
-        width -= (unsigned) w;
-    }
+    XSetTSOrigin(xapp->display(), gc, x - xOrigin, y - yOrigin);
+    XSetFillStyle(xapp->display(), gc, FillTiled);
+    XFillRectangle(xapp->display(), drawable(), gc, x - xOrigin, y - yOrigin, w, ph);
     XSetFillStyle(xapp->display(), gc, FillSolid);
 #else
     while (w > 0) {

@@ -157,7 +157,9 @@ TaskBar::TaskBar(IApp *app, YWindow *aParent, YActionListener *wmActionListener,
     fShowDesktop = 0;
 
     ///setToplevel(true);
-    XSetWindowBackground(xapp->display(), handle(), getTaskBarBg()->pixel());
+    setBackground(getTaskBarBg()->pixel());
+    if (taskbackPixmap != null)
+        setBackgroundPixmap(taskbackPixmap->pixmap());
 
     initPixmaps();
 
@@ -331,10 +333,10 @@ void TaskBar::initApplets() {
         fApm = new YApm(this);
         fApm->setTitle("IceAPM");
     }
-    else if(!taskBarShowApm && taskBarShowApmAuto)
+    else if (!taskBarShowApm && taskBarShowApmAuto)
     {
         fApm = new YApm(this, true);
-        if( ! fApm->hasBatteries()) {
+        if ( ! fApm->hasBatteries()) {
                 delete fApm;
                 fApm = 0;
         }
@@ -458,7 +460,8 @@ void TaskBar::initApplets() {
         YAtom trayatom(atomstr, true);
         bool isInternal = ('I' == atomstr[1]);
 
-        fDesktopTray = new YXTray(this, isInternal, trayatom, this);
+        fDesktopTray = new YXTray(this, isInternal, trayatom,
+                                  this, trayDrawBevel);
         fDesktopTray->setTitle("SystemTray");
         fDesktopTray->relayout();
     }
@@ -526,7 +529,7 @@ void TaskBar::updateLayout(unsigned &size_w, unsigned &size_h) {
 #endif
 
     YVec<NetStatus*>::iterator it = fNetStatus->getIterator();
-    while(it.hasNext()) {
+    while (it.hasNext()) {
         nw = LayoutInfo( it.next(), false, 1, false, 2, 2, false );
         wlist.append(nw);
     }
