@@ -222,10 +222,8 @@ void proc_dir(const char *path, unsigned depth=0)
 
                 if (bUseSimplifiedCmd && !bForTerminal) // best case
                         menuLine = g_strjoin(" ", sicon, cmdMod, NULL);
-#ifdef XTERMCMD
                 else if (bForTerminal && bUseSimplifiedCmd)
-                        menuLine = g_strjoin(" ", sicon, QUOTE(XTERMCMD), "-e", cmdMod, NULL);
-#endif
+                        menuLine = g_strjoin(" ", sicon, "x-terminal-emulator", "-e", cmdMod, NULL);
                 else // not simple command or needs a terminal started via launcher callback, or both
                         menuLine = g_strdup_printf("%s %s \"%s\"", sicon, ApplicationName, szFullName);
 
