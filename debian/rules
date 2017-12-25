@@ -11,8 +11,8 @@ BDIR=builddir
 ICONS=$(CURDIR)/debian/icons
 FDO=$(CURDIR)/debian/fdo
 CUSTOM=$(CURDIR)/debian/custom
-cmakeargs = -DICEHELPIDX=/usr/share/doc/icewm-common/html/icewm.html -DCFGDIR=/etc/X11/icewm -DCMAKE_INSTALL_PREFIX=/usr -DVERSION=$(ORIGVERSION) -DDOCDIR=$(DOCDIR) -DEXTRA_LIBS="-lsupc++" -DCMAKE_VERBOSE_MAKEFILE=ON
-
+cmakeargs = -DDOCDIR=$(DOCDIR) -DHTMLDIR=$(DOCDIR)/html -DICEHELPIDX=/usr/share/doc/icewm-common/html/icewm.html -DCFGDIR=/etc/X11/icewm -DCMAKE_INSTALL_PREFIX=/usr -DVERSION=$(ORIGVERSION) -DCMAKE_VERBOSE_MAKEFILE=ON
+#-DEXTRA_LIBS="-lsupc++" 
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
@@ -25,7 +25,7 @@ ifeq (linux,$(DEB_TARGET_ARCH_OS))
 endif
 
 %:
-	dh $@ --parallel
+	dh $@ --parallel -Scmake
 
 # DEBVERSION=$(shell dpkg-parsechangelog -SVersion)
 # that one also works with wheezy
@@ -36,37 +36,42 @@ ORIGTAG := upstream/$(shell echo $(ORIGVERSION) | sed -e 's,~,,g' )
 # dh_auto_build is no help here...
 PAROPT=$(shell echo $$DEB_BUILD_OPTIONS | sed -e 's,.*parallel=\([0-9]\).*,-j\1,')
 
-build_lite:
-	$(MAKE) $(PAROPT) -C $(BDIR)-lite
+#build_lite:
+#	$(MAKE) $(PAROPT) -C $(BDIR)-lite
+#
+#build_normal:
+#	$(MAKE) $(PAROPT) -C $(BDIR)-normal
 
-build_normal:
-	$(MAKE) $(PAROPT) -C $(BDIR)-normal
-
-config_lite:
-	mkdir -p $(BDIR)-lite
-	# this fails on prefering cmake :-( dh_auto_configure --builddirectory=$(BDIR)-lite -- 
-	cd $(BDIR)-lite && cmake .. -DCMAKE_BUILD_TYPE=None $(cmakeargs) -DLITE=on -DEXEEXT=-lite -DCONFIG_XFREETYPE=off -DCONFIG_COREFONTS=on -DXINERAMA=on -DCONFIG_XRANDR=off -DCONFIG_TASKBAR=off -DCONFIG_FDO_MENUS=off -DSKIP_TRANSLATIONS=on -DICESOUND=off
-
-config_normal:
-	mkdir -p $(BDIR)-normal
-	cd $(BDIR)-normal && cmake .. -DCMAKE_BUILD_TYPE=None $(cmakeargs) -DCONFIG_XRANDR=on -DCONFIG_GUIEVENTS=on
+#config_lite:
+#	mkdir -p $(BDIR)-lite
+#	# this fails on prefering cmake :-( dh_auto_configure --builddirectory=$(BDIR)-lite -- 
+#	cd $(BDIR)-lite && cmake .. -DCMAKE_BUILD_TYPE=None $(cmakeargs) -DLITE=on -DEXEEXT=-lite -DCONFIG_XFREETYPE=off -DCONFIG_COREFONTS=on -DXINERAMA=on -DCONFIG_XRANDR=off -DCONFIG_TASKBAR=off -DCONFIG_FDO_MENUS=off -DSKIP_TRANSLATIONS=on -DICESOUND=off
+#
+#config_normal:
+#	mkdir -p $(BDIR)-normal
+#	cd $(BDIR)-normal && cmake .. -DCMAKE_BUILD_TYPE=None $(cmakeargs) -DCONFIG_XRANDR=on -DCONFIG_GUIEVENTS=on
 
 override_dh_auto_configure:
-	$(MAKE) -f debian/rules -j2 config_normal config_lite
+	dh_auto_configure -- $(cmakeargs)
 
-override_dh_auto_build: build_normal build_lite
-	cd debian && for x in -lite -experimental ; do cp -lf icewm.postinst icewm$$x.postinst ; cp -lf icewm.prerm icewm$$x.prerm ; done
+#override_dh_auto_configure:
+#	$(MAKE) -f debian/rules -j2 config_normal config_lite
 
-override_dh_auto_install:
-	$(MAKE) -C $(BDIR)-lite install DESTDIR=$(CURDIR)/debian/tmp
-	$(MAKE) -C $(BDIR)-normal install DESTDIR=$(CURDIR)/debian/tmp
+#override_dh_auto_build:
+#	dh_auto_build
+#	cd debian && for x in -lite -experimental ; do cp -lf icewm.postinst icewm$$x.postinst ; cp -lf icewm.prerm icewm$$x.prerm ; done
+
+#override_dh_auto_install:
+#	$(MAKE) -C $(BDIR)-lite install DESTDIR=$(CURDIR)/debian/tmp
+#	$(MAKE) -C $(BDIR)-normal install DESTDIR=$(CURDIR)/debian/tmp
 
 override_dh_install:
 	dh_install
+	cd debian && for x in -lite -experimental ; do cp -lf icewm.postinst icewm$$x.postinst ; cp -lf icewm.prerm icewm$$x.prerm ; done
 	for v in "" -experimental -lite ; do \
 		rm -rf debian/icewm$$v/usr/share/doc/icewm$$v ; \
 		ln -sf icewm-common debian/icewm$$v/usr/share/doc/icewm$$v ; done
-	sed -e 's,icewm-session,icewm-session-lite,g;s,^Name\(.*\),Name\1 [lite],' < lib/icewm-session.desktop > $(ICEWM_LITE)/usr/share/xsessions/IceWM-Lite.desktop
+#	sed -e 's,icewm-session,icewm-session-lite,g;s,^Name\(.*\),Name\1 [lite],' < lib/icewm-session.desktop > $(ICEWM_LITE)/usr/share/xsessions/IceWM-Lite.desktop
 	# XXX: find out why some settings are not gettint defaults if the file is not present, like WorkspaceNames
 	#cp $(ICEWM_COMMON)/usr/share/doc/icewm-common/preferences $(ICEWM_COMMON)/usr/share/icewm/
 	# Install Debian custom files
@@ -84,14 +89,21 @@ override_dh_install:
 	cd $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ && sgml2html $(CURDIR)/debian/FAQ/source/*.sgml
 	sgml2txt $(CURDIR)/debian/FAQ/source/*.sgml && col -bx < IceWM-FAQ.txt > $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ/IceWM-FAQ.txt
 	# making -experimental compat symlinks
-	for x in icewm-session icewm icewmhint icehelp icewmbg icesh icesound ; do ln -s $$x $(ICEWM_EXP)/usr/bin/$$x-experimental ; done
+	for x in icewm-session icewm icewmhint icehelp icewmbg icesh icesound ; do \
+					for y in lite experimental ; do \
+					ln -s $$x debian/icewm-$$y/usr/bin/$$x-$$y ; done ; done
 	# Install undocumented manpages
-	for v in "" -experimental -lite ; do \
+	for v in "" -experimental ; do \
 		mkdir -p debian/icewm$$v/usr/share/man/man1 ; \
 			for f in icewm icehelp icewmbg icewmhint icesh icewm-session ; do \
 				test "$$f$$v.1.gz" = icewm.1.gz || ln -s icewm.1.gz debian/icewm$$v/usr/share/man/man1/$$f$$v.1.gz ; \
 		done ; \
-	done
+		done
+	mkdir -p debian/icewm-lite/usr/share/man/man1
+	cp -a debian/icewm-lite.1 debian/icewm-lite/usr/share/man/man1
+	for f in icewm icehelp icewmbg icewmhint icesh icewm-session sound; do \
+					ln -sf icewm-lite.1.gz debian/icewm-lite/usr/share/man/man1/$$f-lite.1.gz ; \
+					done
 	# only where needed
 	ln -sf icewm.1.gz debian/icewm/usr/share/man/man1/icesound.1.gz
 	ln -sf icewm.1.gz debian/icewm-experimental/usr/share/man/man1/icesound-experimental.1.gz
