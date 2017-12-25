@@ -63,9 +63,10 @@ if(CXX_LINKER_GOLD)
 endif()
 
 
-option(CONFIG_LIBPNG "(Experimental) PNGLIB image loader" off)
-option(CONFIG_GDK_PIXBUF_XLIB "LIBGDKPIXBUF based image loader" on)
-option(CONFIG_XPM "(Optional) XPM image loader" off)
+option(CONFIG_LIBPNG "(Experimental) PNGLIB image loader" on)
+option(CONFIG_LIBJPEG "JPEGLIB image loader" on)
+option(CONFIG_GDK_PIXBUF_XLIB "GDK-PIXBUF based image loader" off)
+option(CONFIG_XPM "(Optional) XPM image loader" on)
 option(CONFIG_I18N "Define to enable internationalization" on)
 option(CONFIG_RENDER "Define to enable XRENDER extension" on)
 option(CONFIG_XRANDR "Define to enable XRANDR extension" on)
@@ -81,12 +82,18 @@ ELSE()
     MESSAGE(STATUS "Configured custom unicode set: ${CONFIG_UNICODE_SET}.")
 ENDIF()
 
-if(CONFIG_GDK_PIXBUF_XLIB AND NOT CONFIG_LIBPNG AND NOT CONFIG_XPM)
+if(CONFIG_GDK_PIXBUF_XLIB AND NOT CONFIG_XPM)
     #ok
-elseif(NOT CONFIG_XPM AND NOT CONFIG_LIBPNG AND NOT CONFIG_GDK_PIXBUF_XLIB)
+    set(CONFIG_LIBPNG off)
+    set(CONFIG_LIBJPEG off)
+elseif(CONFIG_XPM AND NOT CONFIG_GDK_PIXBUF_XLIB)
     #ok
-elseif(CONFIG_XPM AND CONFIG_LIBPNG AND NOT CONFIG_GDK_PIXBUF_XLIB)
-    #ok
+    if (NOT CONFIG_LIBPNG)
+        message(WARNING "LIBPNG is recommended for PNG image support")
+    endif()
+    if (NOT CONFIG_LIBJPEG)
+        message(WARNING "LIBJPEG is advisable for backgrounds in icewmbg")
+    endif()
 else()
     MESSAGE(FATAL_ERROR "Possible combination of image loaders are:
     -DCONFIG_XPM=on -DCONFIG_LIBPNG=on -DCONFIG_GDK_PIXBUF_XLIB=off
@@ -334,10 +341,10 @@ if(XINERAMA)
     endif()
 endif()
 
-option(CONFIG_FRIBIDI on)
+option(CONFIG_FRIBIDI "Define to enable FRIBIDI support" on)
 if(CONFIG_FRIBIDI)
     pkg_check_modules(fribidi fribidi)
-    if(not fribidi_FOUND)
+    if(NOT fribidi_FOUND)
         message(WARNING "FRIBIDI is not supported")
         set(CONFIG_FRIBIDI off)
     endif()
@@ -426,7 +433,7 @@ SET(ICEWM_SRCS ${ICE_COMMON_SRCS} ${ITK_SRCS}
 ADD_EXECUTABLE(icewm${EXEEXT} ${ICEWM_SRCS})
 set(icewm_pc_flags "${fontconfig_CFLAGS} ${x11_CFLAGS} ${xext_CFLAGS} ${libpng_CFLAGS} ${libxpm_CFLAGS} ${pixbuf_CFLAGS} ${xft_CFLAGS} ${xrandr_CFLAGS} ${xrender_CFLAGS} ${xinerama_CFLAGS} ${fribidi_CFLAGS}")
 SET_TARGET_PROPERTIES(icewm${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
-list(APPEND icewm_libs ${sm_LIBS} ${nls_LIBS} ${fontconfig_LDFLAGS} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS} ${xinerama_LDFLAGS} ${fribidi_LDFLAGS} ${EXTRA_LIBS})
+list(APPEND icewm_libs ${sm_LIBS} ${nls_LIBS} ${fontconfig_LDFLAGS} ${fribidi_LDFLAGS} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS} ${xinerama_LDFLAGS} ${EXTRA_LIBS})
 TARGET_LINK_LIBRARIES(icewm${EXEEXT} ${icewm_libs} ${icewm_img_libs})
 
 ADD_EXECUTABLE(genpref${EXEEXT} genpref.cc misc.cc)
@@ -453,7 +460,7 @@ TARGET_LINK_LIBRARIES(icesh${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${nls_LIBS} 
 
 ADD_EXECUTABLE(icewmbg${EXEEXT} icewmbg.cc ref.cc ${ICE_COMMON_SRCS})
 SET_TARGET_PROPERTIES(icewmbg${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
-TARGET_LINK_LIBRARIES(icewmbg${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS}  ${icewm_img_libs} ${xinerama_LDFLAGS} ${nls_LIBS} ${EXTRA_LIBS})
+TARGET_LINK_LIBRARIES(icewmbg${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${fribidi_LDFLAGS} ${xrandr_LDFLAGS}  ${icewm_img_libs} ${xinerama_LDFLAGS} ${nls_LIBS} ${EXTRA_LIBS})
 
 IF(ENABLE_ALSA OR ENABLE_AO OR ENABLE_ESD OR ENABLE_OSS)
     ADD_EXECUTABLE(icesound${EXEEXT} icesound.cc upath.cc misc.cc mstring.cc ytimer.cc yapp.cc yprefs.cc yarray.cc ref.cc)
@@ -464,7 +471,7 @@ ENDIF()
 
 ADD_EXECUTABLE(icehelp${EXEEXT} icehelp.cc ${ICE_COMMON_SRCS} yscrollbar.cc ref.cc yicon.cc wmconfig.cc ymenu.cc ymenuitem.cc yprefs.cc yscrollview.cc)
 SET_TARGET_PROPERTIES(icehelp${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
-TARGET_LINK_LIBRARIES(icehelp${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS} ${icewm_img_libs} ${xinerama_LDFLAGS} ${nls_LIBS} ${EXTRA_LIBS})
+TARGET_LINK_LIBRARIES(icehelp${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${fribidi_LDFLAGS} ${xrandr_LDFLAGS} ${icewm_img_libs} ${xinerama_LDFLAGS} ${nls_LIBS} ${EXTRA_LIBS})
 INSTALL(TARGETS icehelp${EXEEXT} DESTINATION ${BINDIR})
 
 # TBD. Internal tray is better, this is probably not needed anymore.
@@ -490,13 +497,15 @@ foreach (_variableName
         PACKAGE
         VERSION
         DATADIR LIBDIR LOCDIR DOCDIR CFGDIR ICEHELPIDX
-        CONFIG_XPM
         CONFIG_IMLIB
+        CONFIG_GDK_PIXBUF_XLIB
+        CONFIG_XPM
+        CONFIG_LIBJPEG
         CONFIG_LIBPNG
         CONFIG_RENDER
-        CONFIG_GDK_PIXBUF_XLIB
         CONFIG_XFREETYPE
         CONFIG_COREFONTS
+        CONFIG_FRIBIDI
         XINERAMA
         ENABLE_LTO
         ENABLE_ALSA
