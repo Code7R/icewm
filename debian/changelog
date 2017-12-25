@@ -1,11 +1,11 @@
-icewm (1.4.3.0~pre-20171225-1) UNRELEASED; urgency=medium
+icewm (1.4.3.0~pre-20171225-1) experimental; urgency=low
 
   * New upstream snapshot
   * Finally switched to direct PNG&XPM loader
   * Changed build to create just one flavor. icewm-lite is now simulated
     through runtime default configuration.
 
- -- Eduard Bloch <blade@debian.org>  Tue, 19 Dec 2017 17:32:29 +0100
+ -- Eduard Bloch <blade@debian.org>  Mon, 25 Dec 2017 22:42:23 +0100
 
 icewm (1.4.3.0~pre-20171204-3) experimental; urgency=low
 
