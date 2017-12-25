@@ -47,6 +47,7 @@
 char const *ApplicationName("IceWM");
 int rebootOrShutdown = 0;
 static bool initializing(true);
+void SetLiteDefaults();
 
 YWMApp *wmapp(NULL);
 YWindowManager *manager(NULL);
@@ -997,6 +998,9 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
     YSMApplication(argc, argv, displayName),
     mainArgv(*argv)
 {
+    if(argc && *argc>0 && argv && *argv && **argv && mstring(**argv).endsWith("-lite"))
+            SetLiteDefaults();
+
     if (restart_wm) {
         if (overrideTheme && *overrideTheme) {
             mstring themeContent("Theme=\"" + mstring(overrideTheme) + "\"");
@@ -1655,5 +1659,13 @@ void YWMApp::handleSMAction(int message) {
     }
 }
 
+void SetLiteDefaults()
+{
+    showTaskBar = false;
+    fontPreferFreetype = false;
+    showWindowList = false;
+    quickSwitchAllIcons = false;
+    //addWorkspace(0, "1", false);
+}
 
 // vim: set sw=4 ts=4 et:
