@@ -1,6 +1,9 @@
 icewm (1.4.3.0~pre-20171225-1) UNRELEASED; urgency=medium
 
   * New upstream snapshot
+  * Finally switched to direct PNG&XPM loader
+  * Changed build to create just one flavor. icewm-lite is now simulated
+    through runtime default configuration.
 
  -- Eduard Bloch <blade@debian.org>  Tue, 19 Dec 2017 17:32:29 +0100
 
