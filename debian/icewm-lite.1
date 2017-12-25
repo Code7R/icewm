@@ -1,0 +1,71 @@
+.TH "ICEWM" "1" "2017-12-19" "\ \&" "\ \&"
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.ss \n[.ss] 0
+.nh
+.ad l
+.de URL
+\\$2 \(laURL: \\$1 \(ra\\$3
+..
+.if \n[.g] .mso www.tmac
+.LINKSTYLE blue R < >
+.SH "NAME"
+icewm \- lightweight X11 window manager
+.SH "SYNOPSIS"
+.sp
+\fBicewm\-lite\fP [\fIOPTIONS\fP]
+.SH "DESCRIPTION"
+.sp
+IceWM
+is a lightweight window manager for the X11 window system.
+It aims to be small, fast and familiar to new users.
+.sp
+The *-lite versions of all icewm executables are symbolic links existing for legacy compatibility reasons.
+The major difference is slightly changed behavior, i.e. icewm-lite attempts to mimic the look and feel of the previously existing icewm builds which had reduced functionality and were more suitable for some "kiosk mode" applications. This actually includes the options:
+\fIShowTaskBar\fP,
+\fIPreferFreetypeFonts\fP,
+\fIShowWindowList\fP
+and
+\fIQuickSwitchAllIcons\fP.
+
+.sp
+These and all other options can be changed and have their normal meaning, see regular \fBicewm\fP documentation for details.
+.SH "SEE ALSO"
+.sp
+\fBicewm\fP(1),
+\fBicewmbg\fP(1),
+\fBXorg\fP(1),
+\fBXserver\fP(1),
+\fBxinit\fP(1),
+\fBxprop\fP(1),
+\fBxwininfo\fP(1),
+\fBwmctrl\fP(1).
+.sp
+\fIIceWM Help\fP
+from the IceWM menu contains a manual (a little outdated, but still useful).
+.sp
+.URL "http://www.icewm.org/manual/" "" ""
+gives the IceWM Manual (somewhat outdated).
+.sp
+.URL "http://www.icewm.org/FAQ/" "" ""
+gives frequently asked questions.
+.sp
+.URL "http://www.icewm.org/themes/" "" ""
+explains how to design new themes.
+.sp
+.URL "https://github.com/bbidulock/icewm/" "" ""
+for current software development.
+.sp
+.URL "https://www.box\-look.org/browse/cat/142/ord/latest/" "" ""
+for new themes.
+.SH "BUG REPORTS"
+.sp
+If you find a bug in IceWM
+please use the bug reporting system on
+\&.br
+.URL "https://github.com/bbidulock/icewm/issues" "" ""
+to report it. We welcome all friendly feedback.
+.SH "COPYING"
+.sp
+IceWM is licensed under the GNU Library General Public License.
+See the file COPYING in the distribution for full details.
