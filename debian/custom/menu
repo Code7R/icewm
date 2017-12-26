@@ -4,8 +4,8 @@
 # since modifications to this file will be discarded when you
 # (re)install icewm.
 #
-prog Terminal xterm x-terminal-emulator -ls
-prog "Iceweasel" iceweasel iceweasel
+prog Terminal ! x-terminal-emulator -ls
+prog "Web Browser" ! x-www-browser
 prog HexChat hexchat hexchat
 prog Gimp gimp gimp
 separator
@@ -22,7 +22,7 @@ menu Applications folder {
         prog Mutt mutt x-terminal-emulator -e mutt
     }
     menu "WWW Browsers" folder {
-        prog "Iceweasel" iceweasel iceweasel
+        prog "Web Browser" ! x-www-browser
         prog Konqueror konqueror konqueror
         prog Chromium chromium chromium
         prog w3m lynx x-terminal-emulator -e w3m
