@@ -70,6 +70,7 @@ override_dh_install:
 	cd debian && for x in -lite -experimental ; do cp -lf icewm.postinst icewm$$x.postinst ; cp -lf icewm.prerm icewm$$x.prerm ; done
 	for v in "" -experimental -lite ; do \
 		rm -rf debian/icewm$$v/usr/share/doc/icewm$$v ; \
+		mkdir -p debian/icewm$$v/usr/share/doc ; \
 		ln -sf icewm-common debian/icewm$$v/usr/share/doc/icewm$$v ; done
 #	sed -e 's,icewm-session,icewm-session-lite,g;s,^Name\(.*\),Name\1 [lite],' < lib/icewm-session.desktop > $(ICEWM_LITE)/usr/share/xsessions/IceWM-Lite.desktop
 	# XXX: find out why some settings are not gettint defaults if the file is not present, like WorkspaceNames
@@ -92,22 +93,22 @@ override_dh_install:
 	for x in icewm-session icewm icewmhint icehelp icewmbg icesh icesound ; do \
 					for y in lite experimental ; do \
 					ln -s $$x debian/icewm-$$y/usr/bin/$$x-$$y ; done ; done
-	# Install undocumented manpages
-	for v in "" -experimental ; do \
-		mkdir -p debian/icewm$$v/usr/share/man/man1 ; \
-			for f in icewm icehelp icewmbg icewmhint icesh icewm-session ; do \
-				test "$$f$$v.1.gz" = icewm.1.gz || ln -s icewm.1.gz debian/icewm$$v/usr/share/man/man1/$$f$$v.1.gz ; \
-		done ; \
-		done
-	mkdir -p debian/icewm-lite/usr/share/man/man1
-	cp -a debian/icewm-lite.1 debian/icewm-lite/usr/share/man/man1
-	for f in icewm icehelp icewmbg icewmhint icesh icewm-session sound; do \
-					ln -sf icewm-lite.1.gz debian/icewm-lite/usr/share/man/man1/$$f-lite.1.gz ; \
-					done
-	# only where needed
-	ln -sf icewm.1.gz debian/icewm/usr/share/man/man1/icesound.1.gz
-	ln -sf icewm.1.gz debian/icewm-experimental/usr/share/man/man1/icesound-experimental.1.gz
-	ln -sf icewm.1.gz debian/icewm-common/usr/share/man/man1/icewm-menu-fdo.1.gz
+#	# Install undocumented manpages
+#	for v in "" -experimental ; do \
+#		mkdir -p debian/icewm$$v/usr/share/man/man1 ; \
+#			for f in icewm icehelp icewmbg icewmhint icesh icewm-session ; do \
+#				test "$$f$$v.1.gz" = icewm.1.gz || ln -s icewm.1.gz debian/icewm$$v/usr/share/man/man1/$$f$$v.1.gz ; \
+#		done ; \
+#		done
+#	mkdir -p debian/icewm-lite/usr/share/man/man1
+#	cp -a debian/icewm-lite.1 debian/icewm-lite/usr/share/man/man1
+#	for f in icewm icehelp icewmbg icewmhint icesh icewm-session sound; do \
+#					ln -sf icewm-lite.1.gz debian/icewm-lite/usr/share/man/man1/$$f-lite.1.gz ; \
+#					done
+#	# only where needed
+#	ln -sf icewm.1.gz debian/icewm/usr/share/man/man1/icesound.1.gz
+#	ln -sf icewm.1.gz debian/icewm-experimental/usr/share/man/man1/icesound-experimental.1.gz
+#	ln -sf icewm.1.gz debian/icewm-common/usr/share/man/man1/icewm-menu-fdo.1.gz
 	cd debian ; for x in icewm icewm-lite icewm-experimental ; do mkdir -p $$x/usr/share/lintian/overrides ; cp $$x.lintian $$x/usr/share/lintian/overrides/$$x ; done	
 	sed -e 's,^.link.*fonts.googleapis.*,,' -i "$(ICEWM_COMMON)/usr/share/doc/icewm-common/html/"*.html
 

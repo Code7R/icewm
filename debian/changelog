@@ -1,4 +1,4 @@
-icewm (1.4.3.0~pre-20171225-3) UNRELEASED; urgency=medium
+icewm (1.4.3.0~pre-20180204-1) UNRELEASED; urgency=medium
 
   * New upstream snapshot
   * Use automatic icon name resolution for applications managed via

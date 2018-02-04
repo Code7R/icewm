@@ -2,6 +2,5 @@ usr/bin/icewm-menu-fdo
 usr/bin/icewm-menu-xrandr
 usr/share/doc/icewm-common
 usr/share/locale
-usr/share/man/man1/icewm.1
 usr/share/icewm
 usr/bin/icewm-set-gnomewm usr/share/icewm/
