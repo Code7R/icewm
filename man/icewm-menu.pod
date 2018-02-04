@@ -6,11 +6,19 @@
 
 =head1 SYNOPSIS
 
-F<> F<$ICEWM_PRIVCFG/menu>
- F<$XDG_CONFIG_HOME/icewm/menu>
- F<$HOME/.icewm/menu>
- F</etc/icewm/menu>
- F</usr/share/icewm/menu>
+=over
+
+=item F<$ICEWM_PRIVCFG/menu>
+
+=item F<$XDG_CONFIG_HOME/icewm/menu>
+
+=item F<$HOME/.icewm/menu>
+
+=item F</etc/icewm/menu>
+
+=item F</usr/share/icewm/menu>
+
+=back
 
 =head1 DESCRIPTION
 
@@ -18,10 +26,9 @@ The F<menu> file is responsible for configuring most of the L<icewm(1)>
 root menu and start menu.
 
 A menu of applications; usually customized by the user.  B<icewm>
-provides either the program L<icewm-menu-fdo(1)> or the program
-L<icewm-menu-gnome2(1)> to generate a default menu.  Similar programs
-are L<xdg_menu(1)>, L<mmaker(1)>' (MenuMaker), L<xde-menu(1)>,
-L<xdgmenumaker(1)>.
+provides the L<icewm-menu-fdo(1)> program to generate a default menu.
+Similar programs are L<xdg_menu(1)>, L<mmaker(1)>' (MenuMaker),
+L<xde-menu(1)>, L<xdgmenumaker(1)>.
 
 =head1 FORMAT
 

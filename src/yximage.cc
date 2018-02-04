@@ -20,7 +20,9 @@
 
 class YXImage: public YImage {
 public:
-    YXImage(XImage *ximage) : YImage(ximage->width, ximage->height), fImage(ximage) {
+    YXImage(XImage *ximage, bool bitmap = false) :
+        YImage(ximage->width, ximage->height), fImage(ximage), fBitmap(bitmap)
+    {
         // tlog("created YXImage %ux%ux%u\n", ximage->width, ximage->height, ximage->depth);
     }
     virtual ~YXImage() {
@@ -44,12 +46,53 @@ public:
 #endif
     static ref<YImage> combine(XImage *xdraw, XImage *xmask);
 
+    bool isBitmap() const { return fBitmap; }
+    bool hasAlpha() const { return fImage ? fImage->depth == 32 : false; }
+    ref<YImage> upscale(unsigned width, unsigned height);
+    ref<YImage> downscale(unsigned width, unsigned height);
+    ref<YImage> subimage(int x, int y, unsigned width, unsigned height);
+
+    unsigned long getPixel(unsigned x, unsigned y) const {
+        return XGetPixel(fImage, int(x), int(y));
+    }
+
+    static XImage* createImage(unsigned width, unsigned height, unsigned depth) {
+        XImage* ximage = XCreateImage(xapp->display(), xapp->visual(), depth,
+                                      ZPixmap, 0, NULL, width, height, 8, 0);
+        if (ximage == 0)
+            tlog("ERROR: could not create %ux%ux%u ximage", width, height, depth);
+        else {
+            ximage->data = (char *) calloc(ximage->bytes_per_line, height);
+            if (ximage->data == 0) {
+                tlog("ERROR: could not allocate ximage data");
+                XDestroyImage(ximage);
+                ximage = 0;
+            }
+        }
+        return ximage;
+    }
+
+    static XImage* createBitmap(unsigned width, unsigned height, char* data) {
+        XImage* ximage = XCreateImage(xapp->display(), xapp->visual(), 1,
+                                      XYBitmap, 0, NULL, width, height, 8, 0);
+        if (ximage == 0)
+            tlog("ERROR: could not create %ux%u XImage mask", width, height);
+        else if (data)
+            ximage->data = data;
+        else {
+            ximage->data = (char *) calloc(ximage->bytes_per_line, height);
+            if (ximage->data == 0) {
+                tlog("ERROR: could not allocate %ux%u bitmap", width, height);
+                XDestroyImage(ximage);
+                ximage = 0;
+            }
+        }
+        return ximage;
+    }
+
 private:
-    bool hasAlpha() const { return depth() == 32; }
-    virtual ref<YImage> upscale(unsigned width, unsigned height);
-    virtual ref<YImage> downscale(unsigned width, unsigned height);
-    virtual ref<YImage> subimage(int x, int y, unsigned width, unsigned height);
     XImage *fImage;
+    bool fBitmap;
 };
 
 ref<YImage> YImage::load(upath filename)
@@ -66,46 +109,54 @@ ref<YImage> YImage::load(upath filename)
 #ifdef CONFIG_LIBPNG
         image = YXImage::loadpng(filename);
 #else
-        { static int count; if (count < 1) { ++count;
-            warn(_("Support for PNG images was not enabled")); } }
+        if (ONCE)
+            warn(_("Support for PNG images was not enabled"));
 #endif
     }
     else if (ext == ".jpg" || ext == ".jpeg") {
 #ifdef CONFIG_LIBJPEG
         image = YXImage::loadjpg(filename);
 #else
-        { static int count; if (count < 1) { ++count;
-            warn(_("Support for JPEG images was not enabled")); } }
+        if (ONCE)
+            warn(_("Support for JPEG images was not enabled"));
 #endif
     }
     else {
         unsup = true;
-        static int count; if (count < 1) { ++count;
-        warn(_("Unsupported file format: %s"), cstring(ext).c_str()); }
+        if (ONCE)
+            warn(_("Unsupported file format: %s"), cstring(ext).c_str());
     }
 
     if (image == null && !unsup)
-            warn(_("Out of memory for pixmap \"%s\""), filename.string().c_str());
+        fail(_("Could not load image \"%s\""), filename.string().c_str());
     return image;
 }
 
-ref<YImage> YXImage::loadxbm(upath filename)
+ref <YImage> YXImage::loadxbm(upath filename)
 {
     ref<YImage> image;
-    XImage *ximage = 0;
+    XImage *xdraw = 0;
     unsigned w, h;
     int x, y;
     char *data = 0;
     int status;
 
-    status = XReadBitmapFileData(filename.string(), &w, &h, (unsigned char **)&data, &x, &y);
-    if (status == BitmapSuccess) {
-        ximage = XCreateImage(xapp->display(), None, 1, XYBitmap, 0, data, w, h, 8, 0);
-        if (ximage != 0)
-            image.init(new YXImage(ximage));
-        else
-            free(data);
+    status = XReadBitmapFileData(filename.string(), &w, &h, (unsigned char **) &data, &x, &y);
+    if (status != BitmapSuccess) {
+        tlog("ERROR: could not read pixmap file %s\n", filename.string().c_str());
+        goto error;
     }
+    xdraw = createBitmap(w, h, data);
+    if (xdraw == 0) {
+        goto error;
+    }
+    data = 0;
+    image = YXImage::combine(xdraw, xdraw);
+  error:
+    if (xdraw)
+        XDestroyImage(xdraw);
+    if (data)
+        free(data);
     return image;
 }
 
@@ -132,8 +183,8 @@ ref<YImage> YXImage::loadxpm(upath filename)
             unsigned w = xdraw->width;
             unsigned h = xdraw->height;
 
-            ximage = XCreateImage(xapp->display(), xapp->visual(), 32, ZPixmap, 0, NULL, w, h, 8, 0);
-            if (ximage && (ximage->data = (char*) calloc(ximage->bytes_per_line*h, sizeof(char)))) {
+            ximage = createImage(w, h, 32U);
+            if (ximage) {
                 for (unsigned j = 0; j < h; j++) {
                     for (unsigned i = 0; i < w; i++) {
                         if (XGetPixel(xmask, i, j))
@@ -158,22 +209,14 @@ ref<YImage> YXImage::loadxpm(upath filename)
 ref<YImage> YXImage::loadpng(upath filename)
 {
     ref<YImage> image;
-    png_byte *png_pixels, **row_pointers, *p;
-    XImage *ximage = 0;
     // working around clobbering issues with high optimization levels, see https://stackoverflow.com/questions/7721854/what-sense-do-these-clobbered-variable-warnings-make
-    volatile void *vol_png_pixels, *vol_row_pointers;
-    volatile void *vol_ximage;
+    volatile png_byte *png_pixels = 0, **row_pointers = 0;
+    volatile XImage *ximage = 0;
     png_structp png_ptr;
     png_infop info_ptr;
     png_byte buf[8];
     int ret;
     FILE *f;
-
-    png_pixels = 0;
-    row_pointers = 0;
-    vol_png_pixels = 0;
-    vol_row_pointers = 0;
-    vol_ximage = 0;
 
     if (!(f = fopen(filename.string(), "rb"))) {
         tlog("could not open %s: %s\n", filename.string().c_str(), strerror(errno));
@@ -198,102 +241,89 @@ ref<YImage> YXImage::loadpng(upath filename)
     if (setjmp(png_jmpbuf(png_ptr))) {
         tlog("ERROR: longjump from setjump\n");
         goto pngerr;
-    }
+    } else {
+        png_uint_32 width, height, row_bytes, i, j;
+        int bit_depth, color_type, channels;
 
-    png_uint_32 width, height, row_bytes, i, j;
-    int bit_depth, color_type, channels;
-    unsigned long pixel, A, R, G, B;
-    A = R = G = B = 0;
-    png_pixels = 0;
-    row_pointers = 0;
-    vol_png_pixels = 0;
-    vol_row_pointers = 0;
-
-    png_init_io(png_ptr, f);
-    png_set_sig_bytes(png_ptr, 8);
-    png_read_info(png_ptr, info_ptr);
-    png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, NULL, NULL, NULL);
-    if (color_type == PNG_COLOR_TYPE_PALETTE) {
-        png_set_palette_to_rgb(png_ptr);
-    }
-    if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) {
-        png_set_expand(png_ptr);
-    }
-    if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) {
-        png_set_expand(png_ptr);
-    }
-    if (bit_depth == 16) {
-        png_set_strip_16(png_ptr);
-    }
-    if (color_type == PNG_COLOR_TYPE_GRAY || color_type == PNG_COLOR_TYPE_GRAY_ALPHA) {
-        png_set_gray_to_rgb(png_ptr);
-    }
-    png_read_update_info(png_ptr, info_ptr);
-    png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, NULL, NULL, NULL);
-    if (color_type == PNG_COLOR_TYPE_GRAY)
-        channels = 1;
-    else if (color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-        channels = 2;
-    else if (color_type == PNG_COLOR_TYPE_RGB)
-        channels = 3;
-    else if (color_type == PNG_COLOR_TYPE_RGB_ALPHA)
-        channels = 4;
-    else
-        channels = 0;
-    row_bytes = png_get_rowbytes(png_ptr, info_ptr);
-    png_pixels = new png_byte[row_bytes * height];
-    vol_png_pixels = png_pixels;
-    row_pointers = new png_bytep[height];
-    vol_row_pointers = row_pointers;
-    for (i = 0; i < height; i++)
-        row_pointers[i] = png_pixels + i * row_bytes;
-    png_read_image(png_ptr, row_pointers);
-    png_read_end(png_ptr, info_ptr);
-    ximage = XCreateImage(xapp->display(), xapp->visual(), 32, ZPixmap, 0, NULL, width, height, 8, 0);
-    if (!ximage || !(ximage->data = (char*) calloc(ximage->bytes_per_line*height, sizeof(char)))) {
-        if (ximage) {
-            tlog("could not allocate ximage data\n");
-            XDestroyImage(ximage);
-            goto pngerr;
+        png_init_io(png_ptr, f);
+        png_set_sig_bytes(png_ptr, 8);
+        png_read_info(png_ptr, info_ptr);
+        png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, NULL, NULL, NULL);
+        if (color_type == PNG_COLOR_TYPE_PALETTE) {
+            png_set_palette_to_rgb(png_ptr);
         }
-        tlog("could not allocate ximage\n");
-        goto pngerr;
-    }
-    vol_ximage = ximage;
-    for (p = png_pixels, j = 0; j < height; j++) {
-        for (i = 0; i < width; i++, p += channels) {
-            switch(color_type) {
-                case PNG_COLOR_TYPE_GRAY:
-                    R = G = B = p[0];
-                    A = 255;
-                    break;
-                case PNG_COLOR_TYPE_GRAY_ALPHA:
-                    R = G = B = p[0];
-                    A = p[1];
-                    break;
-                case PNG_COLOR_TYPE_RGB:
-                    R = p[0];
-                    G = p[1];
-                    B = p[2];
-                    A = 255;
-                    break;
-                case PNG_COLOR_TYPE_RGB_ALPHA:
-                    R = p[0];
-                    G = p[1];
-                    B = p[2];
-                    A = p[3];
-                    break;
+        if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) {
+            png_set_expand(png_ptr);
+        }
+        if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) {
+            png_set_expand(png_ptr);
+        }
+        if (bit_depth == 16) {
+            png_set_strip_16(png_ptr);
+        }
+        if (color_type == PNG_COLOR_TYPE_GRAY || color_type == PNG_COLOR_TYPE_GRAY_ALPHA) {
+            png_set_gray_to_rgb(png_ptr);
+        }
+        png_read_update_info(png_ptr, info_ptr);
+        png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, NULL, NULL, NULL);
+        if (color_type == PNG_COLOR_TYPE_GRAY)
+            channels = 1;
+        else if (color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+            channels = 2;
+        else if (color_type == PNG_COLOR_TYPE_RGB)
+            channels = 3;
+        else if (color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+            channels = 4;
+        else
+            channels = 0;
+        row_bytes = png_get_rowbytes(png_ptr, info_ptr);
+        png_pixels = (typeof(png_pixels))calloc(row_bytes * height, sizeof(*png_pixels));
+        row_pointers = (typeof(row_pointers))calloc(height, sizeof(*row_pointers));
+        for (i = 0; i < height; i++)
+            row_pointers[i] = png_pixels + i * row_bytes;
+        png_read_image(png_ptr, (png_byte **)row_pointers);
+        png_read_end(png_ptr, info_ptr);
+        ximage = createImage(width, height, 32U);
+        if (ximage == 0) {
+            goto pngerr;
+        } else {
+            png_byte *p, *nv_png_pixels = (typeof(nv_png_pixels)) png_pixels;
+            unsigned long pixel, A = 0, R = 0, G = 0, B = 0;
+            XImage *nv_ximage = (typeof(nv_ximage)) ximage;
+
+            for (p = nv_png_pixels, j = 0; j < height; j++) {
+                for (i = 0; i < width; i++, p += channels) {
+                    switch(color_type) {
+                        case PNG_COLOR_TYPE_GRAY:
+                            R = G = B = p[0];
+                            A = 255;
+                            break;
+                        case PNG_COLOR_TYPE_GRAY_ALPHA:
+                            R = G = B = p[0];
+                            A = p[1];
+                            break;
+                        case PNG_COLOR_TYPE_RGB:
+                            R = p[0];
+                            G = p[1];
+                            B = p[2];
+                            A = 255;
+                            break;
+                        case PNG_COLOR_TYPE_RGB_ALPHA:
+                            R = p[0];
+                            G = p[1];
+                            B = p[2];
+                            A = p[3];
+                            break;
+                    }
+                    pixel = (A << 24)|(R <<16)|(G<<8)|(B<<0);
+                    XPutPixel(nv_ximage, i, j, pixel);
+                }
             }
-            pixel = (A << 24)|(R <<16)|(G<<8)|(B<<0);
-            XPutPixel(ximage, i, j, pixel);
         }
     }
   pngerr:
-    ximage = (XImage *) vol_ximage;
-    png_pixels = (png_byte *) vol_png_pixels;
-    delete[] png_pixels;
-    row_pointers = (png_byte **) vol_row_pointers;
-    delete[] row_pointers;
+    free((png_byte *)png_pixels);
+    free((png_byte **)row_pointers);
     png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
     goto noread;
   noinfo:
@@ -302,7 +332,7 @@ ref<YImage> YXImage::loadpng(upath filename)
     fclose(f);
   nofile:
     if (ximage)
-        image.init(new YXImage(ximage));
+        image.init(new YXImage((XImage *)ximage));
     return image;
 }
 #endif
@@ -342,34 +372,90 @@ ref<YImage> YXImage::loadjpg(upath filename)
     jpeg_create_decompress(&cinfo);
     jpeg_stdio_src(&cinfo, infile);
     (void) jpeg_read_header(&cinfo, TRUE);
+    switch (cinfo.out_color_space) {
+        case JCS_RGB:
+        case JCS_EXT_RGBA:
+        case JCS_GRAYSCALE:
+            break;
+        default:
+            warn("JPEG color space %d is not yet supported; please report this",
+                    cinfo.out_color_space);
+            jpeg_destroy_decompress(&cinfo);
+            fclose(infile);
+            return null;
+    }
     (void) jpeg_start_decompress(&cinfo);
     row_stride = cinfo.output_width * cinfo.output_components;
     buffer = (*cinfo.mem->alloc_sarray)
                 ((j_common_ptr) &cinfo, JPOOL_IMAGE, row_stride, 1);
 
-    int width = int(cinfo.output_width);
-    int height = int(cinfo.output_height);
-    XImage* ximage = XCreateImage(xapp->display(), xapp->visual(),
-                                  32, ZPixmap, 0, NULL,
-                                  width, height, 8, 0);
-    if (ximage)
-        ximage->data = (char *) calloc(ximage->bytes_per_line * height, 1);
-    if (ximage && ximage->data) {
+    const int width = int(cinfo.output_width);
+    const int height = int(cinfo.output_height);
+    XImage* ximage = createImage(width, height, 32U);
+    if (ximage) {
+        const bool bigendian = ximage->byte_order == MSBFirst;
+        const int colorspace = cinfo.out_color_space;
+        const int bpp = cinfo.num_components;
+
         for (int line; (line = int(cinfo.output_scanline)) < height; ) {
             (void) jpeg_read_scanlines(&cinfo, buffer, 1);
             unsigned char* buf = (unsigned char *) buffer[0];
-            for (int i = 0; i < width; ++i, buf += 3) {
-                XPutPixel(ximage, i, line,
-                          (buf[0] << 16) |
-                          (buf[1] <<  8) |
-                          (buf[2]      ) |
-                          0xFF000000);
+            unsigned char* dst = (unsigned char *) ximage->data
+                               + line * ximage->bytes_per_line;
+            if (bigendian) {
+                if (colorspace == JCS_RGB) {
+                    for (int i = 0; i < width; ++i, buf += bpp, dst += 4) {
+                        dst[0] = 0xFF;
+                        dst[1] = buf[0];
+                        dst[2] = buf[1];
+                        dst[3] = buf[2];
+                    }
+                }
+                else if (colorspace == JCS_EXT_RGBA) {
+                    for (int i = 0; i < width; ++i, buf += bpp, dst += 4) {
+                        dst[0] = buf[3];
+                        dst[1] = buf[0];
+                        dst[2] = buf[1];
+                        dst[3] = buf[2];
+                    }
+                }
+                else if (colorspace == JCS_GRAYSCALE) {
+                    for (int i = 0; i < width; ++i, buf += bpp, dst += 4) {
+                        dst[0] = 0xFF;
+                        dst[1] = buf[0];
+                        dst[2] = buf[0];
+                        dst[3] = buf[0];
+                    }
+                }
+            } else {
+                if (colorspace == JCS_RGB) {
+                    for (int i = 0; i < width; ++i, buf += bpp, dst += 4) {
+                        dst[3] = 0xFF;
+                        dst[2] = buf[0];
+                        dst[1] = buf[1];
+                        dst[0] = buf[2];
+                    }
+                }
+                else if (colorspace == JCS_EXT_RGBA) {
+                    for (int i = 0; i < width; ++i, buf += bpp, dst += 4) {
+                        dst[3] = buf[3];
+                        dst[2] = buf[0];
+                        dst[1] = buf[1];
+                        dst[0] = buf[2];
+                    }
+                }
+                else if (colorspace == JCS_GRAYSCALE) {
+                    for (int i = 0; i < width; ++i, buf += bpp, dst += 4) {
+                        dst[3] = 0xFF;
+                        dst[2] = buf[0];
+                        dst[1] = buf[0];
+                        dst[0] = buf[0];
+                    }
+                }
             }
         }
         yximage.init(new YXImage(ximage));
     }
-    else if (ximage)
-        XDestroyImage(ximage);
 
     (void) jpeg_finish_decompress(&cinfo);
     jpeg_destroy_decompress(&cinfo);
@@ -386,34 +472,31 @@ ref<YImage> YXImage::upscale(unsigned nw, unsigned nh)
     double *counts = 0;
     double *colors = 0;
 
-    // tlog("upscale from %ux%ux%u to %ux%u\n", width(), height(), depth(), nw, nh);
     if (!valid()) {
-        tlog("not a valid YXImage\n");
+        tlog("ERROR: not a valid YXImage\n");
         goto error;
     }
     {
-        unsigned w = width();
-        unsigned h = height();
-        unsigned d = depth();
-        Visual *v = xapp->visual();
+        unsigned w = fImage->width;
+        unsigned h = fImage->height;
         bool has_alpha = hasAlpha();
 
-        ximage = XCreateImage(xapp->display(), v, d, ZPixmap, 0, NULL, nw, nh, 8, 0);
-        if (!ximage || !(ximage->data = (char*) calloc(ximage->bytes_per_line*nh, sizeof(char)))) {
-            tlog("could not allocate ximage %ux%ux%u or data\n", nw, nh, d);
+        // tlog("upscale from %ux%ux%u to %ux%u\n", w, h, d, nw, nh);
+        ximage = createImage(nw, nh, fImage->depth);
+        if (ximage == 0) {
             goto error;
         }
         // tlog("created upscale ximage at %ux%ux%u\n", ximage->width, ximage->height, ximage->depth);
-        if (!(chanls = new double[ximage->bytes_per_line * ximage->height * 4 * sizeof(*chanls)])) {
-            tlog("could not allocate working arrays\n");
+        if (!(chanls = (typeof(chanls))calloc(ximage->bytes_per_line * ximage->height, 4 * sizeof(*chanls)))) {
+            tlog("ERROR: could not allocate working arrays\n");
             goto error;
         }
-        if (!(counts = new double[ximage->bytes_per_line * ximage->height * sizeof(*counts)])) {
-            tlog("could not allocate working arrays\n");
+        if (!(counts = (typeof(counts))calloc(ximage->bytes_per_line * ximage->height, sizeof(*counts)))) {
+            tlog("ERROR: could not allocate working arrays\n");
             goto error;
         }
-        if (!(colors = new double[ximage->bytes_per_line * ximage->height * sizeof(*colors)])) {
-            tlog("could not allocate working arrays\n");
+        if (!(colors = (typeof(colors))calloc(ximage->bytes_per_line * ximage->height, sizeof(*colors)))) {
+            tlog("ERROR: could not allocate working arrays\n");
             goto error;
         }
         {
@@ -431,7 +514,7 @@ ref<YImage> YXImage::upscale(unsigned nw, unsigned nh)
                     double lx, rx; unsigned k;
                     for (lx = 0.0, rx = pppx, k = 0; k < nw; k++, lx += pppx, rx += pppx) {
                         for (unsigned i = floor(lx); i < rx; i++) {
-                            unsigned xf = 1.0;
+                            double xf = 1.0;
                             if (lx < (i + 1) && (i + 1) < rx)
                                 xf = (i + 1) - lx;
                             else if (lx < i && i < rx)
@@ -441,6 +524,8 @@ ref<YImage> YXImage::upscale(unsigned nw, unsigned nh)
                             unsigned n = m << 2;
                             counts[m] += ff;
                             unsigned long pixel = XGetPixel(fImage, i, j);
+                            if (fBitmap && (pixel & 0x00FFFFFF))
+                                pixel |= 0x00FFFFFF;
                             unsigned A = has_alpha ? (pixel >> 24) & 0xff : 255;
                             unsigned R = (pixel >> 16) & 0xff;
                             unsigned G = (pixel >>  8) & 0xff;
@@ -489,157 +574,154 @@ ref<YImage> YXImage::upscale(unsigned nw, unsigned nh)
                         XPutPixel(ximage, k, l, pixel);
                     }
             }
-            image.init(new YXImage(ximage));
+            image.init(new YXImage(ximage, fBitmap));
             ximage = 0; // consumed above
         }
     }
   error:
     if (chanls)
-        delete[] chanls;
+        free(chanls);
     if (counts)
-        delete[] counts;
+        free(counts);
     if (colors)
-        delete[] colors;
+        free(colors);
     if (ximage)
         XDestroyImage(ximage);
     return image;
 }
 
-/*
- * XXX: Downscaling a large image gives *very* poor results.
- * This is especially noticable in icewmbg background images.
- * TODO: This method is in _dire_ need of a better algorithm.
- */
-ref<YImage> YXImage::downscale(unsigned nw, unsigned nh)
+// image downscaling using a fast bilinear interpolation algorithm
+ref<YImage> YXImage::downscale(unsigned newWidth, unsigned newHeight)
 {
-    ref<YImage> image;
-    XImage *ximage = 0;
-    double *chanls = 0;
-    double *counts = 0;
-    double *colors = 0;
+    const unsigned oldWidth = this->width();
+    const unsigned oldHeight = this->height();
+    const unsigned shift = 10;
 
-    // tlog("downscale from %ux%ux%u to %ux%u\n", width(), height(), depth(), nw, nh);
-    if (!valid()) {
-        tlog("not a valid YXImage\n");
-        goto error;
-    }
-    {
-        unsigned w = width();
-        unsigned h = height();
-        unsigned d = depth();
-        Visual *v = xapp->visual();
-        bool has_alpha = hasAlpha();
+    PRECONDITION(inrange(newWidth, 1U, oldWidth));
+    PRECONDITION(inrange(newHeight, 1U, oldHeight));
 
-        ximage = XCreateImage(xapp->display(), v, d, ZPixmap, 0, NULL, nw, nh, 8, 0);
-        if (!ximage || !(ximage->data = (char*) calloc(ximage->bytes_per_line*nh, sizeof(char)))) {
-            tlog("could not allocate ximage %ux%ux%u or data\n", nw, nh, d);
-            goto error;
-        }
-        size_t alloc_size = ximage->bytes_per_line * ximage->height * 4 * sizeof(*chanls);
-        // tlog("created downscale ximage at %ux%ux%u\n", ximage->width, ximage->height, ximage->depth);
-        if (!(chanls = new double[alloc_size])) {
-            tlog("could not allocate working arrays\n");
-            goto error;
-        }
-        memset(chanls, double(0), alloc_size);
-        alloc_size = ximage->bytes_per_line * ximage->height * sizeof(*counts);
-        if (!(counts = new double[alloc_size])) {
-            tlog("could not allocate working arrays\n");
-            goto error;
-        }
-        memset(counts, double(0), alloc_size);
-        if (!(colors = new double[alloc_size])) {
-            tlog("could not allocate working arrays\n");
-            goto error;
-        }
-        memset(colors, double(0), alloc_size);
-        {
-            double pppx = (double) w / (double) nw;
-            double pppy = (double) h / (double) nh;
+    XImage* ximage = createImage(newWidth, newHeight, 32U);
+    if (ximage == 0)
+        return null;
 
-            double ty, by; unsigned l;
-            for (ty = 0.0, by = pppy, l = 0; l < nh; l++, ty += pppy, by += pppy) {
-                for (unsigned j = floor(ty); j < by; j++) {
-                    double yf = 1.0;
-                    if (j < ty && j + 1 > ty)
-                        yf = ty - j;
-                    else if (j < by && j + 1 > by)
-                        yf = by - j;
-                    double lx, rx; unsigned k;
-                    for (lx = 0.0, rx = pppx, k = 0; k < nw; k++, lx += pppx, rx += pppx) {
-                        for (unsigned i = floor(lx); i < rx; i++) {
-                            double xf = 1.0;
-                            if (i < lx && i + 1 > lx)
-                                xf = lx - i;
-                            else if (i < rx && i + 1 > rx)
-                                xf = rx - i;
-                            double ff = xf * yf;
-                            unsigned m = l * nw + k;
-                            unsigned n = m << 2;
-                            counts[m] += ff;
-                            unsigned long pixel = XGetPixel(fImage, i, j);
-                            unsigned A = has_alpha ? (pixel >> 24) & 0xff : 255;
-                            unsigned R = (pixel >> 16) & 0xff;
-                            unsigned G = (pixel >>  8) & 0xff;
-                            unsigned B = (pixel >>  0) & 0xff;
-                            colors[m] += ff;
-                            chanls[n+0] += A * ff;
-                            chanls[n+1] += R * ff;
-                            chanls[n+2] += G * ff;
-                            chanls[n+3] += B * ff;
-                        }
-                    }
+    unsigned long *red = new unsigned long[newWidth];
+    unsigned long *grn = new unsigned long[newWidth];
+    unsigned long *blu = new unsigned long[newWidth];
+    unsigned long *alp = new unsigned long[newWidth];
+    unsigned long *div = new unsigned long[newWidth];
+
+    unsigned hacc = 0;
+    unsigned h = 0;
+    unsigned mult = 0;
+    bool repeat = false;
+
+    for (unsigned y = 0; y < oldHeight; y = repeat ? y : 1 + y) {
+        if (hacc < newHeight) {
+            memset(red, 0, sizeof(*red) * newWidth);
+            memset(grn, 0, sizeof(*grn) * newWidth);
+            memset(blu, 0, sizeof(*blu) * newWidth);
+            memset(alp, 0, sizeof(*alp) * newWidth);
+            memset(div, 0, sizeof(*div) * newWidth);
+        }
+
+        if (repeat) {
+            repeat = false;
+            mult = (1 << shift) - mult;
+        }
+        else {
+            hacc += newHeight;
+            if (hacc <= oldHeight) {
+                mult = 1 << shift;
+            }
+            else {
+                mult = ((newHeight / 2) + (1 << shift)
+                     * (newHeight - (hacc - oldHeight)))
+                     / newHeight;
+            }
+        }
+
+        unsigned wacc = 0;
+        unsigned w = 0;
+        unsigned char* idata = (unsigned char *) fImage->data
+                               + y * fImage->bytes_per_line;
+        const bool has_alpha = hasAlpha();
+        for (unsigned x = 0; x < oldWidth; ++x) {
+            unsigned char r, g, b, a;
+            if (fImage->byte_order == MSBFirst) {
+                a = has_alpha ? *idata++ : 0xFF;
+                r = *idata++;
+                g = *idata++;
+                b = *idata++;
+            } else {
+                b = *idata++;
+                g = *idata++;
+                r = *idata++;
+                a = has_alpha ? *idata++ : 0xFF;
+            }
+
+            wacc += newWidth;
+            if (wacc < oldWidth) {
+                red[w] += (mult << shift) * r;
+                grn[w] += (mult << shift) * g;
+                blu[w] += (mult << shift) * b;
+                alp[w] += (mult << shift) * a;
+                div[w] += mult << shift;
+            }
+            else {
+                unsigned m = (newWidth / 2 + (1 << shift)
+                           * (newWidth - (wacc - oldWidth)))
+                           / newWidth;
+                red[w] += m * mult * r;
+                grn[w] += m * mult * g;
+                blu[w] += m * mult * b;
+                alp[w] += m * mult * a;
+                div[w] += m * mult;
+                ++w;
+                wacc -= oldWidth;
+                if (wacc > 0) {
+                    m = (1 << shift) - m;
+                    red[w] += m * mult * r;
+                    grn[w] += m * mult * g;
+                    blu[w] += m * mult * b;
+                    alp[w] += m * mult * a;
+                    div[w] += m * mult;
                 }
             }
-            unsigned amax = 0;
-            for (unsigned l = 0; l < nh; l++) {
-                for (unsigned k = 0; k < nw; k++) {
-                    unsigned m = l * nw + k;
-                    unsigned n = m << 2;
-                    unsigned long pixel = 0;
-                    if (counts[m])
-                        pixel |= (lround(chanls[n+0] / counts[m]) & 0xff) << 24;
-                    if (colors[m]) {
-                        pixel |= (lround(chanls[n+1] / colors[m]) & 0xff) << 16;
-                        pixel |= (lround(chanls[n+2] / colors[m]) & 0xff) <<  8;
-                        pixel |= (lround(chanls[n+3] / colors[m]) & 0xff) <<  0;
-                    }
-                    XPutPixel(ximage, k, l, pixel);
-                    amax = max(amax, (unsigned)((pixel >> 24) & 0xff));
+        }
+
+        if (hacc >= oldHeight) {
+            hacc -= oldHeight;
+            if (hacc > 0) {
+                repeat = true;
+            }
+            unsigned char* odata = (unsigned char *) ximage->data
+                                   + h * ximage->bytes_per_line;
+            for (unsigned k = 0; k < newWidth; ++k) {
+                unsigned long d = non_zero(div[k]);
+                if (ximage->byte_order == MSBFirst) {
+                    *odata++ = (unsigned char) (alp[k] / d);
+                    *odata++ = (unsigned char) (red[k] / d);
+                    *odata++ = (unsigned char) (grn[k] / d);
+                    *odata++ = (unsigned char) (blu[k] / d);
+                }
+                else {
+                    *odata++ = (unsigned char) (blu[k] / d);
+                    *odata++ = (unsigned char) (grn[k] / d);
+                    *odata++ = (unsigned char) (red[k] / d);
+                    *odata++ = (unsigned char) (alp[k] / d);
                 }
             }
-            if (!amax)
-                /* no opacity at all! */
-                for (unsigned l = 0; l < nh; l++)
-                    for (unsigned k = 0; k < nw; k++)
-                        XPutPixel(ximage, k, l, XGetPixel(ximage, k, l) | 0xFF000000);
-            else if (amax < 255) {
-                double bump = (double) 255 / (double) amax;
-                for (unsigned l = 0; l < nh; l++)
-                    for (unsigned k = 0; k < nw; k++) {
-                        unsigned long pixel = XGetPixel(ximage, k, l);
-                        amax = (pixel >> 24) & 0xff;
-                        amax = lround((double) amax * bump);
-                        if (amax > 255)
-                            amax = 255;
-                        pixel = (pixel & 0x00FFFFFF) | (amax << 24);
-                        XPutPixel(ximage, k, l, pixel);
-                    }
-            }
-            image.init(new YXImage(ximage));
-            ximage = 0; // consumed above
+            ++h;
         }
     }
-  error:
-    if (chanls)
-        delete[] chanls;
-    if (counts)
-        delete[] counts;
-    if (colors)
-        delete[] colors;
-    if (ximage)
-        XDestroyImage(ximage);
-    return image;
+
+    delete[] red;
+    delete[] grn;
+    delete[] blu;
+    delete[] alp;
+    delete[] div;
+
+    return ref<YImage>(new YXImage(ximage));
 }
 
 ref<YImage> YXImage::subimage(int x, int y, unsigned w, unsigned h)
@@ -647,31 +729,30 @@ ref<YImage> YXImage::subimage(int x, int y, unsigned w, unsigned h)
     ref<YImage> image;
     XImage *ximage;
 
-    // tlog("copy from %ux%u+%d+%d from %ux%ux%u\n", w, h, x, y, width(), height(), depth());
     if (!valid()) {
-        tlog("invalid YXImage\n");
+        tlog("ERROR: invalid YXImage\n");
         goto error;
     }
+    // tlog("copy from %ux%u+%d+%d from %ux%ux%u\n", w, h, x, y, fImage->width, fImage->height, fImage->depth);
     ximage = XSubImage(fImage, x, y, w, h);
     if (!ximage) {
-        tlog("could not create subimage\n");
+        tlog("ERROR: could not create subimage\n");
         goto error;
     }
-    image.init(new YXImage(ximage));
+    image.init(new YXImage(ximage, fBitmap));
   error:
     return image;
 }
 
 ref<YImage> YXImage::scale(unsigned nw, unsigned nh)
 {
-    ref<YImage> image;
-
     if (!valid()) {
         tlog("invalid YXImage\n");
-        return image;
+        return null;
     }
-    unsigned w = width();
-    unsigned h = height();
+
+    unsigned w = fImage->width;
+    unsigned h = fImage->height;
     if (nw == w && nh == h)
         return subimage(0, 0, w, h);
     if (nw <= w && nh <= h)
@@ -693,12 +774,27 @@ ref<YImage> YImage::createFromPixmapAndMask(Pixmap pixmap, Pixmap mask,
 {
     ref<YImage> image;
     XImage *xdraw, *xmask = 0;
+    Window root;
+    int x, y;
+    unsigned w, h, b, d;
 
+    if (!XGetGeometry(xapp->display(), pixmap, &root, &x, &y, &w, &h, &b, &d)) {
+        tlog("could not get gometry of pixmap 0x%lx\n", pixmap);
+        return image;
+    }
+    tlog("creating YXImage from pixmap 0x%lx mask 0x%lx, %ux%ux%u+%d+%d\n", pixmap, mask, w, h, d, x, y);
+    if (width != w || height != h) {
+        tlog("pixmap 0x%lx: width=%u, w=%u, height=%u, h=%u\n", pixmap, width, w, height, h);
+    }
     // tlog("creating YImage from pixmap 0x%lu mask 0x%lu %ux%u", pixmap, mask, width, height);
     // tlog("next request %lu at %s: +%d : %s()\n", NextRequest(xapp->display()), __FILE__, __LINE__, __func__);
-    xdraw = XGetImage(xapp->display(), pixmap, 0, 0, width, height, AllPlanes, ZPixmap);
+    if (d == 1)
+        xdraw = XGetImage(xapp->display(), pixmap, 0, 0, w, h, 0x1, XYPixmap);
+    else
+        xdraw = XGetImage(xapp->display(), pixmap, 0, 0, w, h, AllPlanes, ZPixmap);
+
     // tlog("next request %lu at %s: +%d : %s()\n", NextRequest(xapp->display()), __FILE__, __LINE__, __func__);
-    if (xdraw && (!mask || (xmask = XGetImage(xapp->display(), mask, 0, 0, width, height, 0x1, XYPixmap)))) {
+    if (xdraw && (!mask || (xmask = XGetImage(xapp->display(), mask, 0, 0, w, h, 0x1, XYPixmap)))) {
         // tlog("got pixmap ximage %ux%ux%u\n", xdraw->width, xdraw->height, xdraw->depth);
         // if (xmask)
         //     tlog("got mask ximage %ux%ux%u\n", xmask->width, xmask->height, xmask->depth);
@@ -718,19 +814,25 @@ ref<YImage> YXImage::combine(XImage *xdraw, XImage *xmask)
 
     unsigned w = xdraw->width;
     unsigned h = xdraw->height;
+    bool bitmap = (xdraw->depth == 1) ? true : false;
 
     // tlog("combining ximage draw %ux%ux%u and mask\n", xdraw->width, xdraw->height, xdraw->depth);
+    if (bitmap && !xmask)
+        xmask = xdraw;
     if (!xmask) {
         ximage = XSubImage(xdraw, 0, 0, w, h);
-        if (!ximage)
+        if (!ximage) {
+            tlog("ERROR: could not create subimage\n");
             goto error;
-        tlog("no mask, subimage %ux%ux%u\n", ximage->width, ximage->height, ximage->depth);
-        image.init(new YXImage(ximage));
+        }
+        // tlog("no mask, subimage %ux%ux%u\n", ximage->width, ximage->height, ximage->depth);
+        image.init(new YXImage(ximage, bitmap));
         return image;
     }
-    ximage = XCreateImage(xapp->display(), xapp->visual(), 32, ZPixmap, 0, NULL, w, h, 8, 0);
-    if (!ximage || !(ximage->data = (char*) calloc(ximage->bytes_per_line*h, sizeof(char))))
+    ximage = createImage(w, h, 32U);
+    if (ximage == 0) {
         goto error;
+    }
     // tlog("created ximage for combine at %ux%ux%u with mask %ux%ux%u\n",
     //      ximage->width, ximage->height, ximage->depth,
     //      xmask->width, xmask->height, xmask->depth);
@@ -740,7 +842,7 @@ ref<YImage> YXImage::combine(XImage *xdraw, XImage *xmask)
                 XPutPixel(ximage, i, j, XGetPixel(xdraw, i, j) | 0xFF000000);
             else
                 XPutPixel(ximage, i, j, XGetPixel(xdraw, i, j) & 0x00FFFFFF);
-    image.init(new YXImage(ximage));
+    image.init(new YXImage(ximage, bitmap));
     return image;
   error:
     if (ximage)
@@ -755,9 +857,10 @@ ref<YImage> YImage::createFromIconProperty(long *prop_pixels, unsigned w, unsign
 
     // tlog("creating icon %ux%u\n", w, h);
     // icon properties are always 32-bit ARGB
-    ximage = XCreateImage(xapp->display(), xapp->visual(), 32, ZPixmap, 0, NULL, w, h, 8, 0);
-    if (!ximage || !(ximage->data = (char*) calloc(ximage->bytes_per_line*h, sizeof(char))))
+    ximage = YXImage::createImage(w, h, 32U);
+    if (ximage == 0) {
         goto error;
+    }
     // tlog("created ximage for icon %ux%ux%u\n", ximage->width, ximage->height, ximage->depth);
     for (unsigned j = 0; j < h; j++)
         for (unsigned i = 0; i < w; i++, prop_pixels++)
@@ -782,38 +885,44 @@ ref<YImage> YImage::createFromPixmapAndMaskScaled(Pixmap pix, Pixmap mask,
 
 ref <YPixmap> YXImage::renderToPixmap(unsigned depth)
 {
-	ref <YPixmap> pixmap;
-	bool has_mask = false;
-	XImage *xdraw = 0, *xmask = 0;
-	Pixmap draw = None, mask = None;
-	XGCValues xg;
-	GC gcd = None, gcm = None;
+    ref <YPixmap> pixmap;
+    bool has_mask = false;
+    XImage *xdraw = 0, *xmask = 0;
+    Pixmap draw = None, mask = None;
+    XGCValues xg;
+    GC gcd = None, gcm = None;
 
-	if (!valid())
-		goto done;
-    // tlog("rendering %ux%ux%u to pixmap\n", width(), height(), depth());
+    if (!valid()) {
+        tlog("ERROR: invalid YXImage\n");
+        goto error;
+    }
+    // tlog("rendering %ux%ux%u to pixmap\n", fImage->width, fImage->height, fImage->depth);
     {
-        unsigned w = width();
-        unsigned h = height();
+        unsigned w = fImage->width;
+        unsigned h = fImage->height;
         if (hasAlpha())
             for (unsigned j = 0; !has_mask && j < h; j++)
                 for (unsigned i = 0; !has_mask && i < w; i++)
                     if (((XGetPixel(fImage, i, j) >> 24) & 0xff) < 128)
                         has_mask = true;
         if (hasAlpha()) {
-            xdraw = XCreateImage(xapp->display(), xapp->visual(), depth, ZPixmap, 0, NULL, w, h, 8, 0);
-            if (!xdraw || !(xdraw->data = (char*) calloc(xdraw->bytes_per_line*h, sizeof(char))))
-                goto done;
+            xdraw = createImage(w, h, xapp->depth());
+            if (xdraw == 0) {
+                goto error;
+            }
             for (unsigned j = 0; j < h; j++)
                 for (unsigned i = 0; i < w; i++)
                     XPutPixel(xdraw, i, j, XGetPixel(fImage, i, j));
-        } else if (!(xdraw = XSubImage(fImage, 0, 0, w, h)))
-            goto done;
+        } else if (!(xdraw = XSubImage(fImage, 0, 0, w, h))) {
+            tlog("ERROR: could not create subimage %ux%u\n", w, h);
+            goto error;
+        }
         // tlog("created ximage %ux%ux%u for pixmap\n", xdraw->width, xdraw->height, xdraw->depth);
 
-        xmask = XCreateImage(xapp->display(), xapp->visual(), 1, XYPixmap, 0, NULL, w, h, 8, 0);
-        if (!xmask || !(xmask->data = (char*) calloc(xmask->bytes_per_line*h, sizeof(char))))
-            goto done;
+        xmask = createBitmap(w, h, NULL);
+        if (xmask == 0) {
+            goto error;
+        }
         for (unsigned j = 0; j < h; j++)
             for (unsigned i = 0; i < w; i++)
                 XPutPixel(xmask, i, j,
@@ -822,24 +931,35 @@ ref <YPixmap> YXImage::renderToPixmap(unsigned depth)
 
         // tlog("next request %lu at %s: +%d : %s()\n", NextRequest(xapp->display()), __FILE__, __LINE__, __func__);
         draw = XCreatePixmap(xapp->display(), xapp->root(), xdraw->width, xdraw->height, xdraw->depth);
-        if (!draw)
-            goto done;
+        if (!draw) {
+            tlog("ERROR: could not create pixmap %ux%ux%u\n", xdraw->width, xdraw->height, xdraw->depth);
+            goto error;
+        }
         // tlog("created pixmap 0x%lx %ux%ux%u for pixmap\n", draw, xdraw->width, xdraw->height, xdraw->depth);
         gcd = XCreateGC(xapp->display(), draw, 0UL, &xg);
-        if (!gcd)
-            goto done;
+        if (!gcd) {
+            tlog("ERROR: could not create GC for pixmap 0x%lx %ux%ux%u\n",
+                    draw, xdraw->width, xdraw->height, xdraw->depth);
+            goto error;
+        }
         // tlog("putting ximage %ux%ux%u to pixmap\n", xdraw->width, xdraw->height, xdraw->depth);
         // tlog("next request %lu at %s: +%d : %s()\n", NextRequest(xapp->display()), __FILE__, __LINE__, __func__);
         XPutImage(xapp->display(), draw, gcd, xdraw, 0, 0, 0, 0, xdraw->width, xdraw->height);
 
         // tlog("next request %lu at %s: +%d : %s()\n", NextRequest(xapp->display()), __FILE__, __LINE__, __func__);
-        mask = XCreatePixmap(xapp->display(), xapp->root(), xmask->width, xmask->height, xmask->depth);
-        if (!mask)
-            goto done;
+        mask = XCreatePixmap(xapp->display(), xapp->root(), xmask->width, xmask->height, 1);
+        if (!mask) {
+            tlog("ERROR: could not create mask %ux%ux%u\n", xmask->width, xmask->height, 1U);
+            goto error;
+        }
         // tlog("created pixmap 0x%lx %ux%ux%u for mask\n", mask, xmask->width, xmask->height, xmask->depth);
         gcm = XCreateGC(xapp->display(), mask, 0UL, &xg);
-        if (!gcm)
-            goto done;
+        if (!gcm) {
+            tlog("ERROR: could not create GC for mask 0x%lx %ux%ux1\n", mask, xmask->width, xmask->height);
+            goto error;
+        }
+        XSetForeground(xapp->display(), gcm, 0xffffffff);
+        XSetBackground(xapp->display(), gcm, 0x00000000);
         // tlog("putting ximage %ux%ux%u to mask\n", xmask->width, xmask->height, xmask->depth);
         // tlog("next request %lu at %s: +%d : %s()\n", NextRequest(xapp->display()), __FILE__, __LINE__, __func__);
         XPutImage(xapp->display(), mask, gcm, xmask, 0, 0, 0, 0, xmask->width, xmask->height);
@@ -847,12 +967,12 @@ ref <YPixmap> YXImage::renderToPixmap(unsigned depth)
         pixmap = createPixmap(draw, mask, xdraw->width, xdraw->height, depth);
         draw = mask = None; // consumed above
     }
-  done:
-	if (gcm) {
-		XFreeGC(xapp->display(), gcm);
+  error:
+    if (gcm) {
+        XFreeGC(xapp->display(), gcm);
     }
-	if (gcd) {
-		XFreeGC(xapp->display(), gcd);
+    if (gcd) {
+        XFreeGC(xapp->display(), gcd);
     }
     if (mask) {
         XFreePixmap(xapp->display(), mask);
@@ -860,13 +980,13 @@ ref <YPixmap> YXImage::renderToPixmap(unsigned depth)
     if (draw) {
         XFreePixmap(xapp->display(), draw);
     }
-	if (xmask) {
-		XDestroyImage(xmask);
+    if (xmask) {
+        XDestroyImage(xmask);
     }
-	if (xdraw) {
-		XDestroyImage(xdraw);
+    if (xdraw) {
+        XDestroyImage(xdraw);
     }
-	return pixmap;
+    return pixmap;
 }
 
 ref<YPixmap> YImage::createPixmap(Pixmap draw, Pixmap mask,
@@ -877,7 +997,9 @@ ref<YPixmap> YImage::createPixmap(Pixmap draw, Pixmap mask,
 
 void YXImage::draw(Graphics& g, int dx, int dy)
 {
-    composite(g, 0, 0, width(), height(), dx, dy);
+    if (!valid())
+        return;
+    composite(g, 0, 0, fImage->width, fImage->height, dx, dy);
 }
 
 void YXImage::draw(Graphics& g, int x, int y,
@@ -893,59 +1015,83 @@ void YXImage::composite(Graphics& g, int x, int y,
 
     if (!valid())
         return;
-    unsigned wi = width();
-    unsigned hi = height();
-    // tlog("compositing %ux%u+%d+%d of %ux%ux%u onto drawable at +%d+%d\n",
-    //         w, h, x, y, width(), height(), depth(), dx, dy);
+    unsigned wi = fImage->width;
+    unsigned hi = fImage->height;
+    unsigned di = fImage->depth;
+    bool bitmap = isBitmap();
+    unsigned long fg = g.color() ? g.color()->pixel() & 0x00FFFFFF : 0;
+    unsigned long bg = 0x00000000; /* for now */
+    tlog("compositing %ux%u+%d+%d of %ux%ux%u onto drawable 0x%lx at +%d+%d\n", w, h, x, y, wi, hi, di, g.drawable(), dx, dy);
+    Window root;
+    int _x, _y;
+    unsigned _w, _h, _b, _d;
+
+    if (XGetGeometry(xapp->display(), g.drawable(), &root, &_x, &_y, &_w, &_h, &_b, &_d))
+        tlog("drawable 0x%lx has geometry %ux%ux%u+%d+%d\n", g.drawable(), _w, _h, _d, _x, _y);
     if (g.xorigin() > dx) {
-        if ((int) w <= g.xorigin() - dx)
+        if ((int) w <= g.xorigin() - dx) {
+            tlog("ERROR: coordinates out of bounds\n");
             return;
+        }
         w -= g.xorigin() - dx;
         x += g.xorigin() - dx;
         dx = g.xorigin();
     }
     if (g.yorigin() > dy) {
-        if ((int) h <= g.xorigin() - dx)
+        if ((int) h <= g.xorigin() - dx) {
+            tlog("ERROR: coordinates out of bounds\n");
             return;
+        }
         h -= g.yorigin() - dy;
         y += g.yorigin() - dy;
         dy = g.yorigin();
     }
     if ((int) (dx + w) > (int) (g.xorigin() + g.rwidth())) {
-        if ((int) (g.xorigin() + g.rwidth()) <= dx)
+        if ((int) (g.xorigin() + g.rwidth()) <= dx) {
+            tlog("ERROR: coordinates out of bounds\n");
             return;
+        }
         w = g.xorigin() + g.rwidth() - dx;
     }
     if ((int) (dy + h) > (int) (g.yorigin() + g.rheight())) {
-        if ((int) (g.yorigin() + g.rheight()) <= dy)
+        if ((int) (g.yorigin() + g.rheight()) <= dy) {
+            tlog("ERROR: coordinates out of bounds\n");
             return;
+        }
         h = g.yorigin() + g.rheight() - dy;
     }
-    if (w <= 0 || h <= 0)
+    if (w <= 0 || h <= 0) {
+        tlog("ERROR: coordinates out of bounds\n");
         return;
-
+    }
     if (!hasAlpha()) {
-        // tlog("simply putting %ux%u+0+0 of ximage %ux%ux%u onto drawable at +%d+%d\n",
-        //         w, h, width(), height(), depth(), dx-g.xorigin(), dy-g.yorigin());
+        tlog("simply putting %ux%u+0+0 of ximage %ux%ux%u onto drawable %ux%ux%u at +%d+%d\n",
+              w, h, wi, hi, di, _w, _h, _d, dx-g.xorigin(), dy-g.yorigin());
         // tlog("next request %lu at %s: +%d : %s()\n", NextRequest(xapp->display()), __FILE__, __LINE__, __func__);
         XPutImage(xapp->display(), g.drawable(), g.handleX(), fImage,  0, 0, dx - g.xorigin(), dy - g.yorigin(), w, h);
         return;
     }
-    // tlog("getting image %ux%u+%d+%d from drawable\n", w, h, dx-g.xorigin(), dy-g.yorigin());
+    tlog("getting image %ux%u+%d+%d from drawable %ux%ux%u\n", w, h, dx-g.xorigin(), dy-g.yorigin(), _w, _h, _d);
     // tlog("next request %lu at %s: +%d : %s()\n", NextRequest(xapp->display()), __FILE__, __LINE__, __func__);
     xback = XGetImage(xapp->display(), g.drawable(), dx - g.xorigin(), dy - g.yorigin(), w, h, AllPlanes, ZPixmap);
-    if (!xback)
+    if (!xback) {
+        tlog("ERROR: could not get backing image\n");
         return;
+    }
     // tlog("got ximage %ux%ux%u\n", xback->width, xback->height, xback->depth);
 
     // tlog("compositing %ux%u+%d+%d of %ux%ux%u onto %ux%ux%u\n",
-    //         w, h, x, y, width(), height(), depth(), xback->width, xback->height, xback->depth);
+    //         w, h, x, y, fImage->width, fImage->height, fImage->depth, xback->width, xback->height, xback->depth);
     for (unsigned j = 0; j < h; j++) {
-        if ((int)j + y < 0 || (int)j + y > (int)hi)
+        if ((int)j + y < 0 || (int)j + y > (int)hi) {
+            tlog("ERROR: point y = %u is out of bounds\n", j);
             continue;
+        }
         for (unsigned i = 0; i < w; i++) {
-            if ((int)i + x < 0 || (int)i + x > (int)wi)
+            if ((int)i + x < 0 || (int)i + x > (int)wi) {
+                tlog("ERROR: point x = %u is out of bounds\n", i);
                 continue;
+            }
             unsigned Rb, Gb, Bb, A, R, G, B;
             unsigned long pixel;
 
@@ -954,6 +1100,12 @@ void YXImage::composite(Graphics& g, int x, int y,
             Gb = (pixel >>  8) & 0xff;
             Bb = (pixel >>  0) & 0xff;
             pixel = XGetPixel(fImage, i + x, j + y);
+            if (bitmap) {
+                if (pixel & 0x00FFFFFF)
+                    pixel = (pixel & 0xFF000000) | fg;
+                else
+                    pixel = (pixel & 0xFF000000) | bg;
+            }
             A = (pixel >> 24) & 0xff;
             R = (pixel >> 16) & 0xff;
             G = (pixel >>  8) & 0xff;
@@ -966,8 +1118,8 @@ void YXImage::composite(Graphics& g, int x, int y,
             XPutPixel(xback, i, j, pixel);
         }
     }
-    // tlog("putting %ux%u+0+0 of ximage %ux%ux%u on drawable at +%d+%d\n",
-    //         w, h, xback->width, xback->height, xback->depth, dx-g.xorigin(), dy-g.yorigin());
+    tlog("putting %ux%u+0+0 of ximage %ux%ux%u on drawable %ux%ux%u at +%d+%d\n",
+          w, h, xback->width, xback->height, xback->depth, _w, _h, _d, dx-g.xorigin(), dy-g.yorigin());
     // tlog("next request %lu at %s: +%d : %s()\n", NextRequest(xapp->display()), __FILE__, __LINE__, __func__);
     XPutImage(xapp->display(), g.drawable(), g.handleX(), xback, 0, 0, dx - g.xorigin(), dy - g.yorigin(), w, h);
     XDestroyImage(xback);

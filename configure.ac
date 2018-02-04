@@ -4,7 +4,6 @@
 AC_PREREQ([2.69])
 AC_INIT([icewm],[1.4.2],[https://github.com/bbidulock/icewm/issues])
 AC_REVISION([1.4.2])
-
 AC_CONFIG_SRCDIR([src/ysmapp.cc])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
@@ -58,18 +57,6 @@ if test -z "$ASCIIDOC_BACKEND"; then
 		asciidoc) ASCIIDOC_BACKEND="--backend=html4" ;;
 		asciidoctor) ASCIIDOC_BACKEND="--backend=html5" ;;
 		*) AC_MSG_WARN([ASCIIDOC $ASCIIDOC is not supported.]) ;;
-	esac
-fi
-
-AC_ARG_VAR([ASCIIMAN],[asciidoc to manpage converter. @<:@default=asciidoctor@:>@])
-AC_CHECK_PROGS([ASCIIMAN],[asciidoctor a2x],[${am_missing_run}asciidoctor],[$PATH])
-
-AC_ARG_VAR([ASCIIMAN_FORMAT],[asciidoc manpage option @<:@default=NONE@:>@])
-if test -z "$ASCIIMAN_FORMAT"; then
-	case "$ASCIIMAN" in
-		a2x) ASCIIMAN_FORMAT="--format=manpage" ;;
-		asciidoctor) ASCIIMAN_FORMAT="--backend=manpage" ;;
-		*) AC_MSG_WARN([ASCIIMAN $ASCIIMAN is not supported.]) ;;
 	esac
 fi
 
@@ -332,24 +319,6 @@ if test "$enable_fribidi" != "no" && test "$enable_i18n" != "no"; then
 	[AC_MSG_WARN([FRIBIDI is not supported.])])
 fi
 
-AC_SUBST([GNOME1_CFLAGS])
-AC_SUBST([GNOME1_LIBS])
-
-AC_ARG_ENABLE([menus-gnome2],
-    AC_HELP_STRING([--disable-menus-gnome2],[Disable display of GNOME 2 menus.]))
-if test x$enable_menus_gnome2 != xno; then
-    PKG_CHECK_MODULES([GNOME2],[gnome-desktop-2.0 libgnomeui-2.0],[
-	GNOME_VER=2
-	AC_DEFINE([CONFIG_GNOME_MENUS],[1],[Define to make IceWM more GNOME-friendly])
-	BUILD_MENU_GNOME2=yes
-	APPLICATIONS="${APPLICATIONS} icewm-menu-gnome2"],
-	[AC_MSG_WARN([GNOME2 menus not supported.])])
-fi
-
-AC_SUBST([GNOME_VER])
-AC_SUBST([GNOME2_CFLAGS])
-AC_SUBST([GNOME2_LIBS])
-
 AC_ARG_ENABLE([menus-fdo],
     AC_HELP_STRING([--disable-menus-fdo],[Disable support of freedesktop.org style menus.]))
 if test x$enable_menus_fdo != xno; then
@@ -363,44 +332,36 @@ AC_SUBST([GIO_CFLAGS])
 AC_SUBST([GIO_LIBS])
 
 AC_ARG_ENABLE([gdk-pixbuf],
-    AC_HELP_STRING([--disable-gdk-pixbuf],[Disabled gdk-pixbuf rendering.]))
-if test "x$enable_gdk_pixbuf" != xno ; then
+    AC_HELP_STRING([--enable-gdk-pixbuf],[Enable gdk-pixbuf rendering.
+	@<:@default=disabled@:>@]))
+if test "x$enable_gdk_pixbuf" = xyes ; then
     PKG_CHECK_MODULES([PIXBUF],[gdk-pixbuf-xlib-2.0],[
 	IMAGE_CFLAGS="$PIXBUF_CFLAGS"
 	IMAGE_LIBS="$PIXBUF_LIBS"
 	AC_DEFINE([CONFIG_GDK_PIXBUF_XLIB],[1],[Define to enable gdk-pixbuf rendering.])
-	image_library=gdk-pixbuf-xlib-2.0],[
-	enable_gdk_pixbuf=no
-	AC_MSG_WARN([gdk-pixbuf not supported.])])
-fi
-if test "x$enable_gdk_pixbuf" = xno; then
+	image_library=gdk-pixbuf-xlib-2.0])
+else
     PKG_CHECK_MODULES([XPM],[xpm],[
 	IMAGE_CFLAGS="$XPM_CFLAGS"
 	IMAGE_LIBS="$XPM_LIBS"
 	AC_DEFINE([CONFIG_XPM],[1],[Define to enable libxpm rendering.])
-	image_library=libxpm],[
-	AC_MSG_ERROR([libxpm not supported.])])
+	image_library=libxpm])
     PKG_CHECK_MODULES([LIBPNG],[libpng >= 1.6],[
 	IMAGE_CFLAGS="$LIBPNG_CFLAGS $IMAGE_CFLAGS"
 	IMAGE_LIBS="$LIBPNG_LIBS $IMAGE_LIBS"
 	AC_DEFINE([CONFIG_LIBPNG],[1],[Define to enable libpng rendering.])
-	image_library="$image_library libpng"],[
-	AC_MSG_WARN([libpng not supported.])])
+	image_library="$image_library libpng"])
     PKG_CHECK_MODULES([LIBJPEG],[libjpeg >= 1.0],[
         IMAGE_CFLAGS="$LIBJPEG_CFLAGS $IMAGE_CFLAGS"
         IMAGE_LIBS="$LIBJPEG_LIBS $IMAGE_LIBS"
         AC_DEFINE([CONFIG_LIBJPEG],[1],[Define to enable libjpeg rendering.])
-        image_library="$image_library libjpeg"],[
-        AC_MSG_WARN([libjpeg not supported.])])
+        image_library="$image_library libjpeg"])
 fi
 AC_SUBST([IMAGE_CFLAGS])
 AC_SUBST([IMAGE_LIBS])
 
 AM_CONDITIONAL([BUILD_TESTS],[test x$BUILD_TESTS = xyes])
-AM_CONDITIONAL([BUILD_HELP],[test x$BUILD_HELP = xyes])
 AM_CONDITIONAL([BUILD_SOUND],[test x$BUILD_SOUND = xyes])
-AM_CONDITIONAL([BUILD_MENU_GNOME1],[test x$BUILD_MENU_GNOME1 = xyes])
-AM_CONDITIONAL([BUILD_MENU_GNOME2],[test x$BUILD_MENU_GNOME2 = xyes])
 AM_CONDITIONAL([BUILD_MENU_FDO],[test x$BUILD_MENU_FDO = xyes])
 
 test "x$prefix" = xNONE && prefix="$ac_default_prefix"
@@ -459,11 +420,6 @@ CORE_LIBS="$CORE_LIBS -lm"
 AC_ARG_VAR([EXTRA_LIBS], [Extra core libraries.])
 
 CORE_LIBS="$CORE_LIBS "'$(EXTRA_LIBS)'
-
-# needed by lib/menu.in
-AC_SUBST([CONFIG_GNOME2_MENU_DIR])
-dnl AC_SUBST([GNOME_VER])
-AC_SUBST([CONFIG_KDE_MENU_DIR])
 
 AC_CONFIG_FILES([Makefile
                  src/Makefile

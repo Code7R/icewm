@@ -66,6 +66,8 @@
 
 #ifdef HAVE_SYS_SOUNDCARD_H
 #include <sys/soundcard.h>
+#else
+#undef ENABLE_OSS
 #endif
 
 #ifdef HAVE_SNDFILE_H

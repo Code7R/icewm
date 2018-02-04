@@ -6,7 +6,7 @@
 
 
 AM_CPPFLAGS = -include ../config.h
-AM_CXXFLAGS = $(CORE_CFLAGS) $(XSM_CFLAGS) $(IMAGE_CFLAGS) $(AUDIO_CFLAGS) $(GNOME1_CFLAGS) $(GNOME2_CFLAGS) $(GIO_CFLAGS) -DEXEEXT=$(EXEEXT)
+AM_CXXFLAGS = $(CORE_CFLAGS) $(XSM_CFLAGS) $(IMAGE_CFLAGS) $(AUDIO_CFLAGS) $(GIO_CFLAGS) -DEXEEXT=$(EXEEXT)
 
 EXTRA_DIST = \
 	ypointer.h \
@@ -15,8 +15,6 @@ EXTRA_DIST = \
 EXTRA_PROGRAMS = \
 	icehelp \
 	icesound \
-	icewm-menu-gnome1 \
-	icewm-menu-gnome2 \
 	icewm-menu-fdo \
 	testarray \
 	testlocale \
@@ -69,10 +67,6 @@ endif
 
 if BUILD_SOUND
 bin_PROGRAMS += icesound
-endif
-
-if BUILD_MENU_GNOME2
-bin_PROGRAMS += icewm-menu-gnome2
 endif
 
 if BUILD_MENU_FDO
@@ -204,7 +198,7 @@ genpref_SOURCES = \
 	themable.h \
 	default.h \
 	genpref.cc
-genpref_LDADD = misc.$(OBJEXT) @LIBINTL@
+genpref_LDADD = libice.la @LIBINTL@
 
 icewm_SOURCES = \
 	intl.h \
@@ -335,7 +329,7 @@ icewmhint_SOURCES = \
 	base.h \
 	guievent.h \
 	icewmhint.cc
-icewmhint_LDADD = misc.$(OBJEXT) $(CORE_LIBS) @LIBINTL@
+icewmhint_LDADD = libice.la $(CORE_LIBS) @LIBINTL@
 
 icewmbg_SOURCES = \
 	intl.h \
@@ -363,35 +357,11 @@ icesound_SOURCES = \
 	icesound.cc
 icesound_LDADD = libice.la $(AUDIO_LIBS) $(CORE_LIBS) @LIBINTL@
 
-icewm_menu_gnome1_SOURCES = \
-	intl.h \
-	debug.h \
-	sysdep.h \
-	base.h \
-	themable.h \
-	default.h \
-	ylib.h \
-	gnome.cc \
-	ascii.h
-icewm_menu_gnome1_LDADD = libice.la $(GNOME1_LIBS) $(CORE_LIBS)
-
-icewm_menu_gnome2_SOURCES = \
-	intl.h \
-	debug.h \
-	sysdep.h \
-	base.h \
-	themable.h \
-	default.h \
-	ylib.h \
-	gnome2.cc \
-	ascii.h
-icewm_menu_gnome2_LDADD = libice.la $(GNOME2_LIBS) $(CORE_LIBS)
-
 icewm_menu_fdo_SOURCES = \
 	sysdep.h \
 	base.h \
 	fdomenu.cc
-icewm_menu_fdo_LDADD = misc.$(OBJEXT) $(GIO_LIBS)
+icewm_menu_fdo_LDADD = libice.la $(GIO_LIBS)
 
 icehelp_SOURCES = \
 	intl.h \
