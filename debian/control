@@ -37,17 +37,15 @@ Description: wonderful Win95-OS/2-Motif-like window manager
 
 Package: icewm-lite
 Architecture: any
-Depends: icewm-common (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
-Provides: x-window-manager
-Description: wonderful Win95-OS/2-Motif-like window manager
+Depends: icewm (= ${binary:Version})
+Description: transitional package for icewm
  IceWm is a Window Manager for X Window System. It is fast and
- memory-efficient, and it provides many different looks including Windows'95,
- OS/2 Warp 3,4, Motif. It tries to take the best features of the above
- systems. Additional features include  multiple workspaces, opaque move/resize,
- task bar, window list, mailbox status, digital clock.
+ memory-efficient, and it provides different looks and some desktop-like
+ functionality.
  .
- This package provides a minimal icewm binary with no support for
- taskbar and antialiased fonts.
+ This package only exists to maintain compatibility to system setups that
+ relied on the former icewm-lite package. It can be safely removed once the
+ system dependencies has been adjusted.
 
 Package: icewm-experimental
 Architecture: any
