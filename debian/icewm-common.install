@@ -3,4 +3,5 @@ usr/bin/icewm-menu-xrandr
 usr/share/doc/icewm-common
 usr/share/locale
 usr/share/icewm
+usr/share/man
 usr/bin/icewm-set-gnomewm usr/share/icewm/
