@@ -1,7 +1,13 @@
 #include "config.h"
 
+// this has to be come before X11 headers or libpng checks will get mad WRT setjmp version
+#ifdef CONFIG_LIBPNG
+#include <png.h>
+#endif
+
 #if defined CONFIG_XPM
 
+#include <stdlib.h>
 #include <math.h>
 #include <errno.h>
 #include "yimage.h"
@@ -10,9 +16,6 @@
 
 #include <X11/xpm.h>
 
-#ifdef CONFIG_LIBPNG
-#include <png.h>
-#endif
 #ifdef CONFIG_LIBJPEG
 #include <jpeglib.h>
 #include <setjmp.h>
@@ -22,11 +25,14 @@ struct Verbose {
     const bool verbose;
     Verbose() : verbose(init()) { }
     bool init() const {
+#ifdef __OpenBSD__
+        return false;
+#else
         if (getenv("DEBUG_YXIMAGE"))
             return true;
-        mstring home(getenv("HOME"));
-        upath file(home + "/.icewm/debug_yximage");
+        upath file(YApplication::getHomeDir().child(".icewm/debug_yximage"));
         return file.fileExists();
+#endif
     }
     operator bool() const { return verbose; }
 };
@@ -1036,7 +1042,7 @@ void YXImage::composite(Graphics& g, int x, int y,
     unsigned hi = fImage->height;
     unsigned di = fImage->depth;
     bool bitmap = isBitmap();
-    unsigned long fg = g.color() ? g.color()->pixel() & 0x00FFFFFF : 0;
+    unsigned long fg = g.color() ? g.color().pixel() & 0x00FFFFFF : 0;
     unsigned long bg = 0x00000000; /* for now */
 
     if (verbose)
