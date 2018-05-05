@@ -1,3 +1,10 @@
+icewm (1.4.3.0~pre-20180217-4) unstable; urgency=low
+
+  * Restrict supported audio backends to libao (closes: #897595)
+  * Build-Dep: added libfribidi-dev, removed libaudiofile-dev
+
+ -- Eduard Bloch <blade@debian.org>  Sat, 05 May 2018 15:01:31 +0200
+
 icewm (1.4.3.0~pre-20180217-3) unstable; urgency=medium
 
   * Adding missing libjpeg-dev build-dependency
