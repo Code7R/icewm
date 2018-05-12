@@ -1,0 +1,5 @@
+/usr/bin/icewm /usr/bin/icewm-lite
+/usr/bin/icewm-session /usr/bin/icewm-session-lite
+/usr/share/doc/icewm-common /usr/share/doc/icewm-lite
+/usr/share/man/man1/icewm.1.gz /usr/share/man/man1/icewm-lite.1.gz
+/usr/share/man/man1/icewm-session.1.gz /usr/share/man/man1/icewm-session-lite.1.gz
