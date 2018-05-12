@@ -1,12 +1,32 @@
-icewm (1.4.3.0~pre-20180204-1) UNRELEASED; urgency=medium
+icewm (1.4.3.0~pre-20180217-4) unstable; urgency=low
+
+  * Restrict supported audio backends to libao (closes: #897595)
+  * Build-Dep: added libfribidi-dev, removed libaudiofile-dev
+
+ -- Eduard Bloch <blade@debian.org>  Sat, 05 May 2018 15:01:31 +0200
+
+icewm (1.4.3.0~pre-20180217-3) unstable; urgency=medium
+
+  * Adding missing libjpeg-dev build-dependency
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 28 Feb 2018 20:16:54 +0100
+
+icewm (1.4.3.0~pre-20180217-2) unstable; urgency=medium
 
   * New upstream snapshot
+  * Fixed export of CONFIG_LIBJPEG in source code (closes: #891737)
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 28 Feb 2018 18:41:58 +0100
+
+icewm (1.4.3.0~pre-20180217-1) unstable; urgency=low
+
+  * New upstream snapshot
+  * Uploading to Sid, pros should outweigh the cons by now
   * Use automatic icon name resolution for applications managed via
     alternatives mechanism, stops showing wrong/missing icons
-  * icewm-lite description changes to declare it transitional, and added
-    dependency on icewm (closes: #886936)
+  * More build-deps (perl for pod based manpages)
 
- -- Eduard Bloch <blade@debian.org>  Sun, 04 Feb 2018 19:02:18 +0100
+ -- Eduard Bloch <blade@debian.org>  Sat, 17 Feb 2018 19:20:05 +0100
 
 icewm (1.4.3.0~pre-20171225-1) experimental; urgency=low
 

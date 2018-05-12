@@ -227,6 +227,14 @@ if(CONFIG_LIBPNG)
     LIST(APPEND icewm_img_libs ${libpng_LDFLAGS})
 endif()
 
+if(CONFIG_LIBJPEG)
+    pkg_check_modules(libjpeg libjpeg)
+    if(NOT libjpeg_FOUND)
+        message(FATAL_ERROR "JPEG image loader selected but libjpeg dev files not found.")
+    endif()
+    LIST(APPEND icewm_img_libs ${libjpeg_LDFLAGS})
+endif()
+
 IF(CONFIG_SESSION)
     LIST(APPEND sm_LIBS SM)
     LIST(APPEND sm_LIBS ICE)
@@ -406,7 +414,7 @@ SET(ICE_COMMON_SRCS mstring.cc udir.cc upath.cc yapp.cc yxapp.cc ytimer.cc
     ywindow.cc ypaint.cc ypopup.cc misc.cc ycursor.cc ysocket.cc ypaths.cc
     ylocale.cc yarray.cc ycollections.cc ypipereader.cc yxembed.cc yconfig.cc
     yprefs.cc yfont.cc ypixmap.cc
-    yimage_gdk.cc yximage.cc ytooltip.cc)
+    yimage_gdk.cc yximage.cc ycolor.cc ytooltip.cc)
 
 if(CONFIG_XFREETYPE)
     list(APPEND ICE_COMMON_SRCS yfontxft.cc)
