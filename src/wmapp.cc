@@ -33,7 +33,7 @@
 #include "intl.h"
 
 char const *ApplicationName("IceWM");
-int rebootOrShutdown = 0;
+RebootShutdown rebootOrShutdown = Logout;
 static bool initializing(true);
 void SetLiteDefaults();
 
@@ -513,14 +513,12 @@ static void initMenus(
             logoutMenu->addItem(_("_Cancel logout"), -2, null, actionCancelLogout)->setEnabled(false);
             logoutMenu->addSeparator();
 
-            YStringArray noargs;
-
             int const oldItemCount = logoutMenu->itemCount();
             if (canLock())
                 logoutMenu->addItem(_("Lock _Workstation"), -2, null, actionLock, "lock");
-            if (canShutdown(true))
+            if (canShutdown(Reboot))
                 logoutMenu->addItem(_("Re_boot"), -2, null, actionReboot, "reboot");
-            if (canShutdown(false))
+            if (canShutdown(Shutdown))
                 logoutMenu->addItem(_("Shut_down"), -2, null, actionShutdown, "shutdown");
             if (couldRunCommand(suspendCommand))
                 logoutMenu->addItem(_("_Suspend"), -2, null, actionSuspend, "suspend");
@@ -630,6 +628,7 @@ static void initMenus(
 
     rootMenu = new StartMenu(app, smActionListener, wmActionListener, "menu");
     rootMenu->setActionListener(wmapp);
+    rootMenu->setShared(true);
 }
 
 int handler(Display *display, XErrorEvent *xev) {
@@ -642,7 +641,7 @@ int handler(Display *display, XErrorEvent *xev) {
         exit(1);
     }
 
-    /* DBG */ {
+    XDBG {
         char message[80], req[80], number[80];
 
         snprintf(number, sizeof number, "%d", xev->request_code);
@@ -778,8 +777,7 @@ void YWMApp::actionPerformed(YAction action, unsigned int /*modifiers*/) {
 
 
     if (action == actionLogout) {
-        rebootOrShutdown = 0;
-        doLogout();
+        doLogout(Logout);
     } else if (action == actionCancelLogout) {
         cancelLogout();
     } else if (action == actionLock) {
@@ -995,7 +993,7 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
             WMConfig::setDefault("theme", cstring(themeContent));
         }
         YWindowManager::doWMAction(ICEWM_ACTION_RESTARTWM);
-        XFlush(xapp->display());
+        XSync(xapp->display(), False);
         ::exit(0);
     }
 
@@ -1059,7 +1057,7 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
     catchSignal(SIGUSR2);
 
     loadWinOptions(findConfigFile("winoptions"));
-    loadMenus(this, this, this, findConfigFile("keys"), 0);
+    MenuLoader(this, this, this).loadMenus(findConfigFile("keys"), 0);
 
     XSetErrorHandler(handler);
 
@@ -1450,6 +1448,9 @@ static void print_configured(const char *argv0) {
 #ifdef CONFIG_XPM
     " libxpm"
 #endif
+#ifdef LOGEVENTS
+    " logevents"
+#endif
 #ifdef ENABLE_NLS
     " nls"
 #endif
@@ -1552,7 +1553,8 @@ int main(int argc, char **argv) {
     return rc;
 }
 
-void YWMApp::doLogout() {
+void YWMApp::doLogout(RebootShutdown reboot) {
+    rebootOrShutdown = reboot;
     if (!confirmLogout)
         logout();
     else {
@@ -1588,7 +1590,7 @@ void YWMApp::logout() {
 }
 
 void YWMApp::cancelLogout() {
-    rebootOrShutdown = 0;
+    rebootOrShutdown = Logout;
     if (logoutCancelCommand && logoutCancelCommand[0]) {
         runCommand(logoutCancelCommand);
 #ifdef CONFIG_SESSION
@@ -1618,22 +1620,19 @@ void YWMApp::handleMsgBox(YMsgBox *msgbox, int operation) {
     }
 }
 
-void YWMApp::handleSMAction(int message) {
+void YWMApp::handleSMAction(WMAction message) {
     switch (message) {
     case ICEWM_ACTION_LOGOUT:
-        rebootOrShutdown = 0;
-        wmapp->doLogout();
+        wmapp->doLogout(Logout);
         break;
     case ICEWM_ACTION_CANCEL_LOGOUT:
         wmapp->actionPerformed(actionCancelLogout, 0);
         break;
     case ICEWM_ACTION_SHUTDOWN:
-        rebootOrShutdown = 2;
-        wmapp->doLogout();
+        wmapp->doLogout(Shutdown);
         break;
     case ICEWM_ACTION_REBOOT:
-        rebootOrShutdown = 1;
-        wmapp->doLogout();
+        wmapp->doLogout(Reboot);
         break;
     case ICEWM_ACTION_RESTARTWM:
         wmapp->restartClient(0, 0);

@@ -73,6 +73,7 @@ option(CONFIG_SESSION "Define to enable X session management" on)
 option(ENABLE_NLS "Enable Native Language Support" on)
 option(ENABLE_LTO "Enable Link Time Optimization" off)
 
+SET(CONFIG_DEFAULT_THEME "default/default.theme" CACHE STRING "Name of default theme")
 SET(CONFIG_UNICODE_SET "" CACHE STRING "Your iconv unicode set in machine endian encoding (e.g. WCHAR_T, UCS-4-INTERNAL, UCS-4LE, UCS-4BE)")
 # turn off when empty, see config.h template for details
 IF("" STREQUAL "${CONFIG_UNICODE_SET}")
@@ -368,7 +369,6 @@ endif()
 
 option(DEBUG "Define if you want to debug IceWM" off)
 
-
 #######################################
 # some extra sugar where available    #
 #######################################
@@ -431,10 +431,10 @@ SET(ICEWM_SRCS ${ICE_COMMON_SRCS} ${ITK_SRCS}
     wmwinmenu.cc wmdialog.cc wmabout.cc wmswitch.cc wmstatus.cc
     wmoption.cc wmcontainer.cc wmclient.cc wmmgr.cc
     wmapp.cc wmframe.cc wmminiicon.cc wmtitle.cc wpixres.cc
-    movesize.cc themes.cc decorate.cc browse.cc wmprog.cc atasks.cc
+    movesize.cc themes.cc decorate.cc browse.cc wmmenu.cc wmprog.cc atasks.cc
     aworkspaces.cc amailbox.cc aclock.cc acpustatus.cc apppstatus.cc
     aaddressbar.cc objbar.cc aapm.cc atray.cc ysmapp.cc yxtray.cc yurl.cc
-    globit.cc amemstatus.cc)
+    globit.cc amemstatus.cc applet.cc)
 
 
 ADD_EXECUTABLE(icewm${EXEEXT} ${ICEWM_SRCS})
