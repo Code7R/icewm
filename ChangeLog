@@ -1,3 +1,668 @@
+commit e7a18d73d868b39060be80d64c3029ae7508cac0
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Jun 5 15:50:04 2018 -0600
+
+    delete old
+
+ src/ycollections.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit 48ef78c865a59aba88b9b48e2c089518f7b1187f
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Jun 5 15:45:15 2018 -0600
+
+    much simpler support for svg
+
+ configure.ac          |  5 +++++
+ src/CMakeLists.txt    | 13 +++++++++++++
+ src/config.cmake.h.in |  1 +
+ src/yicon.cc          |  4 +---
+ 4 files changed, 20 insertions(+), 3 deletions(-)
+
+commit 6011ab5befdf60d3349aff74cf9e72dbfa673c9e
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Jun 5 15:12:28 2018 -0600
+
+    remove warning on memmove
+
+ src/ycollections.h | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+commit a486d96aeeb7dad9da45dbd8a97dac5140784a44
+Merge: c7cfa6a6 2ea1f14c
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Jun 5 14:45:49 2018 -0600
+
+    Merge branch 'icewm-1-4-BRANCH' of github.com:bbidulock/icewm into
+    icewm-1-4-BRANCH
+
+commit c7cfa6a66ef2da0db6ee6db92ad85067cc61a373
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Jun 5 14:45:34 2018 -0600
+
+    Revert "support SVG icons for GDK-pixbuf and add --iconformats option."
+
+    This reverts commit cbe949d1fe5570d5265d2a7e016b86e5b9ecdb1d.
+
+ src/wmapp.cc      | 14 --------------
+ src/yicon.cc      | 21 ++++++++++-----------
+ src/yimage.h      |  3 ---
+ src/yimage_gdk.cc | 21 ---------------------
+ src/ymsgbox.cc    |  4 +---
+ src/yprefs.h      |  2 +-
+ src/yximage.cc    | 26 --------------------------
+ 7 files changed, 12 insertions(+), 79 deletions(-)
+
+commit 11ee3cfad91c406a4c78420c7e27281d16300054
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Jun 5 14:45:22 2018 -0600
+
+    Revert "match is const."
+
+    This reverts commit d68d0fbbadeba38da8773b9ddc7b2876c70a4883.
+
+ src/mstring.cc | 2 +-
+ src/mstring.h  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit a549f005166f2afcde4ca841a07b70bd643bafaa
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Jun 5 14:45:00 2018 -0600
+
+    Revert "keep --iconformats undocumented for now."
+
+    This reverts commit 1ef85b0485d304814bf4180ff64fae2861da1124.
+
+ src/wmapp.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 4943c045f3ca466c43f3bc6be8b152fa8391152e
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Tue Jun 5 14:43:20 2018 -0600
+
+    Revert "yximage SVG by means of external converters (for the time being,
+    until better solutions)."
+
+    This reverts commit 3368e84e24618c9a1d3f85e3c4cac0afdcf08ca2.
+
+ src/yximage.cc | 126 -----------------------------------------------------
+ 1 file changed, 126 deletions(-)
+
+commit 2ea1f14cfa7e82510ff6f42d2195e79b39215553
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Jun 5 22:18:20 2018 +0200
+
+    Introduce abstract class Picturer to work around buggy vtable for CMake
+    builds for issues #258 and #273.
+
+ src/aclock.cc     |  2 +-
+ src/aclock.h      |  7 ++++++-
+ src/acpustatus.cc |  2 +-
+ src/acpustatus.h  |  2 +-
+ src/amemstatus.cc |  2 +-
+ src/amemstatus.h  |  7 ++++++-
+ src/applet.cc     | 17 ++++++++---------
+ src/applet.h      | 10 ++++++++--
+ src/apppstatus.cc |  2 +-
+ src/apppstatus.h  |  2 +-
+ 10 files changed, 34 insertions(+), 19 deletions(-)
+
+commit 2c6f83020ec664b4f57205886a19118a5408a732
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Jun 5 22:17:31 2018 +0200
+
+    Simply return the newly created icon instead of looking it up in the cache.
+
+ src/yicon.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 4c5d879c4a5759fe532ec06151c9c9d3beb836b8
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Jun 5 22:16:41 2018 +0200
+
+    Use the same source file grouping and ordering as in Makefile.am.
+    Fix missing definition of CONFIG_XFREETYPE_VALUE.
+
+ src/CMakeLists.txt | 28 ++++++++++++++++++----------
+ 1 file changed, 18 insertions(+), 10 deletions(-)
+
+commit 708ac7fd504c6711df4cd02a6cab1ce86319bbd8
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Mon Jun 4 21:16:46 2018 +0200
+
+    block SIGPIPE to safely write to socket to openssl for mailbox applet.
+
+ src/yapp.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 3c47078ab505662283827bee1cc159896ca8c0f2
+Author: scootergrisen <scootergrisen@gmail.com>
+Date:   Mon Jun 4 07:21:44 2018 +0000
+
+    Translated using Weblate (Danish)
+
+    Currently translated at 100.0% (336 of 336 strings)
+
+ po/da.po | 157 +++++++++++++++++++----------------------------------------
+ 1 file changed, 49 insertions(+), 108 deletions(-)
+
+commit 3368e84e24618c9a1d3f85e3c4cac0afdcf08ca2
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Mon Jun 4 00:29:34 2018 +0200
+
+    yximage SVG by means of external converters (for the time being, until
+    better solutions).
+
+ src/yximage.cc | 126 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 126 insertions(+)
+
+commit 1ef85b0485d304814bf4180ff64fae2861da1124
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jun 3 23:02:39 2018 +0200
+
+    keep --iconformats undocumented for now.
+
+ src/wmapp.cc | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit d68d0fbbadeba38da8773b9ddc7b2876c70a4883
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jun 3 23:02:11 2018 +0200
+
+    match is const.
+
+ src/mstring.cc | 2 +-
+ src/mstring.h  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit cbe949d1fe5570d5265d2a7e016b86e5b9ecdb1d
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jun 3 14:46:26 2018 +0200
+
+    support SVG icons for GDK-pixbuf and add --iconformats option.
+
+ src/wmapp.cc      | 14 ++++++++++++++
+ src/yicon.cc      | 21 +++++++++++----------
+ src/yimage.h      |  3 +++
+ src/yimage_gdk.cc | 21 +++++++++++++++++++++
+ src/ymsgbox.cc    |  4 +++-
+ src/yprefs.h      |  2 +-
+ src/yximage.cc    | 26 ++++++++++++++++++++++++++
+ 7 files changed, 79 insertions(+), 12 deletions(-)
+
+commit b867129ece891d45a557f6042afcc5588f0bb498
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jun 3 09:35:38 2018 +0200
+
+    port to FreeBSD and OpenBSD
+
+ configure.ac      |   4 +-
+ src/acpustatus.cc | 104 +++++++++++++++++++++++++++++++++++++++-----------
+ src/acpustatus.h  |   2 +-
+ src/apppstatus.cc |  58 ++++++++++++++++++----------
+ src/apppstatus.h  |   5 ++-
+ 5 files changed, 126 insertions(+), 47 deletions(-)
+
+commit 3817103bae789b2bff7cf8c1bbe2255b60878ab3
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jun 3 09:34:12 2018 +0200
+
+    portability
+
+ src/globit.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit eb60f812840606f69a41b026a3ff9702df555f7c
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jun 3 09:33:53 2018 +0200
+
+    cstring equality
+
+ src/mstring.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+commit 4fcc52db8dd1a55af80e1b8b11646762988426d3
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jun 3 09:33:26 2018 +0200
+
+    close file before recursing
+
+ src/wmmenu.cc | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit b0d67bd8adf4a8808075890421547bbb694d7f93
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jun 3 09:33:12 2018 +0200
+
+    portability
+
+ src/upath.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+commit a1977829cf8be9334e56b460d19e12f9a3e5445f
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jun 3 09:30:50 2018 +0200
+
+    fix getloadavg2
+
+ src/CMakeLists.txt    | 2 +-
+ src/config.cmake.h.in | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit dc18cd7c532282c314e42b158633cb833d1cf9fa
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Jun 3 09:21:34 2018 +0200
+
+    Don't change workspace when clicking on About for issue #269.
+
+ src/wmapp.cc | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit c5fa2fa10edd3b6f3f75696141e1e6223efa2e3d
+Author: David Medina <medipas@gmail.com>
+Date:   Wed May 30 14:03:57 2018 +0000
+
+    Translated using Weblate (Catalan)
+
+    Currently translated at 100.0% (336 of 336 strings)
+
+ po/ca.po | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit c8b9f90465b3cf7270edef5be78b2cb550e19970
+Merge: 03c34241 6958728d
+Author: Brian Bidulock <bidulock@openss7.com>
+Date:   Sat May 19 18:58:40 2018 -0600
+
+    Merge pull request #233 from zhengqiang130/icewm-1-4-BRANCH
+
+    Use ss instead of netstat in src/default.h
+
+commit 6958728d4d98966d8f6bf31df126dc4003b50345
+Merge: 0470318b 03c34241
+Author: Brian Bidulock <bidulock@openss7.com>
+Date:   Sat May 19 18:58:27 2018 -0600
+
+    Merge branch 'icewm-1-4-BRANCH' into icewm-1-4-BRANCH
+
+commit 03c3424193f110d136c133fccc4643dbae0398cf
+Merge: 7a70e5b2 48e4dad7
+Author: Brian Bidulock <bidulock@openss7.com>
+Date:   Sat May 19 18:50:04 2018 -0600
+
+    Merge pull request #272 from ddekany/pr-default-colors
+
+    Weird title bar colors in the default theme
+
+commit 7a70e5b26491aebdef06d930c8d1218e63b40d2b
+Merge: 3a04e777 158e9407
+Author: Brian Bidulock <bidulock@openss7.com>
+Date:   Sat May 19 18:49:17 2018 -0600
+
+    Merge pull request #271 from ddekany/pr-default-buttons
+
+    Removed unwanted pixel from the corners of default theme buttons
+
+commit 48e4dad70a173758a5f54cdbbee8efd4dd34c141
+Author: ddekany <ddekany@apache.org>
+Date:   Fri May 18 01:20:41 2018 +0200
+
+    Decreased border size a bit. Looks less unbalanced with the new color.
+
+ lib/themes/default/default.theme | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 50c273c73a7d94c7d7d3c22ed6226fd07e075964
+Author: ddekany <ddekany@apache.org>
+Date:   Fri May 18 00:47:58 2018 +0200
+
+    Fixed weird title bar and header colors in default theme
+
+ lib/themes/default/default.theme | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit 158e9407569f1a934d0af4d04e2871a251b6f7bc
+Author: ddekany <ddekany@apache.org>
+Date:   Fri May 18 00:39:33 2018 +0200
+
+    Removed unwanted pixel from the corners
+
+ lib/themes/default/closeA.xpm      | 4 ++--
+ lib/themes/default/closeI.xpm      | 4 ++--
+ lib/themes/default/menuButtonA.xpm | 4 ++--
+ lib/themes/default/menuButtonI.xpm | 4 ++--
+ 4 files changed, 8 insertions(+), 8 deletions(-)
+
+commit 3a04e777d715606c0209a92aa5f15d57b552f028
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed May 16 21:09:44 2018 -0600
+
+    mention xde-menu utility
+
+ README.md    |  7 ++++++-
+ README.md.in | 40 +++++++++++++++++++++++-----------------
+ 2 files changed, 29 insertions(+), 18 deletions(-)
+
+commit da195972e124eed199317f57981fafd8d300c4b4
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed May 16 21:05:02 2018 -0600
+
+    get bbkeys from github
+
+ README.md    | 5 ++---
+ README.md.in | 5 ++---
+ 2 files changed, 4 insertions(+), 6 deletions(-)
+
+commit e22413fbabee9089d504d85ec67d2176795511ab
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed May 16 21:01:53 2018 -0600
+
+    remove wm-session section, correct reference links
+
+ README.md.in | 100 +++++++++++++++++--------------------------------------
+ 1 file changed, 30 insertions(+), 70 deletions(-)
+
+commit 9e8df7abb61657292b55ec6230f6eb6678acbd6b
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed May 16 21:01:34 2018 -0600
+
+    remove deprecated wm-session section
+
+ README.md | 66 +++++++++++++----------------------------------------------
+ 1 file changed, 14 insertions(+), 52 deletions(-)
+
+commit 82e92b04edf1f20f02a0efa5434df07a0a61a097
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed May 16 20:56:18 2018 -0600
+
+    silent build is default
+
+ README.md | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 369dd2d326e5328da8241243085f443cc8305da1
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed May 16 20:53:08 2018 -0600
+
+    simplfy quickstart build
+
+ README.md    | 5 +----
+ README.md.in | 4 +---
+ 2 files changed, 2 insertions(+), 7 deletions(-)
+
+commit 6cfb7993bdec7940d1cd3d369d85217e6a11301a
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed May 16 19:43:54 2018 -0600
+
+    remove redundant meaningless descriptions
+
+ README.md    | 16 ++++++++--------
+ README.md.in | 16 ++++++++--------
+ 2 files changed, 16 insertions(+), 16 deletions(-)
+
+commit bea9543c6e0a80d3c8cf6e11c2ddfe0a9011fcd2
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed May 16 19:42:57 2018 -0600
+
+    do not need libsndfile to build
+
+ README.md    | 1 -
+ README.md.in | 1 -
+ 2 files changed, 2 deletions(-)
+
+commit 6c29b3b1fd9e216c293295e57eeeeee2f0b05d80
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed May 16 19:41:15 2018 -0600
+
+    building from git does not require git
+
+ README.md    | 1 -
+ README.md.in | 1 -
+ 2 files changed, 2 deletions(-)
+
+commit 746e19b2270d6628cf66d251d880763f46788f4d
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed May 16 19:39:48 2018 -0600
+
+    users do not need to build releases
+
+ README.md    | 1 -
+ README.md.in | 1 -
+ 2 files changed, 2 deletions(-)
+
+commit f7e8b1e59f3b0c9600caed6e44aa56a43a33e3cc
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed May 16 19:35:28 2018 -0600
+
+    do not need xorg-mkfontdir to build
+
+ README.md    | 1 -
+ README.md.in | 1 -
+ 2 files changed, 2 deletions(-)
+
+commit 46b9d4d5fb3e08357433f3554f6ef92a959f0f7a
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed May 16 19:34:51 2018 -0600
+
+    automake, autopoint gettext part of complete autoconf toolchain
+
+ README.md    | 3 +--
+ README.md.in | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
+
+commit a768d91577cefcbda638542a166c999cc39038c7
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed May 16 19:33:20 2018 -0600
+
+    cannot have autoconf without having perl
+
+ README.md    | 1 -
+ README.md.in | 1 -
+ 2 files changed, 2 deletions(-)
+
+commit 2f397518a4cc8e13eeba2bf53f841cce9f4b1add
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed May 16 19:32:54 2018 -0600
+
+    do not need glib2 to compile
+
+ README.md    | 1 -
+ README.md.in | 1 -
+ 2 files changed, 2 deletions(-)
+
+commit 0c22e23881b9e23b4cd2bffdaca73c6aa0432f84
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed May 16 19:32:30 2018 -0600
+
+    do not need fribidi to compile
+
+ README.md    | 1 -
+ README.md.in | 1 -
+ 2 files changed, 2 deletions(-)
+
+commit 8b21298778c97b4e4af7112156d34bccc470eb3b
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed May 16 19:32:06 2018 -0600
+
+    do not need libsm to compile
+
+ README.md    | 1 -
+ README.md.in | 1 -
+ 2 files changed, 2 deletions(-)
+
+commit e42dd3f4bad42f0e41bb6e1dde4fc9194a46ac51
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed May 16 19:31:33 2018 -0600
+
+    cannot have libxft without libxrender
+
+ README.md    | 1 -
+ README.md.in | 1 -
+ 2 files changed, 2 deletions(-)
+
+commit 79a1c004f2c83cbef5b0fc9e381be96757bda5fa
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed May 16 19:31:06 2018 -0600
+
+    cannot have libxft without freetype2 and libpng
+
+ README.md    | 1 -
+ README.md.in | 1 -
+ 2 files changed, 2 deletions(-)
+
+commit 2c6edaa00bf9e25fc734bfabbb0e67e300409323
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed May 16 19:30:10 2018 -0600
+
+    do not need gdk-pixbuf2 (ximage rendering)
+
+ README.md    | 1 -
+ README.md.in | 1 -
+ 2 files changed, 2 deletions(-)
+
+commit dec45b93977cbb4d18b60b8f9b5cb85c3940b911
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed May 16 19:29:05 2018 -0600
+
+    cannot have libxft wihtout having fontconfig
+
+ README.md    | 1 -
+ README.md.in | 1 -
+ 2 files changed, 2 deletions(-)
+
+commit 384c51f004d47d927389f461cda27a437077b2db
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed May 16 19:28:22 2018 -0600
+
+    cannot have libxft wihtout having libxext
+
+ README.md    | 1 -
+ README.md.in | 1 -
+ 2 files changed, 2 deletions(-)
+
+commit ada0a4e8c17de9d1b807b689f62bd3e09040b37b
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed May 16 19:27:53 2018 -0600
+
+    cannot have libxft wihtout having libx11
+
+ README.md    | 1 -
+ README.md.in | 1 -
+ 2 files changed, 2 deletions(-)
+
+commit 4d71175141cb35c9fcf695c79fa15e7168d1a869
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Wed May 16 19:26:52 2018 -0600
+
+    do not need libtool to compile from tarball
+
+ README.md    | 1 -
+ README.md.in | 1 -
+ 2 files changed, 2 deletions(-)
+
+commit d3efbffdcfcffb381457b1855d2ce145a5109793
+Author: Juan Sarria <juansarriam@gmail.com>
+Date:   Wed May 16 19:56:08 2018 +0000
+
+    Translated using Weblate (Spanish)
+
+    Currently translated at 100.0% (336 of 336 strings)
+
+ po/es.po | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+commit d2859a8b241f3e1190071df9afc2a084c559a676
+Author: jc sl <trcs@gmx.com>
+Date:   Tue May 15 19:38:00 2018 +0000
+
+    Translated using Weblate (Spanish)
+
+    Currently translated at 97.9% (329 of 336 strings)
+
+ po/es.po | 26 ++++++++++----------------
+ 1 file changed, 10 insertions(+), 16 deletions(-)
+
+commit a6fac572cb7a7b7b2fc9351fad8bf19f2726fce4
+Author: Robert Taisz <robert.taisz@emerald.hu>
+Date:   Tue May 15 17:41:12 2018 +0000
+
+    Translated using Weblate (Hungarian)
+
+    Currently translated at 100.0% (336 of 336 strings)
+
+ po/hu.po | 38 ++++++++++++++++----------------------
+ 1 file changed, 16 insertions(+), 22 deletions(-)
+
+commit 2d605baaabeebe91bfbd1218373355ce0de7fc85
+Author: Grace Yu <grace.yu@excel-gits.com>
+Date:   Mon May 14 07:32:21 2018 +0000
+
+    Translated using Weblate (Chinese (Taiwan))
+
+    Currently translated at 100.0% (336 of 336 strings)
+
+ po/zh_TW.po | 38 ++++++++++++++++----------------------
+ 1 file changed, 16 insertions(+), 22 deletions(-)
+
+commit 8bfb7585c77295a4791f12ba0f0c7f068e84991e
+Author: Hwajin Kim <hwajin.kim@e4net.net>
+Date:   Mon May 14 05:54:46 2018 +0000
+
+    Translated using Weblate (Korean)
+
+    Currently translated at 100.0% (336 of 336 strings)
+
+ po/ko.po | 38 ++++++++++++++++----------------------
+ 1 file changed, 16 insertions(+), 22 deletions(-)
+
+commit 7daedf3d012bbfdc573b621453b7af4d0daaacfe
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sat May 12 17:23:44 2018 +0200
+
+    [cmake] Restored icewmtray target
+
+    Now optional via CONFIG_EXTERNAL_TRAY.
+
+ src/CMakeLists.txt    | 11 +++++++----
+ src/amailbox.cc       |  2 +-
+ src/config.cmake.h.in |  1 +
+ 3 files changed, 9 insertions(+), 5 deletions(-)
+
+commit 6d8e2757bf13bcfb5de38a78364531d4319e6251
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sat May 12 17:20:11 2018 +0200
+
+    Fix debug build
+
+    Looks like cpuname is gone for good in the latest rewrites.
+
+ src/acpustatus.cc | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+commit 3069a74199b5b06a807d482b94d04f497ec51476
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sat May 12 17:05:28 2018 +0200
+
+    [cmake] Include yarray source dependencies as needed
+
+ src/CMakeLists.txt | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+commit 0470318b628e840852d5d8f1f6162941d7cd333f
+Author: zhengqiang130 <qzheng@suse.com>
+Date:   Sat Feb 24 16:23:18 2018 +0800
+
+    Use ss instead of netstat in src/default.h
+
+    The issue is that if I click on first "system-monitor" column in systray
+    the netstat output should appear in xterm but nothing happen because
+    netstat is not available by default. So maybe we can call "ss"
+    instead of "netstat".
+
+      See also #232.
+
+ src/default.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 commit 8d6059c82eff4fc901fba5781904c3933442d382
 Author: Eduard Bloch <blade@debian.org>
 Date:   Sat May 12 12:33:59 2018 +0200
