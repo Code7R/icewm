@@ -199,7 +199,8 @@ XSV(const char *, cpuCommand,                   "x-terminal-emulator -e top")
 XSV(const char *, cpuClassHint,                 "top.XTerm")
 XSV(const char *, netCommand,                   "x-terminal-emulator -e netstat -c")
 XIV(bool, cpuCombine,                           true)
-XSV(const char *, netClassHint,                 "netstat.XTerm")
+XSV(const char *, netCommand,                   "xterm -name 'socket statistics' -title 'Socket Statistics' -hold -e ss")
+XSV(const char *, netClassHint,                 "ss.XTerm")
 XSV(const char *, netDevice,                    "[ew]*"
 #ifdef __OpenBSD__
                                                 " vio*"
