@@ -2,7 +2,8 @@ Source: icewm
 Section: x11
 Priority: optional
 Maintainer: Eduard Bloch <blade@debian.org>
-Build-Depends: debhelper (>= 9), libxrender-dev, gettext, xfonts-utils, libxft-dev (>> 2.1.1) | libxft2-dev, libsndfile1-dev, libao-dev, libsm-dev, libx11-dev, libxext-dev, libxinerama-dev, libxrandr-dev, x11proto-core-dev | x-dev, linuxdoc-tools, groff, dpkg-dev (>= 1.16.1~), cmake, asciidoctor, libxpm-dev, libpng-dev, libjpeg-dev (>> 1.2), libglib2.0-dev, libfribidi-dev
+Build-Depends: debhelper (>= 9), libxrender-dev, gettext, xfonts-utils, libxft-dev (>> 2.1.1) | libxft2-dev, libsndfile1-dev, libao-dev, libsm-dev, libx11-dev, libxext-dev, libxinerama-dev, libxrandr-dev, x11proto-core-dev | x-dev, linuxdoc-tools, groff, dpkg-dev (>= 1.16.1~), cmake, asciidoctor, libxpm-dev, libgdk-pixbuf2.0-dev, libglib2.0-dev, libfribidi-dev, librsvg2-dev
+# actually the RSVG is only relevant to detect svg support when pixbuf is used. As of 2018-06-10, SVG loader only works with pixbuf. If not SVG, libgdk-pixbuf2.0-dev can be replaced with: libpng-dev, libjpeg-dev (>> 1.2)
 Build-Conflicts: libttf-dev
 Standards-Version: 4.1.1
 Vcs-Git: https://github.com/Code7R/icewm.git
