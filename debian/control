@@ -38,7 +38,7 @@ Description: wonderful Win95-OS/2-Motif-like window manager
 
 Package: icewm-lite
 Architecture: any
-Depends: icewm (= ${binary:Version})
+Depends: icewm (= ${binary:Version}), icewm-common (= ${binary:Version})
 Description: transitional package for icewm
  IceWm is a Window Manager for X Window System. It is fast and
  memory-efficient, and it provides different looks and some desktop-like
