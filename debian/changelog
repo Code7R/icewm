@@ -1,14 +1,8 @@
-icewm (1.4.3.0~pre-20180610-1) UNRELEASED; urgency=low
+icewm (1.4.3.0~pre-20180809-1) experimental; urgency=low
 
   * Updated upstream snapshot
 
- -- Eduard Bloch <blade@debian.org>  Sun, 10 Jun 2018 10:52:01 +0200
-
-icewm (1.4.3.0~pre-20180512-1) experimental; urgency=low
-
-  * Experimental upstream snapshot
-
- -- Eduard Bloch <blade@debian.org>  Sat, 12 May 2018 12:52:09 +0200
+ -- Eduard Bloch <blade@debian.org>  Thu, 09 Aug 2018 13:03:11 +0200
 
 icewm (1.4.3.0~pre-20180217-4) unstable; urgency=low
 
