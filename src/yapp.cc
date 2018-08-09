@@ -38,6 +38,7 @@ void YApplication::initSignals() {
     fcntl(signalPipe[0], F_SETFD, FD_CLOEXEC);
 #else
     sigemptyset(&signalMask);
+    sigaddset(&signalMask, SIGPIPE);
     sigprocmask(SIG_BLOCK, &signalMask, &oldSignalMask);
 
     if (pipe(signalPipe) != 0)
@@ -278,6 +279,8 @@ int YApplication::mainLoop() {
             for (iPoll = polls.reverseIterator(); ++iPoll; ) {
                 if (iPoll->fd() >= 0 && FD_ISSET(iPoll->fd(), &read_fds)) {
                     iPoll->notifyRead();
+                    if (iPoll.isValid() == false)
+                        continue;
                 }
                 if (iPoll->fd() >= 0 && FD_ISSET(iPoll->fd(), &write_fds)) {
                     iPoll->notifyWrite();

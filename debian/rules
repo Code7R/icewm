@@ -79,6 +79,7 @@ override_dh_install:
 	mkdir -p $(ICEWM_COMMON)/usr/bin $(ICEWM_COMMON)/etc/X11/icewm
 	install -m 644 $(CUSTOM)/toolbar $(CUSTOM)/menu $(ICEWM_COMMON)/usr/share/icewm
 	install -m 644 debian/README.cfg $(ICEWM_COMMON)/usr/share/icewm/README
+	install -m 755 debian/netstat.sh $(ICEWM_COMMON)/usr/share/icewm
 	# Extra docs
 	mkdir -p "$(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ"
 	cd $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ && sgml2html $(CURDIR)/debian/FAQ/source/*.sgml

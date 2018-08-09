@@ -31,7 +31,7 @@
 #cmakedefine HAVE_DUP2 1
 #cmakedefine HAVE_GETHOSTBYNAME 1
 #cmakedefine HAVE_GETHOSTNAME 1
-#cmakedefine HAVE_GETLOADAVG 1
+#cmakedefine HAVE_GETLOADAVG2 1
 #cmakedefine HAVE_GETTIMEOFDAY 1
 #cmakedefine HAVE_MBLEN 1
 #cmakedefine HAVE_MEMCHR 1
@@ -101,6 +101,7 @@
 #cmakedefine CONFIG_LIBPNG  1
 #cmakedefine CONFIG_LIBJPEG  1
 #cmakedefine CONFIG_GDK_PIXBUF_XLIB 1
+#cmakedefine CONFIG_LIBRSVG 1
 #cmakedefine CONFIG_I18N 1
 #cmakedefine ENABLE_NLS 1
 #cmakedefine CONFIG_SESSION 1
@@ -111,6 +112,7 @@
 #cmakedefine CONFIG_XRANDR 1
 #cmakedefine CONFIG_XFREETYPE @CONFIG_XFREETYPE_VALUE@
 #cmakedefine CONFIG_COREFONTS 1
+#cmakedefine CONFIG_EXTERNAL_TRAY 1
 #cmakedefine ENABLE_ALSA 1
 #cmakedefine ENABLE_AO 1
 #cmakedefine ENABLE_ESD 1
@@ -118,5 +120,7 @@
 #cmakedefine XINERAMA 1
 #cmakedefine CONFIG_FRIBIDI 1
 #cmakedefine DEBUG 1
+
+#define CONFIG_DEFAULT_THEME "@CONFIG_DEFAULT_THEME@"
 
 #endif // __CONFIG_H__

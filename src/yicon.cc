@@ -65,10 +65,8 @@ upath YIcon::findIcon(upath dir, upath base, unsigned size) {
     const cstring cbase(base.string());
     const char* cBaseStr = cbase.c_str();
     static const char iconExts[][5] = { ".png",
-#if 0
-#if defined(CONFIG_GDK_PIXBUF_XLIB) || defined(CONFIG_LIBSVG)
+#if defined(CONFIG_GDK_PIXBUF_XLIB) && defined(CONFIG_LIBRSVG)
             ".svg",
-#endif
 #endif
             ".xpm"
     };
@@ -311,7 +309,7 @@ ref<YIcon> YIcon::getIcon(const char *name) {
         newicon->setCached(true);
         iconCache.insert(-n - 1, newicon);
     }
-    return getIcon(name);
+    return newicon;
 }
 
 void YIcon::freeIcons() {

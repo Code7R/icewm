@@ -65,14 +65,17 @@ endif()
 option(CONFIG_LIBPNG "(Experimental) PNGLIB image loader" on)
 option(CONFIG_LIBJPEG "JPEGLIB image loader" on)
 option(CONFIG_GDK_PIXBUF_XLIB "GDK-PIXBUF based image loader" off)
+option(CONFIG_LIBRSVG "(Optional) SVG image loader" off)
 option(CONFIG_XPM "(Optional) XPM image loader" on)
 option(CONFIG_I18N "Define to enable internationalization" on)
 option(CONFIG_RENDER "Define to enable XRENDER extension" on)
 option(CONFIG_XRANDR "Define to enable XRANDR extension" on)
 option(CONFIG_SESSION "Define to enable X session management" on)
+option(CONFIG_EXTERNAL_TRAY "Define to build tray support in standalone executable" off)
 option(ENABLE_NLS "Enable Native Language Support" on)
 option(ENABLE_LTO "Enable Link Time Optimization" off)
 
+SET(CONFIG_DEFAULT_THEME "default/default.theme" CACHE STRING "Name of default theme")
 SET(CONFIG_UNICODE_SET "" CACHE STRING "Your iconv unicode set in machine endian encoding (e.g. WCHAR_T, UCS-4-INTERNAL, UCS-4LE, UCS-4BE)")
 # turn off when empty, see config.h template for details
 IF("" STREQUAL "${CONFIG_UNICODE_SET}")
@@ -85,6 +88,9 @@ if(CONFIG_GDK_PIXBUF_XLIB AND NOT CONFIG_XPM)
     #ok
     set(CONFIG_LIBPNG off)
     set(CONFIG_LIBJPEG off)
+    if (NOT CONFIG_LIBRSVG)
+        message(WARNING "LIBRSVG is recommended for SVG image support")
+    endif()
 elseif(CONFIG_XPM AND NOT CONFIG_GDK_PIXBUF_XLIB)
     #ok
     if (NOT CONFIG_LIBPNG)
@@ -128,7 +134,7 @@ CHECK_FUNCTION_EXISTS(basename HAVE_BASENAME)
 CHECK_FUNCTION_EXISTS(dup2 HAVE_DUP2)
 CHECK_FUNCTION_EXISTS(gethostbyname HAVE_GETHOSTBYNAME)
 CHECK_FUNCTION_EXISTS(gethostname HAVE_GETHOSTNAME)
-CHECK_FUNCTION_EXISTS(getloadavg HAVE_GETLOADAVG)
+CHECK_FUNCTION_EXISTS(getloadavg HAVE_GETLOADAVG2)
 CHECK_FUNCTION_EXISTS(gettimeofday HAVE_GETTIMEOFDAY)
 CHECK_FUNCTION_EXISTS(mblen HAVE_MBLEN)
 CHECK_FUNCTION_EXISTS(memchr HAVE_MEMCHR)
@@ -211,6 +217,14 @@ if(CONFIG_GDK_PIXBUF_XLIB)
     LIST(APPEND icewm_img_libs ${pixbuf_LDFLAGS})
 endif()
 
+if (CONFIG_LIBRSVG)
+    pkg_check_modules(librsvg librsvg-2.0)
+    if(NOT librsvg_FOUND)
+        message(FATAL_ERROR "SVG image loader selected but librsvg dev files not found.")
+    endif()
+    LIST(APPEND icewm_img_libs ${librsvg_LDFLAGS})
+endif()
+
 if(CONFIG_XPM)
     pkg_check_modules(libxpm xpm)
     if(NOT libxpm_FOUND)
@@ -272,6 +286,8 @@ if(CONFIG_XFREETYPE)
         message(WARNING "xft library (>=2.0) not found, disabling CONFIG_XFREETYPE")
         set(CONFIG_XFREETYPE off)
         set(CONFIG_COREFONTS on)
+    ELSE()
+        set(CONFIG_XFREETYPE_VALUE 2)
     ENDIF()
 else()
     set(CONFIG_COREFONTS on)
@@ -368,7 +384,6 @@ endif()
 
 option(DEBUG "Define if you want to debug IceWM" off)
 
-
 #######################################
 # some extra sugar where available    #
 #######################################
@@ -423,19 +438,26 @@ if(CONFIG_COREFONTS)
     list(APPEND ICE_COMMON_SRCS yfontcore.cc)
 endif()
 
-SET(ITK_SRCS ymenu.cc ylabel.cc yscrollview.cc ymenuitem.cc yscrollbar.cc ybutton.cc ylistbox.cc yinput.cc yicon.cc wmconfig.cc ref.cc
-    ydialog.cc ymsgbox.cc)
+SET(ITK_SRCS
+    ymenu.cc ylabel.cc yscrollview.cc ymenuitem.cc
+    yscrollbar.cc ybutton.cc ylistbox.cc yinput.cc
+    globit.cc yicon.cc wmconfig.cc wpixres.cc ref.cc
+    )
 
 SET(ICEWM_SRCS ${ICE_COMMON_SRCS} ${ITK_SRCS}
-    wmbutton.cc wmsession.cc wmwinlist.cc wmtaskbar.cc
-    wmwinmenu.cc wmdialog.cc wmabout.cc wmswitch.cc wmstatus.cc
-    wmoption.cc wmcontainer.cc wmclient.cc wmmgr.cc
-    wmapp.cc wmframe.cc wmminiicon.cc wmtitle.cc wpixres.cc
-    movesize.cc themes.cc decorate.cc browse.cc wmprog.cc atasks.cc
-    aworkspaces.cc amailbox.cc aclock.cc acpustatus.cc apppstatus.cc
-    aaddressbar.cc objbar.cc aapm.cc atray.cc ysmapp.cc yxtray.cc yurl.cc
-    globit.cc amemstatus.cc)
+    ymsgbox.cc ydialog.cc yurl.cc wmsession.cc
+    wmwinlist.cc wmtaskbar.cc wmwinmenu.cc wmdialog.cc
+    wmabout.cc wmswitch.cc wmstatus.cc wmoption.cc
+    wmcontainer.cc wmclient.cc wmmgr.cc wmapp.cc
+    wmframe.cc wmbutton.cc wmminiicon.cc wmtitle.cc
+    movesize.cc themes.cc decorate.cc browse.cc
+    wmmenu.cc wmprog.cc atasks.cc aworkspaces.cc
+    amailbox.cc aclock.cc acpustatus.cc amemstatus.cc
+    applet.cc apppstatus.cc aaddressbar.cc objbar.cc
+    aapm.cc atray.cc ysmapp.cc yxtray.cc
+    )
 
+SET(MISC_SRCS misc.cc yarray.cc mstring.cc ref.cc)
 
 ADD_EXECUTABLE(icewm${EXEEXT} ${ICEWM_SRCS})
 set(icewm_pc_flags "${fontconfig_CFLAGS} ${x11_CFLAGS} ${xext_CFLAGS} ${libpng_CFLAGS} ${libxpm_CFLAGS} ${pixbuf_CFLAGS} ${xft_CFLAGS} ${xrandr_CFLAGS} ${xrender_CFLAGS} ${xinerama_CFLAGS} ${fribidi_CFLAGS}")
@@ -443,11 +465,11 @@ SET_TARGET_PROPERTIES(icewm${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON
 list(APPEND icewm_libs ${sm_LIBS} ${nls_LIBS} ${fontconfig_LDFLAGS} ${fribidi_LDFLAGS} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS} ${xinerama_LDFLAGS} ${EXTRA_LIBS})
 TARGET_LINK_LIBRARIES(icewm${EXEEXT} ${icewm_libs} ${icewm_img_libs})
 
-ADD_EXECUTABLE(genpref${EXEEXT} genpref.cc misc.cc yarray.cc)
+ADD_EXECUTABLE(genpref${EXEEXT} genpref.cc ${MISC_SRCS})
 TARGET_LINK_LIBRARIES(genpref${EXEEXT} ${EXTRA_LIBS})
 
 IF(CONFIG_FDO_MENUS)
-    ADD_EXECUTABLE(icewm-menu-fdo${EXEEXT} fdomenu.cc misc.cc yarray.cc)
+    ADD_EXECUTABLE(icewm-menu-fdo${EXEEXT} fdomenu.cc ${MISC_SRCS})
     SET_TARGET_PROPERTIES(icewm-menu-fdo${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${gio_CFLAGS}")
     TARGET_LINK_LIBRARIES(icewm-menu-fdo${EXEEXT} ${gio_LDFLAGS} ${nls_LIBS} ${EXTRA_LIBS})
     INSTALL(TARGETS icewm-menu-fdo${EXEEXT} DESTINATION ${BINDIR})
@@ -457,7 +479,7 @@ ADD_EXECUTABLE(icewm-session${EXEEXT} icesm.cc yapp.cc misc.cc mstring.cc upath.
 SET_TARGET_PROPERTIES(icewm-session${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON}")
 TARGET_LINK_LIBRARIES(icewm-session${EXEEXT} ${nls_LIBS} ${EXTRA_LIBS})
 
-ADD_EXECUTABLE(icewmhint${EXEEXT} icewmhint.cc misc.cc yarray.cc)
+ADD_EXECUTABLE(icewmhint${EXEEXT} icewmhint.cc ${MISC_SRCS})
 SET_TARGET_PROPERTIES(icewmhint${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
 TARGET_LINK_LIBRARIES(icewmhint${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${nls_LIBS} ${EXTRA_LIBS})
 
@@ -481,10 +503,11 @@ SET_TARGET_PROPERTIES(icehelp${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMM
 TARGET_LINK_LIBRARIES(icehelp${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${fribidi_LDFLAGS} ${xrandr_LDFLAGS} ${icewm_img_libs} ${xinerama_LDFLAGS} ${nls_LIBS} ${EXTRA_LIBS})
 INSTALL(TARGETS icehelp${EXEEXT} DESTINATION ${BINDIR})
 
-# TBD. Internal tray is better, this is probably not needed anymore.
-#ADD_EXECUTABLE(icewmtray${EXEEXT} icetray.cc ref.cc wmconfig.cc yxtray.cc ${ICE_COMMON_SRCS})
-#SET_TARGET_PROPERTIES(icewmtray${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
-#TARGET_LINK_LIBRARIES(icewmtray${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS} ${xinerama_LDFLAGS} ${nls_LIBS} ${icewm_img_libs} ${EXTRA_LIBS})
+IF(CONFIG_EXTERNAL_TRAY)
+ADD_EXECUTABLE(icewmtray${EXEEXT} icetray.cc ref.cc wmconfig.cc yxtray.cc wmoption.cc ${ICE_COMMON_SRCS})
+SET_TARGET_PROPERTIES(icewmtray${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
+TARGET_LINK_LIBRARIES(icewmtray${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${xrandr_LDFLAGS} ${xinerama_LDFLAGS} ${nls_LIBS} ${icewm_img_libs} ${EXTRA_LIBS})
+ENDIF()
 
 INSTALL(TARGETS icewm${EXEEXT} icesh${EXEEXT} icewm-session${EXEEXT} icewmhint${EXEEXT} icewmbg${EXEEXT} DESTINATION ${BINDIR})
 
@@ -506,6 +529,7 @@ foreach (_variableName
         DATADIR LIBDIR LOCDIR DOCDIR CFGDIR ICEHELPIDX
         CONFIG_IMLIB
         CONFIG_GDK_PIXBUF_XLIB
+        CONFIG_LIBRSVG
         CONFIG_XPM
         CONFIG_LIBJPEG
         CONFIG_LIBPNG
@@ -513,6 +537,7 @@ foreach (_variableName
         CONFIG_XFREETYPE
         CONFIG_COREFONTS
         CONFIG_FRIBIDI
+        CONFIG_EXTERNAL_TRAY
         XINERAMA
         ENABLE_LTO
         ENABLE_ALSA
