@@ -1,3 +1,10 @@
+icewm (1.4.3.0~pre-20180809-2) unstable; urgency=low
+
+  * Aligned cmake config with the desired image loader selection, also
+    enabling SVG support
+
+ -- Eduard Bloch <blade@debian.org>  Fri, 10 Aug 2018 08:43:10 +0200
+
 icewm (1.4.3.0~pre-20180809-1) unstable; urgency=low
 
   * Updated upstream snapshot
