@@ -1,3 +1,346 @@
+commit ac2ce65a4d7a37197666b74b7a33334e48ccc503
+Author: jc sl <trcs@gmx.com>
+Date:   Wed Aug 22 17:38:07 2018 +0000
+
+    Translated using Weblate (Spanish)
+
+    Currently translated at 100.0% (345 of 345 strings)
+
+ po/es.po | 56 +++++++++++++++++++++++++-------------------------------
+ 1 file changed, 25 insertions(+), 31 deletions(-)
+
+commit 6add69b3ac49f269295fc04100040d402fb57ff1
+Author: scootergrisen <scootergrisen@gmail.com>
+Date:   Tue Aug 21 11:30:39 2018 +0000
+
+    Translated using Weblate (Danish)
+
+    Currently translated at 100.0% (345 of 345 strings)
+
+ po/da.po | 38 ++++++++++++++++----------------------
+ 1 file changed, 16 insertions(+), 22 deletions(-)
+
+commit 594e3869c84df4b8f9f958a9048dbd3db0dbf589
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Aug 20 08:56:16 2018 +0200
+
+    Now correctly exported new FDO strings wit comments for l10n
+
+    And explained the origin in the comment.
+
+ contrib/conv_cat.pl |   6 +-
+ po/icewm.pot        | 729 +++++++++++++++++++++++++++++++++++++++++++-----
+ src/fdospecgen.h    | 236 ++++++++--------
+ 3 files changed, 778 insertions(+), 193 deletions(-)
+
+commit 83fca10643e246317c95ecfedd5760b0d71926c9
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Aug 20 08:55:18 2018 +0200
+
+    Align the use of xgettext in cmake with autoconf
+
+    Or mostly so, a minor difference in the header remains, see comments.
+    The merge of .po files is also not working, to be continued...
+
+ po/CMakeLists.txt | 21 ++++++++++++---------
+ po/POTFILES.in    |  2 ++
+ 2 files changed, 14 insertions(+), 9 deletions(-)
+
+commit aabaa3325a305eee63540d1d3bbbdd011e9e46f7
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sun Aug 19 23:40:57 2018 +0200
+
+    Added l10n request for the predefined category names
+
+    With hints for translators to make the wording right.
+
+    Also dropped GTK, Qt, etc. submenu creation because it looked too weird.
+
+    For #263
+
+ contrib/conv_cat.pl |    4 +-
+ po/CMakeLists.txt   |    2 +-
+ po/icewm.pot        | 2069 ++++++++++++++++++++++++-----------------------
+ src/fdomenu.cc      |    4 +-
+ src/fdospecgen.h    |  363 ++++++---
+ 5 files changed, 1278 insertions(+), 1164 deletions(-)
+
+commit 24b8f213d210c7fc16fa8a9b0674e57aae48fa7b
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Aug 19 21:53:11 2018 +0200
+
+    Update homepage url for issue #287.
+
+ CONTRIBUTING.md | 6 +++---
+ README.md       | 6 +++---
+ README.md.in    | 6 +++---
+ doc/icewm.adoc  | 4 ++--
+ icewm.lsm.in    | 2 +-
+ icewm.spec.in   | 2 +-
+ src/icehelp.cc  | 6 +++---
+ src/wmapp.cc    | 2 +-
+ 8 files changed, 17 insertions(+), 17 deletions(-)
+
+commit dfded3ae57f64519d18202e9e461136542a9e204
+Author: David Medina <medipas@gmail.com>
+Date:   Sun Aug 19 19:45:32 2018 +0000
+
+    Translated using Weblate (Catalan)
+
+    Currently translated at 100.0% (345 of 345 strings)
+
+ po/ca.po | 38 ++++++++++++++++----------------------
+ 1 file changed, 16 insertions(+), 22 deletions(-)
+
+commit ff317d3aa1016aa642551cbcaeac993e1a274d7a
+Author: Aleš Kastner <alkas@volny.cz>
+Date:   Sun Aug 19 18:25:53 2018 +0000
+
+    Translated using Weblate (Czech)
+
+    Currently translated at 100.0% (345 of 345 strings)
+
+ po/cs.po | 38 ++++++++++++++++----------------------
+ 1 file changed, 16 insertions(+), 22 deletions(-)
+
+commit 897e53c6f46d6e70e52797f99556aa4d18278ead
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sun Aug 19 17:52:14 2018 +0200
+
+    Inject fdomenu output into root menu
+
+    For #263
+
+ lib/menu.in | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+commit aa6a26fa49d05dcdca6f16dc2f4b99a86f7ef2e2
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sun Aug 19 17:51:24 2018 +0200
+
+    Make sure to set to root right when digging for categories
+
+    For #263
+
+ src/fdomenu.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 140b713eb46904fd5ea0461ded4b9d362f720600
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sun Aug 19 14:47:14 2018 +0200
+
+    Added semi-automated handling of FDO subcategories
+
+ contrib/conv_cat.pl |  65 +++++++++++++++++
+ src/fdomenu.cc      | 182 +++++++++++++++++++++++++++++++---------------
+ src/fdospecgen.h    | 190 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 378 insertions(+), 59 deletions(-)
+
+commit 7a23eecba39210f0b06d88d973343edb888ab1b6
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sun Aug 19 11:22:20 2018 +0200
+
+    Little redesign for more OOP style
+
+    Preparing for (efficient) subcategory handling
+
+ src/fdomenu.cc | 528 ++++++++++++++++++++++++-----------------------------
+ 1 file changed, 241 insertions(+), 287 deletions(-)
+
+commit e44a9c4b37555e7d58e2a9387feacffc40ac82f5
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sat Aug 18 21:49:09 2018 +0200
+
+    Use the supposedly better display name
+
+ src/fdomenu.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit eec124e06e77c5b17d367482449d012cea7da6c3
+Author: Freek de Kruijf <freek@opensuse.org>
+Date:   Sun Aug 19 12:26:11 2018 +0000
+
+    Translated using Weblate (Dutch)
+
+    Currently translated at 100.0% (345 of 345 strings)
+
+ po/nl.po | 38 ++++++++++++++++----------------------
+ 1 file changed, 16 insertions(+), 22 deletions(-)
+
+commit e7f63a1b6cbc1b795fd51244077d8a8ce64cfb7e
+Author: Ferdinand Galko <galko.ferdinand@gmail.com>
+Date:   Sun Aug 19 10:49:48 2018 +0000
+
+    Translated using Weblate (Slovak)
+
+    Currently translated at 100.0% (345 of 345 strings)
+
+ po/sk.po | 40 +++++++++++++++++-----------------------
+ 1 file changed, 17 insertions(+), 23 deletions(-)
+
+commit 932ee28b9c53709108de39f19f6297beb9979031
+Author: Yasuhiko Kamata <belphegor@belbel.or.jp>
+Date:   Sun Aug 19 09:59:38 2018 +0000
+
+    Translated using Weblate (Japanese)
+
+    Currently translated at 100.0% (345 of 345 strings)
+
+ po/ja.po | 40 +++++++++++++++++-----------------------
+ 1 file changed, 17 insertions(+), 23 deletions(-)
+
+commit a9a2e10a63959603107a271fecd0ccaa21c1a782
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Aug 19 00:36:46 2018 -0600
+
+    update po files
+
+ po/ar.po     | 241 ++++++++++++++++++++++++++++++--------------------
+ po/be.po     | 233 +++++++++++++++++++++++++++++--------------------
+ po/bg.po     | 233 +++++++++++++++++++++++++++++--------------------
+ po/ca.po     | 254 +++++++++++++++++++++++++++++++----------------------
+ po/cs.po     | 250 +++++++++++++++++++++++++++++++---------------------
+ po/da.po     | 262 +++++++++++++++++++++++++++++++++----------------------
+ po/de.po     | 250 +++++++++++++++++++++++++++++++---------------------
+ po/el.po     | 239 ++++++++++++++++++++++++++++++--------------------
+ po/en.po     | 231 ++++++++++++++++++++++++++++--------------------
+ po/es.po     | 250 +++++++++++++++++++++++++++++++---------------------
+ po/fi.po     | 231 ++++++++++++++++++++++++++++--------------------
+ po/fr.po     | 241 ++++++++++++++++++++++++++++++--------------------
+ po/he.po     | 236 +++++++++++++++++++++++++++++--------------------
+ po/hr.po     | 233 +++++++++++++++++++++++++++++--------------------
+ po/hu.po     | 252 +++++++++++++++++++++++++++++++---------------------
+ po/icewm.pot | 235 ++++++++++++++++++++++++++++---------------------
+ po/id.po     | 239 ++++++++++++++++++++++++++++++--------------------
+ po/it.po     | 250 +++++++++++++++++++++++++++++++---------------------
+ po/ja.po     | 250 +++++++++++++++++++++++++++++++---------------------
+ po/ko.po     | 250 +++++++++++++++++++++++++++++++---------------------
+ po/lt.po     | 252 ++++++++++++++++++++++++++++++----------------------
+ po/lv.po     | 231 ++++++++++++++++++++++++++++--------------------
+ po/mk.po     | 231 ++++++++++++++++++++++++++++--------------------
+ po/nb.po     | 233 +++++++++++++++++++++++++++++--------------------
+ po/nl.po     | 250 +++++++++++++++++++++++++++++++---------------------
+ po/no.po     | 231 ++++++++++++++++++++++++++++--------------------
+ po/pl.po     | 241 ++++++++++++++++++++++++++++++--------------------
+ po/pt_BR.po  | 250 +++++++++++++++++++++++++++++++---------------------
+ po/ro.po     | 233 +++++++++++++++++++++++++++++--------------------
+ po/ru.po     | 241 ++++++++++++++++++++++++++++++--------------------
+ po/sk.po     | 250 +++++++++++++++++++++++++++++++---------------------
+ po/sl.po     | 231 ++++++++++++++++++++++++++++--------------------
+ po/sv.po     | 242 ++++++++++++++++++++++++++++++--------------------
+ po/tr.po     | 240 +++++++++++++++++++++++++++++---------------------
+ po/uk.po     | 241 ++++++++++++++++++++++++++++++--------------------
+ po/vi.po     | 236 +++++++++++++++++++++++++++++--------------------
+ po/zh_CN.po  | 250 +++++++++++++++++++++++++++++++---------------------
+ po/zh_TW.po  | 250 +++++++++++++++++++++++++++++++---------------------
+ 38 files changed, 5457 insertions(+), 3736 deletions(-)
+
+commit a3c0ae0936469fffe553c33d222041ccd3652bbb
+Merge: 52c134e7 efb81cfd
+Author: Brian Bidulock <bidulock@openss7.com>
+Date:   Sun Aug 19 00:06:40 2018 -0600
+
+    Merge pull request #282 from wongma7/win95-titlebar-menu-button
+
+    Make win95 menu button bg color match titlebar's
+
+commit 52c134e7a84f2511189b5e6043913a7251dd8394
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sat Aug 18 23:58:55 2018 -0600
+
+    fix issue #286
+
+ man/icehelp.pod | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 0c9c9908f8261f296383cbdb8615f8000c021d46
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Aug 17 02:33:04 2018 +0200
+
+    new option TaskBarUseMouseWheel for issue #284.
+
+ src/atasks.cc | 8 +++++---
+ src/atray.cc  | 8 +++++---
+ src/default.h | 2 ++
+ 3 files changed, 12 insertions(+), 6 deletions(-)
+
+commit 937ed000ccac79d81f08ed003e7c0b9e70800368
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sun Aug 12 10:46:24 2018 +0200
+
+    Considering of categories folders for icon source
+
+    This is actually a stop-gap solution, ideally some context-awareness of
+    the icon purpose should be added but that implies redesigning the cache
+    handling a bit.
+
+ src/yicon.cc | 44 +++++++++++++++++++++++++++++++-------------
+ 1 file changed, 31 insertions(+), 13 deletions(-)
+
+commit 6b24d6a737a09bdff38fa3d465347ea2e7384999
+Author: Eduard Bloch <blade@debian.org>
+Date:   Sun Aug 12 08:37:58 2018 +0200
+
+    Options to embed fdomenu nicely as regular contents
+
+ src/fdomenu.cc | 89 +++++++++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 64 insertions(+), 25 deletions(-)
+
+commit b511fab841c77744f57afc9df26cd3401abbeee7
+Author: Eduard Bloch <blade@debian.org>
+Date:   Fri Aug 10 14:09:11 2018 +0200
+
+    Partial overhauling of fdomenu
+
+    Use binary search for categories and allow more categories
+
+    Also updated the list of Main categories to the current FDO spec.
+    For bug #263.
+
+    Consider multiple folders in XDG_DATA_HOME env
+
+    Loading of extended attributes for category folder descriptions from
+    .desktop files, and printing folder icon names where available.
+
+    More smart processing of .desktop folders (skipping junk).
+
+ src/fdomenu.cc | 810 ++++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 486 insertions(+), 324 deletions(-)
+
+commit efb81cfd9a30fa926f515a43aa81e81cb7fb8574
+Author: Matthew Wong <mawong@redhat.com>
+Date:   Sat Aug 11 15:36:53 2018 -0400
+
+    Make win95 menu button bg color match titlebar's
+
+ src/wmbutton.cc | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+commit 8cf5e1fd539c094dbabed67478d09e76ad5a5e21
+Author: Eduard Bloch <blade@debian.org>
+Date:   Fri Aug 10 14:08:07 2018 +0200
+
+    Fixed a potentially endless recursion
+
+    Basically checked against the algorithm by the book.
+    Also added range lookup function probably needed in future.
+
+ src/ycollections.cc | 12 ++++++++++++
+ src/ycollections.h  | 51 ++++++++++++++++++++++++++++++++++++++++++-------
+ 2 files changed, 56 insertions(+), 7 deletions(-)
+
+commit 939ca53ae3e5d9e4d02d3d31149bf66e6c3f6867
+Author: Eduard Bloch <blade@debian.org>
+Date:   Fri Aug 10 07:29:04 2018 +0200
+
+    Enforcing valid combinations of image loaders
+
+    In case pixbuf is selected manually, turn off other default selections.
+    Also print more meaningfull error message in case of other bad
+    situtations (lack of libs/headers).
+
+ src/CMakeLists.txt | 73 +++++++++++++++++++++++++++++++-------------------
+ 1 file changed, 45 insertions(+), 28 deletions(-)
 commit d86690abca39ee1744fa72a39668f0d740cb4c77
 Author: Eduard Bloch <blade@debian.org>
 Date:   Mon Jun 4 22:15:11 2018 +0200
