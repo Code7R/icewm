@@ -228,6 +228,7 @@ public:
 SwitchWindow::SwitchWindow(YWindow *parent, ISwitchItems *items,
                            bool verticalStyle):
     YPopupWindow(parent),
+    m_hintedItem(0),
     fGradient(null),
     switchFg(&clrQuickSwitchText),
     switchBg(&clrQuickSwitch),
@@ -250,9 +251,7 @@ SwitchWindow::SwitchWindow(YWindow *parent, ISwitchItems *items,
     modsDown = 0;
     isUp = false;
 
-    //resize(-1);
-
-    setStyle(wsSaveUnder | wsOverrideRedirect);
+    setStyle(wsSaveUnder | wsOverrideRedirect | wsPointerMotion);
     setTitle("IceSwitch");
 }
 
@@ -507,6 +506,10 @@ void SwitchWindow::paintHorizontal(Graphics &g) {
     }
 }
 
+void SwitchWindow::handleMotion(const XMotionEvent& motion) {
+    printf("motion: %i, %i\n", motion.x, motion.y);
+}
+
 inline int SwitchWindow::_getVertialEntryHeight()
 {
     int ih = 0;
@@ -522,15 +525,28 @@ void SwitchWindow::paintVertical(Graphics &g) {
         int pos = quickSwitchVMargin;
         g.setFont(switchFont);
         g.setColor(switchFg);
-
+        const int itemWidth = width() - quickSwitchHMargin*2;
         for (int i = 0, zCount=zItems->getCount(); i < zCount; i++) {
 
-            g.setColor(switchFg);
+            int posNext = pos + ih + 2* quickSwitchIMargin;
+
             if (i == zItems->getActiveItem()) {
                 g.setColor(switchMbg);
-                g.fillRect(quickSwitchHMargin, pos + quickSwitchVMargin , width() - quickSwitchHMargin*2, ih + quickSwitchIMargin );
+                g.fillRect(quickSwitchHMargin, pos + quickSwitchVMargin, itemWidth, ih + quickSwitchIMargin );
                 g.setColor(switchMfg);
             }
+
+            if(i == m_hintedItem)
+            {
+                g.setColor(switchMbg);
+                g.drawLine(1, pos, itemWidth, pos);
+                g.drawLine(1, posNext, itemWidth, posNext);
+                g.drawLine(1, pos, 1, posNext);
+                g.drawLine(itemWidth, pos, itemWidth, posNext);
+                g.setColor(switchMfg);
+            }
+
+            g.setColor(switchFg);
 
             ustring cTitle = zItems->getTitle(i);
 
@@ -563,8 +579,7 @@ void SwitchWindow::paintVertical(Graphics &g) {
                                YIcon::largeSize());
                 }
             }
-
-            pos += ih + 2* quickSwitchIMargin;
+            pos = posNext;
         }
 
         if (quickSwitchSepSize) {

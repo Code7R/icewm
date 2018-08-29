@@ -65,12 +65,13 @@ public:
 
     virtual bool handleKey(const XKeyEvent &key) OVERRIDE;
     virtual void handleButton(const XButtonEvent &button) OVERRIDE;
-
+    void handleMotion(const XMotionEvent &motion) OVERRIDE;
     void destroyedFrame(YFrameWindow *frame);
 
 private:
     ISwitchItems* zItems;
     bool m_verticalStyle;
+    int m_hintedItem;
 
     ref<YImage> fGradient;
 
