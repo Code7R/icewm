@@ -679,19 +679,11 @@ void YInputLine::autoScroll(int delta, const XMotionEvent *motion) {
 
 void YInputLine::complete() {
     char *res=NULL;
-    int  res_count=0;
+    auto_raii<void*,free> cleanup(res);
     cstring t(fText);
-
-    res_count = globit_best(t.c_str(), &res);
-    if (res_count == -1) { //error-case
-            free(res);
-            return;
-    }
-    if (res_count != 1) { //no match found
-            return;
-    }
+    // only exact match
+    if(1 != globit_best(t.c_str(), &res)) return;
     setText(ustring(res, strlen(res)));
-    free(res);
 }
 
 // vim: set sw=4 ts=4 et:

@@ -166,6 +166,19 @@ inline char const * niceUnit(T & val, char const * const units[],
 
 bool testOnce(const char* file, const int line);
 
+// very basic RAII helper that can utilize any cleanup function with common signature
+template<typename T, void TFreeFunc(T)>
+struct auto_raii {
+    T m_p;
+    auto_raii(T xp) :
+            m_p(xp) {
+    }
+    ~auto_raii() {
+        if (m_p)
+            TFreeFunc(m_p);
+    }
+};
+
 /*** Bit Operations ***********************************************************/
 
 template <class M, class B>
