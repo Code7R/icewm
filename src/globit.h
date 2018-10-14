@@ -1,16 +1,21 @@
 #ifndef GLOBIT_H
 #define GLOBIT_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "ystring.h"
+#include "mstring.h"
+#include "yarray.h"
 
-extern int globit_best(const char *, char **,
-        void(*callback)(const void *, const char * const *, unsigned), const void* cback_user_parm);
-
-#ifdef __cplusplus
-}
-#endif
+struct exeglobber
+{
+    exeglobber(mstring pattern);
+    ~exeglobber();
+    struct tMatch
+    {
+        mstring path;
+        bool isDir;
+    };
+    YArray<tMatch> matches;
+};
 
 #endif /* GLOBIT_H */
 

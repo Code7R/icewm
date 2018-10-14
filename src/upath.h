@@ -79,6 +79,7 @@ public:
 
     static bool hasglob(const char* pattern);
     static bool glob(const char* pat, YStringArray& list, const char* opt = 0);
+    static bool glob(const char* pat, YStringArray& list, int flagbits);
 
     bool hasglob() const { return hasglob(string()); }
     bool glob(YStringArray& list, const char* opt = 0) const {
