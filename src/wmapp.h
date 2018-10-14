@@ -26,8 +26,8 @@ class YSMListener {
 public:
     virtual void handleSMAction(WMAction message) = 0;
     virtual void restartClient(const char *path, char *const *args) = 0;
-    virtual void runOnce(const char *resource, const char *path, char *const *args) = 0;
-    virtual void runCommandOnce(const char *resource, const char *cmdline) = 0;
+    virtual long runOnce(const char *resource, const char *path, char *const *args) = 0;
+    virtual void runCommandOnce(const char *resource, const char *cmdline, long *pid) = 0;
 protected:
     virtual ~YSMListener() {}
 };
@@ -39,7 +39,8 @@ class YWMApp:
     public YSMListener
 {
 public:
-    YWMApp(int *argc, char ***argv, const char *displayName = 0);
+    YWMApp(int *argc, char ***argv, const char *displayName,
+            const char *configFile, const char *overrideTheme);
     ~YWMApp();
     void signalGuiEvent(GUIEvent ge);
 
@@ -71,8 +72,10 @@ public:
     void initFocusMode();
 
     virtual void restartClient(const char *path, char *const *args);
-    virtual void runOnce(const char *resource, const char *path, char *const *args);
-    virtual void runCommandOnce(const char *resource, const char *cmdline);
+    virtual long runOnce(const char *resource, const char *path, char *const *args);
+    virtual void runCommandOnce(const char *resource, const char *cmdline, long *pid);
+    bool mapClientByPid(long pid);
+    bool mapClientByResource(const char* resource, long *pid);
 
     static YCursor sizeRightPointer;
     static YCursor sizeTopRightPointer;
@@ -93,9 +96,11 @@ public:
     CtrlAltDelete* getCtrlAltDelete();
     bool hasSwitchWindow() const { return switchWindow != 0; }
     SwitchWindow* getSwitchWindow();
+    const char* getConfigFile() const { return configFile; }
 
 private:
     char** mainArgv;
+    const char* configFile;
 
     // XXX: these pointers are PITA because they can become wild when objects
     // are destroyed independently by manager. What we need is something like std::weak_ptr...

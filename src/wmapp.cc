@@ -69,9 +69,6 @@ YMenu *windowListAllPopup(NULL);
 
 YMenu *logoutMenu(NULL);
 
-static const char* configFile;
-static const char* overrideTheme;
-
 #ifndef XTERMCMD
 #define XTERMCMD xterm
 #endif
@@ -521,7 +518,7 @@ static void initMenus(
             if (canShutdown(Shutdown))
                 logoutMenu->addItem(_("Shut_down"), -2, null, actionShutdown, "shutdown");
             if (couldRunCommand(suspendCommand))
-                logoutMenu->addItem(_("_Suspend"), -2, null, actionSuspend, "suspend");
+                logoutMenu->addItem(_("_Sleep mode"), -2, null, actionSuspend, "suspend");
 
             if (logoutMenu->itemCount() != oldItemCount)
                 logoutMenu->addSeparator();
@@ -631,7 +628,7 @@ static void initMenus(
     rootMenu->setShared(true);
 }
 
-int handler(Display *display, XErrorEvent *xev) {
+static int handler(Display *display, XErrorEvent *xev) {
 
     if (initializing &&
         xev->request_code == X_ChangeWindowAttributes &&
@@ -739,25 +736,63 @@ void YWMApp::restartClient(const char *path, char *const *args) {
     manager->manageClients();
 }
 
-void YWMApp::runOnce(const char *resource, const char *path, char *const *args) {
-    Window win(manager->findWindow(resource));
+long YWMApp::runOnce(const char *resource, const char *path, char *const *args) {
+    long pid = 0;
+    Window win(manager->findWindow(resource, 2));
 
     if (win) {
         YFrameWindow * frame(manager->findFrame(win));
-        if (frame) frame->activateWindow(true);
+        if (frame) {
+            frame->activateWindow(true);
+            frame->client()->getNetWMPid(&pid);
+        }
         else XMapRaised(xapp->display(), win);
     } else
-        runProgram(path, args);
+        pid = runProgram(path, args);
+
+    return pid;
 }
 
-void YWMApp::runCommandOnce(const char *resource, const char *cmdline) {
+void YWMApp::runCommandOnce(const char *resource, const char *cmdline, long *pid) {
+    if (0 < *pid && mapClientByPid(*pid))
+        return;
+
+    if (mapClientByResource(resource, pid))
+        return;
+
 /// TODO #warning calling /bin/sh is considered to be bloat
     char const *const argv[] = { "/bin/sh", "-c", cmdline, NULL };
 
     if (resource)
-        runOnce(resource, argv[0], (char *const *) argv);
+        *pid = runOnce(resource, argv[0], (char *const *) argv);
     else
-        runProgram(argv[0], (char *const *) argv);
+        *pid = runProgram(argv[0], (char *const *) argv);
+}
+
+bool YWMApp::mapClientByPid(long pid) {
+    for (YFrameIter frame = manager->focusedIterator(); ++frame; ) {
+        long tmp = 0;
+        if (frame->client()->getNetWMPid(&tmp) && tmp == pid) {
+            frame->setWorkspace(manager->activeWorkspace());
+            frame->activateWindow(true);
+            return true;
+        }
+    }
+    return false;
+}
+
+bool YWMApp::mapClientByResource(const char* resource, long *pid) {
+    Window win(manager->findWindow(resource, 2));
+    if (win) {
+        YFrameWindow* frame(manager->findFrame(win));
+        if (frame) {
+            frame->setWorkspace(manager->activeWorkspace());
+            frame->activateWindow(true);
+            frame->client()->getNetWMPid(pid);
+            return true;
+        }
+    }
+    return false;
 }
 
 void YWMApp::setFocusMode(int mode) {
@@ -982,9 +1017,16 @@ void YWMApp::initFocusMode() {
     }
 }
 
-YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
+YWMApp::YWMApp(int *argc, char ***argv, const char *displayName,
+                const char *configFile, const char *overrideTheme) :
     YSMApplication(argc, argv, displayName),
-    mainArgv(*argv)
+    mainArgv(*argv),
+    configFile(configFile),
+    fLogoutMsgBox(0),
+    aboutDlg(0),
+    ctrlAltDelete(0),
+    switchWindow(0),
+    managerWindow(None)
 {
     if(argc && *argc>0 && argv && *argv && **argv && mstring(**argv).endsWith("-lite"))
             SetLiteDefaults();
@@ -1015,7 +1057,6 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
     }
 
     wmapp = this;
-    managerWindow = None;
 
     WMConfig::loadConfiguration(this, configFile);
     if (themeName != 0) {
@@ -1062,11 +1103,6 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName):
     MenuLoader(this, this, this).loadMenus(findConfigFile("keys"), 0);
 
     XSetErrorHandler(handler);
-
-    fLogoutMsgBox = 0;
-    aboutDlg = 0;
-    ctrlAltDelete = 0;
-    switchWindow = 0;
 
     initAtoms();
     initPointers();
@@ -1376,7 +1412,7 @@ static void print_usage(const char *argv0) {
              usage_debug,
              PACKAGE_BUGREPORT[0] ? PACKAGE_BUGREPORT :
              PACKAGE_URL[0] ? PACKAGE_URL :
-             "https://ice-wm.github.io/");
+             "https://ice-wm.org/");
     exit(0);
 }
 
@@ -1495,6 +1531,9 @@ static void print_configured(const char *argv0) {
 int main(int argc, char **argv) {
     YLocale locale;
     bool notify_parent(false);
+    const char* configFile(0);
+    const char* overrideTheme(0);
+
 
     for (char ** arg = argv + 1; arg < argv + argc; ++arg) {
         if (**arg == '-') {
@@ -1529,6 +1568,8 @@ int main(int argc, char **argv) {
                 print_usage(my_basename(argv[0]));
             else if (is_version_switch(*arg))
                 print_version_exit(VERSION);
+            else if (is_copying_switch(*arg))
+            { /* handled by Xt */ }
             else if (is_long_switch(*arg, "sync"))
             { /* handled by Xt */ }
             else if (GetArgument(value, "d", "display", arg, argv+argc))
@@ -1538,7 +1579,7 @@ int main(int argc, char **argv) {
         }
     }
 
-    YWMApp app(&argc, &argv);
+    YWMApp app(&argc, &argv, 0, configFile, overrideTheme);
 
     app.signalGuiEvent(geStartup);
     manager->manageClients();

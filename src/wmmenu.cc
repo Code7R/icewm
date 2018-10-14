@@ -40,7 +40,7 @@ static char *getCommandArgs(char *source, Argument *command,
     while (*p) {
 
         //push to the next word or line end to get the arg
-        while (*p && (*p == ' ' || *p == '\t'))
+        while (ASCII::isSpaceOrTab(*p))
             p++;
         //stop on EOL
         if (*p == '\n')
@@ -453,7 +453,7 @@ void MenuLoader::loadMenus(upath menufile, ObjectContainer *container)
         return;
 
     MSG(("menufile: %s", menufile.string().c_str()));
-    char *buf = load_text_file(menufile.string());
+    char *buf = menufile.loadText();
     if (buf) {
         parseMenus(buf, container);
         delete[] buf;

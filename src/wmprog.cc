@@ -174,11 +174,10 @@ public:
         menu = new MenuProgMenu(wmapp, wmapp, NULL /* no wmaction handling*/,
                 "switch popup internal menu", prog->fCmd, prog->fArgs);
     }
-    virtual void updateList() OVERRIDE
-            {
+    virtual void updateList() OVERRIDE {
         menu->refresh();
         zTarget = 0;
-            }
+    }
     virtual int getCount() OVERRIDE {
         return menu->itemCount();
     }
@@ -193,12 +192,21 @@ public:
         // no further gimmicks
         return zTarget;
     }
+    // move the focused target up or down and return the new focused element
+        virtual int setTarget(int where) OVERRIDE {
+            int count = menu->itemCount();
+            return zTarget = inrange(where, 0, count) ? zTarget : 0;
+        }
+
     /// Show changed focus preview to user
     virtual void displayFocusChange(int idxFocused) OVERRIDE {}
     // set target cursor and implementation specific stuff in the beginning
     virtual void begin(bool zdown) OVERRIDE {
         updateList();
         moveTarget(zdown);
+    }
+    virtual void reset() OVERRIDE {
+        zTarget=0;
     }
     virtual void cancel() OVERRIDE {
     }
@@ -466,7 +474,7 @@ public:
         }
 
         addSeparator();
-        addItem("Save Modifications", -2, null, actionSaveMod, "save");
+        addItem(_("Save Modifications"), -2, null, actionSaveMod, "save");
         setActionListener(this);
     }
 
@@ -505,13 +513,50 @@ public:
         return strcmp(o1->name, o2->name);
     }
 
+    static upath defaultPrefs(upath path) {
+        upath conf(YApplication::getConfigDir() + "/preferences");
+        if (conf.fileExists() && path.copyFrom(conf))
+            return path;
+
+        conf = YApplication::getLibDir() + "/preferences";
+        if (conf.fileExists() && path.copyFrom(conf))
+            return path;
+
+        return path;
+    }
+
+    static upath preferencesPath() {
+        const int perm = 0600;
+
+        ustring conf(wmapp->getConfigFile());
+        if (conf.nonempty() && conf != "preferences") {
+            upath path(wmapp->findConfigFile(conf));
+            if (path.isWritable())
+                return path;
+            if (!path.fileExists() && path.testWritable(perm))
+                return defaultPrefs(path);
+        }
+
+        upath priv(YApplication::getPrivConfDir() + "/preferences");
+        if (priv.isWritable())
+            return priv;
+        if (!priv.fileExists() && priv.testWritable(perm))
+            return defaultPrefs(priv);
+
+        return null;
+    }
+
     static void saveModified() {
         const int n = mods.getCount();
         if (n < 1)
             return;
         qsort(&*mods, n, sizeof(int), sortPrefs);
-        upath path(wmapp->findConfigFile("preferences"));
-        csmart text(load_text_file(path.string()));
+
+        upath path(preferencesPath());
+        if (path == null)
+            return fail(_("Unable to write to %s"), "preferences");
+
+        csmart text(path.loadText());
         if (text == 0)
             (text = new char[1])[0] = 0;
         size_t tlen = strlen(text);
@@ -631,15 +676,15 @@ public:
         const upath temp(dest.path() + ".tmp");
         int fd = temp.open(O_CREAT | O_WRONLY | O_TRUNC, 0600);
         if (fd == -1) {
-            fail("Failed to open %s for writing", temp.string().c_str());
+            fail(_("Unable to write to %s"), temp.string().c_str());
         } else {
             ssize_t w = write(fd, text, tlen);
             if (size_t(w) != tlen)
-                fail("Failed to write to %s", temp.string().c_str());
+                fail(_("Unable to write to %s"), temp.string().c_str());
             close(fd);
             if (size_t(w) == tlen) {
                 if (temp.renameAs(dest))
-                    fail("Failed to rename %s to %s",
+                    fail(_("Unable to rename %s to %s"),
                          temp.string().c_str(),
                          dest.string().c_str());
                 else

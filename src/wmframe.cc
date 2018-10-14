@@ -576,6 +576,15 @@ void YFrameWindow::unmanage(bool reparent) {
         else if (gy > 0)
             posY += borderYN() + titleYN() - 2 * client()->getBorder();
 
+        if (gx == 0 && gy == 0) {
+            const XSizeHints* sh = client()->sizeHints();
+            if (sh && (sh->flags & PWinGravity) &&
+                sh->win_gravity == StaticGravity)
+            {
+                posY += titleYN();
+            }
+        }
+
         if (reparent)
             client()->reparent(manager, posX, posY);
 
@@ -740,6 +749,7 @@ void YFrameWindow::configureClient(const XConfigureRequestEvent &configureReques
                         (clickFocus || !strongPointerFocus))
                     {
                         if (focusChangesWorkspace ||
+                            focusCurrentWorkspace ||
                             visibleOn(manager->activeWorkspace()))
                         {
                             activate();
@@ -1506,7 +1516,7 @@ void YFrameWindow::updateFocusOnMap(bool& doActivate) {
     if (frameOptions() & foNoFocusOnMap)
         doActivate = false;
 
-    if (!onCurrentWorkspace && !focusChangesWorkspace)
+    if (!onCurrentWorkspace && !focusChangesWorkspace && !focusCurrentWorkspace)
         doActivate = false;
 
     if (owner() != 0) {
@@ -1593,8 +1603,12 @@ void YFrameWindow::activate(bool canWarp) {
     manager->lockFocus();
     if (fWinState & (WinStateHidden | WinStateMinimized))
         setState(WinStateHidden | WinStateMinimized, 0);
-    if (!visibleOn(manager->activeWorkspace()))
-        manager->activateWorkspace(getWorkspace());
+    if (!visibleOn(manager->activeWorkspace())) {
+        if (focusCurrentWorkspace)
+            setWorkspace(manager->activeWorkspace());
+        else
+            manager->activateWorkspace(getWorkspace());
+    }
 
     manager->unlockFocus();
     focus(canWarp);
@@ -2003,6 +2017,9 @@ void YFrameWindow::getFrameHints() {
     case wtUtility:
         break;
     }
+
+    if (client()->shaped())
+        fFrameDecors &= ~(fdTitleBar | fdBorder);
 
     WindowOption wo(null);
     getWindowOptions(wo, false);

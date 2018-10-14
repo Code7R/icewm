@@ -27,11 +27,15 @@ public:
 
     // move the focused target up or down and return the new focused element
     virtual int moveTarget(bool zdown)=0;
+    // set the target explicitly rather than switching around
+    virtual int setTarget(int zPosition)=0;
     /// Show changed focus preview to user
     virtual void displayFocusChange(int idxFocused)=0;
 
     // set target cursor and implementation specific stuff in the beginning
     virtual void begin(bool zdown)=0;
+    // just reset the cursor, no further activities; the apparent state might be inconsistent
+    virtual void reset()=0;
     virtual void cancel()=0;
     virtual void accept(IClosablePopup *parent)=0;
 
@@ -59,14 +63,20 @@ public:
     virtual void activatePopup(int flags);
     virtual void deactivatePopup();
 
-    virtual bool handleKey(const XKeyEvent &key);
-    virtual void handleButton(const XButtonEvent &button);
-
+    virtual bool handleKey(const XKeyEvent &key) OVERRIDE;
+    virtual void handleButton(const XButtonEvent &button) OVERRIDE;
+    void handleMotion(const XMotionEvent &motion) OVERRIDE;
     void destroyedFrame(YFrameWindow *frame);
 
 private:
     ISwitchItems* zItems;
     bool m_verticalStyle;
+    // backup of user's config, needs to be enforced temporarily
+    bool m_oldMenuMouseTracking;
+    // remember what was highlighted by mouse tracking
+    int m_hlItemFromMotion;
+    // hints for fast identification of the entry under the cursor
+    int m_hintAreaStart, m_hintAreaStep;
 
     ref<YImage> fGradient;
 
@@ -94,6 +104,8 @@ private:
 
     void paintHorizontal(Graphics &g);
     void paintVertical(Graphics &g);
+    // -1: no hint, -2: hinting not supported
+    int calcHintedItem(int x, int y);
 
 private: // not-used
     SwitchWindow(const SwitchWindow &);

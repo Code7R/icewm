@@ -15,9 +15,9 @@
 #include <strings.h>
 #endif
 
-#define ICEWM_SITE      "https://ice-wm.github.io/"
-#define ICEWM_FAQ       "https://ice-wm.github.io/FAQ/"
-#define THEME_HOWTO     "https://ice-wm.github.io/themes/"
+#define ICEWM_SITE      "https://ice-wm.org/"
+#define ICEWM_FAQ       "https://ice-wm.org/FAQ/"
+#define THEME_HOWTO     "https://ice-wm.org/themes/"
 #define ICEGIT_SITE     "https://github.com/bbidulock/icewm/"
 #define ICEWM_1         DOCDIR "/icewm.1.html"
 #define ICEWMBG_1       DOCDIR "/icewmbg.1.html"
@@ -711,6 +711,8 @@ static node *parse(FILE *fp, int flags, node *parent, node *&nextsub, node::node
                     else if (strcmp(entity, "&quot") == 0)
                         c = '"';
                     else if (strcmp(entity, "&nbsp") == 0)
+                        c = 32+128;
+                    else if (strcmp(entity, "&#160") == 0)
                         c = 32+128;
                     else if (strcmp(entity, "&#8203") == 0)
                         c = 32+128; // zero width space

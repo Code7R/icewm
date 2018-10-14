@@ -155,8 +155,6 @@ void YWindowManager::grabKeys() {
 
     ///if (taskBar && taskBar->addressBar())
         GRAB_WMKEY(gKeySysAddressBar);
-///    if (runDlgCommand && runDlgCommand[0])
-///        GRAB_WMKEY(gKeySysRun);
     if (quickSwitch) {
         GRAB_WMKEY(gKeySysSwitchNext);
         GRAB_WMKEY(gKeySysSwitchLast);
@@ -499,9 +497,6 @@ bool YWindowManager::handleWMKey(const XKeyEvent &key, KeySym k, unsigned int /*
             taskBar->showAddressBar();
             return true;
         }
-        ///        } else if (IS_WMKEY(k, vm, gKeySysRun)) {
-        ///            if (runDlgCommand && runDlgCommand[0])
-        ///                app->runCommand(runDlgCommand);
     } else if (IS_WMKEY(k, vm, gKeySysShowDesktop)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         wmActionListener->actionPerformed(actionShowDesktop, 0);
@@ -837,7 +832,7 @@ void YWindowManager::handleFocus(const XFocusChangeEvent &focus) {
     }
 }
 
-Window YWindowManager::findWindow(const char *resource) {
+Window YWindowManager::findWindow(const char *resource, int maxdepth) {
     char *wmInstance = 0, *wmClass = 0;
 
     char const * dot(resource ? strchr(resource, '.') : 0);
@@ -848,7 +843,7 @@ Window YWindowManager::findWindow(const char *resource) {
     } else if (resource)
         wmInstance = newstr(resource);
 
-    Window win = findWindow(desktop->handle(), wmInstance, wmClass);
+    Window win = findWindow(desktop->handle(), wmInstance, wmClass, 2);
 
     delete[] wmClass;
     delete[] wmInstance;
@@ -857,7 +852,7 @@ Window YWindowManager::findWindow(const char *resource) {
 }
 
 Window YWindowManager::findWindow(Window root, char const * wmInstance,
-                                  char const * wmClass) {
+                                  char const * wmClass, int maxdepth) {
     Window firstMatch = None;
     Window parent, *clients(NULL);
     unsigned nClients;
@@ -881,8 +876,8 @@ Window YWindowManager::findWindow(Window root, char const * wmInstance,
                 XFree(wmclass.res_class);
             }
 
-            if (!firstMatch)
-                firstMatch = findWindow(clients[n], wmInstance, wmClass);
+            if (!firstMatch && maxdepth > 0)
+                firstMatch = findWindow(clients[n], wmInstance, wmClass, maxdepth - 1);
         }
         XFree(clients);
     }
@@ -1768,7 +1763,7 @@ YFrameWindow *YWindowManager::getLastFocus(bool skipAllWorkspaces, long workspac
         if (!skipAllWorkspaces)
             pass = 1;
         for (; pass < 3; pass++) {
-            YFrameIter w = focusedIterator();
+            YFrameIter w = focusedReverseIterator();
             while (++w) {
 #if 1
                 if ((w->client() && !w->client()->adopted()))

@@ -18,6 +18,12 @@
 #include "yrect.h"
 #include "yicon.h"
 #include "wmwinlist.h"
+#include "yprefs.h"
+
+// for vertical quickswitch, reuse some colors from the menu because those
+// from flat quickswitch often look odd (not enough contrast)
+
+extern YColorName activeMenuItemBg, activeMenuItemFg;
 
 class WindowItemsCtrlr : public ISwitchItems
 {
@@ -124,18 +130,20 @@ public:
         return null;
     }
 
-
     int moveTarget(bool zdown) OVERRIDE {
-        if (getCount() > 1)
-            zTarget = (zTarget + getCount() + (zdown ? 1 : -1)) % getCount();
-        else
-            zTarget = 0;
+        const int cnt = getCount();
+        return setTarget(cnt < 2 ? 0 : (zTarget + cnt + (zdown ? 1 : -1)) % cnt);
+    }
+    inline virtual int setTarget(int zPosition)
+    {
+        zTarget=zPosition;
         if (inrange(zTarget, 0, getCount() - 1))
             fActiveWindow = zList[zTarget];
         else
             fActiveWindow = 0;
-        return zTarget;
+        return zPosition;
     }
+
 
     WindowItemsCtrlr() :
         zTarget(0), fRoot(manager), fActiveWindow(0), fLastWindow(0)
@@ -174,6 +182,10 @@ public:
         updateList();
         zTarget = 0;
         moveTarget(zdown);
+    }
+
+    void reset() {
+        zTarget = 0;
     }
 
     void cancel() {
@@ -222,6 +234,8 @@ public:
 SwitchWindow::SwitchWindow(YWindow *parent, ISwitchItems *items,
                            bool verticalStyle):
     YPopupWindow(parent),
+    m_verticalStyle(verticalStyle),
+    m_oldMenuMouseTracking(menuMouseTracking),
     fGradient(null),
     switchFg(&clrQuickSwitchText),
     switchBg(&clrQuickSwitch),
@@ -230,8 +244,9 @@ SwitchWindow::SwitchWindow(YWindow *parent, ISwitchItems *items,
     switchFont(YFont::getFont(XFA(switchFontName)))
 {
     zItems = items ? items : new WindowItemsCtrlr;
-    m_verticalStyle = verticalStyle;
-
+    m_hlItemFromMotion = -1;
+    m_hintAreaStart = 0;
+    m_hintAreaStep = 1;
     // I prefer clrNormalMenu but some themes use inverted settings where
     // clrNormalMenu is the same as clrQuickSwitch
     if (clrQuickSwitchActive)
@@ -244,15 +259,16 @@ SwitchWindow::SwitchWindow(YWindow *parent, ISwitchItems *items,
     modsDown = 0;
     isUp = false;
 
-    //resize(-1);
-
-    setStyle(wsSaveUnder | wsOverrideRedirect);
+    setStyle(wsSaveUnder | wsOverrideRedirect | wsPointerMotion);
+    setTitle("IceSwitch");
 }
 
 bool SwitchWindow::close() {
     if (isUp) {
         cancelPopup();
         isUp = false;
+        menuMouseTracking = m_oldMenuMouseTracking;
+        m_hlItemFromMotion = -1;
         return true;
     }
     return false;
@@ -285,7 +301,8 @@ void SwitchWindow::resize(int xiscreen) {
 
     int aWidth =
         quickSwitchSmallWindow ?
-        (int) dw * 1/3 : (int) dw * 3/5;
+        (int) dw * 1/3
+        : (quickSwitchVertical ? (int) dw * 2/5 : (int) dw * 3/5);
 
     int tWidth=0;
     if (quickSwitchMaxWidth) {
@@ -309,6 +326,7 @@ void SwitchWindow::resize(int xiscreen) {
     int w = aWidth;
     int h = switchFont->height();
     int const mWidth(dw * 6/7);
+    const int vMargins = quickSwitchVMargin*2;
 
     if (quickSwitchVertical) {
         w = aWidth;
@@ -316,12 +334,11 @@ void SwitchWindow::resize(int xiscreen) {
             w = mWidth;
         w += quickSwitchSepSize;
 
-        int step = (YIcon::largeSize() + 2 * quickSwitchIMargin);
-        int maxHeight = (int) dh - YIcon::largeSize();
-        h = zItems->getCount() * step;
-
-        if (h > maxHeight)
-            h= maxHeight - (maxHeight % step);
+        m_hintAreaStep = YIcon::largeSize() + quickSwitchIMargin;
+        m_hintAreaStart = quickSwitchVMargin - quickSwitchIBorder;
+        h = zItems->getCount() * m_hintAreaStep;
+        if (h + vMargins > int(dh))
+            h = (unsigned(dh) - vMargins) / m_hintAreaStep * m_hintAreaStep;
     } else {
 
         int iWidth =
@@ -349,7 +366,7 @@ void SwitchWindow::resize(int xiscreen) {
                 h = iHeight;
         }
     }
-    h += quickSwitchVMargin * 2;
+    h += vMargins;
     w += quickSwitchHMargin * 2;
 
     setGeometry(YRect(dx + ((dw - w) >> 1),
@@ -462,7 +479,8 @@ void SwitchWindow::paintHorizontal(Graphics &g) {
                         ? height() - quickSwitchVMargin - iconSize - quickSwitchIMargin + ds / 2
                         : quickSwitchVMargin + ds + quickSwitchIMargin - ds / 2);
 
-            g.setColor(switchHl ? switchHl : switchBg->brighter());
+            YColor frameColor = switchHl ? switchHl : switchBg->brighter();
+            g.setColor(frameColor);
 
             const int off(max(1 + curIcon - visIcons, 0));
             const int end(off + visIcons);
@@ -470,28 +488,39 @@ void SwitchWindow::paintHorizontal(Graphics &g) {
             int x((width() - min(visIcons, zItems->getCount()) * dx - ds) /  2 +
                   quickSwitchIMargin);
 
+            m_hintAreaStart = x;
+            m_hintAreaStep = dx;
+
             for (int i = 0, zCount = zItems->getCount (); i < zCount; i++) {
                 if (i >= off && i < end) {
-                    ref<YIcon> icon = zItems->getIcon (i);
-                    if (icon != null && i == zItems->getActiveItem ()) {
-                        if (quickSwitchFillSelection)
-                            g.fillRect (x - quickSwitchIBorder,
+                    ref<YIcon> icon = zItems->getIcon(i);
+                    if (icon != null) {
+                        if (i == m_hlItemFromMotion && i != zItems->getActiveItem()) {
+                            g.setColor(frameColor.darker());
+                            g.drawRect(x - quickSwitchIBorder,
+                                    y - quickSwitchIBorder - ds / 2,
+                                    iconSize + 2 * quickSwitchIBorder,
+                                    iconSize + 2 * quickSwitchIBorder);
+                            g.setColor(frameColor);
+                        }
+                        if (i == zItems->getActiveItem()) {
+                            if (quickSwitchFillSelection)
+                                g.fillRect(x - quickSwitchIBorder,
                                         y - quickSwitchIBorder - ds / 2,
                                         iconSize + 2 * quickSwitchIBorder,
                                         iconSize + 2 * quickSwitchIBorder);
-                        else
-                            g.drawRect (x - quickSwitchIBorder,
+                            else
+                                g.drawRect(x - quickSwitchIBorder,
                                         y - quickSwitchIBorder - ds / 2,
                                         iconSize + 2 * quickSwitchIBorder,
                                         iconSize + 2 * quickSwitchIBorder);
 
-                        if (icon != null)
-                            icon->draw (g, x, y - ds / 2, iconSize);
-
+                            if (icon != null)
+                                icon->draw(g, x, y - ds / 2, iconSize);
+                        } else {
+                            icon->draw(g, x, y, YIcon::largeSize());
+                        }
                         x += ds;
-                    } else {
-                        if (icon != null)
-                            icon->draw (g, x, y, YIcon::largeSize ());
                     }
                     x += dx;
                 }
@@ -500,70 +529,84 @@ void SwitchWindow::paintHorizontal(Graphics &g) {
     }
 }
 
+int SwitchWindow::calcHintedItem(int x, int y)
+{
+    if(quickSwitchVertical)
+        return (y - m_hintAreaStart) / m_hintAreaStep;
+    else if(quickSwitchAllIcons && !quickSwitchHugeIcon)
+        return (x - m_hintAreaStart) / m_hintAreaStep;
+    else
+        return -2;
+}
+
+void SwitchWindow::handleMotion(const XMotionEvent& motion) {
+    int hintId = calcHintedItem(motion.x, motion.y);
+    //printf("hint id: %d\n", hintId);
+    if(hintId == m_hlItemFromMotion || hintId == -2)
+        return;
+    m_hlItemFromMotion = hintId;
+    repaint();
+}
+
 void SwitchWindow::paintVertical(Graphics &g) {
+    // NOTE: quickSwitchHugeIcon not supported in vertical mode. Tried that, looks creepy, not nice (04d53238@code7r)
+    const int iconSize = /* quickSwitchHugeIcon ? YIcon::hugeSize() : */ YIcon::largeSize();
+
     if (zItems->getActiveItem() >= 0) {
+        const int maxWid = width() - 2; // reduce due to 3D edge
+        const int contentX = quickSwitchHMargin;
+        const int titleX = quickSwitchTextFirst ? contentX
+                : contentX + iconSize + quickSwitchSepSize;
+        const int itemWidth = maxWid - quickSwitchHMargin*2;
+        const int frameX = contentX - quickSwitchIBorder;
+        const int frameWid = itemWidth + 2 * quickSwitchIBorder;
+        const int frameHght = iconSize + 2*quickSwitchIBorder;
+        const int strWid = itemWidth - iconSize - quickSwitchSepSize - 2*quickSwitchHMargin;
+        const int sepX = quickSwitchTextFirst
+                ? maxWid - iconSize - quickSwitchSepSize/2 - 1
+                        :  contentX + iconSize + quickSwitchSepSize/2 - 1;
 
-        int ih = 0;
-        //ih = quickSwitchHugeIcon ? YIcon::hugeSize() : YIcon::largeSize();
-        ih = YIcon::largeSize();
+        int contentY = quickSwitchVMargin;
 
-        int pos = quickSwitchVMargin;
         g.setFont(switchFont);
         g.setColor(switchFg);
-
         for (int i = 0, zCount=zItems->getCount(); i < zCount; i++) {
-
-            g.setColor(switchFg);
+            if(contentY + frameHght > (int) height())
+                break;
             if (i == zItems->getActiveItem()) {
-                g.setColor(switchMbg);
-                g.fillRect(quickSwitchHMargin, pos + quickSwitchVMargin , width() - quickSwitchHMargin*2, ih + quickSwitchIMargin );
-                g.setColor(switchMfg);
+                g.setColor(activeMenuItemBg);
+                g.fillRect(frameX, contentY-quickSwitchIBorder, frameWid, frameHght);
+                g.setColor(activeMenuItemFg);
             }
+            else
+                g.setColor(switchFg);
 
             ustring cTitle = zItems->getTitle(i);
 
             if (cTitle != null) {
-                const int x(1+ih + quickSwitchIMargin *2 + quickSwitchHMargin + quickSwitchSepSize);
-                const int y(pos + quickSwitchIMargin +  quickSwitchVMargin + ih/2);
-
-                g.drawChars(cTitle, x, y);
-
+                const int titleY = contentY + (iconSize + g.font()->ascent())/2;
+                g.drawStringEllipsis(titleX, titleY, cstring(cTitle).c_str(), strWid);
             }
             ref<YIcon> icon = zItems->getIcon(i);
             if (icon != null) {
-                if (quickSwitchTextFirst) {
-                    // prepaint icons because of too long strings
-                    g.setColor( (i == zItems->getActiveItem()) ? switchMfg : switchMbg);
-                    g.fillRect(
-                               width() - ih - quickSwitchIMargin *2 - quickSwitchHMargin,
-                               pos + quickSwitchVMargin,
-                               ih + 2 * quickSwitchIMargin,
-                               ih + quickSwitchIMargin);
-
-                    icon->draw(g,
-                               width() - ih - quickSwitchIMargin - quickSwitchHMargin,
-                               pos + quickSwitchIMargin,
-                               YIcon::largeSize());
-                } else {
-                    icon->draw(g,
-                               quickSwitchIMargin,
-                               pos + quickSwitchIMargin,
-                               YIcon::largeSize());
-                }
+                int iconX = quickSwitchTextFirst
+                        ? width() - quickSwitchHMargin - iconSize
+                        : contentX;
+                icon->draw(g, iconX, contentY, iconSize);
             }
 
-            pos += ih + 2* quickSwitchIMargin;
+            if(i == m_hlItemFromMotion && i != zItems->getActiveItem())
+            {
+                g.setColor(switchMbg);
+                g.drawRect(frameX, contentY-quickSwitchIBorder, frameWid, frameHght);
+            }
+            contentY += m_hintAreaStep;
         }
-
         if (quickSwitchSepSize) {
-            const int ip(ih + 2 * quickSwitchIMargin +
-                         quickSwitchSepSize/2);
-            const int x(quickSwitchTextFirst ? width() - ip : ip);
-
             g.setColor(switchBg->darker());
-            g.drawLine(x + 0, 1, x + 0, height() - 2);
+            g.drawLine(sepX + 0, 1, sepX + 0, height() - 2);
             g.setColor(switchBg->brighter());
-            g.drawLine(x + 1, 1, x + 1, height() - 2);
+            g.drawLine(sepX + 1, 1, sepX + 1, height() - 2);
         }
     }
 }
@@ -575,6 +618,9 @@ void SwitchWindow::begin(bool zdown, int mods) {
 
     if (close())
         return;
+
+    m_oldMenuMouseTracking = menuMouseTracking;
+    menuMouseTracking = true;
 
     int xiscreen = manager->getScreen();
     zItems->begin(zdown);
@@ -633,11 +679,12 @@ bool SwitchWindow::handleKey(const XKeyEvent &key) {
 
     if (key.type == KeyPress) {
         if (zItems->isKey(k, vm)) {
+            m_hlItemFromMotion = -1;
             int focused = zItems->moveTarget(true);
             displayFocus(focused);
             return true;
         } else if ((IS_WMKEY(k, vm, gKeySysSwitchLast))) {
-            // XXX: what to do with the swich-last key...
+            m_hlItemFromMotion = -1;
             int focused = zItems->moveTarget(false);
             displayFocus(focused);
             return true;
@@ -684,6 +731,15 @@ bool SwitchWindow::modDown(int mod) {
 }
 
 void SwitchWindow::handleButton(const XButtonEvent &button) {
+    //printf("got click, hot item: %d\n", m_hintedItem);
+    int hintId = calcHintedItem(button.x, button.y);
+    if (button.button == Button1 && button.type == ButtonPress) {
+        if (hintId >= 0 && hintId < zItems->getCount()) {
+            zItems->reset();
+            zItems->setTarget(hintId);
+            accept();
+        }
+    }
     YPopupWindow::handleButton(button);
 }
 

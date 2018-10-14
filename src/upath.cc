@@ -11,6 +11,9 @@
 #include <sys/stat.h>
 #include <stdio.h>
 #include <fcntl.h>
+#include "base.h"
+#include "yapp.h"
+#include "ypointer.h"
 
 const pstring upath::slash("/");
 const upath upath::rootPath(slash);
@@ -21,14 +24,12 @@ bool upath::isSeparator(int ch) const {
 
 upath upath::parent() const {
     int len = length();
-    while (len > 1 && isSeparator(fPath[len - 1])) {
-        --len;
+    int sep = fPath.lastIndexOf('/');
+    while (0 < sep && 1 + sep == len) {
+        len = sep;
+        sep = fPath.substring(0, len).lastIndexOf('/');
     }
-    for (; len > 0; --len) {
-        if (isSeparator(fPath[len - 1])) {
-            break;
-        }
-    }
+    len = max(0, sep);
     while (len > 1 && isSeparator(fPath[len - 1])) {
         --len;
     }
@@ -36,12 +37,7 @@ upath upath::parent() const {
 }
 
 pstring upath::name() const {
-    int start = length();
-    for (; start > 0; --start) {
-        if (isSeparator(fPath[start - 1])) {
-            break;
-        }
-    }
+    int start = 1 + fPath.lastIndexOf('/');
     return fPath.substring(start, length() - start);
 }
 
@@ -142,6 +138,32 @@ int upath::renameAs(const pstring& dest) const {
     return ::rename(string(), cstring(dest));
 }
 
+char* upath::loadText() const {
+    cstring file(fPath.startsWith("~/") ?
+                 (YApplication::getHomeDir() + fPath.substring(2)).fPath :
+                 fPath);
+    return ::load_text_file(file);
+}
+
+bool upath::copyFrom(const upath& from, int mode) const {
+    csmart text(from.loadText());
+    if (text == 0)
+        return false;
+    int fd = open(O_WRONLY | O_CREAT | O_TRUNC, mode);
+    if (fd == -1)
+        return false;
+    size_t len = strlen(text);
+    ssize_t wr = write(fd, text, len);
+    close(fd);
+    return 0 <= wr && size_t(wr) == len;
+}
+
+bool upath::testWritable(int mode) const {
+    int fd = open(O_WRONLY | O_CREAT | O_APPEND, mode);
+    if (0 <= fd) close(fd);
+    return 0 <= fd;
+}
+
 bool upath::hasProtocol() const {
     int k = path().indexOf('/');
     return k > 0 && path()[k-1] == ':' && path()[k+1] == '/';
@@ -161,10 +183,32 @@ bool upath::equals(const upath &s) const {
 #include <glob.h>
 #include "yarray.h"
 
-bool upath::glob(const char* pattern, class YStringArray& list) const {
+bool upath::hasglob(const char* pattern) {
+    const char* s = pattern;
+    while (*s && *s != '*' && *s != '?' && *s != '[')
+        s += 1 + (*s == '\\' && s[1]);
+    return *s != 0;
+}
+
+bool upath::glob(const char* pattern, YStringArray& list, const char* flags) {
     bool okay = false;
+    int flagbits = 0;
+    int (*const errfunc) (const char *epath, int eerrno) = 0;
     glob_t gl = {};
-    if (0 == ::glob(pattern, 0, 0, &gl)) {
+
+    if (flags) {
+        for (int i = 0; flags[i]; ++i) {
+            switch (flags[i]) {
+                case '/': flagbits |= GLOB_MARK; break;
+                case 'C': flagbits |= GLOB_NOCHECK; break;
+                case 'E': flagbits |= GLOB_NOESCAPE; break;
+                case 'S': flagbits |= GLOB_NOSORT; break;
+                default: break;
+            }
+        }
+    }
+
+    if (0 == ::glob(pattern, flagbits, errfunc, &gl)) {
         double limit = 1e6;
         if (gl.gl_pathc < limit) {
             int count = int(gl.gl_pathc);

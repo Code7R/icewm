@@ -179,7 +179,7 @@ notices that it is to be replaced it will cease operations and typically
 stop execution.  This allows B<icewm> to establish itself as the only
 active window manager.
 
-=item B<--restart>
+=item B<-r>, B<--restart>
 
 Instructs B<icewm> to restart itself, but one should not use this option
 directly. Instead one selects the C<Restart IceWM> button from the menu
@@ -197,7 +197,7 @@ Gives a list of directories where B<icewm> will look for configuration
 data.  This list is printed in the actual order in which B<icewm> uses
 it to search for configuration files.
 
-=item B<--list-themes>
+=item B<-l>, B<--list-themes>
 
 B<icewm> will search all the configuration directories for theme files
 and print a list of all found themes.
@@ -243,11 +243,15 @@ which is running on the current work space.  Each task button shows the
 application icon and the application title.  The active application is
 indicated by a pressed button.  This is the application which has input
 focus.  Pressing another button activates that application: it is
-brought to the foreground and receives input focus.
+brought to the foreground and receives input focus.  Other mouse
+controlled activities on the window buttons are dragging window buttons to
+(temporarily) rearrange the order (with left mouse button) or closing
+the application window (with middle button while pressing and holding C<Alt>).
 
 If there are not many application buttons then a stretch of plain task
 bar is visible.  Clicking on it with the right mouse button gives the
-task bar menu.
+task bar menu.  Even with a full task pane, this menu can be usually
+accessed by right-clicking the bottom right corner of the taskbar.
 
 The I<Tray Applet> shows system tray objects.
 
@@ -364,11 +368,16 @@ The second keyboard method involves pressing C<Alt+Esc> or
 C<Alt+Shift+Esc>.  Input focus is immediately changed to the next or
 previous window, which will be raised to make it fully visible.
 
+And finally, there is another way which is a hybrid of keyboard and
+mouse control. It involves the C<QuickSwitch> popup explained before,
+after pressing C<Alt+Tab> and while still holding C<Alt> a left click
+on one of the list items causes the activation of the related window.
+
 =head2 WINDOW PLACEMENT
 
 A second important task of a window manager is to place new windows on
 the screen.  By default B<icewm> chooses a placement with minimal
-overlap, but this is determined by the C<SmartPlacement>> option in the
+overlap, but this is determined by the C<SmartPlacement> option in the
 F<preferences> file.  If C<SmartPlacement> is turned off then windows
 are placed in sequence from left to right and top to bottom.  One can
 also turn on C<ManualPlacement>.  Then new windows appear initially in
@@ -475,6 +484,10 @@ C<KeyWinMaximize> maximizes the active window with borders.
 
 C<KeyWinMaximizeVert> maximizes the active window vertically.
 
+=item C<undefined>
+
+C<KeyWinMaximizeHoriz> maximizes the active window horizontally.
+
 =item C<Alt+F11>
 
 C<KeyWinFullscreen> maximizes the active window without borders.
@@ -530,6 +543,22 @@ C<KeyWinArrangeC> moves the active window to the center of the screen.
 =item C<Shift+Esc>
 
 C<KeySysWinMenu> posts the system window menu.
+
+=item C<Alt+Tab>
+
+C<KeySysSwitchNext>
+
+=item C<Alt+Shift+Tab>
+
+C<KeySysSwitchLast>
+
+=item C<Alt+Esc>
+
+C<KeySysWinNext> give focus to the next window and raise it.
+
+=item C<Alt+Shift+Esc>
+
+C<KeySysWinPrev> give focus to the previous window and raise it.
 
 =item C<Alt+Ctrl+Del>
 
@@ -707,6 +736,36 @@ C<KeySysShowDesktop> unmaps all windows to show the desktop.
 
 C<KeySysCollapseTaskBar> hides the task bar.
 
+=item C<undefined>
+
+C<KeyTaskBarSwitchNext> switches to the next window in the task bar.
+
+=item C<undefined>
+
+C<KeyTaskBarSwitchPrev> switches to the previous window in the task bar.
+
+=item C<undefined>
+
+C<KeyTaskBarMoveNext> moves the task bar button of the current window
+right.
+
+=item C<undefined>
+
+C<KeyTaskBarMovePrev> moves the task bar button of the current window
+left.
+
+=item C<undefined>
+
+C<KeySysWinListMenu> shows the window list menu.
+=item C<Alt+Tab>
+
+C<KeySysSwitchNext> opens the C<QuickSwitch> popup (see L<INPUT FOCUS>) and/or moves the selector.
+
+=item C<Alt+Shift+Tab>
+
+C<KeySysSwitchLast> works like C<KeySysSwitchNext> but moving in the opposite direction.
+
+
 =back
 
 =head2 MOUSE BINDINGS
@@ -728,6 +787,12 @@ shrink it move towards the centre.
 =item C<Ctrl+Alt+Pointer_Button1>
 
 C<MouseWinRaise> raises the window under the mouse.
+
+=item C<Ctrl+Alt+Pointer_Button1>
+
+C<MouseWinLower> lowers the window under the mouse.
+If this is equal to C<MouseWinRaise> and the window can be raised
+then C<MouseWinRaise> takes preference over C<MouseWinLower>.
 
 =back
 
@@ -836,7 +901,7 @@ Default local installation settings.
 
 L<icewm-session(1)> loads additional environment variables from the file
 F<env>.  Each line is subjected to POSIX shell expansion by
-L<wordexp(3)>.  Comment lines starting by a hash-sign (C<#>)are ignored.
+L<wordexp(3)>.  Comment lines starting by a hash-sign (C<#>) are ignored.
 L<icewm-session(1)> will load those expanded lines which contain a name,
 followed by an equals sign, followed by the value (which may be empty).
 
@@ -868,7 +933,7 @@ See L<icewm-keys(5)>.
 
 A menu of applications; usually customized by the user.  B<icewm>
 provides the L<icewm-menu-fdo(1)> program to generate a default menu.
-Similar programs are L<xdg_menu(1)>, L<mmaker(1)>' (MenuMaker),
+Similar programs are L<xdg_menu(1)>, L<mmaker(1)> (MenuMaker),
 L<xde-menu(1)>, L<xdgmenumaker(1)>.
 
 See L<icewm-menu(5)>.
@@ -943,7 +1008,7 @@ specific to applications or groups of applications.  Options can control
 the border, whether it appears on the task bar, the window list, the
 system tray and the work spaces.  Also its layer, geometry, whether it
 can be moved, resized and closed.  Full details for this file are
-explained in the L<IceWM Manual>.
+explained in the L<IceWM Manual|https://ice-wm.org/manual>.
 
 See L<icewm-winoptions(5)>.
 
@@ -1021,6 +1086,8 @@ sub-directory in the F<themes> directory. A theme contains at least a
 F<default.theme> file, and optionally theme alternatives which are
 additional files which have a F<.theme> file name extension and which
 contain tweaks of the F<default.theme> file.
+How to create a theme is explained in the
+L<IceWM Theme Creation Howto|https://ice-wm.org/themes>.
 
 =back
 
@@ -1037,26 +1104,28 @@ See the file F<COMPLIANCE> in the distribution for full details.
 
 =head1 SEE ALSO
 
-L<icewmbg(1)>,
-L<icewmtray(1)>,
-L<icewm-session(1)>,
-L<icesh(1)>,
 L<icehelp(1)>,
-L<icewmhint(1)>,
+L<icesh(1)>,
 L<icesound(1)>,
-L<icewm-menu-fdo(1)>,
 L<icewm-env(5)>,
 L<icewm-focus_mode(5)>,
 L<icewm-keys(5)>,
 L<icewm-menu(5)>,
+L<icewm-menu-fdo(1)>,
+L<icewm-menu-xrandr(1)>,
 L<icewm-preferences(5)>,
 L<icewm-prefoverride(5)>,
 L<icewm-programs(5)>,
+L<icewm-session(1)>,
+L<icewm-set-gnomewm(1)>,
+L<icewm-shutdown(5)>,
+L<icewm-startup(5)>,
 L<icewm-theme(5)>,
 L<icewm-toolbar(5)>,
 L<icewm-winoptions(5)>,
-L<icewm-startup(5)>,
-L<icewm-shutdown(5)>,
+L<icewmbg(1)>,
+L<icewmhint(1)>,
+L<icewmtray(1)>,
 L<Xorg(1)>,
 L<Xserver(1)>,
 L<xinit(1)>,

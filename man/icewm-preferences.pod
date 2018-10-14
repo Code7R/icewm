@@ -85,6 +85,10 @@ Pass focusing click on client area to client.
 
 Change to the workspace of newly focused windows.
 
+=item B<FocusCurrentWorkspace>=0
+
+Move newly focused windows to current workspace.
+
 =item B<FocusOnMap>=1
 
 Focus normal window when initially mapped.
@@ -732,7 +736,7 @@ Screen edge workspace switching delay.
 
 =item B<ScrollBarStartDelay>=500  [0-5000]
 
-Inital scroll bar autoscroll delay.
+Initial scroll bar autoscroll delay.
 
 =item B<ScrollBarDelay>=30  [0-5000]
 
@@ -1300,7 +1304,7 @@ Textcolor in the quick switch window.
 
 =item B<ColorQuickSwitchActive> = ""
 
-Rectangle arround the active icon in the quick switch window.
+Rectangle around the active icon in the quick switch window.
 
 =item B<ColorDefaultTaskBar> = "rgb:C0/C0/C0"
 
@@ -1577,7 +1581,8 @@ Locations for the F<preferences> file are as follows:
 
 =head1 SEE ALSO
 
-L<icewm(1)>.
+L<icewm(1)>,
+L<icewm-prefoverride(5)>.
 
 =head1 AUTHOR
 

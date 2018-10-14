@@ -1,6 +1,7 @@
 #define defgMouseWinMove                XK_Pointer_Button1, kfAlt, "Alt+Pointer_Button1"
 #define defgMouseWinSize                XK_Pointer_Button3, kfAlt, "Alt+Pointer_Button3"
 #define defgMouseWinRaise               XK_Pointer_Button1, kfCtrl+kfAlt, "Ctrl+Alt+Pointer_Button1"
+#define defgMouseWinLower               XK_Pointer_Button1, kfCtrl+kfAlt, "Ctrl+Alt+Pointer_Button1"
 
 #define defgKeyWinRaise                 XK_F1, kfAlt, "Alt+F1"
 #define defgKeyWinOccupyAll             XK_F2, kfAlt, "Alt+F2"
@@ -39,10 +40,10 @@
 #define defgKeyWinSmartPlace            XK_KP_Begin, kfCtrl+kfAlt+kfShift, "Ctrl+Alt+Shift+KP_5"
 #define defgKeySysSwitchNext            XK_Tab, kfAlt, "Alt+Tab"
 #define defgKeySysSwitchLast            XK_Tab, kfAlt+kfShift, "Alt+Shift+Tab"
-#define defgKeyTaskBarSwitchNext       '1', kfAlt, "Alt+1"
-#define defgKeyTaskBarSwitchPrev        XK_grave, kfAlt, "Alt+grave"
-#define defgKeyTaskBarMoveNext		'1', kfAlt+kfShift, "Alt+Shift+1"
-#define defgKeyTaskBarMovePrev		XK_grave, kfAlt+kfShift, "Alt+Shift+grave"
+#define defgKeyTaskBarSwitchNext        0, 0, ""
+#define defgKeyTaskBarSwitchPrev        0, 0, ""
+#define defgKeyTaskBarMoveNext          0, 0, ""
+#define defgKeyTaskBarMovePrev          0, 0, ""
 #define defgKeySysWinNext               XK_Escape, kfAlt, "Alt+Esc"
 #define defgKeySysWinPrev               XK_Escape, kfAlt+kfShift, "Alt+Shift+Esc"
 #define defgKeySysWinMenu               XK_Escape, kfShift, "Shift+Esc"
@@ -50,7 +51,6 @@
 #define defgKeySysMenu                  XK_Escape, kfCtrl, "Ctrl+Esc"
 #define defgKeySysWindowList            XK_Escape, kfCtrl+kfAlt, "Alt+Ctrl+Esc"
 #define defgKeySysWinListMenu           0, 0, ""
-///#define defgKeySysRun                   'r', kfAlt+kfCtrl, "Alt+Ctrl+r"
 #define defgKeySysAddressBar            ' ', kfAlt+kfCtrl, "Alt+Ctrl+Space"
 #define defgKeyWinMenu                  ' ', kfAlt, "Alt+Space"
 #define defgKeySysWorkspacePrev         XK_Left, kfAlt+kfCtrl, "Alt+Ctrl+Left"
@@ -108,6 +108,7 @@
 DEF_WMKEY(gMouseWinMove);
 DEF_WMKEY(gMouseWinSize);
 DEF_WMKEY(gMouseWinRaise);
+DEF_WMKEY(gMouseWinLower);
 
 DEF_WMKEY(gKeyWinRaise);
 DEF_WMKEY(gKeyWinOccupyAll);
@@ -158,7 +159,6 @@ DEF_WMKEY(gKeySysDialog);
 DEF_WMKEY(gKeySysMenu);
 DEF_WMKEY(gKeySysWindowList);
 DEF_WMKEY(gKeySysWinListMenu);
-///DEF_WMKEY(gKeySysRun);
 DEF_WMKEY(gKeySysAddressBar);
 DEF_WMKEY(gKeySysWorkspacePrev);
 DEF_WMKEY(gKeySysWorkspaceNext);

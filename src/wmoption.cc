@@ -360,7 +360,7 @@ static char *parseWinOptions(char *data, const char* filename) {
         end++;
 
         p = end;
-        while (*p == ' ' || *p == '\t')
+        while (ASCII::isSpaceOrTab(*p))
             p++;
 
         word = p;
@@ -382,7 +382,7 @@ static char *parseWinOptions(char *data, const char* filename) {
 
 void loadWinOptions(upath optFile) {
     if (optFile.nonempty()) {
-        csmart buf(load_text_file(optFile.string()));
+        csmart buf(optFile.loadText());
         if (buf)
             parseWinOptions(buf, optFile.string());
     }
