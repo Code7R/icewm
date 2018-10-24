@@ -18,15 +18,15 @@ enum FocusModels {
     FocusExplicit,
     FocusStrict,
     FocusQuiet,
-    FocusModelCount,
-    FocusModelLast = FocusModelCount - 1
+    FocusModelLast = FocusQuiet
 };
 
 class YSMListener {
 public:
     virtual void handleSMAction(WMAction message) = 0;
     virtual void restartClient(const char *path, char *const *args) = 0;
-    virtual long runOnce(const char *resource, const char *path, char *const *args) = 0;
+    virtual void runOnce(const char *resource, long *pid,
+                         const char *path, char *const *args) = 0;
     virtual void runCommandOnce(const char *resource, const char *cmdline, long *pid) = 0;
 protected:
     virtual ~YSMListener() {}
@@ -68,11 +68,13 @@ public:
     virtual void smDie();
 #endif
 
-    void setFocusMode(int mode);
+    void setFocusMode(FocusModels mode);
     void initFocusMode();
+    void initFocusCustom();
 
     virtual void restartClient(const char *path, char *const *args);
-    virtual long runOnce(const char *resource, const char *path, char *const *args);
+    virtual void runOnce(const char *resource, long *pid,
+                         const char *path, char *const *args);
     virtual void runCommandOnce(const char *resource, const char *cmdline, long *pid);
     bool mapClientByPid(const char* resource, long pid);
     bool mapClientByResource(const char* resource, long *pid);
@@ -97,6 +99,7 @@ public:
     bool hasSwitchWindow() const { return switchWindow != 0; }
     SwitchWindow* getSwitchWindow();
     const char* getConfigFile() const { return configFile; }
+    FocusModels getFocusMode() const { return focusMode; }
 
 private:
     char** mainArgv;
@@ -112,6 +115,7 @@ private:
 
     void runRestart(const char *path, char *const *args);
 
+    FocusModels focusMode;
     Window managerWindow;
 
     static void initAtoms();

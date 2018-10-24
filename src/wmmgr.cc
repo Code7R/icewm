@@ -834,7 +834,8 @@ Window YWindowManager::findWindow(const char *resource) {
     if (isEmpty(resource))
         return None;
 
-    Window match = None, root = desktop->handle(), parent, *clients = 0;
+    Window match = None, root = desktop->handle(), parent;
+    xsmart<Window> clients;
     unsigned count = 0, nonframes = 0;
     XQueryTree(xapp->display(), root, &root, &parent, &clients, &count);
 
@@ -851,7 +852,7 @@ Window YWindowManager::findWindow(const char *resource) {
                         break;
                     }
                     else {
-                        clients[i] = w;
+                        continue;
                     }
                 }
                 else if (strncmp(title, "Ice", 3) == 0) {
@@ -885,8 +886,11 @@ Window YWindowManager::findWindow(Window win, char const* resource,
     for (unsigned i = 0; match == None && i < count; ++i) {
         if (matchWindow(clients[i], resource))
             match = clients[i];
-        else if (maxdepth)
+    }
+    if (maxdepth) {
+        for (unsigned i = 0; match == None && i < count; ++i) {
             match = findWindow(clients[i], resource, maxdepth - 1);
+        }
     }
 
     return match;
@@ -1025,14 +1029,6 @@ void YWindowManager::loseFocus(YFrameWindow *window) {
     (void)window;
     PRECONDITION(window != 0);
     focusLastWindow();
-}
-
-void YWindowManager::activate(YFrameWindow *window, bool raise, bool canWarp) {
-    if (window) {
-        if (raise)
-            window->wmRaise();
-        window->activateWindow(canWarp);
-    }
 }
 
 YFrameWindow *YWindowManager::top(long layer) const {

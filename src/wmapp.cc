@@ -736,21 +736,16 @@ void YWMApp::restartClient(const char *path, char *const *args) {
     manager->manageClients();
 }
 
-long YWMApp::runOnce(const char *resource, const char *path, char *const *args) {
-    long pid = 0;
-    Window win(manager->findWindow(resource));
+void YWMApp::runOnce(const char *resource, long *pid,
+                     const char *path, char *const *args)
+{
+    if (0 < *pid && mapClientByPid(resource, *pid))
+        return;
 
-    if (win) {
-        YFrameWindow * frame(manager->findFrame(win));
-        if (frame) {
-            frame->activateWindow(true);
-            frame->client()->getNetWMPid(&pid);
-        }
-        else XMapRaised(xapp->display(), win);
-    } else
-        pid = runProgram(path, args);
+    if (mapClientByResource(resource, pid))
+        return;
 
-    return pid;
+    *pid = runProgram(path, args);
 }
 
 void YWMApp::runCommandOnce(const char *resource, const char *cmdline, long *pid) {
@@ -797,23 +792,22 @@ bool YWMApp::mapClientByResource(const char* resource, long *pid) {
             frame->setWorkspace(manager->activeWorkspace());
             frame->activateWindow(true);
             frame->client()->getNetWMPid(pid);
-            return true;
         }
+        else {
+            XMapRaised(xapp->display(), win);
+        }
+        return true;
     }
     return false;
 }
 
-void YWMApp::setFocusMode(int mode) {
+void YWMApp::setFocusMode(FocusModels mode) {
     focusMode = mode;
     initFocusMode();
 
     char s[32];
     snprintf(s, sizeof s, "FocusMode=%d\n", mode);
-    if (WMConfig::setDefault("focus_mode", s) == 0) {
-        if (mode == 0) {
-            restartClient(0, 0);
-        }
-    }
+    WMConfig::setDefault("focus_mode", s);
 }
 
 void YWMApp::actionPerformed(YAction action, unsigned int /*modifiers*/) {
@@ -948,11 +942,30 @@ void YWMApp::actionPerformed(YAction action, unsigned int /*modifiers*/) {
     }
 }
 
+void YWMApp::initFocusCustom() {
+    cfoption focus_prefs[] = {
+        OBV("ClickToFocus",              &clickFocus,                ""),
+        OBV("FocusOnAppRaise",           &focusOnAppRaise,           ""),
+        OBV("RequestFocusOnAppRaise",    &requestFocusOnAppRaise,    ""),
+        OBV("RaiseOnFocus",              &raiseOnFocus,              ""),
+        OBV("FocusOnClickClient",        &focusOnClickClient,        ""),
+        OBV("FocusChangesWorkspace",     &focusChangesWorkspace,     ""),
+        OBV("FocusCurrentWorkspace",     &focusCurrentWorkspace,     ""),
+        OBV("FocusOnMap",                &focusOnMap,                ""),
+        OBV("FocusOnMapTransient",       &focusOnMapTransient,       ""),
+        OBV("FocusOnMapTransientActive", &focusOnMapTransientActive, ""),
+        OK0()
+    };
+
+    YConfig::findLoadConfigFile(this, focus_prefs, configFile);
+    YConfig::findLoadConfigFile(this, focus_prefs, "prefoverride");
+}
+
 void YWMApp::initFocusMode() {
     switch (focusMode) {
 
     case FocusCustom: /* custom */
-        // Need a restart to load from file.
+        initFocusCustom();
         break;
 
     case FocusClick: /* click to focus */
@@ -1034,6 +1047,7 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName,
     aboutDlg(0),
     ctrlAltDelete(0),
     switchWindow(0),
+    focusMode(FocusClick),
     managerWindow(None)
 {
     if(argc && *argc>0 && argv && *argv && **argv && mstring(**argv).endsWith("-lite"))
@@ -1073,6 +1087,7 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName,
         WMConfig::loadThemeConfiguration(this, themeName);
     }
     {
+        int focusMode(this->focusMode);
         cfoption focus_prefs[] = {
             OIV("FocusMode", &focusMode, FocusCustom, FocusModelLast,
                 "Focus mode (0=custom, 1=click, 2=sloppy"
@@ -1081,9 +1096,11 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName,
         };
 
         YConfig::findLoadConfigFile(this, focus_prefs, "focus_mode");
+        this->focusMode = FocusModels(focusMode);
     }
     WMConfig::loadConfiguration(this, "prefoverride");
-    initFocusMode();
+    if (focusMode != FocusCustom)
+        initFocusMode();
 
     DEPRECATE(warpPointer == true);
     DEPRECATE(focusRootWindow == true);
@@ -1515,7 +1532,7 @@ static void print_configured(const char *argv0) {
 #ifdef CONFIG_UNICODE_SET
     " unicodeset"
 #endif
-#ifdef CONFIG_WORDEXP
+#ifdef HAVE_WORDEXP
     " wordexp"
 #endif
 #ifdef CONFIG_XFREETYPE
