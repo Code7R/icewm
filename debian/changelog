@@ -1,4 +1,4 @@
-icewm (1.4.3.0~pre-20181024-1) UNRELEASED; urgency=low
+icewm (1.4.3.0~pre-20181030-1) UNRELEASED; urgency=low
 
   * New upstream snapshot
   * Reverting terminal wrapper on some utility functionality to upstream
@@ -6,7 +6,7 @@ icewm (1.4.3.0~pre-20181024-1) UNRELEASED; urgency=low
     providers
   * Cleanup of some old dependencies, no longer used in this branch
 
- -- Eduard Bloch <blade@debian.org>  Wed, 24 Oct 2018 22:16:10 +0200
+ -- Eduard Bloch <blade@debian.org>  Tue, 30 Oct 2018 22:05:40 +0100
 
 icewm (1.4.3.0~pre-20180822-1) unstable; urgency=low
 
