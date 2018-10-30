@@ -7,17 +7,11 @@
  */
 #include "config.h"
 
-#include "yimage.h"
-#include "ykey.h"
 #include "wmswitch.h"
 #include "wpixmaps.h"
-#include "wmmgr.h"
 #include "wmframe.h"
 #include "yxapp.h"
 #include "prefs.h"
-#include "yrect.h"
-#include "yicon.h"
-#include "wmwinlist.h"
 #include "yprefs.h"
 
 // for vertical quickswitch, reuse some colors from the menu because those
@@ -32,6 +26,13 @@ class WindowItemsCtrlr : public ISwitchItems
     YWindowManager *fRoot;
     YFrameWindow *fActiveWindow;
     YFrameWindow *fLastWindow;
+    char *fWMClass;
+
+    void append(YFrameWindow* w) {
+        if (find(zList, w) < 0) {
+            zList.append(w);
+        }
+    }
 
     void getZList() {
 
@@ -69,7 +70,11 @@ class WindowItemsCtrlr : public ISwitchItems
                 // pass 3: minimized windows
                 // pass 4: hidden windows
                 // pass 5: unfocusable windows
-                if ((w->client() && !w->client()->adopted()) && !w->visible()) {
+
+                if (hasbit(w->client()->winHints(), WinHintsSkipFocus))
+                    continue;
+
+                if (!w->client()->adopted() && !w->visible()) {
                     continue;
                 }
 
@@ -84,27 +89,32 @@ class WindowItemsCtrlr : public ISwitchItems
                     }
                 }
 
+                if (nonempty(fWMClass)) {
+                    if (w->client()->classHint()->match(fWMClass) == false)
+                        continue;
+                }
+
                 if (w == fRoot->getFocus()) {
-                    if (pass == 0) zList.append(w);
+                    if (pass == 0) append(w);
                 } else if (w->isUrgent()) {
                     if (quickSwitchToUrgent) {
-                        if (pass == 1) zList.append(w);
+                        if (pass == 1) append(w);
                     } else {
-                        if (pass == 2) zList.append(w);
+                        if (pass == 2) append(w);
                     }
                 } else if (w->frameOptions() & YFrameWindow::foIgnoreQSwitch) {
                 } else if (w->avoidFocus()) {
-                    if (pass == 5) zList.append(w);
+                    if (pass == 5) append(w);
                 } else if (w->isHidden()) {
                     if (pass == 4)
                         if (quickSwitchToHidden)
-                            zList.append(w);
+                            append(w);
                 } else if (w->isMinimized()) {
                     if (pass == 3)
                         if (quickSwitchToMinimized)
-                            zList.append(w);
+                            append(w);
                 } else {
-                    if (pass == 2) zList.append(w);
+                    if (pass == 2) append(w);
                 }
             }
         }
@@ -146,12 +156,15 @@ public:
 
 
     WindowItemsCtrlr() :
-        zTarget(0), fRoot(manager), fActiveWindow(0), fLastWindow(0)
+        zTarget(0), fRoot(manager), fActiveWindow(0), fLastWindow(0),
+        fWMClass(0)
     {
     }
 
     ~WindowItemsCtrlr()
     {
+        if (fWMClass)
+            free(fWMClass);
     }
 
     int getActiveItem()
@@ -164,6 +177,12 @@ public:
         if (inrange(idx, 0, getCount() - 1))
             return zList[idx]->client()->windowTitle();
         return null;
+    }
+
+    virtual void setWMClass(char* wmclass) {
+        if (fWMClass)
+            free(fWMClass);
+        fWMClass = wmclass;
     }
 
     void updateList() {
@@ -226,7 +245,8 @@ public:
     }
 
     virtual bool isKey(KeySym k, unsigned int vm) OVERRIDE {
-        return (IS_WMKEY(k, vm, gKeySysSwitchNext));
+        return gKeySysSwitchNext.eq(k, vm) ||
+              (gKeySysSwitchClass.eq(k, vm) && fWMClass != 0);
     }
 };
 
@@ -610,10 +630,11 @@ void SwitchWindow::paintVertical(Graphics &g) {
     }
 }
 
-void SwitchWindow::begin(bool zdown, int mods) {
+void SwitchWindow::begin(bool zdown, int mods, char* wmclass) {
     modsDown = mods & (xapp->AltMask | xapp->MetaMask |
                        xapp->HyperMask | xapp->SuperMask |
                        xapp->ModeSwitchMask | ControlMask);
+    zItems->setWMClass(wmclass);
 
     if (close())
         return;
