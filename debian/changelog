@@ -1,4 +1,4 @@
-icewm (1.4.3.0~pre-20181030-1) UNRELEASED; urgency=low
+icewm (1.4.3.0~pre-20181030-1) unstable; urgency=low
 
   * New upstream snapshot
   * Reverting terminal wrapper on some utility functionality to upstream
