@@ -424,7 +424,7 @@ msgid "Failed to execute system(%s) (%d)"
 msgstr "Fehlerhafte Ausführung von system(%s) (%d)"
 
 #: src/icehelp.cc:2133
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to decompress %s"
 msgstr "Konnte %s nicht entpacken"
 
@@ -434,7 +434,7 @@ msgstr "curl oder wget konnten in PATH nicht gefunden werden"
 
 #: src/icehelp.cc:2145
 msgid "Unsafe characters in URL"
-msgstr "Unsichere Zeichen in URL"
+msgstr "Unsichere Zeichen im URL"
 
 #: src/icehelp.cc:2182
 #, c-format
@@ -782,12 +782,12 @@ msgstr ""
 #: src/icesm.cc:120
 #, c-format
 msgid "Unknown option '%s'"
-msgstr "Unbekannte Aktion: '%s'"
+msgstr "Unbekannte Option: '%s'"
 
 #: src/icesm.cc:308
 #, c-format
 msgid "%s exited with status %d."
-msgstr "%s wurde mit Status %d beendet."
+msgstr "%s endete mit Status %d."
 
 #: src/icesm.cc:314
 #, c-format
@@ -815,7 +815,7 @@ msgstr "IceWM-Absturz-Reaktion"
 #: src/icesound.cc:219 src/icesound.cc:327 src/icesound.cc:631
 #, c-format
 msgid "Playing sample #%d (%s)"
-msgstr "Spiele Beispiel #%d (%s)"
+msgstr "Spiele Sample #%d (%s)"
 
 #: src/icesound.cc:337
 #, c-format
@@ -877,7 +877,7 @@ msgstr "Fehler <%d> beim Hochladen von `%s:%s`"
 #: src/icesound.cc:518
 #, c-format
 msgid "Sample <%d> uploaded as `%s:%s'"
-msgstr "Sample <%d> wurde als »%s:%s« geladen"
+msgstr "Sample <%d> wurde als »%s:%s« hochgeladen"
 
 #: src/icesound.cc:569
 #, c-format
@@ -1378,7 +1378,7 @@ msgstr "_Herunterfahren"
 #. TRANSLATORS: This means "energy saving mode" or "suspended system". Not "interrupt". Not "hibernate".
 #: src/wmapp.cc:520 src/wmdialog.cc:75
 msgid "_Sleep mode"
-msgstr "_Schlaf-Modus"
+msgstr "Schlaf-_Modus"
 
 #: src/wmapp.cc:525
 msgid "Restart _Icewm"
@@ -1664,7 +1664,7 @@ msgstr "_Abmelden..."
 
 #: src/wmdialog.cc:81
 msgid "_Restart icewm"
-msgstr "IceWM _neu starten"
+msgstr "_IceWM neu starten"
 
 #: src/wmdialog.cc:82 src/wmprog.cc:799 src/wmtaskbar.cc:285
 #: src/wmtaskbar.cc:288
