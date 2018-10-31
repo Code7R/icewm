@@ -81,9 +81,9 @@ override_dh_install:
 	install -m 644 debian/README.cfg $(ICEWM_COMMON)/usr/share/icewm/README
 	install -m 755 debian/netstat.sh $(ICEWM_COMMON)/usr/share/icewm
 	# Extra docs
-	mkdir -p "$(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ"
-	cd $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ && sgml2html $(CURDIR)/debian/FAQ/source/*.sgml
-	sgml2txt $(CURDIR)/debian/FAQ/source/*.sgml && col -bx < IceWM-FAQ.txt > $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ/IceWM-FAQ.txt
+	#mkdir -p "$(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ"
+	#cd $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ && sgml2html $(CURDIR)/debian/FAQ/source/*.sgml
+	#sgml2txt $(CURDIR)/debian/FAQ/source/*.sgml && col -bx < IceWM-FAQ.txt > $(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ/IceWM-FAQ.txt
 	cd debian ; for x in icewm icewm-lite icewm-experimental ; do mkdir -p $$x/usr/share/lintian/overrides ; cp $$x.lintian $$x/usr/share/lintian/overrides/$$x ; done	
 	sed -e 's,^.link.*fonts.googleapis.*,,' -i "$(ICEWM_COMMON)/usr/share/doc/icewm-common/html/"*.html
 	dh_link -A
