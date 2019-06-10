@@ -372,9 +372,12 @@ void logShape(const union _XEvent& xev) {
 }
 
 void logVisibility(const union _XEvent& xev) {
-    msg("window=0x%lX: visibilityNotify state=%d",
+    msg("window=0x%lX: visibilityNotify state=%s",
         xev.xvisibility.window,
-        xev.xvisibility.state);
+        xev.xvisibility.state == VisibilityPartiallyObscured ? "partial" :
+        xev.xvisibility.state == VisibilityFullyObscured ? "obscured" :
+        xev.xvisibility.state == VisibilityUnobscured ? "unobscured" : "bogus"
+        );
 }
 
 void logEvent(const union _XEvent& xev) {
@@ -394,8 +397,8 @@ void logEvent(const union _XEvent& xev) {
         logButton,            //  4 ButtonPress
         logButton,            //  5 ButtonRelease
         logMotion,            //  6 MotionNotify
-        logAny,               //  7 EnterNotify
-        logAny,               //  8 LeaveNotify
+        logCrossing,          //  7 EnterNotify
+        logCrossing,          //  8 LeaveNotify
         logFocus,             //  9 FocusIn
         logFocus,             // 10 FocusOut
         logAny,               // 11 KeymapNotify
@@ -809,45 +812,14 @@ void check_argv(int argc, char **argv, const char *help, const char *version)
     }
 }
 
-#if 0
-
-/*
- *      Counts the tokens separated by delim
- */
-unsigned strtoken(const char * str, const char * delim) {
-    unsigned count = 0;
-
-    if (str) {
-        while (*str) {
-            str = strnxt(str, delim);
-            ++count;
-        }
-    }
-
-    return count;
-}
-#endif
-
 #if 1
 const char *my_basename(const char *path) {
-    const char *base = ::strrchr(path, DIR_DELIMINATOR);
+    const char *base = ::strrchr(path, '/');
     return (base ? base + 1 : path);
 }
 #else
 const char *my_basename(const char *path) {
     return basename(path);
-}
-#endif
-
-#if 0
-bool strequal(const char *a, const char *b) {
-    return a ? b && !strcmp(a, b) : !b;
-}
-#endif
-
-#if 0
-int strnullcmp(const char *a, const char *b) {
-    return a ? (b ? strcmp(a, b) : 1) : (b ? -1 : 0);
 }
 #endif
 
@@ -857,13 +829,81 @@ bool testOnce(const char* file, const int line) {
     return find(list, hash) < 0 ? list.append(hash), true : false;
 }
 
+bool isFile(const char* path) {
+    struct stat s;
+    return stat(path, &s) == 0 && S_ISREG(s.st_mode);
+}
+
+// lookup "name" in PATH and return a new string or 0.
+char* path_lookup(const char* name) {
+    if (isEmpty(name))
+        return 0;
+    if (strchr(name, '/'))
+        return (access(name, X_OK) || !isFile(name)) ? 0 : newstr(name);
+
+    char *env = newstr(getenv("PATH")), *directory, *save = 0, *filebuf = 0;
+    if (env == 0)
+        return 0;
+
+    while ((directory = strtok_r(save ? 0 : env, ":", &save)) != 0) {
+        size_t length = strlen(directory) + strlen(name) + 3;
+        filebuf = new char[length];
+        if (filebuf == 0)
+            break;
+        snprintf(filebuf, length, "%s/%s", directory, name);
+        if (access(filebuf, X_OK) == 0 && isFile(filebuf))
+            break;
+        delete[] filebuf;
+        filebuf = 0;
+    }
+    delete[] env;
+    return filebuf;
+}
+
+// get path of executable.
+char* progpath() {
+#ifdef __linux__
+    char* path = program_invocation_name;
+    bool fail = isEmpty(path) || access(path, R_OK | X_OK) != 0;
+    if (fail) {
+        const size_t linksize = 123;
+        char link[linksize];
+        const size_t procsize = 42;
+        char proc[procsize];
+        snprintf(proc, procsize, "/proc/%d/exe", int(getpid()));
+        ssize_t read = readlink(proc, link, linksize);
+        if (inrange<ssize_t>(read, 1, ssize_t(linksize - 1))) {
+            link[read] = 0;
+            char* annotation = strstr(link, " (deleted)");
+            if (annotation && annotation > link) {
+                annotation[0] = 0;
+            }
+            if ((fail = access(link, R_OK | X_OK)) == 0) {
+                path = program_invocation_name = newstr(link);
+                INFO("1: set program_invocation_name %s", path);
+            }
+        }
+    }
+    if (fail && (path = path_lookup(path)) != 0) {
+        program_invocation_name = path;
+        INFO("2: set program_invocation_name %s", path);
+    }
+#else
+    static char* path;
+    if (path == 0)
+        path = path_lookup(getprogname());
+#endif
+    return path;
+}
+
 void show_backtrace(const int limit) {
 #if defined(HAVE_BACKTRACE_SYMBOLS_FD) && defined(HAVE_EXECINFO_H)
     const int asize = Elvis(limit, 20);
     void *array[asize];
     const int count = backtrace(array, asize);
     const char tool[] = "/usr/bin/addr2line";
-    const char* path = program_invocation_name;
+    char* prog = progpath();
+    char* path = prog ? prog : path_lookup("icewm");
 
     fprintf(stderr, "backtrace:\n"); fflush(stderr);
 
@@ -877,7 +917,23 @@ void show_backtrace(const int limit) {
             snprintf(buf + len, bufsize - len, " %p", array[i]);
             len += strlen(buf + len);
         }
-        status = system(buf);
+        FILE* fp = popen(buf, "r");
+        if (fp) {
+            const int linesize(256);
+            char line[linesize];
+            int lineCount = 0;
+            while (fgets(line, linesize, fp)) {
+                ++lineCount;
+                if (strncmp(line, "?? ??:0", 7)) {
+                    fputs(line, stderr);
+                }
+            }
+            if (pclose(fp) == 0 && lineCount >= count) {
+                status = 0;
+            }
+        }
+        else
+            status = system(buf);
     }
     if (status) {
         backtrace_symbols_fd(array, count, 2);

@@ -711,7 +711,7 @@ void YFrameClient::handleShapeNotify(const XShapeEvent &shape) {
 
 void YFrameClient::setWindowTitle(const char *title) {
     if (title == 0 || fWindowTitle == null || !fWindowTitle.equals(title)) {
-        fWindowTitle = ustring::newstr(title);
+        fWindowTitle = mstring(title);
         if (title != 0) {
             cstring cs(fWindowTitle);
             XChangeProperty(xapp->display(), handle(),
@@ -729,7 +729,7 @@ void YFrameClient::setWindowTitle(const char *title) {
 
 void YFrameClient::setIconTitle(const char *title) {
     if (title == 0 || fIconTitle == null || !fIconTitle.equals(title)) {
-        fIconTitle = ustring::newstr(title);
+        fIconTitle = mstring(title);
         if (title != 0) {
             cstring cs(fIconTitle);
             XChangeProperty(xapp->display(), handle(),
@@ -1492,6 +1492,9 @@ void YFrameClient::setWinStateHint(long mask, long state) {
     MSG(("set state=%8lX mask=%3lX, saved %8lX, %3lX, %p",
           state, mask, fSavedWinState[0], fSavedWinState[1], this));
 
+    if (destroyed())
+        return;
+
     if (hasbit(mask, state ^ fSavedWinState[0]) || mask != fSavedWinState[1]) {
         long prop[2] = { state & mask, mask };
 
@@ -2227,7 +2230,7 @@ bool ClassHint::match(const char* resource) const {
 
 char* ClassHint::resource() const {
     mstring str(res_name, ".", res_class);
-    return str == "." ? 0 : strdup(cstring(str));
+    return str == "." ? nullptr : strdup(cstring(str));
 }
 
 // vim: set sw=4 ts=4 et:

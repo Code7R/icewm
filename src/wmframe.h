@@ -462,7 +462,6 @@ private:
 
     Window topSide, leftSide, rightSide, bottomSide;
     Window topLeft, topRight, bottomLeft, bottomRight;
-    Window topLeftSide, topRightSide;
     bool indicatorsCreated;
     bool indicatorsVisible;
 
@@ -540,7 +539,6 @@ private:
     void setSize(int, int);
     void setWindowGeometry(const YRect &r) {
         YWindow::setGeometry(r);
-        performLayout();
     }
     friend class MiniIcon;
 };

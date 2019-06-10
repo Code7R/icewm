@@ -576,8 +576,11 @@ static void initMenus(
         windowMenu->addItem(_("_Size"),     -2, KEY_NAME(gKeyWinSize), actionSize);
     if (strchr(winMenuItems, 'n'))
         windowMenu->addItem(_("Mi_nimize"), -2, KEY_NAME(gKeyWinMinimize), actionMinimize);
-    if (strchr(winMenuItems, 'x'))
+    if (strchr(winMenuItems, 'x')) {
         windowMenu->addItem(_("Ma_ximize"), -2, KEY_NAME(gKeyWinMaximize), actionMaximize);
+        windowMenu->addItem(_("Maximize_Vert"), -2, KEY_NAME(gKeyWinMaximizeVert), actionMaximizeVert);
+        windowMenu->addItem(_("MaximizeHori_z"), -2, KEY_NAME(gKeyWinMaximizeHoriz), actionMaximizeHoriz);
+    }
     if (strchr(winMenuItems,'f') && allowFullscreen)
         windowMenu->addItem(_("_Fullscreen"), -2, KEY_NAME(gKeyWinFullscreen), actionFullscreen);
 
@@ -656,7 +659,7 @@ static int handler(Display *display, XErrorEvent *xev) {
 
 #if defined(DEBUG) || defined(PRECON)
         if (xapp->synchronized()) {
-            switch (xev->resourceid) {
+            switch (xev->request_code) {
                 case X_GetImage:
                 case X_CreateGC:
                     show_backtrace();
@@ -723,7 +726,11 @@ void YWMApp::runRestart(const char *path, char *const *args) {
          strerror(errno), path ? path : ICEWMEXE);
 }
 
-void YWMApp::restartClient(const char *path, char *const *args) {
+void YWMApp::restartClient(const char *cpath, char *const *cargs) {
+    csmart path(newstr(cpath));
+    YStringArray sargs((const char**) cargs);
+    char *const *args = (cargs == 0) ? 0 : sargs.getCArray();
+
     wmapp->signalGuiEvent(geRestart);
     manager->unmanageClients();
     unregisterProtocols();
@@ -1290,11 +1297,16 @@ void YWMApp::handleSignal(int sig) {
         break;
 
     case SIGHUP:
-        restartClient(0, 0);
+        actionPerformed(actionRestart, 0);
         break;
 
     case SIGUSR2:
         tlog("logEvents %s", boolstr(toggleLogEvents()));
+        break;
+
+    case SIGPIPE:
+        if (ferror(stdout) || ferror(stderr))
+            this->exit(1);
         break;
 
     default:
@@ -1368,8 +1380,7 @@ void YWMApp::afterWindowEvent(XEvent &xev) {
                 manager->popupStartMenu(desktop);
             }
             else if (k1 == xapp->Win_R && k2 == xapp->Win_R) {
-                if (windowList)
-                    windowList->showFocused(-1, -1);
+                actionPerformed(actionWindowList, 0);
             }
         }
     }
@@ -1488,8 +1499,8 @@ static void print_configured(const char *argv0) {
 #ifdef DEBUG
     " debug"
 #endif
-#ifdef ENABLE_ESD
-    " esd"
+#ifdef CONFIG_FDO_MENUS
+    " fdomenus"
 #endif
 #ifdef CONFIG_FRIBIDI
     " fribidi"
@@ -1558,6 +1569,7 @@ int main(int argc, char **argv) {
     YLocale locale;
     bool notify_parent(false);
     const char* configFile(0);
+    const char* displayName(0);
     const char* overrideTheme(0);
 
 
@@ -1599,13 +1611,14 @@ int main(int argc, char **argv) {
             else if (is_long_switch(*arg, "sync"))
             { /* handled by Xt */ }
             else if (GetArgument(value, "d", "display", arg, argv+argc))
-            { /* handled by Xt */ }
+                displayName = value;
             else
                 warn(_("Unrecognized option '%s'."), *arg);
         }
     }
 
-    YWMApp app(&argc, &argv, 0, configFile, overrideTheme);
+    YWMApp app(&argc, &argv, displayName,
+                configFile, overrideTheme);
 
     app.signalGuiEvent(geStartup);
     manager->manageClients();
@@ -1637,8 +1650,9 @@ void YWMApp::doLogout(RebootShutdown reboot) {
             msgbox->setText(_("Logout will close all active applications.\nProceed?"));
             msgbox->autoSize();
             msgbox->setMsgBoxListener(this);
-            msgbox->showFocused();
         }
+        if (fLogoutMsgBox)
+            fLogoutMsgBox->showFocused();
     }
 }
 
@@ -1707,7 +1721,7 @@ void YWMApp::handleSMAction(WMAction message) {
         wmapp->doLogout(Reboot);
         break;
     case ICEWM_ACTION_RESTARTWM:
-        wmapp->restartClient(0, 0);
+        wmapp->actionPerformed(actionRestart, 0);
         break;
     case ICEWM_ACTION_WINDOWLIST:
         wmapp->actionPerformed(actionWindowList, 0);

@@ -541,7 +541,7 @@ void NetOpenDevice::getCurrent(netbytes *in, netbytes *out, const void* sharedDa
 #endif
 #ifdef __NetBSD__
         struct ifdatareq ifdr;
-        struct if_data& ifi = &ifdr.ifdr_data;
+        struct if_data& ifi = ifdr.ifdr_data;
         strlcpy(ifdr.ifdr_name, fDevName, IFNAMSIZ);
 #endif
         if (ioctl(s, SIOCGIFDATA, &ifdr) != -1) {
@@ -619,7 +619,6 @@ void NetStatusControl::fetchSystemData() {
 
 NetStatusControl::NetStatusControl(IApp* app, YSMListener* smActionListener,
         IAppletContainer* taskBar, YWindow* aParent) :
-    app(app),
     smActionListener(smActionListener),
     taskBar(taskBar),
     aParent(aParent),

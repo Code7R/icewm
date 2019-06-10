@@ -60,21 +60,26 @@ public:
     unsigned depth() const { return fImage ? fImage->depth : 0; }
     static ref<YImage> loadxbm(upath filename);
     static ref<YImage> loadxpm(upath filename);
+    static ref<YImage> loadxpm2(upath filename, int& status);
 #ifdef CONFIG_LIBPNG
     static ref<YImage> loadpng(upath filename);
+    static void pngload(ref<YImage>& image, FILE* f,
+                        png_structp png_ptr,
+                        png_infop info_ptr);
     bool savepng(upath filename, const char** error);
 #endif
 #ifdef CONFIG_LIBJPEG
     static ref<YImage> loadjpg(upath filename);
 #endif
     static ref<YImage> combine(XImage *xdraw, XImage *xmask);
+    static pstring detectImageType(upath filename);
 
     bool isBitmap() const { return fBitmap; }
     bool hasAlpha() const { return fImage ? fImage->depth == 32 : false; }
     ref<YImage> upscale(unsigned width, unsigned height);
     ref<YImage> downscale(unsigned width, unsigned height);
-    ref<YImage> subimage(int x, int y, unsigned width, unsigned height);
-    void save(upath filename);
+    virtual ref<YImage> subimage(int x, int y, unsigned width, unsigned height);
+    virtual void save(upath filename);
 
     unsigned long getPixel(unsigned x, unsigned y) const {
         return XGetPixel(fImage, int(x), int(y));
@@ -125,6 +130,9 @@ ref<YImage> YImage::load(upath filename)
     pstring ext(filename.getExtension().lower());
     bool unsup = false;
 
+    if (ext.isEmpty())
+        ext = YXImage::detectImageType(filename);
+
     if (ext == ".xbm")
         image = YXImage::loadxbm(filename);
     else if (ext == ".xpm")
@@ -154,6 +162,29 @@ ref<YImage> YImage::load(upath filename)
     if (image == null && !unsup)
         fail(_("Could not load image \"%s\""), filename.string().c_str());
     return image;
+}
+
+pstring YXImage::detectImageType(upath filename) {
+     const int xpm = 9, png = 8, jpg = 4, len = max(xpm, png);
+     char buf[len+1];
+     memset(buf, 0, sizeof buf);
+     if (read_file(filename.string(), buf, sizeof buf) >= len) {
+         if (0 == memcmp(buf, "/* XPM */", xpm)) {
+             return ".xpm";
+         }
+         else if (0 == memcmp(buf, "\x89PNG\x0d\x0a\x1a\x0a", png)) {
+             return ".png";
+         }
+         else if (0 == memcmp(buf, "\377\330\377\356", jpg)) {
+             return ".jpg";
+         }
+         else {
+             msg("Unknown image type: \"%s\".", filename.string().c_str());
+             return null;
+         }
+     }
+     fail(_("Could not load image \"%s\""), filename.string().c_str());
+     return null;
 }
 
 ref <YImage> YXImage::loadxbm(upath filename)
@@ -186,10 +217,38 @@ ref <YImage> YXImage::loadxbm(upath filename)
 
 ref<YImage> YXImage::loadxpm(upath filename)
 {
+    int status = XpmSuccess;
+    ref<YImage> image(loadxpm2(filename, status));
+    if (status != XpmFileInvalid)
+        return image;
+
+    // support themes with indirect XPM images, like OnyX:
+    const int lim = 64;
+    for (int k = 9; --k > 0 && inrange(int(filename.fileSize()), 5, lim); ) {
+        fileptr fp(filename.fopen("r"));
+        if (fp == 0)
+            break;
+
+        char buf[lim];
+        if (fgets(buf, lim, fp) == 0)
+            break;
+
+        mstring match(mstring(buf).match("^[a-z][-_a-z0-9]*\\.xpm$", "i"));
+        if (match == null)
+            break;
+
+        filename = filename.parent().relative(match);
+        if (filename.fileSize() > lim)
+            return loadxpm2(filename, status);
+    }
+    return image;
+}
+
+ref<YImage> YXImage::loadxpm2(upath filename, int& status)
+{
     ref<YImage> image;
     XImage *xdraw = 0, *xmask = 0;
     XpmAttributes xa;
-    int status;
 
     xa.visual = xapp->visual();
     xa.colormap = xapp->colormap();
@@ -233,9 +292,6 @@ ref<YImage> YXImage::loadxpm(upath filename)
 ref<YImage> YXImage::loadpng(upath filename)
 {
     ref<YImage> image;
-    // working around clobbering issues with high optimization levels, see https://stackoverflow.com/questions/7721854/what-sense-do-these-clobbered-variable-warnings-make
-    volatile png_byte *png_pixels = 0, **row_pointers = 0;
-    volatile XImage *ximage = 0;
     png_structp png_ptr;
     png_infop info_ptr;
     png_byte buf[8];
@@ -262,9 +318,25 @@ ref<YImage> YXImage::loadpng(upath filename)
         tlog("could not allocate PNG info struture\n");
         goto noinfo;
     }
+
+    pngload(image, f, png_ptr, info_ptr);
+
+    png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+    goto noread;
+  noinfo:
+    png_destroy_read_struct(&png_ptr, NULL, NULL);
+  noread:
+    fclose(f);
+  nofile:
+    return image;
+}
+
+void YXImage::pngload(ref<YImage>& image, FILE* f,
+                      png_structp png_ptr,
+                      png_infop info_ptr)
+{
     if (setjmp(png_jmpbuf(png_ptr))) {
         tlog("ERROR: longjump from setjump\n");
-        goto pngerr;
     } else {
         png_uint_32 width, height, row_bytes, i, j;
         int bit_depth, color_type, channels;
@@ -301,21 +373,19 @@ ref<YImage> YXImage::loadpng(upath filename)
         else
             channels = 0;
         row_bytes = png_get_rowbytes(png_ptr, info_ptr);
-        png_pixels = (volatile png_byte *)calloc(row_bytes * height, sizeof(*png_pixels));
-        row_pointers = (volatile png_byte **)calloc(height, sizeof(*row_pointers));
+        png_byte *png_pixels = static_cast<png_byte *>(
+                  calloc(row_bytes * height, sizeof(*png_pixels)));
+        png_byte **row_pointers = static_cast<png_byte **>(
+                   calloc(height, sizeof(*row_pointers)));
         for (i = 0; i < height; i++)
             row_pointers[i] = png_pixels + i * row_bytes;
-        png_read_image(png_ptr, (png_byte **)row_pointers);
+        png_read_image(png_ptr, row_pointers);
         png_read_end(png_ptr, info_ptr);
-        ximage = createImage(width, height, 32U);
-        if (ximage == 0) {
-            goto pngerr;
-        } else {
-            png_byte *p, *nv_png_pixels = (png_byte *) png_pixels;
+        XImage *ximage = createImage(width, height, 32U);
+        if (ximage) {
             unsigned long pixel, A = 0, R = 0, G = 0, B = 0;
-            XImage *nv_ximage = (XImage *) ximage;
-
-            for (p = nv_png_pixels, j = 0; j < height; j++) {
+            png_byte *p = png_pixels;
+            for (j = 0; j < height; j++) {
                 for (i = 0; i < width; i++, p += channels) {
                     switch(color_type) {
                         case PNG_COLOR_TYPE_GRAY:
@@ -340,24 +410,17 @@ ref<YImage> YXImage::loadpng(upath filename)
                             break;
                     }
                     pixel = (A << 24)|(R <<16)|(G<<8)|(B<<0);
-                    XPutPixel(nv_ximage, i, j, pixel);
+                    XPutPixel(ximage, i, j, pixel);
                 }
             }
+
+            image.init(new YXImage(ximage));
         }
+        if (png_pixels)
+            free(png_pixels);
+        if (row_pointers)
+            free(row_pointers);
     }
-  pngerr:
-    free((png_byte *)png_pixels);
-    free((png_byte **)row_pointers);
-    png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
-    goto noread;
-  noinfo:
-    png_destroy_read_struct(&png_ptr, NULL, NULL);
-  noread:
-    fclose(f);
-  nofile:
-    if (ximage)
-        image.init(new YXImage((XImage *)ximage));
-    return image;
 }
 #endif
 
@@ -401,6 +464,7 @@ bool YXImage::savepng(upath filename, const char** error) {
 
     if (setjmp(png_jmpbuf(png_ptr))) {
         *error = "Error during PNG file output";
+        saved = false;
         goto end;
     }
 
@@ -476,7 +540,9 @@ ref<YImage> YXImage::loadjpg(upath filename)
     (void) jpeg_read_header(&cinfo, TRUE);
     switch (cinfo.out_color_space) {
         case JCS_RGB:
+#ifdef JCS_EXTENSIONS
         case JCS_EXT_RGBA:
+#endif
         case JCS_GRAYSCALE:
             break;
         default:
@@ -513,6 +579,7 @@ ref<YImage> YXImage::loadjpg(upath filename)
                         dst[3] = buf[2];
                     }
                 }
+#ifdef JCS_EXTENSIONS
                 else if (colorspace == JCS_EXT_RGBA) {
                     for (int i = 0; i < width; ++i, buf += bpp, dst += 4) {
                         dst[0] = buf[3];
@@ -521,6 +588,7 @@ ref<YImage> YXImage::loadjpg(upath filename)
                         dst[3] = buf[2];
                     }
                 }
+#endif
                 else if (colorspace == JCS_GRAYSCALE) {
                     for (int i = 0; i < width; ++i, buf += bpp, dst += 4) {
                         dst[0] = 0xFF;
@@ -538,6 +606,7 @@ ref<YImage> YXImage::loadjpg(upath filename)
                         dst[0] = buf[2];
                     }
                 }
+#ifdef JCS_EXTENSIONS
                 else if (colorspace == JCS_EXT_RGBA) {
                     for (int i = 0; i < width; ++i, buf += bpp, dst += 4) {
                         dst[3] = buf[3];
@@ -546,6 +615,7 @@ ref<YImage> YXImage::loadjpg(upath filename)
                         dst[0] = buf[2];
                     }
                 }
+#endif
                 else if (colorspace == JCS_GRAYSCALE) {
                     for (int i = 0; i < width; ++i, buf += bpp, dst += 4) {
                         dst[3] = 0xFF;

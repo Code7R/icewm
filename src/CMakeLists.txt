@@ -71,7 +71,7 @@ option(CONFIG_I18N "Define to enable internationalization" on)
 option(CONFIG_RENDER "Define to enable XRENDER extension" on)
 option(CONFIG_XRANDR "Define to enable XRANDR extension" on)
 option(CONFIG_SESSION "Define to enable X session management" on)
-option(CONFIG_EXTERNAL_TRAY "Define to build tray support in standalone executable" off)
+option(CONFIG_EXTERNAL_TRAY "Define for external systray (unsupported)" off)
 option(ENABLE_NLS "Enable Native Language Support" on)
 option(ENABLE_LTO "Enable Link Time Optimization" off)
 
@@ -158,7 +158,6 @@ CHECK_INCLUDE_FILE_CXX(limits.h HAVE_LIMITS_H)
 CHECK_INCLUDE_FILE_CXX(locale.h HAVE_LOCALE_H)
 CHECK_INCLUDE_FILE_CXX(netdb.h HAVE_NETDB_H)
 CHECK_INCLUDE_FILE_CXX(netinet/in.h HAVE_NETINET_IN_H)
-CHECK_INCLUDE_FILE_CXX(sndfile.h HAVE_SNDFILE_H)
 CHECK_INCLUDE_FILE_CXX(stddef.h HAVE_STDDEF_H)
 CHECK_INCLUDE_FILE_CXX(stdlib.h HAVE_STDLIB_H)
 CHECK_INCLUDE_FILE_CXX(string.h HAVE_STRING_H)
@@ -325,7 +324,6 @@ message(STATUS "Checking audio subsystems from ICESOUND: ${ICESOUND}")
 #clear cache
 set(ENABLE_ALSA off)
 set(ENABLE_AO off)
-set(ENABLE_ESD off)
 set(ENABLE_OSS off)
 set(audio_libs )
 set(audio_flags )
@@ -363,15 +361,6 @@ if(sndfile_FOUND)
             list(APPEND audio_libs ${ao_LIBS})
         endif()
     endif()
-    if("${ICESOUND}" MATCHES "esound|esd")
-        pkg_check_modules(esd esound)
-        set(ENABLE_ESD "${esd_FOUND}")
-        if(esd_FOUND)
-            list(APPEND audio_flags "${esd_CFLAGS}")
-            list(APPEND audio_libs ${esd_LDFLAGS})
-            list(APPEND audio_libs ${esd_LIBS})
-        endif()
-    endif()
     if("${ICESOUND}" MATCHES "oss")
         CHECK_INCLUDE_FILE_CXX(sys/soundcard.h HAVE_SYS_SOUNDCARD_H)
         set(ENABLE_OSS "${HAVE_SYS_SOUNDCARD_H}")
@@ -379,6 +368,7 @@ if(sndfile_FOUND)
 
     string(REPLACE ";" " " audio_flags "${audio_flags}")
 endif(sndfile_FOUND)
+CHECK_INCLUDE_FILE_CXX(sndfile.h HAVE_SNDFILE_H ${audio_flags})
 
 option(XINERAMA "Define to enable Xinerama support" on)
 if(XINERAMA)
@@ -444,7 +434,7 @@ CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/src/config.cmake.h.in" "${CMAKE_BINARY_DIR}/
 #######################################
 
 # pkg-config delivers lists, we need plain compiler options! :-(
-foreach(pfx fontconfig xext x11 pixbuf xrandr xrender xft alsa
+foreach(pfx fontconfig xext x11 pixbuf xrandr xrender xft alsa libpng libxpm
         esd ao oss xinerama fribidi gio)
     string(REPLACE ";" " " ${pfx}_CFLAGS "${${pfx}_CFLAGS}")
     #message(STATUS "Normalizing argument lists: ${${pfx}_LDFLAGS} ; ${${pfx}_CFLAGS}")
@@ -491,7 +481,9 @@ list(APPEND icewm_libs ${sm_LIBS} ${nls_LIBS} ${fontconfig_LDFLAGS} ${fribidi_LD
 TARGET_LINK_LIBRARIES(icewm${EXEEXT} ${icewm_libs} ${icewm_img_libs})
 
 ADD_EXECUTABLE(genpref${EXEEXT} genpref.cc ${MISC_SRCS})
-TARGET_LINK_LIBRARIES(genpref${EXEEXT} ${EXTRA_LIBS})
+set(genpref_pc_flags ${x11_CFLAGS})
+SET_TARGET_PROPERTIES(genpref${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${genpref_pc_flags}")
+TARGET_LINK_LIBRARIES(genpref${EXEEXT} ${nls_LIBS} ${EXTRA_LIBS})
 
 IF(CONFIG_FDO_MENUS)
     ADD_EXECUTABLE(icewm-menu-fdo${EXEEXT} fdomenu.cc ${MISC_SRCS})
@@ -501,7 +493,8 @@ IF(CONFIG_FDO_MENUS)
 ENDIF()
 
 ADD_EXECUTABLE(icewm-session${EXEEXT} icesm.cc yapp.cc misc.cc mstring.cc upath.cc ytimer.cc yprefs.cc yarray.cc ref.cc)
-SET_TARGET_PROPERTIES(icewm-session${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON}")
+set(icewm_session_pc_flags ${x11_CFLAGS})
+SET_TARGET_PROPERTIES(icewm-session${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_session_pc_flags}")
 TARGET_LINK_LIBRARIES(icewm-session${EXEEXT} ${nls_LIBS} ${EXTRA_LIBS})
 
 ADD_EXECUTABLE(icewmhint${EXEEXT} icewmhint.cc ${MISC_SRCS})
@@ -516,7 +509,7 @@ ADD_EXECUTABLE(icewmbg${EXEEXT} icewmbg.cc ref.cc ${ICE_COMMON_SRCS})
 SET_TARGET_PROPERTIES(icewmbg${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags}")
 TARGET_LINK_LIBRARIES(icewmbg${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${xft_LDFLAGS} ${fribidi_LDFLAGS} ${xrandr_LDFLAGS}  ${icewm_img_libs} ${xinerama_LDFLAGS} ${nls_LIBS} ${EXTRA_LIBS})
 
-IF(ENABLE_ALSA OR ENABLE_AO OR ENABLE_ESD OR ENABLE_OSS)
+IF(ENABLE_ALSA OR ENABLE_AO OR ENABLE_OSS)
     ADD_EXECUTABLE(icesound${EXEEXT} icesound.cc upath.cc misc.cc mstring.cc ytimer.cc yapp.cc yprefs.cc yarray.cc ref.cc)
     SET_TARGET_PROPERTIES(icesound${EXEEXT} PROPERTIES COMPILE_FLAGS "${CXXFLAGS_COMMON} ${icewm_pc_flags} ${audio_flags}")
     TARGET_LINK_LIBRARIES(icesound${EXEEXT} ${xext_LDFLAGS} ${x11_LDFLAGS} ${nls_LIBS} ${audio_libs} ${EXTRA_LIBS})
@@ -567,7 +560,6 @@ foreach (_variableName
         ENABLE_LTO
         ENABLE_ALSA
         ENABLE_AO
-        ENABLE_ESD
         ENABLE_OSS
         ENABLE_NLS
         )

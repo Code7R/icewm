@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icewm 1.3.12.52\n"
 "Report-Msgid-Bugs-To: https://github.com/bbidulock/icewm/issues\n"
-"POT-Creation-Date: 2018-10-20 18:34+0200\n"
-"PO-Revision-Date: 2018-04-16 12:00+0000\n"
-"Last-Translator: George Yacoub <george.yacoub@arabize.com>\n"
+"POT-Creation-Date: 2019-06-07 00:39+0200\n"
+"PO-Revision-Date: 2019-05-14 14:45+0000\n"
+"Last-Translator: mohammad alhargan <malham1@gmail.com>\n"
 "Language-Team: Arabic <https://l10n.opensuse.org/projects/icewm/icewm-1-4-"
 "branch/ar/>\n"
 "Language: ar\n"
@@ -18,40 +18,40 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Weblate 2.18\n"
+"X-Generator: Weblate 3.3\n"
 
-#: src/aapm.cc:177 src/aapm.cc:459 src/aapm.cc:681 src/aapm.cc:806
+#: src/aapm.cc:180 src/aapm.cc:462 src/aapm.cc:684 src/aapm.cc:809
 msgid " - Power"
 msgstr " - طاقة"
 
-#: src/aapm.cc:179 src/aapm.cc:462 src/aapm.cc:684
+#: src/aapm.cc:182 src/aapm.cc:465 src/aapm.cc:687
 msgid "P"
 msgstr "ط"
 
-#: src/aapm.cc:183 src/aapm.cc:436 src/aapm.cc:664 src/aapm.cc:774
+#: src/aapm.cc:186 src/aapm.cc:439 src/aapm.cc:667 src/aapm.cc:777
 msgid " - Charging"
 msgstr " - يشحن"
 
-#: src/aapm.cc:185 src/aapm.cc:438 src/aapm.cc:666
+#: src/aapm.cc:188 src/aapm.cc:441 src/aapm.cc:669
 msgid "C"
 msgstr "ش"
 
-#: src/aapm.cc:440
+#: src/aapm.cc:443
 msgid " - Full"
 msgstr " - مشحون"
 
-#: src/aapm.cc:985
+#: src/aapm.cc:988
 #, c-format
 msgid "power:\t%s"
 msgstr "الطاقة:\t%s"
 
 #: src/aclock.cc:173
 msgid "CLOCK"
-msgstr ""
+msgstr "الساعة"
 
 #: src/aclock.cc:177
 msgid "Date"
-msgstr ""
+msgstr "التاريخ"
 
 #: src/aclock.cc:178 src/themes.cc:85
 msgid "Default"
@@ -60,11 +60,11 @@ msgstr "إفتراضي"
 #: src/aclock.cc:179 src/acpustatus.cc:862 src/amailbox.cc:938
 #: src/amemstatus.cc:264
 msgid "_Disable"
-msgstr ""
+msgstr "_Disable"
 
 #: src/aclock.cc:180
 msgid "_UTC"
-msgstr ""
+msgstr "_UTC"
 
 #: src/acpustatus.cc:233
 #, c-format
@@ -90,28 +90,22 @@ msgid "CPU %s Load: %3.2f %3.2f %3.2f, %u"
 msgstr "المعالج %s الحمل:%3.2f%3.2f%3.2f%u"
 
 #: src/acpustatus.cc:309
-#, fuzzy, c-format
-#| msgid ""
-#| "\n"
-#| "Ram (free): %5.2f (%.2f) M"
+#, c-format
 msgid ""
 "\n"
 "Ram (free): %5.3f (%.3f) G"
 msgstr ""
 "\n"
-"رام (خالي): %5.2f (%.2f) M"
+"رام (مساحة متوفرة): %5.3f (%.3f) جيجا"
 
 #: src/acpustatus.cc:314
-#, fuzzy, c-format
-#| msgid ""
-#| "\n"
-#| "Swap (free): %.2f (%.2f) M"
+#, c-format
 msgid ""
 "\n"
 "Swap (free): %.3f (%.3f) G"
 msgstr ""
 "\n"
-"مبادلة (خالي): %.2f (%.2f) M"
+"المبادلة: %.3f (%.3f) جيجا"
 
 #: src/acpustatus.cc:320
 #, c-format
@@ -140,16 +134,13 @@ msgid "Load: "
 msgstr "الحمل: "
 
 #: src/acpustatus.cc:371
-#, fuzzy, c-format
-#| msgid ""
-#| "\n"
-#| "Ram (free): %5.2f (%.2f) M"
+#, c-format
 msgid ""
 "\n"
 "Ram (user): %5.3f (%.3f) G"
 msgstr ""
 "\n"
-"رام (خالي): %5.2f (%.2f) M"
+"ذاكرة الوصول العشوائي (المستخدم): %5.3f (%.3f) جيجا بايت"
 
 #. TRANSLATORS: Please translate the string "C" into "Celsius Temperature" in your language.
 #. TRANSLATORS: Please make sure the translated string could be shown in your non-utf8 locale.
@@ -158,23 +149,22 @@ msgid "°C"
 msgstr "مئوية"
 
 #: src/acpustatus.cc:770
-#, fuzzy, c-format
-#| msgid "%s: %llu %llu %llu %llu %llu %llu %llu %llu"
+#, c-format
 msgid "CPU: %llu %llu %llu %llu %llu %llu %llu %llu"
-msgstr "%s: %llu %llu %llu %llu %llu %llu %llu %llu"
+msgstr "وحدة المعالجة المركزية: %llu %llu %llu %llu %llu %llu %llu %llu"
 
 #: src/acpustatus.cc:859
 #, c-format
 msgid "CPU%d"
-msgstr ""
+msgstr "وحدة المعالجة المركزية%d"
 
 #: src/acpustatus.cc:864
 msgid "_Combine"
-msgstr ""
+msgstr "_Combine"
 
 #: src/acpustatus.cc:866
 msgid "_Separate"
-msgstr ""
+msgstr "_Separate"
 
 #: src/amailbox.cc:62
 #, c-format
@@ -222,10 +212,8 @@ msgid "Using MailBox \"%s\"\n"
 msgstr "استخدام البريد \"%s\"\n"
 
 #: src/amailbox.cc:794
-#, fuzzy
-#| msgid "_Suspend"
 msgid "Suspended"
-msgstr "_توقف مؤقت"
+msgstr "معلق"
 
 #: src/amailbox.cc:798
 msgid "Error checking mailbox."
@@ -253,11 +241,11 @@ msgstr "%ld رسالة معرف البريد."
 
 #: src/amailbox.cc:936
 msgid "MAIL"
-msgstr ""
+msgstr "البريد"
 
 #: src/amailbox.cc:937
 msgid "_Check"
-msgstr ""
+msgstr "_Check"
 
 #: src/amailbox.cc:939
 msgid "_Suspend"
@@ -301,7 +289,7 @@ msgstr "المستخدم: "
 
 #: src/amemstatus.cc:263
 msgid "MEM"
-msgstr ""
+msgstr "الذاكرة"
 
 #: src/apppstatus.cc:203
 #, c-format
@@ -326,130 +314,130 @@ msgstr ""
 "\n"
 "  هوية المتصل:\t"
 
-#: src/apppstatus.cc:717
+#: src/apppstatus.cc:716
 msgid "NET"
-msgstr ""
+msgstr "الشبكة"
 
-#: src/aworkspaces.cc:294 src/wmstatus.cc:163
+#: src/aworkspaces.cc:294 src/wmstatus.cc:165
 msgid "Workspace: "
 msgstr "مساحة العمل: "
 
-#: src/icehelp.cc:1201
+#: src/icehelp.cc:1202
 msgid "Back"
 msgstr "للخلف"
 
-#: src/icehelp.cc:1201
+#: src/icehelp.cc:1202
 msgid "Alt+Left"
 msgstr "Alt+يسار"
 
-#: src/icehelp.cc:1203
+#: src/icehelp.cc:1204
 msgid "Forward"
 msgstr "تحويل"
 
-#: src/icehelp.cc:1203
+#: src/icehelp.cc:1204
 msgid "Alt+Right"
 msgstr "Alt+يمين"
 
-#: src/icehelp.cc:1206
+#: src/icehelp.cc:1207
 msgid "Previous"
 msgstr "سابق"
 
-#: src/icehelp.cc:1207
+#: src/icehelp.cc:1208
 msgid "Next"
 msgstr "التالي"
 
-#: src/icehelp.cc:1209
+#: src/icehelp.cc:1210
 msgid "Contents"
 msgstr "محتويات"
 
-#: src/icehelp.cc:1210
+#: src/icehelp.cc:1211
 msgid "Index"
 msgstr "فهرست"
 
-#: src/icehelp.cc:1213 src/icesame.cc:62 src/iceview.cc:74 src/wmtitle.cc:99
+#: src/icehelp.cc:1214 src/icesame.cc:62 src/iceview.cc:74 src/wmtitle.cc:99
 msgid "Close"
 msgstr "إغلاق"
 
-#: src/icehelp.cc:1213 src/icesame.cc:62 src/iceview.cc:74
+#: src/icehelp.cc:1214 src/icesame.cc:62 src/iceview.cc:74
 msgid "Ctrl+Q"
 msgstr "Ctrl+Q"
 
-#: src/icehelp.cc:1218
+#: src/icehelp.cc:1219
 msgid "Icewm(1)"
 msgstr "Icewm(1)"
 
-#: src/icehelp.cc:1220
+#: src/icehelp.cc:1221
 msgid "Icewmbg(1)"
 msgstr "Icewmbg(1)"
 
-#: src/icehelp.cc:1222
+#: src/icehelp.cc:1223
 msgid "Icesound(1)"
 msgstr "Icesound(1)"
 
-#: src/icehelp.cc:1224
+#: src/icehelp.cc:1225
 msgid "FAQ"
 msgstr "الأسئلة والإجابات المتداولة"
 
-#: src/icehelp.cc:1226
+#: src/icehelp.cc:1227
 msgid "Manual"
 msgstr "دليل"
 
-#: src/icehelp.cc:1228
+#: src/icehelp.cc:1229
 msgid "Support"
 msgstr "دعم"
 
-#: src/icehelp.cc:1230
+#: src/icehelp.cc:1231
 msgid "Theme Howto"
 msgstr "الإرشادات التوضيحية للسمة"
 
-#: src/icehelp.cc:1232
+#: src/icehelp.cc:1233
 msgid "Website"
 msgstr "موقع ويب"
 
-#: src/icehelp.cc:1234
+#: src/icehelp.cc:1235
 msgid "Github"
 msgstr "Github"
 
-#: src/icehelp.cc:1936
+#: src/icehelp.cc:1937
 msgid "Unsupported protocol."
 msgstr "بروتوكول غير مدعوم."
 
-#: src/icehelp.cc:1961
+#: src/icehelp.cc:1962
 #, c-format
 msgid "Invalid path: %s\n"
 msgstr "مسار غير صالح: %s\n"
 
-#: src/icehelp.cc:1984
+#: src/icehelp.cc:1985
 msgid "Path does not refer to a file."
 msgstr "لا يشير المسار إلى ملف."
 
-#: src/icehelp.cc:1989
+#: src/icehelp.cc:1990
 msgid "Failed to open file for reading."
 msgstr "فشل فتح الملف للقراءة."
 
-#: src/icehelp.cc:2018
+#: src/icehelp.cc:2019
 msgid "Failed to create a temporary file"
 msgstr "فشل إنشاء ملف مؤقت"
 
-#: src/icehelp.cc:2110
+#: src/icehelp.cc:2111
 #, c-format
 msgid "Failed to execute system(%s) (%d)"
 msgstr "فشل تنفيذ النظام (%s) (%d)"
 
-#: src/icehelp.cc:2133
+#: src/icehelp.cc:2134
 #, c-format
 msgid "Failed to decompress %s"
 msgstr "فشل إلغاء ضغط الصورة %s"
 
-#: src/icehelp.cc:2141
+#: src/icehelp.cc:2142
 msgid "Could not locate curl or wget in PATH"
 msgstr "تعذر تحديد مسار curl أو wget في PATH"
 
-#: src/icehelp.cc:2145
+#: src/icehelp.cc:2146
 msgid "Unsafe characters in URL"
 msgstr "هناك أحرف غير آمنة في URL"
 
-#: src/icehelp.cc:2182
+#: src/icehelp.cc:2183
 #, c-format
 msgid ""
 "Usage: %s [OPTIONS] [ FILENAME | URL ]\n"
@@ -521,7 +509,7 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: src/icehelp.cc:2259
+#: src/icehelp.cc:2260
 #, c-format
 msgid "Ignoring option '%s'"
 msgstr "تجاهل الخيار: `%s'"
@@ -566,188 +554,61 @@ msgstr "Ctrl+R"
 msgid "Same Game"
 msgstr "نفس اللعبة"
 
-#: src/icesh.cc:191
-#, c-format
-msgid "Action `%s' requires at least %d arguments."
-msgstr "الحدث`%sيتطلب على الأقل %d حجه."
+#: src/icesh.cc:58
+msgid "For help please consult the man page icesh(1).\n"
+msgstr ""
 
-#: src/icesh.cc:198
-#, c-format
-msgid "Invalid expression: `%s'"
-msgstr "تعبير غير صالح: `%s'"
-
-#: src/icesh.cc:319
+#: src/icesh.cc:890
 #, c-format
 msgid "Named symbols of the domain `%s' (numeric range: %ld-%ld):\n"
 msgstr "رمز اسم المجال `%s' (نظاق رقمي: %ld-%ld):\n"
 
-#: src/icesh.cc:435
+#: src/icesh.cc:1025
 #, c-format
 msgid "Invalid workspace name: `%s'"
 msgstr "اسم مساحة العمل غير صالح: `%s'"
 
-#: src/icesh.cc:440
+#: src/icesh.cc:1028
 #, c-format
 msgid "Workspace out of range: %ld"
 msgstr "مساحة العمل خارج النطاق: %ld"
 
-#: src/icesh.cc:605
-#, c-format
-msgid ""
-"Usage: %s [OPTIONS] ACTIONS\n"
-"\n"
-"Options:\n"
-"  -d, -display DISPLAY        Connects to the X server specified by "
-"DISPLAY.\n"
-"                              Default: $DISPLAY or :0.0 when not set.\n"
-"  -w, -window WINDOW_ID       Specifies the window to manipulate. Special\n"
-"                              identifiers are `root' for the root window "
-"and\n"
-"                              `focus' for the currently focused window.\n"
-"  -c, -class WM_CLASS         Window management class of the window(s) to\n"
-"                              manipulate. If WM_CLASS contains a period, "
-"only\n"
-"                              windows with exactly the same WM_CLASS "
-"property\n"
-"                              are matched. If there is no period, windows "
-"of\n"
-"                              the same class and windows of the same "
-"instance\n"
-"                              (aka. `-name') are selected.\n"
-"\n"
-"Actions:\n"
-"  setIconTitle   TITLE        Set the icon title.\n"
-"  setWindowTitle TITLE        Set the window title.\n"
-"  setGeometry    geometry     Set the window geometry\n"
-"  setState       MASK STATE   Set the GNOME window state to STATE.\n"
-"                              Only the bits selected by MASK are affected.\n"
-"                              STATE and MASK are expressions of the domain\n"
-"                              `GNOME window state'.\n"
-"  toggleState    STATE        Toggle the GNOME window state bits specified "
-"by\n"
-"                              the STATE expression.\n"
-"  setHints       HINTS        Set the GNOME window hints to HINTS.\n"
-"  setLayer       LAYER        Moves the window to another GNOME window "
-"layer.\n"
-"  setWorkspace   WORKSPACE    Moves the window to another workspace. Select\n"
-"                              the root window to change the current "
-"workspace.\n"
-"                              Select 0xFFFFFFFF or \"All\" for all "
-"workspaces.\n"
-"  listWorkspaces              Lists the names of all workspaces.\n"
-"  setTrayOption  TRAYOPTION   Set the IceWM tray option hint.\n"
-"  logout                      Tell IceWM to logout.\n"
-"  reboot                      Tell IceWM to reboot.\n"
-"  shutdown                    Tell IceWM to shutdown.\n"
-"  cancel                      Tell IceWM to cancel the logout/reboot/"
-"shutdown.\n"
-"  about                       Tell IceWM to show the about window.\n"
-"  windowlist                  Tell IceWM to show the window list.\n"
-"  restart                     Tell IceWM to restart.\n"
-"  suspend                     Tell IceWM to suspend.\n"
-"\n"
-"Expressions:\n"
-"  Expressions are list of symbols of one domain concatenated by `+' or `|':\n"
-"\n"
-"  EXPRESSION ::= SYMBOL | EXPRESSION ( `+' | `|' ) SYMBOL\n"
-"\n"
-msgstr ""
-"الاستخدام: %s [OPTIONS] ACTIONS\n"
-"\n"
-"الخيارات:\n"
-"  -d، عرض DISPLAY            يتصل بخادم X  المحدد بواسطة DISPLAY.\n"
-"                              الافتراضي: $DISPLAY أو :0.0 عند عدم التعيين.\n"
-"  -w، النافذة WINDOW_ID           يحدد النافذة المطلوب معالجتها. \n"
-"                             المعرفان الخاصان هما `root` جذر النافذة "
-"و`focus` النافذة التي يتم التركيز عليها حاليًا.\n"
-" -c، فئة WM_CLASSS         فئة إدارة النوافذ للنافذة (النوافذ) \n"
-"                         المطلوب معالجتها. إذا كان WM_CLASS بها فترة، لا "
-"تتطابق سوى \n"
-"                         النوافذ التي لها نفس خاصية WM_CLASS بالضبط. أما في "
-"حالة عدم وجود فترة، يتم تحديد نفس الفئة ونوافذ نفس النسخة (aka. `-name').\n"
-"\n"
-"\n"
-"الإجراءات:\n"
-"  setIconTitle   TITLE        تعيين عنوان الأيقونة.\n"
-"  setWindowTitle TITLE        تعيين عنوان النافذة.\n"
-"  setGeometry    geometry     تعيين هندسة النافذة\n"
-"  setState       MASK STATE   تعيين حالة نافذة جنوم إلى STATE.\n"
-"                              يتم التأثير على وحدات البايت المحددة فقط "
-"بواسطة MASK.\n"
-"                              STATE وmask هما تعبيران للمجال \n"
-"                              \"حالة نافذة جنوم\"\n"
-"\n"
-"  toggleState    STATE        تبديل وحدات بت نافذة GNOME بواسطة\n"
-"                              التعبير STATE.\n"
-"\n"
-"  setHints       HINTS        تعيين تلميحات نافذة جنوم إلى HINTS.\n"
-"  setLayer       LAYER        نقل النافذة إلة طبقة نافذة جنوم أخرى.\n"
-"  setWorkspace   WORKSPACE    نقل النافذة إلى مساحة عمل أخرى. حدد\n"
-"                              النافذة الجذر لتغيير مساحة العمل الحالية.\n"
-"                              حدد 0xFFFFFFFF أو \"الكل\" لكل مساحات العمل.\n"
-"  listWorkspaces              سرد أسماء كل مساحات العمل.\n"
-"  setTrayOption  TRAYOPTION   تعيين تلميح خيار درج IceWM.\n"
-"   logout                      Tell IceWM to logout.\n"
-"  reboot                      Tell IceWM to reboot.\n"
-"  shutdown                    Tell IceWM to shutdown.\n"
-"  cancel                      Tell IceWM to cancel the logout/reboot/"
-"shutdown.\n"
-"  about                       Tell IceWM to show the about window.\n"
-"  windowlist                  Tell IceWM to show the window list.\n"
-"  restart                     Tell IceWM to restart.\n"
-"  suspend                     Tell IceWM to suspend.\n"
-"التعبيرات:\n"
-"التعبيرات هي عبارة عن قائمة من الرموز خاصة بمجال واحد متصلة بالعلامة `+' أو "
-"`|':\n"
-"\n"
-"  التعبير ::= SYMBOL | EXPRESSION ( `+' | `|' ) SYMBOL\n"
-"\n"
-
-#: src/icesh.cc:653
-msgid "GNOME window state"
-msgstr "حالة نوافذ جنوم"
-
-#: src/icesh.cc:654
-msgid "GNOME window hint"
-msgstr "تلميح نوافذ جنوم"
-
-#: src/icesh.cc:655
-msgid "GNOME window layer"
-msgstr "طبقة نوافذ جنوم"
-
-#: src/icesh.cc:656
-msgid "IceWM tray option"
-msgstr "صينية خيارات IceWM"
-
-#: src/icesh.cc:661
-msgid "Usage error: "
-msgstr "خطأ الاستخدام: "
-
-#: src/icesh.cc:747
-#, c-format
-msgid "Invalid argument: `%s'."
-msgstr "حجج غير صالحة: `%s'."
-
-#: src/icesh.cc:753
-msgid "No actions specified."
-msgstr "لم تحدد أي إجراءات."
-
-#: src/icesh.cc:760 src/icesound.cc:945 src/icewmhint.cc:36 src/yxapp.cc:925
-#, c-format
-msgid "Can't open display: %s. X must be running and $DISPLAY set."
-msgstr "لا يمكن فتح العرض: %s. يجب تشغيل X وتعيين $DISPLAY."
-
-#: src/icesh.cc:801
-#, c-format
-msgid "Invalid window identifier: `%s'"
-msgstr "مُعرف نافذة خاطئ: `%s'"
-
-#: src/icesh.cc:955
+#: src/icesh.cc:1180
 #, c-format
 msgid "workspace #%d: `%s'\n"
 msgstr "مساحة العمل#%d: `%s'\n"
 
-#: src/icesh.cc:974
+#: src/icesh.cc:1827
+#, c-format
+msgid "Action `%s' requires at least %d arguments."
+msgstr "الحدث`%sيتطلب على الأقل %d حجه."
+
+#: src/icesh.cc:1837
+#, c-format
+msgid "Invalid expression: `%s'"
+msgstr "تعبير غير صالح: `%s'"
+
+#: src/icesh.cc:1848 src/icesound.cc:795 src/icewmhint.cc:36 src/yxapp.cc:930
+#, c-format
+msgid "Can't open display: %s. X must be running and $DISPLAY set."
+msgstr "لا يمكن فتح العرض: %s. يجب تشغيل X وتعيين $DISPLAY."
+
+#: src/icesh.cc:1861
+#, fuzzy, c-format
+#| msgid "Invalid argument: `%s'."
+msgid "Invalid argument: `%s'"
+msgstr "حجج غير صالحة: `%s'."
+
+#: src/icesh.cc:1898
+msgid "No actions specified."
+msgstr "لم تحدد أي إجراءات."
+
+#: src/icesh.cc:2023
+#, c-format
+msgid "Invalid window identifier: `%s'"
+msgstr "مُعرف نافذة خاطئ: `%s'"
+
+#: src/icesh.cc:2438
 #, c-format
 msgid "Unknown action: `%s'"
 msgstr "إجراء غير معروف: `%s'"
@@ -812,99 +673,131 @@ msgstr ""
 msgid "IceWM crash response"
 msgstr "استجابة تعطل IceWM"
 
-#: src/icesound.cc:219 src/icesound.cc:327 src/icesound.cc:631
+#: src/icesound.cc:216 src/icesound.cc:324 src/icesound.cc:484
 #, c-format
 msgid "Playing sample #%d (%s)"
 msgstr "تشغيل نموذج #%d (%s)"
 
-#: src/icesound.cc:337
+#: src/icesound.cc:334
 #, c-format
 msgid "%s: Invalid number of channels"
 msgstr "%s: عدد القنوات غير صالح"
 
-#: src/icesound.cc:343 src/icesound.cc:348
+#: src/icesound.cc:340 src/icesound.cc:345
 msgid "Could not set OSS channels"
 msgstr "تعذر تعيين قنوات OSS"
 
-#: src/icesound.cc:353 src/icesound.cc:381
+#: src/icesound.cc:350 src/icesound.cc:378
 msgid "Could not sync OSS"
 msgstr "تعذرت مزامنة OSS"
 
-#: src/icesound.cc:365
+#: src/icesound.cc:362
 msgid "OSS write failed"
 msgstr "فشلت كتابة OSS"
 
-#: src/icesound.cc:369
+#: src/icesound.cc:366
 #, c-format
 msgid "OSS incomplete write (%d/%d)"
 msgstr "كتابة OSS غير مكتملة (%d/%d)"
 
-#: src/icesound.cc:376
+#: src/icesound.cc:373
 msgid "Could not post OSS"
 msgstr "تعذر نشر OSS"
 
-#: src/icesound.cc:405
+#: src/icesound.cc:402
 #, c-format
 msgid "Could not open OSS device %s"
 msgstr "لا يمكن فتح جهاز OSS %s"
 
-#: src/icesound.cc:410
+#: src/icesound.cc:407
 msgid "Could not set OSS stereo"
 msgstr "تعذر تعيين نظام OSS الصوتي"
 
-#: src/icesound.cc:415
+#: src/icesound.cc:412
 msgid "Could not reset OSS DSP"
 msgstr "تعذرت إعادة تعيين OSS DSP"
 
-#: src/icesound.cc:420
+#: src/icesound.cc:417
 msgid "Could not set OSS format"
 msgstr "تعذر تعيين تنسيق OSS"
 
-#: src/icesound.cc:493
-#, c-format
-msgid "Can't connect to ESound daemon: %s"
-msgstr "لا يمكن الاتصال بخادم الصوت الاكتروني: %s"
-
-#: src/icesound.cc:494 src/icewmhint.cc:38 src/yxapp.cc:926
-msgid "<none>"
-msgstr "<لا شيئ>"
-
-#: src/icesound.cc:512
-#, c-format
-msgid "Error <%d> while uploading `%s:%s'"
-msgstr "خطأ <%d> أثناء تحميل `%s:%s'"
-
-#: src/icesound.cc:518
-#, c-format
-msgid "Sample <%d> uploaded as `%s:%s'"
-msgstr "نموذج <%d> رفع ك `%s:%s'"
-
-#: src/icesound.cc:576
-#, c-format
-msgid "Playing sample #%d: %d"
-msgstr "تشغيل نموذج #%d: %d"
-
-#: src/icesound.cc:651
+#: src/icesound.cc:504
 #, c-format
 msgid "ao_open_live failed with %d"
 msgstr "فشل ao_open_live بسبب %d 1"
 
-#: src/icesound.cc:662
+#: src/icesound.cc:515
 msgid "ao_play failed"
 msgstr "فشل ao_play"
 
-#: src/icesound.cc:824
+#: src/icesound.cc:677
 #, c-format
 msgid "Unrecognized option: %s\n"
 msgstr "خيارات غير مقبولة: %s\n"
 
-#: src/icesound.cc:827 src/icesound.cc:1130
+#: src/icesound.cc:680 src/icesound.cc:973
 #, c-format
 msgid "Unrecognized argument: %s\n"
 msgstr "حجج غير مقبولة: %s\n"
 
-#: src/icesound.cc:836
-#, c-format
+#: src/icesound.cc:689
+#, fuzzy, c-format
+#| msgid ""
+#| "Usage: %s [OPTION]...\n"
+#| "\n"
+#| "Plays audio files on GUI events raised by IceWM.\n"
+#| "The currently configured sound interfaces are: %s.\n"
+#| "Icesound will choose the first of these which is usable.\n"
+#| "\n"
+#| "Options:\n"
+#| "\n"
+#| " -d, --display=DISPLAY   X11 display used by IceWM (default: $DISPLAY).\n"
+#| "\n"
+#| " -s, --sample-dir=DIR    Specifies a directory with sound files.\n"
+#| "                         Default is $HOME/.config/icewm/sounds.\n"
+#| "\n"
+#| " -i, --interface=LIST    Specifies audio output interfaces. One or more "
+#| "of:\n"
+#| "                         %s separated by commas.\n"
+#| "\n"
+#| " -D, --device=DEVICE     Backwards compatibility only: the default "
+#| "device. \n"
+#| "                         Please prefer one of the -A/-O/-S options.\n"
+#| "\n"
+#| " -O, --oss=DEVICE        Specifies the OSS device (default: \"%s\").\n"
+#| "\n"
+#| " -A, --alsa=DEVICE       Specifies the ALSA device (default: \"%s\").\n"
+#| "\n"
+#| " -S, --server=ADDR:PORT  Specifies the ESD server address and port "
+#| "number.\n"
+#| "                         For ESD the default is \"localhost:16001\".\n"
+#| "\n"
+#| " -z, --snooze=millisecs  Specifies the snooze interval between sound "
+#| "events\n"
+#| "                         in milliseconds. Default is 500 milliseconds.\n"
+#| "\n"
+#| " -p, --play=sound        Plays the given sound (name or number) and "
+#| "exits.\n"
+#| "\n"
+#| " -l, --list-files        Lists the available sound file paths and exits.\n"
+#| "\n"
+#| "     --list-sounds       Lists the supported sound filenames and exits.\n"
+#| "\n"
+#| "     --list-interfaces   Lists the supported audio interfaces and exits.\n"
+#| "\n"
+#| " -v, --verbose           Be verbose and print out each sound event.\n"
+#| "\n"
+#| " -V, --version           Prints version information and exits.\n"
+#| "\n"
+#| " -h, --help              Prints this help screen and exits.\n"
+#| "\n"
+#| "Return values:\n"
+#| "\n"
+#| "  0    Success.\n"
+#| "  1    General error.\n"
+#| "  2    Command line error.\n"
+#| "  3    Subsystems error (ie cannot connect to server).\n"
+#| "\n"
 msgid ""
 "Usage: %s [OPTION]...\n"
 "\n"
@@ -928,9 +821,6 @@ msgid ""
 " -O, --oss=DEVICE        Specifies the OSS device (default: \"%s\").\n"
 "\n"
 " -A, --alsa=DEVICE       Specifies the ALSA device (default: \"%s\").\n"
-"\n"
-" -S, --server=ADDR:PORT  Specifies the ESD server address and port number.\n"
-"                         For ESD the default is \"localhost:16001\".\n"
 "\n"
 " -z, --snooze=millisecs  Specifies the snooze interval between sound events\n"
 "                         in milliseconds. Default is 500 milliseconds.\n"
@@ -1013,51 +903,51 @@ msgstr ""
 "  3    خطأ في الأنظمة الفرعية (مثال لا يمكن الاتصال بالخادم).\n"
 "\n"
 
-#: src/icesound.cc:930
+#: src/icesound.cc:780
 #, c-format
 msgid "No audio for %s"
 msgstr "لا يوجد صوت لـ %s"
 
-#: src/icesound.cc:1007
+#: src/icesound.cc:857
 msgid "Could not get GUI event property"
 msgstr "تعذر استدعاء خاصية حدث واجهة مستخدم رسومية"
 
-#: src/icesound.cc:1011
+#: src/icesound.cc:861
 #, c-format
 msgid "Received invalid GUI event %d"
 msgstr "تم تلقي حدث واجهة مستخدم رسومية غير صالح %d"
 
-#: src/icesound.cc:1015
+#: src/icesound.cc:865
 #, c-format
 msgid "Received GUI event %s"
 msgstr "تم تلقي حدث واجهة المستخدم الرسومية %s"
 
-#: src/icesound.cc:1029
+#: src/icesound.cc:879
 #, c-format
 msgid "Too quick; ignoring %s."
 msgstr "سريع جدًا؛ جارٍ تجاهل %s."
 
-#: src/icesound.cc:1033
+#: src/icesound.cc:883
 #, c-format
 msgid "Support for the %s interface not compiled."
 msgstr "دعم الواجهة %sلم يكتمل بعد."
 
-#: src/icesound.cc:1073
+#: src/icesound.cc:916
 #, c-format
 msgid "Unsupported interface: %s."
 msgstr "واجهة غير مدعومة: %s."
 
-#: src/icesound.cc:1082
+#: src/icesound.cc:925
 #, c-format
 msgid "Using %s audio."
 msgstr "جارٍ استخدام الصوت %s."
 
-#: src/icesound.cc:1086
+#: src/icesound.cc:929
 #, c-format
 msgid "Failed to connect to audio interfaces %s."
 msgstr "فشل الاتصال بواجهات الصوت %s."
 
-#: src/icesound.cc:1098
+#: src/icesound.cc:941
 #, c-format
 msgid "Received signal %s: Terminating..."
 msgstr "تم تلقي الإشارة %s: جارٍ الإنهاء..."
@@ -1107,52 +997,7 @@ msgstr "Ctrl+W"
 msgid "Failed to load image '%s'."
 msgstr "فشل تحميل الصورة '%s'."
 
-#: src/icewmbg.cc:843
-#, fuzzy
-#| msgid ""
-#| "Usage: icewmbg [OPTIONS]\n"
-#| "Where multiple values can be given they are separated by commas.\n"
-#| "When image is a directory then all images from that directory are used.\n"
-#| "\n"
-#| "Options:\n"
-#| "  -p, --replace        Replace an existing icewmbg.\n"
-#| "  -q, --quit           Tell the running icewmbg to quit.\n"
-#| "  -r, --restart        Tell the running icewmbg to restart itself.\n"
-#| "\n"
-#| "  -c, --config=FILE    Load preferences from FILE.\n"
-#| "  -t, --theme=NAME     Load the theme with name NAME.\n"
-#| "\n"
-#| "  -i, --image=FILE(S)  Load background image(s) from FILE(S).\n"
-#| "  -k, --color=NAME(S)  Use background color(s) from NAME(S).\n"
-#| "\n"
-#| "  -s, --semis=FILE(S)  Load transparency image(s) from FILE(S).\n"
-#| "  -x, --trans=NAME(S)  Use transparency color(s) from NAME(S).\n"
-#| "\n"
-#| "  -e, --center=0/1     Disable/Enable centering background.\n"
-#| "  -a, --scaled=0/1     Disable/Enable scaling background.\n"
-#| "  -m, --multi=0/1      Disable/Enable multihead background.\n"
-#| "\n"
-#| "  --display=NAME       Use NAME to connect to the X server.\n"
-#| "  --sync               Synchronize communication with X11 server.\n"
-#| "\n"
-#| "  -h, --help           Print this usage screen and exit.\n"
-#| "  -V, --version        Prints version information and exits.\n"
-#| "\n"
-#| "Loads desktop background according to preferences file:\n"
-#| " DesktopBackgroundCenter  - Display desktop background centered\n"
-#| " DesktopBackgroundScaled  - Display desktop background scaled\n"
-#| " DesktopBackgroundColor   - Desktop background color(s)\n"
-#| " DesktopBackgroundImage   - Desktop background image(s)\n"
-#| " SupportSemitransparency  - Support for semitransparent terminals\n"
-#| " DesktopTransparencyColor - Semitransparency background color(s)\n"
-#| " DesktopTransparencyImage - Semitransparency background image(s)\n"
-#| " DesktopBackgroundMultihead - One background over all monitors\n"
-#| "\n"
-#| " center:0 scaled:0 = tiled\n"
-#| " center:1 scaled:0 = centered\n"
-#| " center:1 scaled:1 = fill one dimension and keep aspect ratio\n"
-#| " center:0 scaled:1 = fill both dimensions and keep aspect ratio\n"
-#| "\n"
+#: src/icewmbg.cc:885
 msgid ""
 "Usage: icewmbg [OPTIONS]\n"
 "Where multiple values can be given they are separated by commas.\n"
@@ -1204,12 +1049,13 @@ msgid ""
 msgstr ""
 "الاستخدام: icewmbg [OPTIONS]\n"
 "أينما يمكن تحديد قيم متعددة مفصولة بفاصلات.\n"
-"عندما تكون الصورة دليلاً، ثم يتم استخدام جميع الصور من ذلك الدليل.\n"
+"عندما تكون الصورة دليلاً، فمن ثم يتم استخدام جميع الصور من ذلك الدليل.\n"
 "\n"
 "الخيارات:\n"
 "  -p، --replace        استبدال icewmbg موجود.\n"
 "  -q، --quit           إصدار أمر بإنهاء icewmbg قيد التشغيل.\n"
 "  -r، --restart        إصدار أمر بإعادة تشغيل icewmbg قيد التشغيل ذاتيًا.\n"
+"  -u، --shuffle        تبديل/إعادة تبديل عشوائي لقائمة الصور في الخلفية.\n"
 "\n"
 "  -c، --config=FILE    تحميل تفضيلات من FILE.\n"
 "  -c، --config=FILE    تحميل سمة من الاسم NAME.\n"
@@ -1223,6 +1069,7 @@ msgstr ""
 "  -e، --center=0/1     تعطيل/تمكين توسيط الخلفية.\n"
 "  -a، --scaled=0/1     تعطيل/تمكين تدرج الخلفية.\n"
 "  -m، --multi=0/1      تعطيل/تمكين خلفية متعددة الشاشات.\n"
+"y, --cycle=SECONDS  دورة في الخلفية كل عدد من الثواني.\n"
 "\n"
 "  --display=NAME       استخدام NAME للاتصال بخادم X.\n"
 "  --sync               مزامنة الاتصال بخادم X11.\n"
@@ -1235,10 +1082,13 @@ msgstr ""
 "DesktopBackgroundScaled  - عرض خلفية سطح المكتب متدرجة\n"
 " DesktopBackgroundColor   - لون/ألوان خلفية سطح المكتب\n"
 " DesktopBackgroundImage   - صورة/صور خلفية سطح المكتب\n"
+"ShuffleBackgroundImages  - تبديل قائمة صور الخلفية\n"
 " SupportSemitransparency  - دعم الأجهزة الطرفية شبه الشفافة\n"
 " DesktopTransparencyColor - لون/ألوان خلفية شبه شفافة\n"
 " DesktopTransparencyImage - صور/صور خلفية شبه شفافة\n"
 " DesktopBackgroundMultihead - خلفية واحدة لكل أجهزة العرض\n"
+"CycleBackgroundsPeriod   - الثواني إجراء دورات على الخلفية\n"
+"\n"
 "\n"
 "الوسط:0 متدرج:0 = متجانب\n"
 " الوسط:1 متدرج:0 = في المنتصف\n"
@@ -1246,24 +1096,24 @@ msgstr ""
 " الوسط:0 متدرج:1 = ملء بُعدين والاحتفاظ بنسبة العرض إلى الارتفاع\n"
 "\n"
 
-#: src/icewmbg.cc:1057
+#: src/icewmbg.cc:1100
 msgid "Cannot start, because another icewmbg is still running."
 msgstr "لا يمكن البدء، لأنه هنناك icewmbg آخر لا يزال قيد التشغيل."
 
-#: src/icewmhint.cc:23
+#: src/icewmhint.cc:19
 msgid "Usage: icewmhint class.instance option arg\n"
 msgstr "الاستخدام: وسيطة خيار icewmhint class.instance\n"
 
-#: src/icewmhint.cc:57
+#: src/icewmhint.cc:56
 #, c-format
 msgid "Out of memory (len=%d)."
 msgstr "نفاذ الذاكرة (len=%d)."
 
-#: src/misc.cc:466 src/misc.cc:478
+#: src/misc.cc:469 src/misc.cc:481
 msgid "Warning: "
 msgstr "تحذير: "
 
-#: src/misc.cc:754
+#: src/misc.cc:757
 #, c-format
 msgid ""
 "Usage: %s [OPTIONS]\n"
@@ -1363,7 +1213,7 @@ msgstr "إ_غلاق"
 #. TRANSLATORS: This means "energy saving mode" or "suspended system". Not "interrupt". Not "hibernate".
 #: src/wmapp.cc:520 src/wmdialog.cc:75
 msgid "_Sleep mode"
-msgstr ""
+msgstr "_Sleep mode"
 
 #: src/wmapp.cc:525
 msgid "Restart _Icewm"
@@ -1401,7 +1251,7 @@ msgstr "تحت"
 msgid "D_esktop"
 msgstr "سطح المكتب"
 
-#: src/wmapp.cc:571 src/wmwinlist.cc:305
+#: src/wmapp.cc:571 src/wmwinlist.cc:349
 msgid "_Restore"
 msgstr "استعادة"
 
@@ -1413,71 +1263,79 @@ msgstr "انقل"
 msgid "_Size"
 msgstr "مقاس"
 
-#: src/wmapp.cc:577 src/wmwinlist.cc:306
+#: src/wmapp.cc:577 src/wmwinlist.cc:350
 msgid "Mi_nimize"
 msgstr "تصغير"
 
-#: src/wmapp.cc:579 src/wmwinlist.cc:307
+#: src/wmapp.cc:579 src/wmwinlist.cc:351
 msgid "Ma_ximize"
 msgstr "تكبير"
 
-#: src/wmapp.cc:581 src/wmwinlist.cc:308
+#: src/wmapp.cc:580 src/wmwinlist.cc:352
+msgid "Maximize_Vert"
+msgstr "Maximize_Vert"
+
+#: src/wmapp.cc:581
+msgid "MaximizeHori_z"
+msgstr "MaximizeHori_z"
+
+#: src/wmapp.cc:584 src/wmwinlist.cc:353
 msgid "_Fullscreen"
 msgstr "ملئ الشاشة"
 
-#: src/wmapp.cc:584 src/wmwinlist.cc:310
+#: src/wmapp.cc:587 src/wmwinlist.cc:355
 msgid "_Hide"
 msgstr "إخفاء"
 
-#: src/wmapp.cc:586 src/wmwinlist.cc:311
+#: src/wmapp.cc:589 src/wmwinlist.cc:356
 msgid "Roll_up"
 msgstr "طي"
 
-#: src/wmapp.cc:593
+#: src/wmapp.cc:596
 msgid "R_aise"
 msgstr "رفع"
 
-#: src/wmapp.cc:595 src/wmwinlist.cc:313
+#: src/wmapp.cc:598 src/wmwinlist.cc:358
 msgid "_Lower"
 msgstr "أسفل"
 
-#: src/wmapp.cc:597
+#: src/wmapp.cc:600
 msgid "La_yer"
 msgstr "طبقة"
 
-#: src/wmapp.cc:601 src/wmwinlist.cc:315
+#: src/wmapp.cc:604 src/wmwinlist.cc:360
 msgid "Move _To"
 msgstr "أنقل إلى"
 
-#: src/wmapp.cc:602 src/wmwinlist.cc:316
+#: src/wmapp.cc:605 src/wmwinlist.cc:361
 msgid "Occupy _All"
 msgstr "شغل الكل"
 
-#: src/wmapp.cc:608
+#: src/wmapp.cc:611
 msgid "Limit _Workarea"
 msgstr "حدود مساحة العمل"
 
-#: src/wmapp.cc:612 src/wmwinlist.cc:317
+#: src/wmapp.cc:615 src/wmwinlist.cc:362
 msgid "Tray _icon"
 msgstr "أيقونات التطبيقات"
 
-#: src/wmapp.cc:617 src/wmwinlist.cc:295 src/wmwinlist.cc:328
+#: src/wmapp.cc:620 src/wmwinlist.cc:339 src/wmwinlist.cc:373
 msgid "_Close"
 msgstr "غلق"
 
-#: src/wmapp.cc:619 src/wmwinlist.cc:297
+#: src/wmapp.cc:622 src/wmwinlist.cc:341
 msgid "_Kill Client"
 msgstr "اقتل العميل"
 
-#: src/wmapp.cc:622 src/wmdialog.cc:80 src/wmwinmenu.cc:131
+#: src/wmapp.cc:625 src/wmdialog.cc:80 src/wmwinmenu.cc:131
 msgid "_Window list"
 msgstr "فائمة النوافذ"
 
-#: src/wmapp.cc:636
+#: src/wmapp.cc:639
 msgid "Another window manager already running, exiting..."
 msgstr "مدير نوافذ آخر قيد التشغيل بالفعل، خروج..."
 
-#: src/wmapp.cc:721
+#: src/wmapp.cc:724
 #, c-format
 msgid ""
 "Could not restart: %s\n"
@@ -1486,18 +1344,18 @@ msgstr ""
 "لا يمكن إعادة تشغيل: %s\n"
 "هل المسار يقود إلى %s؟"
 
-#: src/wmapp.cc:842
+#: src/wmapp.cc:849
 msgid "Kill IceWM, replace with Xterm"
 msgstr "إنهاء IceWM، قم باستبداله بـ Xterm"
 
-#: src/wmapp.cc:1382
+#: src/wmapp.cc:1397
 msgid ""
 "  --client-id=ID      Client id to use when contacting session manager.\n"
 msgstr ""
 "  --client-id=ID      معرف العميل المطلوب استخدامه عند الاتصال بمدير "
 "الجلسة.\n"
 
-#: src/wmapp.cc:1388
+#: src/wmapp.cc:1403
 msgid ""
 "\n"
 "  --debug             Print generic debug messages.\n"
@@ -1508,7 +1366,7 @@ msgstr ""
 "الجلسة.\n"
 "  --debug-z          طباعة رسائل تصحيح الأخطاء المتعلقة بتراص النوافذ.\n"
 
-#: src/wmapp.cc:1396
+#: src/wmapp.cc:1411
 msgid ""
 "\n"
 "  -c, --config=FILE   Load preferences from FILE.\n"
@@ -1520,7 +1378,7 @@ msgstr ""
 "  -t، --theme=FILE    تحميل السمة من FILE.\n"
 "  --postpreferences   طباعة التفضيلات بعد كل عمليات المعالجة.\n"
 
-#: src/wmapp.cc:1401
+#: src/wmapp.cc:1416
 #, c-format
 msgid ""
 "Usage: %s [OPTIONS]\n"
@@ -1579,26 +1437,26 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: src/wmapp.cc:1462
+#: src/wmapp.cc:1477
 #, c-format
 msgid "%s configuration directories:\n"
 msgstr "دلائل إعداد %s:\n"
 
-#: src/wmapp.cc:1547
+#: src/wmapp.cc:1562
 #, c-format
 msgid "%s configured options:%s\n"
 msgstr "%s خيارات تمت إعدادها:%s\n"
 
-#: src/wmapp.cc:1599
+#: src/wmapp.cc:1615
 #, c-format
 msgid "Unrecognized option '%s'."
 msgstr "خيار غير معروف '%s'."
 
-#: src/wmapp.cc:1631
+#: src/wmapp.cc:1661
 msgid "Confirm Logout"
 msgstr "تأكيد تسجيل الخروج"
 
-#: src/wmapp.cc:1632
+#: src/wmapp.cc:1662
 msgid ""
 "Logout will close all active applications.\n"
 "Proceed?"
@@ -1611,22 +1469,22 @@ msgstr ""
 msgid "Failed to load theme %s"
 msgstr "فشل تحميل السمة %s"
 
-#: src/wmconfig.cc:103
+#: src/wmconfig.cc:104
 #, c-format
 msgid "Unknown value '%s' for option '%s'."
 msgstr "قيمة غير معروفة '%s' للخيار '%s'."
 
-#: src/wmconfig.cc:111
+#: src/wmconfig.cc:112
 #, c-format
 msgid "Unable to create directory %s"
 msgstr "تعذر إنشاء الدليل %s"
 
-#: src/wmconfig.cc:138 src/wmprog.cc:558 src/wmprog.cc:680 src/wmprog.cc:684
+#: src/wmconfig.cc:139 src/wmprog.cc:564 src/wmprog.cc:686 src/wmprog.cc:690
 #, c-format
 msgid "Unable to write to %s"
 msgstr "تعذرت الكتابة إلى %s"
 
-#: src/wmconfig.cc:165 src/wmprog.cc:688
+#: src/wmconfig.cc:166 src/wmprog.cc:694
 #, c-format
 msgid "Unable to rename %s to %s"
 msgstr "تعذرت إعادة تسمية %s إلى %s"
@@ -1639,8 +1497,8 @@ msgstr "غلق محطة العمل"
 msgid "_Cancel"
 msgstr "الغاء"
 
-#: src/wmdialog.cc:77 src/wmprog.cc:838 src/wmprog.cc:840 src/wmtaskbar.cc:292
-#: src/wmtaskbar.cc:294
+#: src/wmdialog.cc:77 src/wmprog.cc:844 src/wmprog.cc:846 src/wmtaskbar.cc:301
+#: src/wmtaskbar.cc:303
 msgid "_Logout..."
 msgstr "تسجيل الخروج..."
 
@@ -1648,16 +1506,16 @@ msgstr "تسجيل الخروج..."
 msgid "_Restart icewm"
 msgstr "_إعادة تشغيل icewm"
 
-#: src/wmdialog.cc:82 src/wmprog.cc:799 src/wmtaskbar.cc:285
-#: src/wmtaskbar.cc:288
+#: src/wmdialog.cc:82 src/wmprog.cc:805 src/wmtaskbar.cc:294
+#: src/wmtaskbar.cc:297
 msgid "_About"
 msgstr "حول"
 
-#: src/wmframe.cc:1409
+#: src/wmframe.cc:1394
 msgid "Kill Client: "
 msgstr "إنهاء العميل: "
 
-#: src/wmframe.cc:1416
+#: src/wmframe.cc:1401
 msgid ""
 "WARNING! All unsaved changes will be lost when\n"
 "this client is killed. Do you wish to proceed?"
@@ -1665,107 +1523,105 @@ msgstr ""
 "تحذير! سيتم فقدان جميع التغييرات غير المحفوظة عند\n"
 "قتل هذا العميل. هل ترغب في المتابعة؟"
 
-#: src/wmframe.cc:3006
+#: src/wmframe.cc:2997
 msgid "Restore"
 msgstr "استعادة"
 
-#: src/wmframe.cc:3009 src/wmtitle.cc:69
+#: src/wmframe.cc:3000 src/wmtitle.cc:69
 msgid "Maximize"
 msgstr "تكبير"
 
-#: src/wmframe.cc:3039
+#: src/wmframe.cc:3030
 msgid "Rolldown"
 msgstr "لف للأسفل"
 
-#: src/wmframe.cc:3041 src/wmtitle.cc:127
+#: src/wmframe.cc:3032 src/wmtitle.cc:127
 msgid "Rollup"
 msgstr "لف للأعلى"
 
-#: src/wmoption.cc:228
+#: src/wmoption.cc:232
 #, c-format
 msgid "Unknown window option: %s"
 msgstr "خيارات النوافذ غير معروفة: %s"
 
-#: src/wmoption.cc:338
+#: src/wmoption.cc:344
 #, c-format
 msgid "Syntax error in window options on line %d of %s"
 msgstr "خطأ بناء جملة في في خيارات النوافذ في السطر %d 1 الخاص بـ %s 2"
 
-#: src/wmprog.cc:386
+#: src/wmprog.cc:392
 msgid "_Click to focus"
 msgstr "انقر للتكبير"
 
-#: src/wmprog.cc:387
+#: src/wmprog.cc:393
 msgid "_Explicit focus"
 msgstr "تركيز _صريح"
 
-#: src/wmprog.cc:388
+#: src/wmprog.cc:394
 msgid "_Sloppy mouse focus"
 msgstr "تركيز فأرة سيئ"
 
-#: src/wmprog.cc:389
+#: src/wmprog.cc:395
 msgid "S_trict mouse focus"
 msgstr "تركيز فأرة د_قيق"
 
-#: src/wmprog.cc:390
+#: src/wmprog.cc:396
 msgid "_Quiet sloppy focus"
 msgstr "تركيز فأرة _سيئ"
 
-#: src/wmprog.cc:391
+#: src/wmprog.cc:397
 msgid "Custo_m"
 msgstr "تخصي_ص"
 
-#: src/wmprog.cc:478
-#, fuzzy
-#| msgid "Favorite applications"
+#: src/wmprog.cc:484
 msgid "Save Modifications"
-msgstr "التطبيقات المفضلة"
+msgstr "حفظ التعديلات"
 
-#: src/wmprog.cc:711
+#: src/wmprog.cc:717
 msgid "_Manual"
 msgstr "يدو_ي"
 
-#: src/wmprog.cc:712
+#: src/wmprog.cc:718
 msgid "_Icewm(1)"
 msgstr "_Icewm(1)"
 
-#: src/wmprog.cc:713
+#: src/wmprog.cc:719
 msgid "Icewm_Bg(1)"
 msgstr "Icewm_Bg(1)"
 
-#: src/wmprog.cc:714
+#: src/wmprog.cc:720
 msgid "Ice_Sound(1)"
 msgstr "Ice_Sound(1)"
 
-#: src/wmprog.cc:776
+#: src/wmprog.cc:782
 msgid "Programs"
 msgstr "برامج"
 
-#: src/wmprog.cc:781
+#: src/wmprog.cc:787
 msgid "_Run..."
 msgstr "تشغيل..."
 
-#: src/wmprog.cc:786 src/wmtaskbar.cc:275
+#: src/wmprog.cc:792 src/wmtaskbar.cc:284
 msgid "_Windows"
 msgstr "نوافذ"
 
-#: src/wmprog.cc:805
+#: src/wmprog.cc:811
 msgid "_Help"
 msgstr "مساعدة"
 
-#: src/wmprog.cc:816
+#: src/wmprog.cc:822
 msgid "_Focus"
 msgstr "تركيز"
 
-#: src/wmprog.cc:821
+#: src/wmprog.cc:827
 msgid "_Preferences"
 msgstr "_التفضيلات"
 
-#: src/wmprog.cc:827
+#: src/wmprog.cc:833
 msgid "_Themes"
 msgstr "سمات"
 
-#: src/wmprog.cc:832
+#: src/wmprog.cc:838
 msgid "Se_ttings"
 msgstr "إعدادات"
 
@@ -1774,61 +1630,69 @@ msgstr "إعدادات"
 msgid "Session Manager: Unknown line %s"
 msgstr "مدير الجلسة: خط غير معروف %s"
 
-#: src/wmtaskbar.cc:165 src/wmtaskbar.cc:166
+#: src/wmtaskbar.cc:168 src/wmtaskbar.cc:169
 msgid "Task Bar"
 msgstr "شريط المهام"
 
-#: src/wmtaskbar.cc:265 src/wmwinlist.cc:319 src/wmwinlist.cc:332
+#: src/wmtaskbar.cc:274 src/wmwinlist.cc:364 src/wmwinlist.cc:377
 msgid "Tile _Vertically"
 msgstr "قرميد عمودي"
 
-#: src/wmtaskbar.cc:266 src/wmwinlist.cc:320 src/wmwinlist.cc:333
+#: src/wmtaskbar.cc:275 src/wmwinlist.cc:365 src/wmwinlist.cc:378
 msgid "T_ile Horizontally"
 msgstr "قرميد أفقي"
 
-#: src/wmtaskbar.cc:267 src/wmwinlist.cc:321 src/wmwinlist.cc:334
+#: src/wmtaskbar.cc:276 src/wmwinlist.cc:366 src/wmwinlist.cc:379
 msgid "Ca_scade"
 msgstr "تتالي"
 
-#: src/wmtaskbar.cc:268 src/wmwinlist.cc:322 src/wmwinlist.cc:335
+#: src/wmtaskbar.cc:277 src/wmwinlist.cc:367 src/wmwinlist.cc:380
 msgid "_Arrange"
 msgstr "رتب"
 
-#: src/wmtaskbar.cc:269 src/wmwinlist.cc:324 src/wmwinlist.cc:336
+#: src/wmtaskbar.cc:278 src/wmwinlist.cc:369 src/wmwinlist.cc:381
 msgid "_Minimize All"
 msgstr "تصغير الكل"
 
-#: src/wmtaskbar.cc:270 src/wmwinlist.cc:325 src/wmwinlist.cc:337
+#: src/wmtaskbar.cc:279 src/wmwinlist.cc:370 src/wmwinlist.cc:382
 msgid "_Hide All"
 msgstr "اخفاء الكل"
 
-#: src/wmtaskbar.cc:271 src/wmwinlist.cc:326 src/wmwinlist.cc:338
+#: src/wmtaskbar.cc:280 src/wmwinlist.cc:371 src/wmwinlist.cc:383
 msgid "_Undo"
 msgstr "تراجع"
 
-#: src/wmtaskbar.cc:273
+#: src/wmtaskbar.cc:282
 msgid "Arrange _Icons"
 msgstr "رتب الايقونات"
 
-#: src/wmtaskbar.cc:277
+#: src/wmtaskbar.cc:286
 msgid "_Refresh"
 msgstr "تجديد"
 
-#: src/wmtaskbar.cc:283
+#: src/wmtaskbar.cc:292
 msgid "_License"
 msgstr "ترخيص"
 
-#: src/wmtaskbar.cc:364
-msgid "Favorite applications"
+#: src/wmtaskbar.cc:363 src/wmtaskbar.cc:992
+msgid "Hide Taskbar"
+msgstr "إخفاء شريط المهام"
+
+#: src/wmtaskbar.cc:378
+msgid "Favorite Applications"
 msgstr "التطبيقات المفضلة"
 
-#: src/wmtaskbar.cc:382
-msgid "Window list menu"
+#: src/wmtaskbar.cc:396
+msgid "Window List Menu"
 msgstr "جدول قوائم النوافذ"
 
-#: src/wmtaskbar.cc:391
+#: src/wmtaskbar.cc:405
 msgid "Show Desktop"
 msgstr "عرض سطح المكتب"
+
+#: src/wmtaskbar.cc:992
+msgid "Show Taskbar"
+msgstr "إظهار شريط المهام"
 
 #: src/wmtitle.cc:85
 msgid "Minimize"
@@ -1842,33 +1706,31 @@ msgstr "اخفاء"
 msgid "Raise/Lower"
 msgstr "ارفع/قلل"
 
-#: src/wmwinlist.cc:59
+#: src/wmwinlist.cc:50
 msgid "All Workspaces"
 msgstr "كل مساحات العمل"
 
-#: src/wmwinlist.cc:295
+#: src/wmwinlist.cc:339
 msgid "Del"
 msgstr "حذف"
 
-#: src/wmwinlist.cc:299
+#: src/wmwinlist.cc:343
 msgid "_Terminate Process"
 msgstr "إنهاء العملية"
 
-#: src/wmwinlist.cc:300
+#: src/wmwinlist.cc:344
 msgid "Kill _Process"
 msgstr "قتل العملية"
 
-#: src/wmwinlist.cc:309
+#: src/wmwinlist.cc:354
 msgid "_Show"
 msgstr "عرض"
 
-#: src/wmwinlist.cc:312
-#, fuzzy
-#| msgid "R_aise"
+#: src/wmwinlist.cc:357
 msgid "_Raise"
-msgstr "رفع"
+msgstr "_Raise"
 
-#: src/wmwinlist.cc:351 src/wmwinlist.cc:352
+#: src/wmwinlist.cc:396 src/wmwinlist.cc:397
 msgid "Window list"
 msgstr "قائمة النوافذ"
 
@@ -1877,7 +1739,7 @@ msgstr "قائمة النوافذ"
 msgid "%lu. Workspace %-.32s"
 msgstr "%lu. مساحة العمل %-.32s"
 
-#: src/yapp.cc:277
+#: src/yapp.cc:280
 #, c-format
 msgid "%s: select failed"
 msgstr "%s: فشل التحديد"
@@ -1888,10 +1750,9 @@ msgid "Unknown key name %s in %s"
 msgstr "مفتاح غير معروف %s في %s"
 
 #: src/yconfig.cc:150 src/yconfig.cc:163 src/yconfig.cc:177
-#, fuzzy, c-format
-#| msgid "Bad argument: %s for %s"
+#, c-format
 msgid "Bad argument: %s for %s [%d,%d]"
-msgstr "حجج سيئة: %s من أجل %s"
+msgstr "وسيطة غير صالحة: %s لـ %s [%d,%d]"
 
 #: src/yconfig.cc:214
 #, c-format
@@ -1953,43 +1814,43 @@ msgstr "غير قادر على تحميل مجموعة الخط %s."
 msgid "Missing codesets for fontset \"%s\":"
 msgstr "شفرة مجموعة الخط مفقودة \"%s\":"
 
-#: src/yinput.cc:38
+#: src/yinput.cc:39
 msgid "_Copy"
 msgstr "نسخ"
 
-#: src/yinput.cc:38
+#: src/yinput.cc:39
 msgid "Ctrl+C"
 msgstr "Ctrl+C"
 
-#: src/yinput.cc:40
+#: src/yinput.cc:41
 msgid "Cu_t"
 msgstr "Cu_t"
 
-#: src/yinput.cc:40
+#: src/yinput.cc:41
 msgid "Ctrl+X"
 msgstr "Ctrl+X"
 
-#: src/yinput.cc:42
+#: src/yinput.cc:43
 msgid "_Paste"
 msgstr "لصق"
 
-#: src/yinput.cc:42
+#: src/yinput.cc:43
 msgid "Ctrl+V"
 msgstr "Ctrl+V"
 
-#: src/yinput.cc:44
+#: src/yinput.cc:45
 msgid "Paste _Selection"
 msgstr "لصق التحديد"
 
-#: src/yinput.cc:44
+#: src/yinput.cc:45
 msgid "Ctrl+P"
 msgstr "Ctrl+P"
 
-#: src/yinput.cc:47
+#: src/yinput.cc:48
 msgid "Select _All"
 msgstr "تحديد الكل"
 
-#: src/yinput.cc:47
+#: src/yinput.cc:48
 msgid "Ctrl+A"
 msgstr "Ctrl+A"
 
@@ -2009,7 +1870,7 @@ msgstr "فشل في تحديد ترميز اللغة الحالية. الافت�
 msgid "iconv doesn't supply (sufficient) %s to %s converters."
 msgstr "لا يوفر iconv محولات %s إلى %s كافية."
 
-#: src/ylocale.cc:163
+#: src/ylocale.cc:167
 #, c-format
 msgid "Invalid multibyte string \"%s\": %s"
 msgstr "البيانات المتعددة غير صحيحة \"%s\": %s"
@@ -2020,15 +1881,10 @@ msgstr "موافق"
 
 #: src/ypaths.cc:95
 #, c-format
-msgid "Out of memory for image %s"
-msgstr "نفذت الذاكرة للصورة %s"
-
-#: src/ypaths.cc:98
-#, c-format
 msgid "Image not readable: %s"
 msgstr "الصورة غير مقرؤة: %s"
 
-#: src/ypaths.cc:121
+#: src/ypaths.cc:118
 #, c-format
 msgid "Could not find image %s"
 msgstr "لا يمكن العثور على الصورة %s"
@@ -2052,7 +1908,7 @@ msgstr "إلغاء hex غير مكتمل في عنوان URL في الموضع %
 msgid "Invalid hex escape in URL at position %d."
 msgstr "إلغاء hex غير صالح في عنوان URL في الموضع %d."
 
-#: src/yxapp.cc:885
+#: src/yxapp.cc:890
 msgid ""
 "  -d, --display=NAME  NAME of the X server to use.\n"
 "  --sync              Synchronize X11 commands.\n"
@@ -2060,19 +1916,19 @@ msgstr ""
 "  -d, --display=NAME  اسم الخادم X المطلوب استخدامه.\n"
 "  --sync              مزامنة أوامر X11.\n"
 
+#: src/yxapp.cc:931
+msgid "<none>"
+msgstr "<لا شيئ>"
+
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics
 #: src/fdospecgen.h:43
-#, fuzzy
-#| msgid "Graphics"
 msgid "2DGraphics"
-msgstr "رسومات"
+msgstr "رسومات ثنائية البُعد"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics
 #: src/fdospecgen.h:45
-#, fuzzy
-#| msgid "Graphics"
 msgid "3DGraphics"
-msgstr "رسومات"
+msgstr "رسومات ثنائية البُعد"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings or Utility
 #: src/fdospecgen.h:47 src/fdospecgen.h:49
@@ -2087,168 +1943,162 @@ msgstr "ملحقات"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:53
 msgid "ActionGame"
-msgstr ""
+msgstr "لعبة أكشن"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:55
 msgid "Adult"
-msgstr ""
+msgstr "بالغ"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:57
 msgid "AdventureGame"
-msgstr ""
+msgstr "لعبة مغامرات"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:59
 msgid "Amusement"
-msgstr ""
+msgstr "تسلية"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:61
-#, fuzzy
-#| msgid "Same Game"
 msgid "ArcadeGame"
-msgstr "نفس اللعبة"
+msgstr "لعبة أركيد"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
 #: src/fdospecgen.h:63
 msgid "Archiving"
-msgstr ""
+msgstr "أرشفة"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:65
 msgid "Art"
-msgstr ""
+msgstr "فنون"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:67
 msgid "ArtificialIntelligence"
-msgstr ""
+msgstr "الذكاء الاصطناعي"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:69
 msgid "Astronomy"
-msgstr ""
+msgstr "علم الفلك"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:71
 msgid "Audio"
-msgstr ""
+msgstr "صوت"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:73
 msgid "AudioVideo"
-msgstr ""
+msgstr "صوت وفيديو"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Audio or Video or AudioVideo
 #: src/fdospecgen.h:75
 msgid "AudioVideoEditing"
-msgstr ""
+msgstr "تحرير صوت وفيديو"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:77
 msgid "Biology"
-msgstr ""
+msgstr "مادة الأحياء"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:79
 msgid "BlocksGame"
-msgstr ""
+msgstr "لعبة مكعبات"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:81
 msgid "BoardGame"
-msgstr ""
+msgstr "لعبة لوحية"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
 #: src/fdospecgen.h:83
 msgid "Building"
-msgstr ""
+msgstr "بناء"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
 #: src/fdospecgen.h:85
 msgid "Calculator"
-msgstr ""
+msgstr "آلة حاسبة"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:87
 msgid "Calendar"
-msgstr ""
+msgstr "تقويم"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:89
-#, fuzzy
-#| msgid "Games"
 msgid "CardGame"
-msgstr "العاب"
+msgstr "لعب ورقية"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:91
 msgid "Chart"
-msgstr ""
+msgstr "رسم بياني"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:93
 msgid "Chat"
-msgstr ""
+msgstr "محادثة"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:95
 msgid "Chemistry"
-msgstr ""
+msgstr "كيمياء"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
 #: src/fdospecgen.h:97
 msgid "Clock"
-msgstr ""
+msgstr "الساعة"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility;Archiving
 #: src/fdospecgen.h:99
 msgid "Compression"
-msgstr ""
+msgstr "ضغط"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:101
 msgid "ComputerScience"
-msgstr ""
+msgstr "علوم الكمبيوتر"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:103
 msgid "Construction"
-msgstr ""
+msgstr "إنشاء"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:105
 msgid "ContactManagement"
-msgstr ""
+msgstr "إدارة جهات الاتصال"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:107
 msgid "Core"
-msgstr ""
+msgstr "مركز"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:109
 msgid "DataVisualization"
-msgstr ""
+msgstr "عرض مرئي للبيانات"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office or Development or AudioVideo
 #: src/fdospecgen.h:111
 msgid "Database"
-msgstr ""
+msgstr "قاعدة بيانات"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
 #: src/fdospecgen.h:113
 msgid "Debugger"
-msgstr ""
+msgstr "مصحح الأخطاء"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings
 #: src/fdospecgen.h:115
-#, fuzzy
-#| msgid "Settings"
 msgid "DesktopSettings"
-msgstr "إعدادات"
+msgstr "إعدادات سطح المكتب"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:117
@@ -2258,27 +2108,27 @@ msgstr "تطوير"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:119
 msgid "Dialup"
-msgstr ""
+msgstr "اتصال هاتفي"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office or TextTools
 #: src/fdospecgen.h:121
 msgid "Dictionary"
-msgstr ""
+msgstr "قاموس"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo
 #: src/fdospecgen.h:123
 msgid "DiscBurning"
-msgstr ""
+msgstr "حرق قرص"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:125
 msgid "Documentation"
-msgstr ""
+msgstr "توثيق"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:127
 msgid "Economy"
-msgstr ""
+msgstr "اقتصاد"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:129
@@ -2293,91 +2143,87 @@ msgstr "تعليم"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:133
 msgid "Electricity"
-msgstr ""
+msgstr "كهرباء"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:135
 msgid "Electronics"
-msgstr ""
+msgstr "إلكترونيات"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office or Network
 #: src/fdospecgen.h:137
 msgid "Email"
-msgstr ""
+msgstr "بريد إلكتروني"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: System or Game
 #: src/fdospecgen.h:139
 msgid "Emulator"
-msgstr ""
+msgstr "محاكى"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:141
 msgid "Engineering"
-msgstr ""
+msgstr "هندسة"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:143
 msgid "Feed"
-msgstr ""
+msgstr "تغذية"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: System;FileTools
 #: src/fdospecgen.h:145
 msgid "FileManager"
-msgstr ""
+msgstr "مدير الملفات"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility or System
 #: src/fdospecgen.h:147
 msgid "FileTools"
-msgstr ""
+msgstr "أدوات الملفات"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:149
 msgid "FileTransfer"
-msgstr ""
+msgstr "نقل الملفات"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: System
 #: src/fdospecgen.h:151
-#, fuzzy
-#| msgid "System"
 msgid "Filesystem"
-msgstr "نظام"
+msgstr "نظام ملفات"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:153
 msgid "Finance"
-msgstr ""
+msgstr "مالية"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:155
 msgid "FlowChart"
-msgstr ""
+msgstr "مخطط بياني"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
 #: src/fdospecgen.h:157
 msgid "GUIDesigner"
-msgstr ""
+msgstr "مصمم واجهة المستخدم الرسومية"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:159
-#, fuzzy
-#| msgid "Games"
 msgid "Game"
-msgstr "العاب"
+msgstr "لعبة"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:161
 msgid "Geography"
-msgstr ""
+msgstr "جغرافيا"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:163
 msgid "Geology"
-msgstr ""
+msgstr "جيولوجيا"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:165
 msgid "Geoscience"
-msgstr ""
+msgstr "علوم جغرافية"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:167
@@ -2387,115 +2233,107 @@ msgstr "رسومات"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network or Audio
 #: src/fdospecgen.h:169
 msgid "HamRadio"
-msgstr ""
+msgstr "راديو هواة"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings
 #: src/fdospecgen.h:171
-#, fuzzy
-#| msgid "Settings"
 msgid "HardwareSettings"
-msgstr "إعدادات"
+msgstr "إعدادات جهاز"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:173
 msgid "History"
-msgstr ""
+msgstr "سجل"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:175
 msgid "Humanities"
-msgstr ""
+msgstr "علوم إنسانية"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
 #: src/fdospecgen.h:177
 msgid "IDE"
-msgstr ""
+msgstr "وحدة تشغيل إلكترونية"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:179
 msgid "IRCClient"
-msgstr ""
+msgstr "عميل IRC"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:181
-#, fuzzy
-#| msgid "_Terminate Process"
 msgid "ImageProcessing"
-msgstr "إنهاء العملية"
+msgstr "معالجة صورة"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:183
 msgid "InstantMessaging"
-msgstr ""
+msgstr "مراسلة فورية"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:185
-#, fuzzy
-#| msgid "Games"
 msgid "KidsGame"
-msgstr "العاب"
+msgstr "لعبة أطفال"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:187
-#, fuzzy
-#| msgid "Language:"
 msgid "Languages"
-msgstr "اللغة:"
+msgstr "اللغات"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:189
 msgid "Literature"
-msgstr ""
+msgstr "أدب"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:191
 msgid "LogicGame"
-msgstr ""
+msgstr "لعبة منطق"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science or Utility
 #: src/fdospecgen.h:193
 msgid "Maps"
-msgstr ""
+msgstr "خرائط"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:195
 msgid "Math"
-msgstr ""
+msgstr "رياضيات"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:197
 msgid "MedicalSoftware"
-msgstr ""
+msgstr "برامج طبية"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo;Audio
 #: src/fdospecgen.h:199
 msgid "Midi"
-msgstr ""
+msgstr "الواجهة الرقمية للآلات الموسيقية"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo;Audio
 #: src/fdospecgen.h:201
 msgid "Mixer"
-msgstr ""
+msgstr "أداة جمع"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: System or Network
 #: src/fdospecgen.h:203
 msgid "Monitor"
-msgstr ""
+msgstr "مراقب"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:205
 msgid "Motif"
-msgstr ""
+msgstr "Motif"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:207
 msgid "Multimedia"
-msgstr "وسائط"
+msgstr "وسائط متعددة"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo or Education
 #: src/fdospecgen.h:209
 msgid "Music"
-msgstr ""
+msgstr "موسيقى"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:211
@@ -2505,17 +2343,17 @@ msgstr "شبكة"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:213
 msgid "News"
-msgstr ""
+msgstr "أخبار"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education;Math or Science;Math
 #: src/fdospecgen.h:215
 msgid "NumericalAnalysis"
-msgstr ""
+msgstr "تحليل رقمي"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics;Scanning
 #: src/fdospecgen.h:217
 msgid "OCR"
-msgstr ""
+msgstr "تعرف على الحروف بصريًا"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:219
@@ -2530,104 +2368,102 @@ msgstr "أخرى"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:223
 msgid "P2P"
-msgstr ""
+msgstr "من نقطة إلى نقطة"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:225
 msgid "PDA"
-msgstr ""
+msgstr "مساعد رقمي شخصي"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings
 #: src/fdospecgen.h:227
 msgid "PackageManager"
-msgstr ""
+msgstr "مدير حزم"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education;ComputerScience or Science;ComputerScience
 #: src/fdospecgen.h:229
 msgid "ParallelComputing"
-msgstr ""
+msgstr "حوسبة متوازية"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics or Office
 #: src/fdospecgen.h:231
 msgid "Photography"
-msgstr ""
+msgstr "تصوير فوتوغرافي"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:233
 msgid "Physics"
-msgstr ""
+msgstr "فيزياء"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Audio or Video or AudioVideo
 #: src/fdospecgen.h:235
 msgid "Player"
-msgstr ""
+msgstr "مشغّل"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:237
 msgid "Presentation"
-msgstr ""
+msgstr "عرض تقديمي"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings;HardwareSettings
 #: src/fdospecgen.h:239
 msgid "Printing"
-msgstr ""
+msgstr "طباعة"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
 #: src/fdospecgen.h:241
 msgid "Profiling"
-msgstr ""
+msgstr "تخزين مراجع"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office or Development
 #: src/fdospecgen.h:243
 msgid "ProjectManagement"
-msgstr ""
+msgstr "إدارة مشروعات"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics or Office
 #: src/fdospecgen.h:245
 msgid "Publishing"
-msgstr ""
+msgstr "نشر"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics;2DGraphics
 #: src/fdospecgen.h:247
-#, fuzzy
-#| msgid "Graphics"
 msgid "RasterGraphics"
-msgstr "رسومات"
+msgstr "رسومات متسامتة"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Audio or Video or AudioVideo
 #: src/fdospecgen.h:249
 msgid "Recorder"
-msgstr ""
+msgstr "مسجّل"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:251
 msgid "RemoteAccess"
-msgstr ""
+msgstr "وصول عن بُعد"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
 #: src/fdospecgen.h:253
 msgid "RevisionControl"
-msgstr ""
+msgstr "تحكم بالمراجعات"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:255
 msgid "Robotics"
-msgstr ""
+msgstr "علم تصميم الإنسان الآلي"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:257
 msgid "RolePlaying"
-msgstr ""
+msgstr "لعب أدوار"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics
 #: src/fdospecgen.h:259
 msgid "Scanning"
-msgstr ""
+msgstr "مسح"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:261
 msgid "Science"
-msgstr ""
+msgstr "علوم"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:263
@@ -2637,12 +2473,12 @@ msgstr "حافظات الشاشة"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings or System
 #: src/fdospecgen.h:265
 msgid "Security"
-msgstr ""
+msgstr "أمان"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo;Audio
 #: src/fdospecgen.h:267
 msgid "Sequencer"
-msgstr ""
+msgstr "مسلسل"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:269
@@ -2652,43 +2488,37 @@ msgstr "إعدادات"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:271
 msgid "Shooter"
-msgstr ""
+msgstr "مسدس"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:273
-#, fuzzy
-#| msgid "Education"
 msgid "Simulation"
-msgstr "تعليم"
+msgstr "محاكاة"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science or Utility
 #: src/fdospecgen.h:275
 msgid "Spirituality"
-msgstr ""
+msgstr "علوم روحانية"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:277
-#, fuzzy
-#| msgid "Support"
 msgid "Sports"
-msgstr "دعم"
+msgstr "رياضات"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:279
 msgid "SportsGame"
-msgstr ""
+msgstr "لعبة رياضية"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:281
 msgid "Spreadsheet"
-msgstr ""
+msgstr "جدول بيانات"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:283
-#, fuzzy
-#| msgid "Same Game"
 msgid "StrategyGame"
-msgstr "نفس اللعبة"
+msgstr "لعبة إستراتيجية"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:285
@@ -2698,93 +2528,239 @@ msgstr "نظام"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo;Video
 #: src/fdospecgen.h:287
 msgid "TV"
-msgstr ""
+msgstr "تليفزيون"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:289
 msgid "Telephony"
-msgstr ""
+msgstr "إرسال هاتفي"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
 #: src/fdospecgen.h:291
 msgid "TelephonyTools"
-msgstr ""
+msgstr "أدوات هاتفية"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: System
 #: src/fdospecgen.h:293
 msgid "TerminalEmulator"
-msgstr ""
+msgstr "جهاز محاكاة طرفي"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
 #: src/fdospecgen.h:295
-#, fuzzy
-#| msgid "Editors"
 msgid "TextEditor"
-msgstr "محررات"
+msgstr "محرر نصوص"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
 #: src/fdospecgen.h:297
 msgid "TextTools"
-msgstr ""
+msgstr "أدوات كتابة"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
 #: src/fdospecgen.h:299
 msgid "Translation"
-msgstr ""
+msgstr "ترجمة"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo;Audio
 #: src/fdospecgen.h:301
 msgid "Tuner"
-msgstr ""
+msgstr "ضابط نغمات"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:303
 msgid "Utility"
-msgstr ""
+msgstr "برنامج مساعد"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics;2DGraphics
 #: src/fdospecgen.h:305
-#, fuzzy
-#| msgid "Graphics"
 msgid "VectorGraphics"
-msgstr "رسومات"
+msgstr "رسومات متجهة"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:307
 msgid "Video"
-msgstr ""
+msgstr "فيديو"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:309
 msgid "VideoConference"
-msgstr ""
+msgstr "مؤتمر عبر الفيديو"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics or Office
 #: src/fdospecgen.h:311
 msgid "Viewer"
-msgstr ""
+msgstr "عارض"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:313
 msgid "WINE"
-msgstr "محاكي الويندوز"
+msgstr "WINE"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:315
 msgid "WebBrowser"
-msgstr ""
+msgstr "مستعرض ويب"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network or Development
 #: src/fdospecgen.h:317
-#, fuzzy
-#| msgid "Development"
 msgid "WebDevelopment"
-msgstr "تطوير"
+msgstr "تطوير ويب"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:319
 msgid "WordProcessor"
-msgstr ""
+msgstr "معالج كلمات"
+
+#~ msgid "0x%-8lx %-14s: %-20s %dx%d%+d%+d\n"
+#~ msgstr "0x%-8lx %-14s: %-20s %dx%d%+d%+d\n"
+
+#~ msgid ""
+#~ "Usage: %s [OPTIONS] ACTIONS\n"
+#~ "\n"
+#~ "Options:\n"
+#~ "  -d, -display DISPLAY        Connects to the X server specified by "
+#~ "DISPLAY.\n"
+#~ "                              Default: $DISPLAY or :0.0 when not set.\n"
+#~ "  -w, -window WINDOW_ID       Specifies the window to manipulate. "
+#~ "Special\n"
+#~ "                              identifiers are `root' for the root window "
+#~ "and\n"
+#~ "                              `focus' for the currently focused window.\n"
+#~ "  -c, -class WM_CLASS         Window management class of the window(s) "
+#~ "to\n"
+#~ "                              manipulate. If WM_CLASS contains a period, "
+#~ "only\n"
+#~ "                              windows with exactly the same WM_CLASS "
+#~ "property\n"
+#~ "                              are matched. If there is no period, windows "
+#~ "of\n"
+#~ "                              the same class and windows of the same "
+#~ "instance\n"
+#~ "                              (aka. `-name') are selected.\n"
+#~ "\n"
+#~ "Actions:\n"
+#~ "  setIconTitle   TITLE        Set the icon title.\n"
+#~ "  setWindowTitle TITLE        Set the window title.\n"
+#~ "  setGeometry    geometry     Set the window geometry\n"
+#~ "  setState       MASK STATE   Set the GNOME window state to STATE.\n"
+#~ "                              Only the bits selected by MASK are "
+#~ "affected.\n"
+#~ "                              STATE and MASK are expressions of the "
+#~ "domain\n"
+#~ "                              `GNOME window state'.\n"
+#~ "  toggleState    STATE        Toggle the GNOME window state bits "
+#~ "specified by\n"
+#~ "                              the STATE expression.\n"
+#~ "  setHints       HINTS        Set the GNOME window hints to HINTS.\n"
+#~ "  setLayer       LAYER        Moves the window to another GNOME window "
+#~ "layer.\n"
+#~ "  setWorkspace   WORKSPACE    Moves the window to another workspace. "
+#~ "Select\n"
+#~ "                              the root window to change the current "
+#~ "workspace.\n"
+#~ "                              Select 0xFFFFFFFF or \"All\" for all "
+#~ "workspaces.\n"
+#~ "  listWorkspaces              Lists the names of all workspaces.\n"
+#~ "  setTrayOption  TRAYOPTION   Set the IceWM tray option hint.\n"
+#~ "  logout                      Tell IceWM to logout.\n"
+#~ "  reboot                      Tell IceWM to reboot.\n"
+#~ "  shutdown                    Tell IceWM to shutdown.\n"
+#~ "  cancel                      Tell IceWM to cancel the logout/reboot/"
+#~ "shutdown.\n"
+#~ "  about                       Tell IceWM to show the about window.\n"
+#~ "  windowlist                  Tell IceWM to show the window list.\n"
+#~ "  restart                     Tell IceWM to restart.\n"
+#~ "  suspend                     Tell IceWM to suspend.\n"
+#~ "\n"
+#~ "Expressions:\n"
+#~ "  Expressions are list of symbols of one domain concatenated by `+' or "
+#~ "`|':\n"
+#~ "\n"
+#~ "  EXPRESSION ::= SYMBOL | EXPRESSION ( `+' | `|' ) SYMBOL\n"
+#~ "\n"
+#~ msgstr ""
+#~ "الاستخدام: %s [OPTIONS] ACTIONS\n"
+#~ "\n"
+#~ "الخيارات:\n"
+#~ "  -d، عرض DISPLAY            يتصل بخادم X  المحدد بواسطة DISPLAY.\n"
+#~ "                              الافتراضي: $DISPLAY أو :0.0 عند عدم "
+#~ "التعيين.\n"
+#~ "  -w، النافذة WINDOW_ID           يحدد النافذة المطلوب معالجتها. \n"
+#~ "                             المعرفان الخاصان هما `root` جذر النافذة "
+#~ "و`focus` النافذة التي يتم التركيز عليها حاليًا.\n"
+#~ " -c، فئة WM_CLASSS         فئة إدارة النوافذ للنافذة (النوافذ) \n"
+#~ "                         المطلوب معالجتها. إذا كان WM_CLASS بها فترة، لا "
+#~ "تتطابق سوى \n"
+#~ "                         النوافذ التي لها نفس خاصية WM_CLASS بالضبط. أما "
+#~ "في حالة عدم وجود فترة، يتم تحديد نفس الفئة ونوافذ نفس النسخة (aka. `-"
+#~ "name').\n"
+#~ "\n"
+#~ "\n"
+#~ "الإجراءات:\n"
+#~ "  setIconTitle   TITLE        تعيين عنوان الأيقونة.\n"
+#~ "  setWindowTitle TITLE        تعيين عنوان النافذة.\n"
+#~ "  setGeometry    geometry     تعيين هندسة النافذة\n"
+#~ "  setState       MASK STATE   تعيين حالة نافذة جنوم إلى STATE.\n"
+#~ "                              يتم التأثير على وحدات البايت المحددة فقط "
+#~ "بواسطة MASK.\n"
+#~ "                              STATE وmask هما تعبيران للمجال \n"
+#~ "                              \"حالة نافذة جنوم\"\n"
+#~ "\n"
+#~ "  toggleState    STATE        تبديل وحدات بت نافذة GNOME بواسطة\n"
+#~ "                              التعبير STATE.\n"
+#~ "\n"
+#~ "  setHints       HINTS        تعيين تلميحات نافذة جنوم إلى HINTS.\n"
+#~ "  setLayer       LAYER        نقل النافذة إلة طبقة نافذة جنوم أخرى.\n"
+#~ "  setWorkspace   WORKSPACE    نقل النافذة إلى مساحة عمل أخرى. حدد\n"
+#~ "                              النافذة الجذر لتغيير مساحة العمل الحالية.\n"
+#~ "                              حدد 0xFFFFFFFF أو \"الكل\" لكل مساحات "
+#~ "العمل.\n"
+#~ "  listWorkspaces              سرد أسماء كل مساحات العمل.\n"
+#~ "  setTrayOption  TRAYOPTION   تعيين تلميح خيار درج IceWM.\n"
+#~ "   logout                      Tell IceWM to logout.\n"
+#~ "  reboot                      Tell IceWM to reboot.\n"
+#~ "  shutdown                    Tell IceWM to shutdown.\n"
+#~ "  cancel                      Tell IceWM to cancel the logout/reboot/"
+#~ "shutdown.\n"
+#~ "  about                       Tell IceWM to show the about window.\n"
+#~ "  windowlist                  Tell IceWM to show the window list.\n"
+#~ "  restart                     Tell IceWM to restart.\n"
+#~ "  suspend                     Tell IceWM to suspend.\n"
+#~ "التعبيرات:\n"
+#~ "التعبيرات هي عبارة عن قائمة من الرموز خاصة بمجال واحد متصلة بالعلامة `+' "
+#~ "أو `|':\n"
+#~ "\n"
+#~ "  التعبير ::= SYMBOL | EXPRESSION ( `+' | `|' ) SYMBOL\n"
+#~ "\n"
+
+#~ msgid "GNOME window state"
+#~ msgstr "حالة نوافذ جنوم"
+
+#~ msgid "GNOME window hint"
+#~ msgstr "تلميح نوافذ جنوم"
+
+#~ msgid "GNOME window layer"
+#~ msgstr "طبقة نوافذ جنوم"
+
+#~ msgid "IceWM tray option"
+#~ msgstr "صينية خيارات IceWM"
+
+#~ msgid "Can't connect to ESound daemon: %s"
+#~ msgstr "لا يمكن الاتصال بخادم الصوت الاكتروني: %s"
+
+#~ msgid "Error <%d> while uploading `%s:%s'"
+#~ msgstr "خطأ <%d> أثناء تحميل `%s:%s'"
+
+#~ msgid "Sample <%d> uploaded as `%s:%s'"
+#~ msgstr "نموذج <%d> رفع ك `%s:%s'"
+
+#~ msgid "Playing sample #%d: %d"
+#~ msgstr "تشغيل نموذج #%d: %d"
+
+#~ msgid "Usage error: "
+#~ msgstr "خطأ الاستخدام: "
+
+#~ msgid "Out of memory for image %s"
+#~ msgstr "نفذت الذاكرة للصورة %s"
 
 #~ msgid "_Minimize"
 #~ msgstr "تصغير"
