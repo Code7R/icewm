@@ -1,6 +1,6 @@
-icewm (1.5.5+git20190610-1) experimental; urgency=medium
+icewm (1.5.5+git20190610-1) unstable; urgency=medium
 
-  * A new upstream snapshot, close to version 1.5.5
+  * A new upstream snapshot (basically version 1.5.5 with fixes)
 
  -- Eduard Bloch <blade@debian.org>  Mon, 10 Jun 2019 13:02:58 +0200
 
