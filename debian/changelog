@@ -1,3 +1,9 @@
+icewm (1.5.5+git20190610-1) experimental; urgency=medium
+
+  * A new upstream snapshot, close to version 1.5.5
+
+ -- Eduard Bloch <blade@debian.org>  Mon, 10 Jun 2019 13:02:58 +0200
+
 icewm (1.4.3.0~pre-20181030-2) unstable; urgency=low
 
   * Dropped build and installation of the additional icewm FAQ (wrong
