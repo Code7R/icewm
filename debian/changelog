@@ -1,3 +1,10 @@
+icewm (1.5.5+git20190727-1) experimental; urgency=low
+
+  * New experimental upstream snapshot
+    + Restores TaskBarFullscreenAutoShow functionality (closes: #931230)
+
+ -- Eduard Bloch <blade@debian.org>  Sat, 27 Jul 2019 18:01:58 +0200
+
 icewm (1.5.5+git20190610-1) unstable; urgency=medium
 
   * A new upstream snapshot (basically version 1.5.5 with fixes)
