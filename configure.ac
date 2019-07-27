@@ -234,7 +234,8 @@ if test x$enable_xfreetype != xno; then
 	CORE_LIBS="$XFT2_LIBS $CORE_LIBS"
 	AC_DEFINE([CONFIG_XFREETYPE],[2],[Define to enable XFT support.])
 	features="$features xfreetype"],
-	[AC_MSG_WARN([XFT 2+ not supported.])])
+	[AC_MSG_WARN([XFT 2+ not supported.])
+        enable_corefonts=yes])
 else
     enable_corefonts=yes
 fi
@@ -246,9 +247,15 @@ if test x$enable_corefonts = xyes; then
     features="$features corefonts"
 fi
 
+if  test x"${features#*xfreetype}" = x"$features" &&
+    test x"${features#*corefonts}" = x"$features"
+then
+    AC_MSG_ERROR([Either xfreetype or corefonts must be enabled])
+fi
+
 AC_ARG_WITH([icesound],
-    AC_HELP_STRING([--with-icesound=INTERFACES],[List of audio interfaces for icesound. @<:@default: ALSA,AO,OSS,ESD@:>@]),[],
-    [with_icesound='ALSA,AO,OSS,ESD'])
+    AC_HELP_STRING([--with-icesound=INTERFACES],[List of audio interfaces for icesound. @<:@default: ALSA,AO,OSS@:>@]),[],
+    [with_icesound='ALSA,AO,OSS'])
 
 for iface in `echo "$with_icesound"|sed 's|,| |g'` ; do
     case $iface in
@@ -273,19 +280,12 @@ for iface in `echo "$with_icesound"|sed 's|,| |g'` ; do
             AC_DEFINE([ENABLE_OSS],[1],[Define to enable OSS support.])
             CONFIG_OSS=yes],[AC_MSG_WARN([OSS is not supported])])
         ;;
-    (ESound|ESD|esound|esd)
-        PKG_CHECK_MODULES([ESD],[esound],[
-            AUDIO_CFLAGS="$AUDIO_CFLAGS $ESD_CFLAGS"
-            AUDIO_LIBS="$AUDIO_LIBS $ESD_LIBS"
-            AC_DEFINE([ENABLE_ESD],[1],[Define to enable ESD support.])
-            CONFIG_ESD=yes],[AC_MSG_WARN([ESD is not supported])])
-        ;;
     (*)
         AC_MSG_WARN([Invalid audio interface: $iface])
         ;;
     esac
 done
-for iface in ALSA AO OSS ESD; do
+for iface in ALSA AO OSS; do
     eval "test \"\$CONFIG_$iface\" = yes" && audio_support="$audio_support $iface"
 done
 if test "x$audio_support" != x ; then

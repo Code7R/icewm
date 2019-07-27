@@ -62,6 +62,9 @@ EdgeTrigger::EdgeTrigger(TaskBar *owner) {
     setStyle(wsOverrideRedirect | wsInputOnly);
     setPointer(YXApplication::leftPointer);
     setDND(true);
+    if (taskBarAutoHide) {
+        setTitle("IceEdge");
+    }
 
     fTaskBar = owner;
 
@@ -244,7 +247,9 @@ TaskBar::~TaskBar() {
     delete fApplications; fApplications = 0;
     delete fObjectBar; fObjectBar = 0;
     delete fWorkspaces; fWorkspaces = 0;
+#ifdef MAX_ACPI_BATTERY_NUM
     delete fApm; fApm = 0;
+#endif
 #ifdef IWM_STATES
     delete fCPUStatus; fCPUStatus = 0;
 #endif
@@ -293,8 +298,11 @@ void TaskBar::initMenu() {
             else
                 taskBarMenu->addItem(_("_Logout..."), -2, null, actionLogout);
         }
-    }
 
+        taskBarMenu->setTitle("IceMenu");
+        taskBarMenu->setClassHint("icemenu", "TaskBar");
+        taskBarMenu->setNetWindowType(_XA_NET_WM_WINDOW_TYPE_POPUP_MENU);
+    }
 }
 
 void TaskBar::initApplets() {
@@ -319,6 +327,7 @@ void TaskBar::initApplets() {
     else
         fClock = 0;
 
+#ifdef MAX_ACPI_BATTERY_NUM
     if (taskBarShowApm && (access(APMDEV, 0) == 0 ||
                            access("/sys/class/power_supply", 0) == 0 ||
                            access("/proc/acpi", 0) == 0 ||
@@ -339,6 +348,7 @@ void TaskBar::initApplets() {
     }
     else
         fApm = 0;
+#endif
 
     if (taskBarShowCollapseButton) {
         fCollapseButton = new YButton(this, actionCollapseTaskbar);
@@ -346,9 +356,9 @@ void TaskBar::initApplets() {
             fCollapseButton->setText(">");
             fCollapseButton->setImage(taskbarCollapseImage);
             fCollapseButton->setActionListener(this);
-            fCollapseButton->setToolTip("Hide taskbar");
+            fCollapseButton->setToolTip(_("Hide Taskbar"));
+            fCollapseButton->setTitle("Collapse");
         }
-        fCollapseButton->setTitle("Collapse");
     } else
         fCollapseButton = 0;
 
@@ -361,7 +371,7 @@ void TaskBar::initApplets() {
         fApplications = new ObjectButton(this, rootMenu);
         fApplications->setActionListener(this);
         fApplications->setImage(taskbarStartImage);
-        fApplications->setToolTip(_("Favorite applications"));
+        fApplications->setToolTip(_("Favorite Applications"));
         fApplications->setTitle("TaskBarMenu");
     } else
         fApplications = 0;
@@ -379,7 +389,7 @@ void TaskBar::initApplets() {
         fWinList = new ObjectButton(this, windowListMenu);
         fWinList->setImage(taskbarWindowsImage);
         fWinList->setActionListener(this);
-        fWinList->setToolTip(_("Window list menu"));
+        fWinList->setToolTip(_("Window List Menu"));
         fWinList->setTitle("ShowWindowList");
     } else
         fWinList = 0;
@@ -467,11 +477,14 @@ void TaskBar::updateLayout(unsigned &size_w, unsigned &size_h) {
     wlist.append(nw);
     nw = LayoutInfo( fObjectBar, true, 1, true, 4, 0, true );
     wlist.append(nw);
-    nw = LayoutInfo( fWorkspaces, taskBarWorkspacesLeft, taskBarDoubleHeight && taskBarWorkspacesTop, true, 4, 4, true );
-    wlist.append(nw);
-
     nw = LayoutInfo( fCollapseButton, false, 0, true, 0, 2, true );
     wlist.append(nw);
+    nw = LayoutInfo( fWorkspaces, taskBarWorkspacesLeft,
+                     taskBarDoubleHeight && taskBarWorkspacesTop,
+                     taskBarShowWorkspaces && workspaceCount > 0,
+                     4, 4, true );
+    wlist.append(nw);
+
     nw = LayoutInfo( fClock, false, 1, false, 2, 2, false );
     wlist.append(nw);
     if (taskBarShowMailboxStatus) {
@@ -507,8 +520,10 @@ void TaskBar::updateLayout(unsigned &size_w, unsigned &size_h) {
             }
         }
     }
+#ifdef MAX_ACPI_BATTERY_NUM
     nw = LayoutInfo( fApm, false, 1, true, 0, 2, false );
     wlist.append(nw);
+#endif
     nw = LayoutInfo( fDesktopTray, false, 1, true, 1, 1, false );
     wlist.append(nw);
     nw = LayoutInfo( fWindowTray, false, 0, true, 1, 1, true );
@@ -625,9 +640,7 @@ void TaskBar::relayoutNow() {
     if (windowTrayPane())
         windowTrayPane()->relayoutNow();
     if (fNeedRelayout) {
-
         updateLocation();
-        fNeedRelayout = false;
     }
     if (taskPane())
         taskPane()->relayoutNow();
@@ -635,13 +648,23 @@ void TaskBar::relayoutNow() {
 
 void TaskBar::updateFullscreen(bool fullscreen) {
     fFullscreen = fullscreen;
-    if (fFullscreen || fIsHidden)
+    if ((fFullscreen || fIsHidden) && taskBarAutoHide)
         fEdgeTrigger->show();
     else
         fEdgeTrigger->hide();
 }
 
 void TaskBar::updateLocation() {
+    fNeedRelayout = false;
+
+    if (fIsHidden) {
+        if (fIsMapped && getFrame())
+            getFrame()->wmHide();
+        else
+            hide();
+        xapp->sync();
+    }
+
     int dx, dy;
     unsigned dw, dh;
     manager->getScreenGeometry(&dx, &dy, &dw, &dh, -1);
@@ -675,23 +698,20 @@ void TaskBar::updateLocation() {
 
     int by = taskBarAtTop ? dy : dy + dh - 1;
 
-    fEdgeTrigger->setGeometry(YRect(x, by, w, 1));
+    if (taskBarAutoHide) {
+        fEdgeTrigger->setGeometry(YRect(x, by, w, 1));
+    }
 
     int y = taskBarAtTop ? dy : dy + dh - h;
 
-    if (fIsHidden) {
-        if (fIsMapped && getFrame())
-            getFrame()->wmHide();
-        else
-            hide();
-    } else {
+    if ( !fIsHidden) {
         if (fIsMapped && getFrame()) {
             getFrame()->configureClient(x, y, w, h);
             getFrame()->wmShow();
         } else
             setGeometry(YRect(x, y, w, h));
     }
-    if (fIsHidden || fFullscreen)
+    if ((fIsHidden || fFullscreen) && taskBarAutoHide)
         fEdgeTrigger->show();
     else
         fEdgeTrigger->hide();
@@ -749,7 +769,12 @@ void TaskBar::handleCrossing(const XCrossingEvent &crossing) {
         if (crossing.type == EnterNotify /* && crossing.mode != NotifyNormal */) {
             fEdgeTrigger->stopHide();
         } else if (crossing.type == LeaveNotify /* && crossing.mode != NotifyNormal */) {
-            if (crossing.detail != NotifyInferior && !(crossing.detail == NotifyVirtual && crossing.mode == NotifyGrab) && !(crossing.detail == NotifyAncestor && crossing.mode != NotifyNormal)) {
+            if (crossing.detail != NotifyInferior &&
+                !(crossing.detail == NotifyVirtual &&
+                  crossing.mode == NotifyGrab) &&
+                !(crossing.detail == NotifyAncestor &&
+                  crossing.mode != NotifyNormal))
+            {
                 MSG(("taskbar hide: %d", crossing.detail));
                 fEdgeTrigger->startHide();
             } else {
@@ -768,7 +793,7 @@ void TaskBar::handleEndPopup(YPopupWindow *popup) {
     YWindow::handleEndPopup(popup);
 }
 
-void TaskBar::paint(Graphics &g, const YRect &/*r*/) {
+void TaskBar::paint(Graphics &g, const YRect& r) {
     if (taskbackPixbuf != null &&
         (fGradient == null ||
          fGradient->width() != width() ||
@@ -783,20 +808,26 @@ void TaskBar::paint(Graphics &g, const YRect &/*r*/) {
 
     // When TaskBarDoubleHeight=1 this draws the upper half.
     if (fGradient != null)
-        g.drawImage(fGradient, 0, 0, width(), height(), 0, 0);
+        g.drawImage(fGradient, r.x(), r.y(), r.width(), r.height(),
+                    r.x(), r.y());
     else
     if (taskbackPixmap != null)
-        g.fillPixmap(taskbackPixmap, 0, 0, width(), height());
-    else {
-        int y = taskBarAtTop ? 0 : 1;
-        g.fillRect(0, y, width(), height() - 1);
-        if (!taskBarAtTop) {
-            y++;
-            g.setColor(taskBarBg->brighter());
-            g.drawLine(0, 0, width(), 0);
-        } else {
+        g.fillPixmap(taskbackPixmap, r.x(), r.y(), r.width(), r.height(),
+                     r.x(), r.y());
+    else
+    if (taskBarAtTop) {
+        bool dh = (r.y() + r.height() == height());
+        g.fillRect(r.x(), r.y(), r.width(), r.height() - dh);
+        if (dh) {
             g.setColor(taskBarBg->darker());
-            g.drawLine(0, height() - 1, width(), height() - 1);
+            g.drawLine(r.x(), height() - 1, r.x() + r.width(), height() - 1);
+        }
+    } else {
+        bool dy = (r.y() == 0);
+        g.fillRect(r.x(), r.y() + dy, r.width(), r.height() - dy);
+        if (dy) {
+            g.setColor(taskBarBg->brighter());
+            g.drawLine(r.x(), 0, r.x() + r.width(), 0);
         }
     }
 }
@@ -930,9 +961,11 @@ void TaskBar::showBar(bool visible) {
                             fIsCollapsed ? WinLayerAboveDock :
                             taskBarKeepBelow ? WinLayerBelow : WinLayerDock);
             getFrame()->setAllWorkspaces();
-            getFrame()->activate(true);
+            if (enableAddressBar && ::showAddressBar && taskBarDoubleHeight)
+                getFrame()->activate(true);
             updateLocation();
             parent()->setTitle("TaskBarFrame");
+            getFrame()->updateLayer();
         }
     }
 }
@@ -946,10 +979,12 @@ void TaskBar::handleCollapseButton() {
     if (fCollapseButton) {
         fCollapseButton->setText(fIsCollapsed ? "<": ">");
         fCollapseButton->setImage(fIsCollapsed ? taskbarExpandImage : taskbarCollapseImage);
-        fCollapseButton->setToolTip(fIsCollapsed ? "Show taskbar" : "Hide taskbar");
+        fCollapseButton->setToolTip(fIsCollapsed ? _("Show Taskbar") : _("Hide Taskbar"));
+        fCollapseButton->repaint();
     }
 
     relayout();
+    updateLocation();
 }
 
 void TaskBar::handlePopDown(YPopupWindow * /*popup*/) {

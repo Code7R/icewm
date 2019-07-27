@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IceWM 1.2.35\n"
 "Report-Msgid-Bugs-To: https://github.com/bbidulock/icewm/issues\n"
-"POT-Creation-Date: 2018-10-20 18:34+0200\n"
-"PO-Revision-Date: 2018-05-14 05:54+0000\n"
+"POT-Creation-Date: 2019-06-07 00:39+0200\n"
+"PO-Revision-Date: 2019-02-07 06:32+0000\n"
 "Last-Translator: Hwajin Kim <hwajin.kim@e4net.net>\n"
 "Language-Team: Korean <https://l10n.opensuse.org/projects/icewm/icewm-1-4-"
 "branch/ko/>\n"
@@ -18,40 +18,40 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 2.18\n"
+"X-Generator: Weblate 3.3\n"
 
-#: src/aapm.cc:177 src/aapm.cc:459 src/aapm.cc:681 src/aapm.cc:806
+#: src/aapm.cc:180 src/aapm.cc:462 src/aapm.cc:684 src/aapm.cc:809
 msgid " - Power"
 msgstr " - 전력"
 
-#: src/aapm.cc:179 src/aapm.cc:462 src/aapm.cc:684
+#: src/aapm.cc:182 src/aapm.cc:465 src/aapm.cc:687
 msgid "P"
 msgstr "P"
 
-#: src/aapm.cc:183 src/aapm.cc:436 src/aapm.cc:664 src/aapm.cc:774
+#: src/aapm.cc:186 src/aapm.cc:439 src/aapm.cc:667 src/aapm.cc:777
 msgid " - Charging"
 msgstr " - 충전 중"
 
-#: src/aapm.cc:185 src/aapm.cc:438 src/aapm.cc:666
+#: src/aapm.cc:188 src/aapm.cc:441 src/aapm.cc:669
 msgid "C"
 msgstr "C"
 
-#: src/aapm.cc:440
+#: src/aapm.cc:443
 msgid " - Full"
 msgstr " - 전체"
 
-#: src/aapm.cc:985
+#: src/aapm.cc:988
 #, c-format
 msgid "power:\t%s"
 msgstr "전원:\t%s"
 
 #: src/aclock.cc:173
 msgid "CLOCK"
-msgstr ""
+msgstr "클럭"
 
 #: src/aclock.cc:177
 msgid "Date"
-msgstr ""
+msgstr "날짜"
 
 #: src/aclock.cc:178 src/themes.cc:85
 msgid "Default"
@@ -134,16 +134,13 @@ msgid "Load: "
 msgstr "로드: "
 
 #: src/acpustatus.cc:371
-#, fuzzy, c-format
-#| msgid ""
-#| "\n"
-#| "Ram (free): %5.3f (%.3f) G"
+#, c-format
 msgid ""
 "\n"
 "Ram (user): %5.3f (%.3f) G"
 msgstr ""
 "\n"
-"램(여유): %5.3f(%.3f)G"
+"Ram(사용자): %5.3f (%.3f) G"
 
 #. TRANSLATORS: Please translate the string "C" into "Celsius Temperature" in your language.
 #. TRANSLATORS: Please make sure the translated string could be shown in your non-utf8 locale.
@@ -152,10 +149,9 @@ msgid "°C"
 msgstr "°C"
 
 #: src/acpustatus.cc:770
-#, fuzzy, c-format
-#| msgid "%s: %llu %llu %llu %llu %llu %llu %llu %llu"
+#, c-format
 msgid "CPU: %llu %llu %llu %llu %llu %llu %llu %llu"
-msgstr "%s: %llu %llu %llu %llu %llu %llu %llu %llu"
+msgstr "CPU: %llu %llu %llu %llu %llu %llu %llu %llu"
 
 #: src/acpustatus.cc:859
 #, c-format
@@ -216,10 +212,8 @@ msgid "Using MailBox \"%s\"\n"
 msgstr "\"%s\" 우편함 사용\n"
 
 #: src/amailbox.cc:794
-#, fuzzy
-#| msgid "_Suspend"
 msgid "Suspended"
-msgstr "일시 중단(_S)"
+msgstr "일시 중단"
 
 #: src/amailbox.cc:798
 msgid "Error checking mailbox."
@@ -251,7 +245,7 @@ msgstr "MAIL"
 
 #: src/amailbox.cc:937
 msgid "_Check"
-msgstr ""
+msgstr "확인(_C)"
 
 #: src/amailbox.cc:939
 msgid "_Suspend"
@@ -320,130 +314,130 @@ msgstr ""
 "\n"
 "  발신자 id:\t"
 
-#: src/apppstatus.cc:717
+#: src/apppstatus.cc:716
 msgid "NET"
 msgstr "NET"
 
-#: src/aworkspaces.cc:294 src/wmstatus.cc:163
+#: src/aworkspaces.cc:294 src/wmstatus.cc:165
 msgid "Workspace: "
 msgstr "작업공간: "
 
-#: src/icehelp.cc:1201
+#: src/icehelp.cc:1202
 msgid "Back"
 msgstr "뒤로"
 
-#: src/icehelp.cc:1201
+#: src/icehelp.cc:1202
 msgid "Alt+Left"
 msgstr "Alt+Left"
 
-#: src/icehelp.cc:1203
+#: src/icehelp.cc:1204
 msgid "Forward"
 msgstr "앞으로"
 
-#: src/icehelp.cc:1203
+#: src/icehelp.cc:1204
 msgid "Alt+Right"
 msgstr "Alt+Right"
 
-#: src/icehelp.cc:1206
+#: src/icehelp.cc:1207
 msgid "Previous"
 msgstr "이전으로"
 
-#: src/icehelp.cc:1207
+#: src/icehelp.cc:1208
 msgid "Next"
 msgstr "다음으로"
 
-#: src/icehelp.cc:1209
+#: src/icehelp.cc:1210
 msgid "Contents"
 msgstr "내용"
 
-#: src/icehelp.cc:1210
+#: src/icehelp.cc:1211
 msgid "Index"
 msgstr "색인"
 
-#: src/icehelp.cc:1213 src/icesame.cc:62 src/iceview.cc:74 src/wmtitle.cc:99
+#: src/icehelp.cc:1214 src/icesame.cc:62 src/iceview.cc:74 src/wmtitle.cc:99
 msgid "Close"
 msgstr "닫기"
 
-#: src/icehelp.cc:1213 src/icesame.cc:62 src/iceview.cc:74
+#: src/icehelp.cc:1214 src/icesame.cc:62 src/iceview.cc:74
 msgid "Ctrl+Q"
 msgstr "Ctrl+Q"
 
-#: src/icehelp.cc:1218
+#: src/icehelp.cc:1219
 msgid "Icewm(1)"
 msgstr "Icewm(1)"
 
-#: src/icehelp.cc:1220
+#: src/icehelp.cc:1221
 msgid "Icewmbg(1)"
 msgstr "Icewmbg(1)"
 
-#: src/icehelp.cc:1222
+#: src/icehelp.cc:1223
 msgid "Icesound(1)"
 msgstr "Icesound(1)"
 
-#: src/icehelp.cc:1224
+#: src/icehelp.cc:1225
 msgid "FAQ"
 msgstr "FAQ"
 
-#: src/icehelp.cc:1226
+#: src/icehelp.cc:1227
 msgid "Manual"
 msgstr "매뉴얼"
 
-#: src/icehelp.cc:1228
+#: src/icehelp.cc:1229
 msgid "Support"
 msgstr "지원"
 
-#: src/icehelp.cc:1230
+#: src/icehelp.cc:1231
 msgid "Theme Howto"
 msgstr "테마 만드는 방법"
 
-#: src/icehelp.cc:1232
+#: src/icehelp.cc:1233
 msgid "Website"
 msgstr "웹 사이트"
 
-#: src/icehelp.cc:1234
+#: src/icehelp.cc:1235
 msgid "Github"
 msgstr "Github"
 
-#: src/icehelp.cc:1936
+#: src/icehelp.cc:1937
 msgid "Unsupported protocol."
 msgstr "프로토콜 지원 안 됨."
 
-#: src/icehelp.cc:1961
+#: src/icehelp.cc:1962
 #, c-format
 msgid "Invalid path: %s\n"
 msgstr "잘못된 경로: %s\n"
 
-#: src/icehelp.cc:1984
+#: src/icehelp.cc:1985
 msgid "Path does not refer to a file."
 msgstr "경로가 파일을 참조하지 않습니다."
 
-#: src/icehelp.cc:1989
+#: src/icehelp.cc:1990
 msgid "Failed to open file for reading."
 msgstr "읽기 위해 파일을 열지 못했습니다."
 
-#: src/icehelp.cc:2018
+#: src/icehelp.cc:2019
 msgid "Failed to create a temporary file"
 msgstr "임시 파일 만들기 실패"
 
-#: src/icehelp.cc:2110
+#: src/icehelp.cc:2111
 #, c-format
 msgid "Failed to execute system(%s) (%d)"
 msgstr "시스템을 실행하지 못했습니다(%s)(%d)."
 
-#: src/icehelp.cc:2133
+#: src/icehelp.cc:2134
 #, c-format
 msgid "Failed to decompress %s"
 msgstr "%s를 압축을 푸는 데 실패"
 
-#: src/icehelp.cc:2141
+#: src/icehelp.cc:2142
 msgid "Could not locate curl or wget in PATH"
 msgstr "PATH에서 curl 또는 wget을 찾을 수 없습니다."
 
-#: src/icehelp.cc:2145
+#: src/icehelp.cc:2146
 msgid "Unsafe characters in URL"
 msgstr "URL의 안전하지 않은 문자"
 
-#: src/icehelp.cc:2182
+#: src/icehelp.cc:2183
 #, c-format
 msgid ""
 "Usage: %s [OPTIONS] [ FILENAME | URL ]\n"
@@ -515,7 +509,7 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: src/icehelp.cc:2259
+#: src/icehelp.cc:2260
 #, c-format
 msgid "Ignoring option '%s'"
 msgstr "옵션 '%s' 무시"
@@ -560,186 +554,61 @@ msgstr "Ctrl+R"
 msgid "Same Game"
 msgstr "같은 게임"
 
-#: src/icesh.cc:191
-#, c-format
-msgid "Action `%s' requires at least %d arguments."
-msgstr "`%s' 동작은 최소 %d 개의 인수를 요구한다."
+#: src/icesh.cc:58
+msgid "For help please consult the man page icesh(1).\n"
+msgstr ""
 
-#: src/icesh.cc:198
-#, c-format
-msgid "Invalid expression: `%s'"
-msgstr "잘못된 표현: `%s'"
-
-#: src/icesh.cc:319
+#: src/icesh.cc:890
 #, c-format
 msgid "Named symbols of the domain `%s' (numeric range: %ld-%ld):\n"
 msgstr "`%s' 도메인의 지명된 심볼들 (숫자 범위: %ld-%ld):\n"
 
-#: src/icesh.cc:435
+#: src/icesh.cc:1025
 #, c-format
 msgid "Invalid workspace name: `%s'"
 msgstr "잘못된 작업공간 이름: `%s'"
 
-#: src/icesh.cc:440
+#: src/icesh.cc:1028
 #, c-format
 msgid "Workspace out of range: %ld"
 msgstr "범위 밖의 작업공간: %ld"
 
-#: src/icesh.cc:605
-#, c-format
-msgid ""
-"Usage: %s [OPTIONS] ACTIONS\n"
-"\n"
-"Options:\n"
-"  -d, -display DISPLAY        Connects to the X server specified by "
-"DISPLAY.\n"
-"                              Default: $DISPLAY or :0.0 when not set.\n"
-"  -w, -window WINDOW_ID       Specifies the window to manipulate. Special\n"
-"                              identifiers are `root' for the root window "
-"and\n"
-"                              `focus' for the currently focused window.\n"
-"  -c, -class WM_CLASS         Window management class of the window(s) to\n"
-"                              manipulate. If WM_CLASS contains a period, "
-"only\n"
-"                              windows with exactly the same WM_CLASS "
-"property\n"
-"                              are matched. If there is no period, windows "
-"of\n"
-"                              the same class and windows of the same "
-"instance\n"
-"                              (aka. `-name') are selected.\n"
-"\n"
-"Actions:\n"
-"  setIconTitle   TITLE        Set the icon title.\n"
-"  setWindowTitle TITLE        Set the window title.\n"
-"  setGeometry    geometry     Set the window geometry\n"
-"  setState       MASK STATE   Set the GNOME window state to STATE.\n"
-"                              Only the bits selected by MASK are affected.\n"
-"                              STATE and MASK are expressions of the domain\n"
-"                              `GNOME window state'.\n"
-"  toggleState    STATE        Toggle the GNOME window state bits specified "
-"by\n"
-"                              the STATE expression.\n"
-"  setHints       HINTS        Set the GNOME window hints to HINTS.\n"
-"  setLayer       LAYER        Moves the window to another GNOME window "
-"layer.\n"
-"  setWorkspace   WORKSPACE    Moves the window to another workspace. Select\n"
-"                              the root window to change the current "
-"workspace.\n"
-"                              Select 0xFFFFFFFF or \"All\" for all "
-"workspaces.\n"
-"  listWorkspaces              Lists the names of all workspaces.\n"
-"  setTrayOption  TRAYOPTION   Set the IceWM tray option hint.\n"
-"  logout                      Tell IceWM to logout.\n"
-"  reboot                      Tell IceWM to reboot.\n"
-"  shutdown                    Tell IceWM to shutdown.\n"
-"  cancel                      Tell IceWM to cancel the logout/reboot/"
-"shutdown.\n"
-"  about                       Tell IceWM to show the about window.\n"
-"  windowlist                  Tell IceWM to show the window list.\n"
-"  restart                     Tell IceWM to restart.\n"
-"  suspend                     Tell IceWM to suspend.\n"
-"\n"
-"Expressions:\n"
-"  Expressions are list of symbols of one domain concatenated by `+' or `|':\n"
-"\n"
-"  EXPRESSION ::= SYMBOL | EXPRESSION ( `+' | `|' ) SYMBOL\n"
-"\n"
-msgstr ""
-"사용법: %s [옵션] 동작\n"
-"\n"
-"옵션:\n"
-"  -display DISPLAY            DISPLAY로 지정한 X 서버로 연결.\n"
-"                              기본값: $DISPLAY 혹은 정하지 않았을 때: 0.0\n"
-"  -window WINDOW_ID           조작할 창을 지정한다. 특별한 식별명으론\n"
-"                              루트 창에 대한 `root'가 있다. 그리고\n"
-"                              현재 초점이 있는 창에 대한 `focus'가 있다.\n"
-"  -class WM_CLASS             조작할 창(들)의 창 관리 클래스.\n"
-"                              WM_CLASS가 마침표를 포함하고 있으면,\n"
-"                              똑같은 WM_CLASS 속성의 창들만 맞춘다.\n"
-"                              만일 마침표가 없으면, 같은 클래스의\n"
-"                              창과 같은 instance의 창이\n"
-"                              (aka. `-name') 선택된다.\n"
-"\n"
-"동작:\n"
-"  setIconTitle   TITLE        아이콘 타이틀을 정한다.\n"
-"  setWindowTitle TITLE        창 타이틀을 정한다.\n"
-"  setGeometry    geometry     창의 크기와 위치를 정한다.\n"
-"  setState       MASK STATE   GNOME 창 상태를 STATE로 정한다.\n"
-"                              MASK로 선택한 비트만 영향을 받는다.\n"
-"                              STATE와 MASK는 `GNOME window state'\n"
-"                              도메인의 표현식이다.\n"
-"  toggleState    STATE        STATE 표현식으로 지정한\n"
-"                              GNOME 창 상태 비트를 토글한다.\n"
-"  setHints       HINTS        GNOME 창 힌트를 HINTS로 정한다.\n"
-"  setLayer       LAYER        창을 다른 GNOME 창 레이어로 옮긴다.\n"
-"  setWorkspace   WORKSPACE    창을 다른 작업공간으로 옮긴다. 현재\n"
-"                              작업공간을 바꾸기 위해선 루트 창을 선택한다.\n"
-"                              모든 작업공간에 대해 0xFFFFFFFF 또는 \"모두"
-"\"를 선택한다.\n"
-"  listWorkspaces              모든 작업공간의 이름을 나열한다.\n"
-"  setTrayOption  TRAYOPTION   IceWM 트레이 옵션 힌트를 설정한다.\n"
-"  logout                      IceWM에 로그아웃하라고 말한다.\n"
-"  reboot                      IceWM에 재부팅하라고 말한다.\n"
-"  shutdown                    IceWM에 종료하라고 말한다.\n"
-"  cancel                      IceWM에 로그아웃/재부팅/종료를 취소하라고 말한"
-"다.\n"
-"  about                        IceWM에 창에 대해 표시하라고 말한다.\n"
-"  windowlist                  IceWM에 창 목록을 표시하라고 말한다.\n"
-"  restart                     IceWM에 다시 시작하라고 말한다.\n"
-"  suspend                     IceWM에 일시 중단하라고 말한다.\n"
-"\n"
-"표현식:\n"
-"  표현식은 한 도메인의 심볼을 `+'나 `|'로 연결한 리스트이다.\n"
-"\n"
-"  표현식 ::= 심볼 | 표현식 ( `+' | `|' ) 심볼\n"
-"\n"
-
-#: src/icesh.cc:653
-msgid "GNOME window state"
-msgstr "GNOME 창 상태"
-
-#: src/icesh.cc:654
-msgid "GNOME window hint"
-msgstr "GNOME 창 힌트"
-
-#: src/icesh.cc:655
-msgid "GNOME window layer"
-msgstr "GNOME 창 레이어"
-
-#: src/icesh.cc:656
-msgid "IceWM tray option"
-msgstr "IceWM 트레이 옵션"
-
-#: src/icesh.cc:661
-msgid "Usage error: "
-msgstr "사용법 오류: "
-
-#: src/icesh.cc:747
-#, c-format
-msgid "Invalid argument: `%s'."
-msgstr "잘못된 인수: `%s'."
-
-#: src/icesh.cc:753
-msgid "No actions specified."
-msgstr "아무 동작도 지정하지 않음."
-
-#: src/icesh.cc:760 src/icesound.cc:945 src/icewmhint.cc:36 src/yxapp.cc:925
-#, c-format
-msgid "Can't open display: %s. X must be running and $DISPLAY set."
-msgstr "디스플레이를 열지 못함: %s. X 실행 중여야 하고 $DISPLAY 정해야 함."
-
-#: src/icesh.cc:801
-#, c-format
-msgid "Invalid window identifier: `%s'"
-msgstr "잘못된 창 식별명: `%s'"
-
-#: src/icesh.cc:955
+#: src/icesh.cc:1180
 #, c-format
 msgid "workspace #%d: `%s'\n"
 msgstr "작업공간 #%d: `%s'\n"
 
-#: src/icesh.cc:974
+#: src/icesh.cc:1827
+#, c-format
+msgid "Action `%s' requires at least %d arguments."
+msgstr "`%s' 동작은 최소 %d 개의 인수를 요구한다."
+
+#: src/icesh.cc:1837
+#, c-format
+msgid "Invalid expression: `%s'"
+msgstr "잘못된 표현: `%s'"
+
+#: src/icesh.cc:1848 src/icesound.cc:795 src/icewmhint.cc:36 src/yxapp.cc:930
+#, c-format
+msgid "Can't open display: %s. X must be running and $DISPLAY set."
+msgstr "디스플레이를 열지 못함: %s. X 실행 중여야 하고 $DISPLAY 정해야 함."
+
+#: src/icesh.cc:1861
+#, fuzzy, c-format
+#| msgid "Invalid argument: `%s'."
+msgid "Invalid argument: `%s'"
+msgstr "잘못된 인수: `%s'."
+
+#: src/icesh.cc:1898
+msgid "No actions specified."
+msgstr "아무 동작도 지정하지 않음."
+
+#: src/icesh.cc:2023
+#, c-format
+msgid "Invalid window identifier: `%s'"
+msgstr "잘못된 창 식별명: `%s'"
+
+#: src/icesh.cc:2438
 #, c-format
 msgid "Unknown action: `%s'"
 msgstr "알 수 없는 동작: `%s'"
@@ -804,99 +673,131 @@ msgstr ""
 msgid "IceWM crash response"
 msgstr "IceWM 충돌 응답"
 
-#: src/icesound.cc:219 src/icesound.cc:327 src/icesound.cc:631
+#: src/icesound.cc:216 src/icesound.cc:324 src/icesound.cc:484
 #, c-format
 msgid "Playing sample #%d (%s)"
 msgstr "#%d (%s) 샘플 연주"
 
-#: src/icesound.cc:337
+#: src/icesound.cc:334
 #, c-format
 msgid "%s: Invalid number of channels"
 msgstr "%s: 채널 수가 잘못됨"
 
-#: src/icesound.cc:343 src/icesound.cc:348
+#: src/icesound.cc:340 src/icesound.cc:345
 msgid "Could not set OSS channels"
 msgstr "OSS 채널을 설정할 수 없습니다."
 
-#: src/icesound.cc:353 src/icesound.cc:381
+#: src/icesound.cc:350 src/icesound.cc:378
 msgid "Could not sync OSS"
 msgstr "OSS를 동기화할 수 없습니다."
 
-#: src/icesound.cc:365
+#: src/icesound.cc:362
 msgid "OSS write failed"
 msgstr "OSS 쓰기에 실패했습니다."
 
-#: src/icesound.cc:369
+#: src/icesound.cc:366
 #, c-format
 msgid "OSS incomplete write (%d/%d)"
 msgstr "OSS 완료되지 않은 쓰기(%d/%d)"
 
-#: src/icesound.cc:376
+#: src/icesound.cc:373
 msgid "Could not post OSS"
 msgstr "OSS를 게시할 수 없음"
 
-#: src/icesound.cc:405
+#: src/icesound.cc:402
 #, c-format
 msgid "Could not open OSS device %s"
 msgstr "OSS 장치%s을(를) 열 수 없음"
 
-#: src/icesound.cc:410
+#: src/icesound.cc:407
 msgid "Could not set OSS stereo"
 msgstr "OSS 스테레오를 설정할 수 없음"
 
-#: src/icesound.cc:415
+#: src/icesound.cc:412
 msgid "Could not reset OSS DSP"
 msgstr "OSS DSP를 재설정할 수 없음"
 
-#: src/icesound.cc:420
+#: src/icesound.cc:417
 msgid "Could not set OSS format"
 msgstr "OSS 형식을 설정할 수 없음"
 
-#: src/icesound.cc:493
-#, c-format
-msgid "Can't connect to ESound daemon: %s"
-msgstr "사운드 데몬에 연결 못함: %s"
-
-#: src/icesound.cc:494 src/icewmhint.cc:38 src/yxapp.cc:926
-msgid "<none>"
-msgstr "<none>"
-
-#: src/icesound.cc:512
-#, c-format
-msgid "Error <%d> while uploading `%s:%s'"
-msgstr "중 <%d> 오류 `%s:%s'를 업로드"
-
-#: src/icesound.cc:518
-#, c-format
-msgid "Sample <%d> uploaded as `%s:%s'"
-msgstr "샘플 <%d>를 `%s:%s'로 업로드"
-
-#: src/icesound.cc:576
-#, c-format
-msgid "Playing sample #%d: %d"
-msgstr "샘플 #%d 연주: %d"
-
-#: src/icesound.cc:651
+#: src/icesound.cc:504
 #, c-format
 msgid "ao_open_live failed with %d"
 msgstr "ao_open_live가 %d(으)로 실패했습니다."
 
-#: src/icesound.cc:662
+#: src/icesound.cc:515
 msgid "ao_play failed"
 msgstr "ao_play가 실패했습니다."
 
-#: src/icesound.cc:824
+#: src/icesound.cc:677
 #, c-format
 msgid "Unrecognized option: %s\n"
 msgstr "알아볼 수 없는 옵션: %s\n"
 
-#: src/icesound.cc:827 src/icesound.cc:1130
+#: src/icesound.cc:680 src/icesound.cc:973
 #, c-format
 msgid "Unrecognized argument: %s\n"
 msgstr "알아볼 수 없는 인수: %s\n"
 
-#: src/icesound.cc:836
-#, c-format
+#: src/icesound.cc:689
+#, fuzzy, c-format
+#| msgid ""
+#| "Usage: %s [OPTION]...\n"
+#| "\n"
+#| "Plays audio files on GUI events raised by IceWM.\n"
+#| "The currently configured sound interfaces are: %s.\n"
+#| "Icesound will choose the first of these which is usable.\n"
+#| "\n"
+#| "Options:\n"
+#| "\n"
+#| " -d, --display=DISPLAY   X11 display used by IceWM (default: $DISPLAY).\n"
+#| "\n"
+#| " -s, --sample-dir=DIR    Specifies a directory with sound files.\n"
+#| "                         Default is $HOME/.config/icewm/sounds.\n"
+#| "\n"
+#| " -i, --interface=LIST    Specifies audio output interfaces. One or more "
+#| "of:\n"
+#| "                         %s separated by commas.\n"
+#| "\n"
+#| " -D, --device=DEVICE     Backwards compatibility only: the default "
+#| "device. \n"
+#| "                         Please prefer one of the -A/-O/-S options.\n"
+#| "\n"
+#| " -O, --oss=DEVICE        Specifies the OSS device (default: \"%s\").\n"
+#| "\n"
+#| " -A, --alsa=DEVICE       Specifies the ALSA device (default: \"%s\").\n"
+#| "\n"
+#| " -S, --server=ADDR:PORT  Specifies the ESD server address and port "
+#| "number.\n"
+#| "                         For ESD the default is \"localhost:16001\".\n"
+#| "\n"
+#| " -z, --snooze=millisecs  Specifies the snooze interval between sound "
+#| "events\n"
+#| "                         in milliseconds. Default is 500 milliseconds.\n"
+#| "\n"
+#| " -p, --play=sound        Plays the given sound (name or number) and "
+#| "exits.\n"
+#| "\n"
+#| " -l, --list-files        Lists the available sound file paths and exits.\n"
+#| "\n"
+#| "     --list-sounds       Lists the supported sound filenames and exits.\n"
+#| "\n"
+#| "     --list-interfaces   Lists the supported audio interfaces and exits.\n"
+#| "\n"
+#| " -v, --verbose           Be verbose and print out each sound event.\n"
+#| "\n"
+#| " -V, --version           Prints version information and exits.\n"
+#| "\n"
+#| " -h, --help              Prints this help screen and exits.\n"
+#| "\n"
+#| "Return values:\n"
+#| "\n"
+#| "  0    Success.\n"
+#| "  1    General error.\n"
+#| "  2    Command line error.\n"
+#| "  3    Subsystems error (ie cannot connect to server).\n"
+#| "\n"
 msgid ""
 "Usage: %s [OPTION]...\n"
 "\n"
@@ -920,9 +821,6 @@ msgid ""
 " -O, --oss=DEVICE        Specifies the OSS device (default: \"%s\").\n"
 "\n"
 " -A, --alsa=DEVICE       Specifies the ALSA device (default: \"%s\").\n"
-"\n"
-" -S, --server=ADDR:PORT  Specifies the ESD server address and port number.\n"
-"                         For ESD the default is \"localhost:16001\".\n"
 "\n"
 " -z, --snooze=millisecs  Specifies the snooze interval between sound events\n"
 "                         in milliseconds. Default is 500 milliseconds.\n"
@@ -1005,51 +903,51 @@ msgstr ""
 "  3     하위 시스템 오류(예: 서버에 연결할 수 없음).\n"
 "\n"
 
-#: src/icesound.cc:930
+#: src/icesound.cc:780
 #, c-format
 msgid "No audio for %s"
 msgstr "%s에 대한 오디오 없음"
 
-#: src/icesound.cc:1007
+#: src/icesound.cc:857
 msgid "Could not get GUI event property"
 msgstr "GUI 이벤트 속성을 가져올 수 없음"
 
-#: src/icesound.cc:1011
+#: src/icesound.cc:861
 #, c-format
 msgid "Received invalid GUI event %d"
 msgstr "잘못된 GUI 이벤트 %d을(를) 수신함"
 
-#: src/icesound.cc:1015
+#: src/icesound.cc:865
 #, c-format
 msgid "Received GUI event %s"
 msgstr "GUI 이벤트 %s을(를) 수신함"
 
-#: src/icesound.cc:1029
+#: src/icesound.cc:879
 #, c-format
 msgid "Too quick; ignoring %s."
 msgstr "너무 빠릅니다. %s을(를) 무시합니다."
 
-#: src/icesound.cc:1033
+#: src/icesound.cc:883
 #, c-format
 msgid "Support for the %s interface not compiled."
 msgstr "%s 인터페이스 지원이 컴파일 안 되었음."
 
-#: src/icesound.cc:1073
+#: src/icesound.cc:916
 #, c-format
 msgid "Unsupported interface: %s."
 msgstr "%s: 인터페이스 지원 안 됨."
 
-#: src/icesound.cc:1082
+#: src/icesound.cc:925
 #, c-format
 msgid "Using %s audio."
 msgstr "%s 오디오를 사용하는 중입니다."
 
-#: src/icesound.cc:1086
+#: src/icesound.cc:929
 #, c-format
 msgid "Failed to connect to audio interfaces %s."
 msgstr "오디오 인터페이스 %s에 연결하지 못했습니다."
 
-#: src/icesound.cc:1098
+#: src/icesound.cc:941
 #, c-format
 msgid "Received signal %s: Terminating..."
 msgstr "신호 %s을(를) 수신: 종료 중..."
@@ -1099,52 +997,7 @@ msgstr "Ctrl+W"
 msgid "Failed to load image '%s'."
 msgstr "이미지 '%s'을(를) 로드하지 못했습니다."
 
-#: src/icewmbg.cc:843
-#, fuzzy
-#| msgid ""
-#| "Usage: icewmbg [OPTIONS]\n"
-#| "Where multiple values can be given they are separated by commas.\n"
-#| "When image is a directory then all images from that directory are used.\n"
-#| "\n"
-#| "Options:\n"
-#| "  -p, --replace        Replace an existing icewmbg.\n"
-#| "  -q, --quit           Tell the running icewmbg to quit.\n"
-#| "  -r, --restart        Tell the running icewmbg to restart itself.\n"
-#| "\n"
-#| "  -c, --config=FILE    Load preferences from FILE.\n"
-#| "  -t, --theme=NAME     Load the theme with name NAME.\n"
-#| "\n"
-#| "  -i, --image=FILE(S)  Load background image(s) from FILE(S).\n"
-#| "  -k, --color=NAME(S)  Use background color(s) from NAME(S).\n"
-#| "\n"
-#| "  -s, --semis=FILE(S)  Load transparency image(s) from FILE(S).\n"
-#| "  -x, --trans=NAME(S)  Use transparency color(s) from NAME(S).\n"
-#| "\n"
-#| "  -e, --center=0/1     Disable/Enable centering background.\n"
-#| "  -a, --scaled=0/1     Disable/Enable scaling background.\n"
-#| "  -m, --multi=0/1      Disable/Enable multihead background.\n"
-#| "\n"
-#| "  --display=NAME       Use NAME to connect to the X server.\n"
-#| "  --sync               Synchronize communication with X11 server.\n"
-#| "\n"
-#| "  -h, --help           Print this usage screen and exit.\n"
-#| "  -V, --version        Prints version information and exits.\n"
-#| "\n"
-#| "Loads desktop background according to preferences file:\n"
-#| " DesktopBackgroundCenter  - Display desktop background centered\n"
-#| " DesktopBackgroundScaled  - Display desktop background scaled\n"
-#| " DesktopBackgroundColor   - Desktop background color(s)\n"
-#| " DesktopBackgroundImage   - Desktop background image(s)\n"
-#| " SupportSemitransparency  - Support for semitransparent terminals\n"
-#| " DesktopTransparencyColor - Semitransparency background color(s)\n"
-#| " DesktopTransparencyImage - Semitransparency background image(s)\n"
-#| " DesktopBackgroundMultihead - One background over all monitors\n"
-#| "\n"
-#| " center:0 scaled:0 = tiled\n"
-#| " center:1 scaled:0 = centered\n"
-#| " center:1 scaled:1 = fill one dimension and keep aspect ratio\n"
-#| " center:0 scaled:1 = fill both dimensions and keep aspect ratio\n"
-#| "\n"
+#: src/icewmbg.cc:885
 msgid ""
 "Usage: icewmbg [OPTIONS]\n"
 "Where multiple values can be given they are separated by commas.\n"
@@ -1202,6 +1055,7 @@ msgstr ""
 "  -p, --replace        기존 icewmbg를 바꿉니다.\n"
 "  -q, --quit           실행중인 icewmbg에 종료할 것을 지시합니다.\n"
 "  -r, --restart        실행중인 icewmbg에 다시 시작하도록 지시합니다.\n"
+"  -u, --shuffle       배경 이미지 목록 순서를 섞거나 다시 섞습니다.\n"
 "\n"
 "  -c, --config=FILE    FILE 환경 설정을 로드합니다.\n"
 "  -t, --theme=NAME     이름이 NAME인 테마를 로드합니다.\n"
@@ -1215,6 +1069,7 @@ msgstr ""
 "  -e, --center=0/1     센터링 배경을 비활성화/활성화합니다.\n"
 "  -a, --scaled=0/1     크기 조정 배경을 비활성화/활성화합니다.\n"
 "  -m, --multi=0/1      멀티 헤드 배경을 비활성화/활성화합니다.\n"
+"  -y, --cycle=SECONDS  SECONDS마다 배경을 순환합니다.\n"
 "\n"
 "  --display=NAME       NAME을 사용하여 X 서버에 연결합니다.\n"
 "  --sync               X11 서버와 통신을 동기화합니다.\n"
@@ -1227,10 +1082,12 @@ msgstr ""
 " DesktopBackgroundScaled  - 바탕 화면 배율 표시\n"
 " DesktopBackgroundColor   - 바탕 화면 배경색\n"
 " DesktopBackgroundImage   - 바탕 화면 배경 이미지\n"
+" ShuffleBackgroundImages  - 배경 이미지 목록의 순서 섞기\n"
 " SupportSemitransparency  - 반투명 터미널 지원\n"
 " DesktopTransparencyColor - 반투명 배경색\n"
 " DesktopTransparencyImage - 반투명 배경 이미지\n"
 " DesktopBackgroundMultihead - 모든 모니터에 대한 배경 정보\n"
+" CycleBackgroundsPeriod   - 배경 순환 사이 시간(초)\n"
 "\n"
 " 가운데: 0 배율: 0 = 바둑판형\n"
 " 가운데: 1 눈금: 0 = 중심\n"
@@ -1238,24 +1095,24 @@ msgstr ""
 " 가운데: 0 배율: 1 = 2차원 채우기 및 가로세로비 유지형\n"
 "\n"
 
-#: src/icewmbg.cc:1057
+#: src/icewmbg.cc:1100
 msgid "Cannot start, because another icewmbg is still running."
 msgstr "다른 icewmbg가 여전히 실행 중이므로 시작할 수 없습니다."
 
-#: src/icewmhint.cc:23
+#: src/icewmhint.cc:19
 msgid "Usage: icewmhint class.instance option arg\n"
 msgstr "사용법: icewmhint class.instance option arg\n"
 
-#: src/icewmhint.cc:57
+#: src/icewmhint.cc:56
 #, c-format
 msgid "Out of memory (len=%d)."
 msgstr "메모리 부족 (len=%d)."
 
-#: src/misc.cc:466 src/misc.cc:478
+#: src/misc.cc:469 src/misc.cc:481
 msgid "Warning: "
 msgstr "경고: "
 
-#: src/misc.cc:754
+#: src/misc.cc:757
 #, c-format
 msgid ""
 "Usage: %s [OPTIONS]\n"
@@ -1356,7 +1213,7 @@ msgstr "끄기(_D)"
 #. TRANSLATORS: This means "energy saving mode" or "suspended system". Not "interrupt". Not "hibernate".
 #: src/wmapp.cc:520 src/wmdialog.cc:75
 msgid "_Sleep mode"
-msgstr ""
+msgstr "절전 모드(_S)"
 
 #: src/wmapp.cc:525
 msgid "Restart _Icewm"
@@ -1394,7 +1251,7 @@ msgstr "아래(_B)"
 msgid "D_esktop"
 msgstr "바탕화면(_E)"
 
-#: src/wmapp.cc:571 src/wmwinlist.cc:305
+#: src/wmapp.cc:571 src/wmwinlist.cc:349
 msgid "_Restore"
 msgstr "원래 크기로(_R)"
 
@@ -1406,71 +1263,79 @@ msgstr "옮기기(_M)"
 msgid "_Size"
 msgstr "크기 조절(_S)"
 
-#: src/wmapp.cc:577 src/wmwinlist.cc:306
+#: src/wmapp.cc:577 src/wmwinlist.cc:350
 msgid "Mi_nimize"
 msgstr "최소화(_N)"
 
-#: src/wmapp.cc:579 src/wmwinlist.cc:307
+#: src/wmapp.cc:579 src/wmwinlist.cc:351
 msgid "Ma_ximize"
 msgstr "최대화(_X)"
 
-#: src/wmapp.cc:581 src/wmwinlist.cc:308
+#: src/wmapp.cc:580 src/wmwinlist.cc:352
+msgid "Maximize_Vert"
+msgstr "Maximize_Vert"
+
+#: src/wmapp.cc:581
+msgid "MaximizeHori_z"
+msgstr "MaximizeHori_z"
+
+#: src/wmapp.cc:584 src/wmwinlist.cc:353
 msgid "_Fullscreen"
 msgstr "화면 채우기(_F)"
 
-#: src/wmapp.cc:584 src/wmwinlist.cc:310
+#: src/wmapp.cc:587 src/wmwinlist.cc:355
 msgid "_Hide"
 msgstr "숨기기(_H)"
 
-#: src/wmapp.cc:586 src/wmwinlist.cc:311
+#: src/wmapp.cc:589 src/wmwinlist.cc:356
 msgid "Roll_up"
 msgstr "말아올리기(_U)"
 
-#: src/wmapp.cc:593
+#: src/wmapp.cc:596
 msgid "R_aise"
 msgstr "앞으로(_A)"
 
-#: src/wmapp.cc:595 src/wmwinlist.cc:313
+#: src/wmapp.cc:598 src/wmwinlist.cc:358
 msgid "_Lower"
 msgstr "뒤로(_L)"
 
-#: src/wmapp.cc:597
+#: src/wmapp.cc:600
 msgid "La_yer"
 msgstr "레이어(_Y)"
 
-#: src/wmapp.cc:601 src/wmwinlist.cc:315
+#: src/wmapp.cc:604 src/wmwinlist.cc:360
 msgid "Move _To"
 msgstr "보내기(_T)"
 
-#: src/wmapp.cc:602 src/wmwinlist.cc:316
+#: src/wmapp.cc:605 src/wmwinlist.cc:361
 msgid "Occupy _All"
 msgstr "모든 작업공간(_A)"
 
-#: src/wmapp.cc:608
+#: src/wmapp.cc:611
 msgid "Limit _Workarea"
 msgstr "작업영역 제한(_W)"
 
-#: src/wmapp.cc:612 src/wmwinlist.cc:317
+#: src/wmapp.cc:615 src/wmwinlist.cc:362
 msgid "Tray _icon"
 msgstr "트레이 아이콘(_I)"
 
-#: src/wmapp.cc:617 src/wmwinlist.cc:295 src/wmwinlist.cc:328
+#: src/wmapp.cc:620 src/wmwinlist.cc:339 src/wmwinlist.cc:373
 msgid "_Close"
 msgstr "닫기(_C)"
 
-#: src/wmapp.cc:619 src/wmwinlist.cc:297
+#: src/wmapp.cc:622 src/wmwinlist.cc:341
 msgid "_Kill Client"
 msgstr "죽이기(_K)"
 
-#: src/wmapp.cc:622 src/wmdialog.cc:80 src/wmwinmenu.cc:131
+#: src/wmapp.cc:625 src/wmdialog.cc:80 src/wmwinmenu.cc:131
 msgid "_Window list"
 msgstr "창 목록(_W)"
 
-#: src/wmapp.cc:636
+#: src/wmapp.cc:639
 msgid "Another window manager already running, exiting..."
 msgstr "다른 창 관리자 이미 실행 중, 나감..."
 
-#: src/wmapp.cc:721
+#: src/wmapp.cc:724
 #, c-format
 msgid ""
 "Could not restart: %s\n"
@@ -1479,17 +1344,17 @@ msgstr ""
 "다시 시작 못함: %s\n"
 "$PATH가 %s를 가리키는가?"
 
-#: src/wmapp.cc:842
+#: src/wmapp.cc:849
 msgid "Kill IceWM, replace with Xterm"
 msgstr "IceWM 종료, Xterm으로 바꾸기"
 
-#: src/wmapp.cc:1382
+#: src/wmapp.cc:1397
 msgid ""
 "  --client-id=ID      Client id to use when contacting session manager.\n"
 msgstr ""
 "  --client-id=ID      세션 관리자에게 문의할 때 사용할 클라이언트 ID입니다.\n"
 
-#: src/wmapp.cc:1388
+#: src/wmapp.cc:1403
 msgid ""
 "\n"
 "  --debug             Print generic debug messages.\n"
@@ -1499,7 +1364,7 @@ msgstr ""
 "  --debug             일반 디버그 메시지를 인쇄합니다.\n"
 "  --debug-z           창 스택 관련 디버그 메시지를 인쇄합니다.\n"
 
-#: src/wmapp.cc:1396
+#: src/wmapp.cc:1411
 msgid ""
 "\n"
 "  -c, --config=FILE   Load preferences from FILE.\n"
@@ -1511,7 +1376,7 @@ msgstr ""
 "  -t, --theme=FILE    FILE에서 테마를 로드합니다.\n"
 "  --postpreferences   모든 처리 후 기본 설정을 인쇄합니다.\n"
 
-#: src/wmapp.cc:1401
+#: src/wmapp.cc:1416
 #, c-format
 msgid ""
 "Usage: %s [OPTIONS]\n"
@@ -1570,26 +1435,26 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: src/wmapp.cc:1462
+#: src/wmapp.cc:1477
 #, c-format
 msgid "%s configuration directories:\n"
 msgstr "%s 구성 디렉터리:\n"
 
-#: src/wmapp.cc:1547
+#: src/wmapp.cc:1562
 #, c-format
 msgid "%s configured options:%s\n"
 msgstr "%s 구성된 옵션: %s\n"
 
-#: src/wmapp.cc:1599
+#: src/wmapp.cc:1615
 #, c-format
 msgid "Unrecognized option '%s'."
 msgstr "알아볼 수 없는 옵션: '%s'"
 
-#: src/wmapp.cc:1631
+#: src/wmapp.cc:1661
 msgid "Confirm Logout"
 msgstr "종료 확인"
 
-#: src/wmapp.cc:1632
+#: src/wmapp.cc:1662
 msgid ""
 "Logout will close all active applications.\n"
 "Proceed?"
@@ -1602,22 +1467,22 @@ msgstr ""
 msgid "Failed to load theme %s"
 msgstr "테마 %s을(를) 로드하지 못함"
 
-#: src/wmconfig.cc:103
+#: src/wmconfig.cc:104
 #, c-format
 msgid "Unknown value '%s' for option '%s'."
 msgstr "'%s' 옵션에 대한 알 수 없는 값 '%s'"
 
-#: src/wmconfig.cc:111
+#: src/wmconfig.cc:112
 #, c-format
 msgid "Unable to create directory %s"
 msgstr "디렉토리 %s을(를) 만들 수 없음"
 
-#: src/wmconfig.cc:138 src/wmprog.cc:558 src/wmprog.cc:680 src/wmprog.cc:684
+#: src/wmconfig.cc:139 src/wmprog.cc:564 src/wmprog.cc:686 src/wmprog.cc:690
 #, c-format
 msgid "Unable to write to %s"
 msgstr "%s에 쓸 수 없음"
 
-#: src/wmconfig.cc:165 src/wmprog.cc:688
+#: src/wmconfig.cc:166 src/wmprog.cc:694
 #, c-format
 msgid "Unable to rename %s to %s"
 msgstr "이름을 %s에서 %s(으)로 바꿀 수 없음"
@@ -1630,8 +1495,8 @@ msgstr "작업공간 잠금(_k)"
 msgid "_Cancel"
 msgstr "취소(_C)"
 
-#: src/wmdialog.cc:77 src/wmprog.cc:838 src/wmprog.cc:840 src/wmtaskbar.cc:292
-#: src/wmtaskbar.cc:294
+#: src/wmdialog.cc:77 src/wmprog.cc:844 src/wmprog.cc:846 src/wmtaskbar.cc:301
+#: src/wmtaskbar.cc:303
 msgid "_Logout..."
 msgstr "로그아웃(_L)..."
 
@@ -1639,16 +1504,16 @@ msgstr "로그아웃(_L)..."
 msgid "_Restart icewm"
 msgstr "icewm 다시 시작(_R)"
 
-#: src/wmdialog.cc:82 src/wmprog.cc:799 src/wmtaskbar.cc:285
-#: src/wmtaskbar.cc:288
+#: src/wmdialog.cc:82 src/wmprog.cc:805 src/wmtaskbar.cc:294
+#: src/wmtaskbar.cc:297
 msgid "_About"
 msgstr "정보(_A)"
 
-#: src/wmframe.cc:1409
+#: src/wmframe.cc:1394
 msgid "Kill Client: "
 msgstr "클라이언트 죽이기: "
 
-#: src/wmframe.cc:1416
+#: src/wmframe.cc:1401
 msgid ""
 "WARNING! All unsaved changes will be lost when\n"
 "this client is killed. Do you wish to proceed?"
@@ -1656,107 +1521,105 @@ msgstr ""
 "경고! 이 클라이언트를 죽이면 저장되지 않은\n"
 "변경 사항을 모두 잃어버립니다. 계속할까요?"
 
-#: src/wmframe.cc:3006
+#: src/wmframe.cc:2997
 msgid "Restore"
 msgstr "원래 크기로"
 
-#: src/wmframe.cc:3009 src/wmtitle.cc:69
+#: src/wmframe.cc:3000 src/wmtitle.cc:69
 msgid "Maximize"
 msgstr "최대화"
 
-#: src/wmframe.cc:3039
+#: src/wmframe.cc:3030
 msgid "Rolldown"
 msgstr "말아내리기"
 
-#: src/wmframe.cc:3041 src/wmtitle.cc:127
+#: src/wmframe.cc:3032 src/wmtitle.cc:127
 msgid "Rollup"
 msgstr "말아올리기"
 
-#: src/wmoption.cc:228
+#: src/wmoption.cc:232
 #, c-format
 msgid "Unknown window option: %s"
 msgstr "알 수 없는 창 옵션: %s"
 
-#: src/wmoption.cc:338
+#: src/wmoption.cc:344
 #, c-format
 msgid "Syntax error in window options on line %d of %s"
 msgstr "%d 라인(%s)에 있는 창 옵션 구문 오류"
 
-#: src/wmprog.cc:386
+#: src/wmprog.cc:392
 msgid "_Click to focus"
 msgstr "클릭에 의한 포커스(_C)"
 
-#: src/wmprog.cc:387
+#: src/wmprog.cc:393
 msgid "_Explicit focus"
 msgstr "명확한 포커스(_E)"
 
-#: src/wmprog.cc:388
+#: src/wmprog.cc:394
 msgid "_Sloppy mouse focus"
 msgstr "슬로피 마우스 포커스(_S)"
 
-#: src/wmprog.cc:389
+#: src/wmprog.cc:395
 msgid "S_trict mouse focus"
 msgstr "엄격한 마우스 포커스(_S)"
 
-#: src/wmprog.cc:390
+#: src/wmprog.cc:396
 msgid "_Quiet sloppy focus"
 msgstr "조용한 슬로피 포커스(_Q)"
 
-#: src/wmprog.cc:391
+#: src/wmprog.cc:397
 msgid "Custo_m"
 msgstr "사용자 설정대로(_M)"
 
-#: src/wmprog.cc:478
-#, fuzzy
-#| msgid "Favorite applications"
+#: src/wmprog.cc:484
 msgid "Save Modifications"
-msgstr "즐겨쓰는 프로그램들"
+msgstr "수정 사항 저장"
 
-#: src/wmprog.cc:711
+#: src/wmprog.cc:717
 msgid "_Manual"
 msgstr "매뉴얼(_M)"
 
-#: src/wmprog.cc:712
+#: src/wmprog.cc:718
 msgid "_Icewm(1)"
 msgstr "Icewm(1)(_I)"
 
-#: src/wmprog.cc:713
+#: src/wmprog.cc:719
 msgid "Icewm_Bg(1)"
 msgstr "IcewmBg(1)(_B)"
 
-#: src/wmprog.cc:714
+#: src/wmprog.cc:720
 msgid "Ice_Sound(1)"
 msgstr "IceSound(1)(_S)"
 
-#: src/wmprog.cc:776
+#: src/wmprog.cc:782
 msgid "Programs"
 msgstr "프로그램"
 
-#: src/wmprog.cc:781
+#: src/wmprog.cc:787
 msgid "_Run..."
 msgstr "실행(_R)..."
 
-#: src/wmprog.cc:786 src/wmtaskbar.cc:275
+#: src/wmprog.cc:792 src/wmtaskbar.cc:284
 msgid "_Windows"
 msgstr "창(_W)"
 
-#: src/wmprog.cc:805
+#: src/wmprog.cc:811
 msgid "_Help"
 msgstr "도움말(_H)"
 
-#: src/wmprog.cc:816
+#: src/wmprog.cc:822
 msgid "_Focus"
 msgstr "초점(_F)"
 
-#: src/wmprog.cc:821
+#: src/wmprog.cc:827
 msgid "_Preferences"
 msgstr "_기본 설정"
 
-#: src/wmprog.cc:827
+#: src/wmprog.cc:833
 msgid "_Themes"
 msgstr "모양새(_T)"
 
-#: src/wmprog.cc:832
+#: src/wmprog.cc:838
 msgid "Se_ttings"
 msgstr "설정(_T)"
 
@@ -1765,61 +1628,69 @@ msgstr "설정(_T)"
 msgid "Session Manager: Unknown line %s"
 msgstr "세션 관리자: 알 수 없는 줄 %s"
 
-#: src/wmtaskbar.cc:165 src/wmtaskbar.cc:166
+#: src/wmtaskbar.cc:168 src/wmtaskbar.cc:169
 msgid "Task Bar"
 msgstr "태스크바"
 
-#: src/wmtaskbar.cc:265 src/wmwinlist.cc:319 src/wmwinlist.cc:332
+#: src/wmtaskbar.cc:274 src/wmwinlist.cc:364 src/wmwinlist.cc:377
 msgid "Tile _Vertically"
 msgstr "수직 정렬(_V)"
 
-#: src/wmtaskbar.cc:266 src/wmwinlist.cc:320 src/wmwinlist.cc:333
+#: src/wmtaskbar.cc:275 src/wmwinlist.cc:365 src/wmwinlist.cc:378
 msgid "T_ile Horizontally"
 msgstr "수평 정렬(_I)"
 
-#: src/wmtaskbar.cc:267 src/wmwinlist.cc:321 src/wmwinlist.cc:334
+#: src/wmtaskbar.cc:276 src/wmwinlist.cc:366 src/wmwinlist.cc:379
 msgid "Ca_scade"
 msgstr "계단식 정렬(_S)"
 
-#: src/wmtaskbar.cc:268 src/wmwinlist.cc:322 src/wmwinlist.cc:335
+#: src/wmtaskbar.cc:277 src/wmwinlist.cc:367 src/wmwinlist.cc:380
 msgid "_Arrange"
 msgstr "정렬(_A)"
 
-#: src/wmtaskbar.cc:269 src/wmwinlist.cc:324 src/wmwinlist.cc:336
+#: src/wmtaskbar.cc:278 src/wmwinlist.cc:369 src/wmwinlist.cc:381
 msgid "_Minimize All"
 msgstr "모두 최소화(_M)"
 
-#: src/wmtaskbar.cc:270 src/wmwinlist.cc:325 src/wmwinlist.cc:337
+#: src/wmtaskbar.cc:279 src/wmwinlist.cc:370 src/wmwinlist.cc:382
 msgid "_Hide All"
 msgstr "모두 숨기기(_H)"
 
-#: src/wmtaskbar.cc:271 src/wmwinlist.cc:326 src/wmwinlist.cc:338
+#: src/wmtaskbar.cc:280 src/wmwinlist.cc:371 src/wmwinlist.cc:383
 msgid "_Undo"
 msgstr "실행 취소(_U)"
 
-#: src/wmtaskbar.cc:273
+#: src/wmtaskbar.cc:282
 msgid "Arrange _Icons"
 msgstr "아이콘 정렬(_I)"
 
-#: src/wmtaskbar.cc:277
+#: src/wmtaskbar.cc:286
 msgid "_Refresh"
 msgstr "새롭게(_R)"
 
-#: src/wmtaskbar.cc:283
+#: src/wmtaskbar.cc:292
 msgid "_License"
 msgstr "라이센스(_L)"
 
-#: src/wmtaskbar.cc:364
-msgid "Favorite applications"
-msgstr "즐겨쓰는 프로그램들"
+#: src/wmtaskbar.cc:363 src/wmtaskbar.cc:992
+msgid "Hide Taskbar"
+msgstr "작업 표시줄 숨기기"
 
-#: src/wmtaskbar.cc:382
-msgid "Window list menu"
+#: src/wmtaskbar.cc:378
+msgid "Favorite Applications"
+msgstr "즐겨쓰는 응용 프로그램"
+
+#: src/wmtaskbar.cc:396
+msgid "Window List Menu"
 msgstr "창 목록 메뉴"
 
-#: src/wmtaskbar.cc:391
+#: src/wmtaskbar.cc:405
 msgid "Show Desktop"
 msgstr "바탕화면 보기"
+
+#: src/wmtaskbar.cc:992
+msgid "Show Taskbar"
+msgstr "작업 표시줄 표시"
 
 #: src/wmtitle.cc:85
 msgid "Minimize"
@@ -1833,33 +1704,31 @@ msgstr "숨기기"
 msgid "Raise/Lower"
 msgstr "앞으로/뒤로"
 
-#: src/wmwinlist.cc:59
+#: src/wmwinlist.cc:50
 msgid "All Workspaces"
 msgstr "모든 작업공간"
 
-#: src/wmwinlist.cc:295
+#: src/wmwinlist.cc:339
 msgid "Del"
 msgstr "지우기"
 
-#: src/wmwinlist.cc:299
+#: src/wmwinlist.cc:343
 msgid "_Terminate Process"
 msgstr "프로세스 종결(_T)"
 
-#: src/wmwinlist.cc:300
+#: src/wmwinlist.cc:344
 msgid "Kill _Process"
 msgstr "프로세스 죽이기(_P)"
 
-#: src/wmwinlist.cc:309
+#: src/wmwinlist.cc:354
 msgid "_Show"
 msgstr "보여주기(_S)"
 
-#: src/wmwinlist.cc:312
-#, fuzzy
-#| msgid "R_aise"
+#: src/wmwinlist.cc:357
 msgid "_Raise"
-msgstr "앞으로(_A)"
+msgstr "올리기(_R)"
 
-#: src/wmwinlist.cc:351 src/wmwinlist.cc:352
+#: src/wmwinlist.cc:396 src/wmwinlist.cc:397
 msgid "Window list"
 msgstr "창 목록"
 
@@ -1868,7 +1737,7 @@ msgstr "창 목록"
 msgid "%lu. Workspace %-.32s"
 msgstr "%lu. 작업공간 %-.32s"
 
-#: src/yapp.cc:277
+#: src/yapp.cc:280
 #, c-format
 msgid "%s: select failed"
 msgstr "%s: 선택 실패"
@@ -1879,10 +1748,9 @@ msgid "Unknown key name %s in %s"
 msgstr "알 수 없는 키 이름 %s: %s"
 
 #: src/yconfig.cc:150 src/yconfig.cc:163 src/yconfig.cc:177
-#, fuzzy, c-format
-#| msgid "Bad argument: %s for %s"
+#, c-format
 msgid "Bad argument: %s for %s [%d,%d]"
-msgstr "인수 틀림: %s for %s"
+msgstr "잘못된 인수: %s for %s [%d,%d]"
 
 #: src/yconfig.cc:214
 #, c-format
@@ -1945,43 +1813,43 @@ msgstr "\"%s\" 폰트셋 읽지 못함."
 msgid "Missing codesets for fontset \"%s\":"
 msgstr "\"%s\" 폰트셋에 대한 코드셋 빠짐:"
 
-#: src/yinput.cc:38
+#: src/yinput.cc:39
 msgid "_Copy"
 msgstr "복사(_C)"
 
-#: src/yinput.cc:38
+#: src/yinput.cc:39
 msgid "Ctrl+C"
 msgstr "Ctrl+C"
 
-#: src/yinput.cc:40
+#: src/yinput.cc:41
 msgid "Cu_t"
 msgstr "잘라내기(_T)"
 
-#: src/yinput.cc:40
+#: src/yinput.cc:41
 msgid "Ctrl+X"
 msgstr "Ctrl+X"
 
-#: src/yinput.cc:42
+#: src/yinput.cc:43
 msgid "_Paste"
 msgstr "붙여넣기(_P)"
 
-#: src/yinput.cc:42
+#: src/yinput.cc:43
 msgid "Ctrl+V"
 msgstr "Ctrl+V"
 
-#: src/yinput.cc:44
+#: src/yinput.cc:45
 msgid "Paste _Selection"
 msgstr "선택 내용 붙이기(_S)"
 
-#: src/yinput.cc:44
+#: src/yinput.cc:45
 msgid "Ctrl+P"
 msgstr "Ctrl+P"
 
-#: src/yinput.cc:47
+#: src/yinput.cc:48
 msgid "Select _All"
 msgstr "전체 선택(_A)"
 
-#: src/yinput.cc:47
+#: src/yinput.cc:48
 msgid "Ctrl+A"
 msgstr "Ctrl+A"
 
@@ -2000,7 +1868,7 @@ msgstr "현재 로케일의 코드셋을 결정할 수 없음. ISO-8859-1 가정
 msgid "iconv doesn't supply (sufficient) %s to %s converters."
 msgstr "iconv는 (충분한) %s를 %s 변환기에 공급하지 않는다."
 
-#: src/ylocale.cc:163
+#: src/ylocale.cc:167
 #, c-format
 msgid "Invalid multibyte string \"%s\": %s"
 msgstr "잘못된 멀티바이트 문자열 \"%s\": %s"
@@ -2011,15 +1879,10 @@ msgstr "예(_O)"
 
 #: src/ypaths.cc:95
 #, c-format
-msgid "Out of memory for image %s"
-msgstr "%s 이미지용 메모리 부족"
-
-#: src/ypaths.cc:98
-#, c-format
 msgid "Image not readable: %s"
 msgstr "이미지를 읽을 수 없음: %s"
 
-#: src/ypaths.cc:121
+#: src/ypaths.cc:118
 #, c-format
 msgid "Could not find image %s"
 msgstr "%s 이미지를 찾을 수 없음"
@@ -2043,7 +1906,7 @@ msgstr "%d번째 위치의 URL에서 16진수 이스케이프가 불완전합니
 msgid "Invalid hex escape in URL at position %d."
 msgstr "%d번째 위치의 URL에서 16진수 이스케이프가 잘못되었습니다."
 
-#: src/yxapp.cc:885
+#: src/yxapp.cc:890
 msgid ""
 "  -d, --display=NAME  NAME of the X server to use.\n"
 "  --sync              Synchronize X11 commands.\n"
@@ -2051,19 +1914,19 @@ msgstr ""
 "  -d, --display=NAME  사용할 X 서버의 이름입니다.\n"
 "  --sync              X11 명령을 동기화합니다.\n"
 
+#: src/yxapp.cc:931
+msgid "<none>"
+msgstr "<none>"
+
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics
 #: src/fdospecgen.h:43
-#, fuzzy
-#| msgid "Graphics"
 msgid "2DGraphics"
-msgstr "그래픽"
+msgstr "2D그래픽"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics
 #: src/fdospecgen.h:45
-#, fuzzy
-#| msgid "Graphics"
 msgid "3DGraphics"
-msgstr "그래픽"
+msgstr "3D그래픽"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings or Utility
 #: src/fdospecgen.h:47 src/fdospecgen.h:49
@@ -2073,121 +1936,117 @@ msgstr "액세스 가능성"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:51
 msgid "Accessories"
-msgstr "악세사리"
+msgstr "액세서리"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:53
 msgid "ActionGame"
-msgstr ""
+msgstr "액션 게임"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:55
 msgid "Adult"
-msgstr ""
+msgstr "성인"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:57
 msgid "AdventureGame"
-msgstr ""
+msgstr "어드벤처 게임"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:59
 msgid "Amusement"
-msgstr ""
+msgstr "오락"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:61
-#, fuzzy
-#| msgid "Same Game"
 msgid "ArcadeGame"
-msgstr "같은 게임"
+msgstr "아케이드 게임"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
 #: src/fdospecgen.h:63
 msgid "Archiving"
-msgstr ""
+msgstr "아카이브"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:65
 msgid "Art"
-msgstr ""
+msgstr "예술"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:67
 msgid "ArtificialIntelligence"
-msgstr ""
+msgstr "인공 지능"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:69
 msgid "Astronomy"
-msgstr ""
+msgstr "천문학"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:71
 msgid "Audio"
-msgstr ""
+msgstr "오디오"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:73
 msgid "AudioVideo"
-msgstr ""
+msgstr "오디오 비디오"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Audio or Video or AudioVideo
 #: src/fdospecgen.h:75
 msgid "AudioVideoEditing"
-msgstr ""
+msgstr "오디오 비디오 편집"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:77
 msgid "Biology"
-msgstr ""
+msgstr "생물학"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:79
 msgid "BlocksGame"
-msgstr ""
+msgstr "블록 게임"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:81
 msgid "BoardGame"
-msgstr ""
+msgstr "보드 게임"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
 #: src/fdospecgen.h:83
 msgid "Building"
-msgstr ""
+msgstr "빌딩"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
 #: src/fdospecgen.h:85
 msgid "Calculator"
-msgstr ""
+msgstr "계산기"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:87
 msgid "Calendar"
-msgstr ""
+msgstr "달력"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:89
-#, fuzzy
-#| msgid "Games"
 msgid "CardGame"
-msgstr "게임"
+msgstr "카드 게임"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:91
 msgid "Chart"
-msgstr ""
+msgstr "차트"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:93
 msgid "Chat"
-msgstr ""
+msgstr "채팅"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:95
 msgid "Chemistry"
-msgstr ""
+msgstr "화학"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
 #: src/fdospecgen.h:97
@@ -2197,49 +2056,47 @@ msgstr "시계"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility;Archiving
 #: src/fdospecgen.h:99
 msgid "Compression"
-msgstr ""
+msgstr "압축"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:101
 msgid "ComputerScience"
-msgstr ""
+msgstr "컴퓨터 과학"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:103
 msgid "Construction"
-msgstr ""
+msgstr "건설"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:105
 msgid "ContactManagement"
-msgstr ""
+msgstr "연락처 관리"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:107
 msgid "Core"
-msgstr ""
+msgstr "코어"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:109
 msgid "DataVisualization"
-msgstr ""
+msgstr "데이터 시각화"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office or Development or AudioVideo
 #: src/fdospecgen.h:111
 msgid "Database"
-msgstr ""
+msgstr "데이터베이스"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
 #: src/fdospecgen.h:113
 msgid "Debugger"
-msgstr ""
+msgstr "디버거"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings
 #: src/fdospecgen.h:115
-#, fuzzy
-#| msgid "Settings"
 msgid "DesktopSettings"
-msgstr "설정"
+msgstr "데스크톱 설정"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:117
@@ -2249,27 +2106,27 @@ msgstr "개발"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:119
 msgid "Dialup"
-msgstr ""
+msgstr "다이얼업"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office or TextTools
 #: src/fdospecgen.h:121
 msgid "Dictionary"
-msgstr ""
+msgstr "사전"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo
 #: src/fdospecgen.h:123
 msgid "DiscBurning"
-msgstr ""
+msgstr "디스크 굽기"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:125
 msgid "Documentation"
-msgstr ""
+msgstr "문서"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:127
 msgid "Economy"
-msgstr ""
+msgstr "경제"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:129
@@ -2284,93 +2141,87 @@ msgstr "교육"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:133
 msgid "Electricity"
-msgstr ""
+msgstr "전기"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:135
 msgid "Electronics"
-msgstr ""
+msgstr "전자"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office or Network
 #: src/fdospecgen.h:137
 msgid "Email"
-msgstr ""
+msgstr "전자 메일"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: System or Game
 #: src/fdospecgen.h:139
 msgid "Emulator"
-msgstr ""
+msgstr "에뮬레이터"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:141
 msgid "Engineering"
-msgstr ""
+msgstr "엔지니어링"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:143
 msgid "Feed"
-msgstr ""
+msgstr "피드"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: System;FileTools
 #: src/fdospecgen.h:145
 msgid "FileManager"
-msgstr ""
+msgstr "파일 관리자"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility or System
 #: src/fdospecgen.h:147
 msgid "FileTools"
-msgstr ""
+msgstr "파일 도구"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:149
 msgid "FileTransfer"
-msgstr ""
+msgstr "파일 전송"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: System
 #: src/fdospecgen.h:151
-#, fuzzy
-#| msgid "System"
 msgid "Filesystem"
-msgstr "시스템"
+msgstr "파일 시스템"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:153
-#, fuzzy
-#| msgid "Cancel"
 msgid "Finance"
-msgstr "아니오"
+msgstr "재무"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:155
 msgid "FlowChart"
-msgstr ""
+msgstr "플로우 차트"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
 #: src/fdospecgen.h:157
 msgid "GUIDesigner"
-msgstr ""
+msgstr "GUI 디자이너"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:159
-#, fuzzy
-#| msgid "Games"
 msgid "Game"
 msgstr "게임"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:161
 msgid "Geography"
-msgstr ""
+msgstr "지리"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:163
 msgid "Geology"
-msgstr ""
+msgstr "지질학"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:165
 msgid "Geoscience"
-msgstr ""
+msgstr "지구 과학"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:167
@@ -2380,105 +2231,97 @@ msgstr "그래픽"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network or Audio
 #: src/fdospecgen.h:169
 msgid "HamRadio"
-msgstr ""
+msgstr "햄 라디오"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings
 #: src/fdospecgen.h:171
-#, fuzzy
-#| msgid "Settings"
 msgid "HardwareSettings"
-msgstr "설정"
+msgstr "하드웨어 설정"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:173
 msgid "History"
-msgstr ""
+msgstr "역사"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:175
 msgid "Humanities"
-msgstr ""
+msgstr "인문학"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
 #: src/fdospecgen.h:177
 msgid "IDE"
-msgstr ""
+msgstr "IDE"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:179
 msgid "IRCClient"
-msgstr ""
+msgstr "IRC 클라이언트"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:181
-#, fuzzy
-#| msgid "_Terminate Process"
 msgid "ImageProcessing"
-msgstr "프로세스 종결(_T)"
+msgstr "이미지 처리"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:183
 msgid "InstantMessaging"
-msgstr ""
+msgstr "인스턴트 메시징"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:185
-#, fuzzy
-#| msgid "Games"
 msgid "KidsGame"
-msgstr "게임"
+msgstr "아동용 게임"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:187
-#, fuzzy
-#| msgid "Language:"
 msgid "Languages"
-msgstr "언어:"
+msgstr "언어"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:189
 msgid "Literature"
-msgstr ""
+msgstr "문학"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:191
 msgid "LogicGame"
-msgstr ""
+msgstr "논리 게임"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science or Utility
 #: src/fdospecgen.h:193
 msgid "Maps"
-msgstr ""
+msgstr "지도"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:195
 msgid "Math"
-msgstr ""
+msgstr "수학"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:197
 msgid "MedicalSoftware"
-msgstr ""
+msgstr "의료 소프트웨어"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo;Audio
 #: src/fdospecgen.h:199
 msgid "Midi"
-msgstr ""
+msgstr "Midi"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo;Audio
 #: src/fdospecgen.h:201
 msgid "Mixer"
-msgstr ""
+msgstr "믹서"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: System or Network
 #: src/fdospecgen.h:203
 msgid "Monitor"
-msgstr ""
+msgstr "모니터"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:205
 msgid "Motif"
-msgstr ""
+msgstr "Motif"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:207
@@ -2488,7 +2331,7 @@ msgstr "멀티미디어"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo or Education
 #: src/fdospecgen.h:209
 msgid "Music"
-msgstr ""
+msgstr "음악"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:211
@@ -2498,17 +2341,17 @@ msgstr "네트워크"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:213
 msgid "News"
-msgstr ""
+msgstr "뉴스"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education;Math or Science;Math
 #: src/fdospecgen.h:215
 msgid "NumericalAnalysis"
-msgstr ""
+msgstr "숫자 분석"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics;Scanning
 #: src/fdospecgen.h:217
 msgid "OCR"
-msgstr ""
+msgstr "OCR"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:219
@@ -2523,104 +2366,102 @@ msgstr "기타"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:223
 msgid "P2P"
-msgstr ""
+msgstr "P2P"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:225
 msgid "PDA"
-msgstr ""
+msgstr "PDA"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings
 #: src/fdospecgen.h:227
 msgid "PackageManager"
-msgstr ""
+msgstr "패키지 관리자"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education;ComputerScience or Science;ComputerScience
 #: src/fdospecgen.h:229
 msgid "ParallelComputing"
-msgstr ""
+msgstr "병렬 컴퓨팅"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics or Office
 #: src/fdospecgen.h:231
 msgid "Photography"
-msgstr ""
+msgstr "사진"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:233
 msgid "Physics"
-msgstr ""
+msgstr "물리학"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Audio or Video or AudioVideo
 #: src/fdospecgen.h:235
 msgid "Player"
-msgstr ""
+msgstr "플레이어"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:237
 msgid "Presentation"
-msgstr ""
+msgstr "프리젠테이션"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings;HardwareSettings
 #: src/fdospecgen.h:239
 msgid "Printing"
-msgstr ""
+msgstr "인쇄"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
 #: src/fdospecgen.h:241
 msgid "Profiling"
-msgstr ""
+msgstr "프로파일링"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office or Development
 #: src/fdospecgen.h:243
 msgid "ProjectManagement"
-msgstr ""
+msgstr "프로젝트 관리"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics or Office
 #: src/fdospecgen.h:245
 msgid "Publishing"
-msgstr ""
+msgstr "게시"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics;2DGraphics
 #: src/fdospecgen.h:247
-#, fuzzy
-#| msgid "Graphics"
 msgid "RasterGraphics"
-msgstr "그래픽"
+msgstr "래스터 그래픽"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Audio or Video or AudioVideo
 #: src/fdospecgen.h:249
 msgid "Recorder"
-msgstr ""
+msgstr "레코더"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:251
 msgid "RemoteAccess"
-msgstr ""
+msgstr "원격 액세스"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
 #: src/fdospecgen.h:253
 msgid "RevisionControl"
-msgstr ""
+msgstr "버전 관리"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:255
 msgid "Robotics"
-msgstr ""
+msgstr "로봇 공학"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:257
 msgid "RolePlaying"
-msgstr ""
+msgstr "롤플레잉"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics
 #: src/fdospecgen.h:259
 msgid "Scanning"
-msgstr ""
+msgstr "스캔"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:261
 msgid "Science"
-msgstr ""
+msgstr "과학"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:263
@@ -2630,12 +2471,12 @@ msgstr "화면보호기"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings or System
 #: src/fdospecgen.h:265
 msgid "Security"
-msgstr ""
+msgstr "보안"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo;Audio
 #: src/fdospecgen.h:267
 msgid "Sequencer"
-msgstr ""
+msgstr "시퀀서"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:269
@@ -2645,43 +2486,37 @@ msgstr "설정"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:271
 msgid "Shooter"
-msgstr ""
+msgstr "슈팅"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:273
-#, fuzzy
-#| msgid "Education"
 msgid "Simulation"
-msgstr "교육"
+msgstr "시뮬레이션"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science or Utility
 #: src/fdospecgen.h:275
 msgid "Spirituality"
-msgstr ""
+msgstr "사상"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:277
-#, fuzzy
-#| msgid "Support"
 msgid "Sports"
-msgstr "지원"
+msgstr "스포츠"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:279
 msgid "SportsGame"
-msgstr ""
+msgstr "스포츠 게임"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:281
 msgid "Spreadsheet"
-msgstr ""
+msgstr "스프레드시트"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:283
-#, fuzzy
-#| msgid "Same Game"
 msgid "StrategyGame"
-msgstr "같은 게임"
+msgstr "전략 게임"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:285
@@ -2691,71 +2526,67 @@ msgstr "시스템"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo;Video
 #: src/fdospecgen.h:287
 msgid "TV"
-msgstr ""
+msgstr "TV"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:289
 msgid "Telephony"
-msgstr ""
+msgstr "전화 통신"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
 #: src/fdospecgen.h:291
 msgid "TelephonyTools"
-msgstr ""
+msgstr "전화 통신 도구"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: System
 #: src/fdospecgen.h:293
 msgid "TerminalEmulator"
-msgstr ""
+msgstr "터미널 에뮬레이터"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
 #: src/fdospecgen.h:295
-#, fuzzy
-#| msgid "Editors"
 msgid "TextEditor"
-msgstr "편집기"
+msgstr "텍스트 편집기"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
 #: src/fdospecgen.h:297
 msgid "TextTools"
-msgstr ""
+msgstr "텍스트 도구"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
 #: src/fdospecgen.h:299
 msgid "Translation"
-msgstr ""
+msgstr "번역"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo;Audio
 #: src/fdospecgen.h:301
 msgid "Tuner"
-msgstr ""
+msgstr "튜너"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:303
 msgid "Utility"
-msgstr ""
+msgstr "유틸리티"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics;2DGraphics
 #: src/fdospecgen.h:305
-#, fuzzy
-#| msgid "Graphics"
 msgid "VectorGraphics"
-msgstr "그래픽"
+msgstr "벡터 그래픽"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:307
 msgid "Video"
-msgstr ""
+msgstr "비디오"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:309
 msgid "VideoConference"
-msgstr ""
+msgstr "화상 회의"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics or Office
 #: src/fdospecgen.h:311
 msgid "Viewer"
-msgstr ""
+msgstr "뷰어"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:313
@@ -2765,19 +2596,163 @@ msgstr "WINE"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:315
 msgid "WebBrowser"
-msgstr ""
+msgstr "웹 브라우저"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network or Development
 #: src/fdospecgen.h:317
-#, fuzzy
-#| msgid "Development"
 msgid "WebDevelopment"
-msgstr "개발"
+msgstr "웹 개발"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:319
 msgid "WordProcessor"
-msgstr ""
+msgstr "워드 프로세서"
+
+#~ msgid ""
+#~ "Usage: %s [OPTIONS] ACTIONS\n"
+#~ "\n"
+#~ "Options:\n"
+#~ "  -d, -display DISPLAY        Connects to the X server specified by "
+#~ "DISPLAY.\n"
+#~ "                              Default: $DISPLAY or :0.0 when not set.\n"
+#~ "  -w, -window WINDOW_ID       Specifies the window to manipulate. "
+#~ "Special\n"
+#~ "                              identifiers are `root' for the root window "
+#~ "and\n"
+#~ "                              `focus' for the currently focused window.\n"
+#~ "  -c, -class WM_CLASS         Window management class of the window(s) "
+#~ "to\n"
+#~ "                              manipulate. If WM_CLASS contains a period, "
+#~ "only\n"
+#~ "                              windows with exactly the same WM_CLASS "
+#~ "property\n"
+#~ "                              are matched. If there is no period, windows "
+#~ "of\n"
+#~ "                              the same class and windows of the same "
+#~ "instance\n"
+#~ "                              (aka. `-name') are selected.\n"
+#~ "\n"
+#~ "Actions:\n"
+#~ "  setIconTitle   TITLE        Set the icon title.\n"
+#~ "  setWindowTitle TITLE        Set the window title.\n"
+#~ "  setGeometry    geometry     Set the window geometry\n"
+#~ "  setState       MASK STATE   Set the GNOME window state to STATE.\n"
+#~ "                              Only the bits selected by MASK are "
+#~ "affected.\n"
+#~ "                              STATE and MASK are expressions of the "
+#~ "domain\n"
+#~ "                              `GNOME window state'.\n"
+#~ "  toggleState    STATE        Toggle the GNOME window state bits "
+#~ "specified by\n"
+#~ "                              the STATE expression.\n"
+#~ "  setHints       HINTS        Set the GNOME window hints to HINTS.\n"
+#~ "  setLayer       LAYER        Moves the window to another GNOME window "
+#~ "layer.\n"
+#~ "  setWorkspace   WORKSPACE    Moves the window to another workspace. "
+#~ "Select\n"
+#~ "                              the root window to change the current "
+#~ "workspace.\n"
+#~ "                              Select 0xFFFFFFFF or \"All\" for all "
+#~ "workspaces.\n"
+#~ "  listWorkspaces              Lists the names of all workspaces.\n"
+#~ "  setTrayOption  TRAYOPTION   Set the IceWM tray option hint.\n"
+#~ "  logout                      Tell IceWM to logout.\n"
+#~ "  reboot                      Tell IceWM to reboot.\n"
+#~ "  shutdown                    Tell IceWM to shutdown.\n"
+#~ "  cancel                      Tell IceWM to cancel the logout/reboot/"
+#~ "shutdown.\n"
+#~ "  about                       Tell IceWM to show the about window.\n"
+#~ "  windowlist                  Tell IceWM to show the window list.\n"
+#~ "  restart                     Tell IceWM to restart.\n"
+#~ "  suspend                     Tell IceWM to suspend.\n"
+#~ "\n"
+#~ "Expressions:\n"
+#~ "  Expressions are list of symbols of one domain concatenated by `+' or "
+#~ "`|':\n"
+#~ "\n"
+#~ "  EXPRESSION ::= SYMBOL | EXPRESSION ( `+' | `|' ) SYMBOL\n"
+#~ "\n"
+#~ msgstr ""
+#~ "사용법: %s [옵션] 동작\n"
+#~ "\n"
+#~ "옵션:\n"
+#~ "  -display DISPLAY            DISPLAY로 지정한 X 서버로 연결.\n"
+#~ "                              기본값: $DISPLAY 혹은 정하지 않았을 때: "
+#~ "0.0\n"
+#~ "  -window WINDOW_ID           조작할 창을 지정한다. 특별한 식별명으론\n"
+#~ "                              루트 창에 대한 `root'가 있다. 그리고\n"
+#~ "                              현재 초점이 있는 창에 대한 `focus'가 있다.\n"
+#~ "  -class WM_CLASS             조작할 창(들)의 창 관리 클래스.\n"
+#~ "                              WM_CLASS가 마침표를 포함하고 있으면,\n"
+#~ "                              똑같은 WM_CLASS 속성의 창들만 맞춘다.\n"
+#~ "                              만일 마침표가 없으면, 같은 클래스의\n"
+#~ "                              창과 같은 instance의 창이\n"
+#~ "                              (aka. `-name') 선택된다.\n"
+#~ "\n"
+#~ "동작:\n"
+#~ "  setIconTitle   TITLE        아이콘 타이틀을 정한다.\n"
+#~ "  setWindowTitle TITLE        창 타이틀을 정한다.\n"
+#~ "  setGeometry    geometry     창의 크기와 위치를 정한다.\n"
+#~ "  setState       MASK STATE   GNOME 창 상태를 STATE로 정한다.\n"
+#~ "                              MASK로 선택한 비트만 영향을 받는다.\n"
+#~ "                              STATE와 MASK는 `GNOME window state'\n"
+#~ "                              도메인의 표현식이다.\n"
+#~ "  toggleState    STATE        STATE 표현식으로 지정한\n"
+#~ "                              GNOME 창 상태 비트를 토글한다.\n"
+#~ "  setHints       HINTS        GNOME 창 힌트를 HINTS로 정한다.\n"
+#~ "  setLayer       LAYER        창을 다른 GNOME 창 레이어로 옮긴다.\n"
+#~ "  setWorkspace   WORKSPACE    창을 다른 작업공간으로 옮긴다. 현재\n"
+#~ "                              작업공간을 바꾸기 위해선 루트 창을 선택한"
+#~ "다.\n"
+#~ "                              모든 작업공간에 대해 0xFFFFFFFF 또는 \"모두"
+#~ "\"를 선택한다.\n"
+#~ "  listWorkspaces              모든 작업공간의 이름을 나열한다.\n"
+#~ "  setTrayOption  TRAYOPTION   IceWM 트레이 옵션 힌트를 설정한다.\n"
+#~ "  logout                      IceWM에 로그아웃하라고 말한다.\n"
+#~ "  reboot                      IceWM에 재부팅하라고 말한다.\n"
+#~ "  shutdown                    IceWM에 종료하라고 말한다.\n"
+#~ "  cancel                      IceWM에 로그아웃/재부팅/종료를 취소하라고 말"
+#~ "한다.\n"
+#~ "  about                        IceWM에 창에 대해 표시하라고 말한다.\n"
+#~ "  windowlist                  IceWM에 창 목록을 표시하라고 말한다.\n"
+#~ "  restart                     IceWM에 다시 시작하라고 말한다.\n"
+#~ "  suspend                     IceWM에 일시 중단하라고 말한다.\n"
+#~ "\n"
+#~ "표현식:\n"
+#~ "  표현식은 한 도메인의 심볼을 `+'나 `|'로 연결한 리스트이다.\n"
+#~ "\n"
+#~ "  표현식 ::= 심볼 | 표현식 ( `+' | `|' ) 심볼\n"
+#~ "\n"
+
+#~ msgid "GNOME window state"
+#~ msgstr "GNOME 창 상태"
+
+#~ msgid "GNOME window hint"
+#~ msgstr "GNOME 창 힌트"
+
+#~ msgid "GNOME window layer"
+#~ msgstr "GNOME 창 레이어"
+
+#~ msgid "IceWM tray option"
+#~ msgstr "IceWM 트레이 옵션"
+
+#~ msgid "Can't connect to ESound daemon: %s"
+#~ msgstr "사운드 데몬에 연결 못함: %s"
+
+#~ msgid "Error <%d> while uploading `%s:%s'"
+#~ msgstr "중 <%d> 오류 `%s:%s'를 업로드"
+
+#~ msgid "Sample <%d> uploaded as `%s:%s'"
+#~ msgstr "샘플 <%d>를 `%s:%s'로 업로드"
+
+#~ msgid "Playing sample #%d: %d"
+#~ msgstr "샘플 #%d 연주: %d"
+
+#~ msgid "Usage error: "
+#~ msgstr "사용법 오류: "
+
+#~ msgid "Out of memory for image %s"
+#~ msgstr "%s 이미지용 메모리 부족"
 
 #~ msgid "_Minimize"
 #~ msgstr "최소화(_M)"

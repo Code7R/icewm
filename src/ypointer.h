@@ -216,6 +216,11 @@ public:
     void operator=(DataType *some) { super::data(some, xdispose); }
 
     DataType** operator&() { return super::address(); }
+
+    template <typename T> T* convert() const {
+        return reinterpret_cast<T *>(super::data());
+    }
+    template <typename T> T& extract() const { return *convert<T>(); }
 };
 
 #endif

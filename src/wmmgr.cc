@@ -342,7 +342,7 @@ bool YWindowManager::handleWMKey(const XKeyEvent &key, KeySym k, unsigned int /*
         return true;
     } else if (IS_WMKEY(k, vm, gKeySysWindowList)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
-        if (windowList) windowList->showFocused(-1, -1);
+        wmActionListener->actionPerformed(actionWindowList, 0);
         return true;
     } else if (IS_WMKEY(k, vm, gKeySysWorkspacePrev)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
@@ -814,11 +814,7 @@ void YWindowManager::handleClientMessage(const XClientMessageEvent &message) {
 }
 
 void YWindowManager::handleFocus(const XFocusChangeEvent &focus) {
-    MSG(("window=0x%lX: %s mode=%d, detail=%d",
-         focus.window,
-         (focus.type == FocusIn) ? "focusIn" : "focusOut",
-         focus.mode,
-         focus.detail));
+    DBG logFocus((const union _XEvent&) focus);
     if (focus.mode == NotifyNormal) {
         if (focus.type == FocusIn) {
             if (focus.detail != NotifyInferior) {
@@ -1382,6 +1378,14 @@ void YWindowManager::placeWindow(YFrameWindow *frame,
         WindowOption wo(null);
         frame->getWindowOptions(wo, true);
 
+        if (wo.opacity && inrange(wo.opacity, 1, 100)) {
+            Atom omax = 0xFFFFFFFF;
+            Atom oper = omax / 100;
+            Atom orem = omax - oper * 100;
+            Atom opaq = wo.opacity * oper + wo.opacity * orem / 100;
+            frame->setNetOpacity(opaq);
+        }
+
         //msg("positioning %d %d %d %d %X", wo.gx, wo.gy, wo.gw, wo.gh, wo.gflags);
         if (wo.gh != 0 && wo.gw != 0) {
             if ((wo.gflags & (WidthValue | HeightValue)) ==
@@ -1457,8 +1461,7 @@ YFrameWindow *YWindowManager::manageClient(Window win, bool mapClient) {
     bool requestFocus = true;
 
     MSG(("managing window 0x%lX", win));
-    frame = findFrame(win);
-    PRECONDITION(frame == 0);
+    PRECONDITION(findFrame(win) == 0);
 
     XGrabServer(xapp->display());
 #if 0
@@ -1614,6 +1617,7 @@ YFrameWindow *YWindowManager::manageClient(Window win, bool mapClient) {
 
     if (doActivate && manualPlacement && wmState() == wmRUNNING &&
         client != windowList &&
+        client != taskBar &&
         !frame->owner() &&
         (!client->sizeHints() ||
          !(client->sizeHints()->flags & (USPosition | PPosition))))
@@ -1690,8 +1694,10 @@ void YWindowManager::unmanageClient(Window win, bool mapClient,
 void YWindowManager::destroyedClient(Window win) {
     YFrameWindow *frame = findFrame(win);
 
-    if (frame)
+    if (frame) {
+        frame->hide();
         delete frame;
+    }
     else {
         MSG(("destroyed: unknown window: 0x%lX", win));
     }
@@ -1727,6 +1733,32 @@ bool YWindowManager::focusTop(YFrameWindow *f) {
     return true;
 }
 
+YFrameWindow *YWindowManager::getFrameUnderMouse(long workspace) {
+    YFrameWindow* frame;
+    Window root, xwin = None;
+    YWindow* ywin;
+    xsmart<char> title;
+    int ignore;
+    unsigned ignore2;
+    if (XQueryPointer(xapp->display(), xapp->root(), &root, &xwin,
+                      &ignore, &ignore, &ignore, &ignore, &ignore2) &&
+        xwin != None &&
+        (ywin = windowContext.find(xwin)) != 0 &&
+        !ywin->adopted() &&
+        ywin->fetchTitle(&title) &&
+        strcmp(title, "Frame") == 0 &&
+        (frame = (YFrameWindow *) ywin)->isManaged() &&
+        frame->visibleOn(workspace) &&
+        frame->avoidFocus() == false &&
+        frame->client()->destroyed() == false &&
+        frame->client()->visible() &&
+        frame->client() != taskBar)
+    {
+        return frame;
+    }
+    return 0;
+}
+
 YFrameWindow *YWindowManager::getLastFocus(bool skipAllWorkspaces, long workspace) {
     if (workspace == -1)
         workspace = activeWorkspace();
@@ -1738,9 +1770,16 @@ YFrameWindow *YWindowManager::getLastFocus(bool skipAllWorkspaces, long workspac
         if (toFocus->isMinimized() ||
             toFocus->isHidden() ||
             !toFocus->visibleOn(workspace) ||
+            toFocus->client()->destroyed() ||
             toFocus->client() == taskBar ||
             toFocus->avoidFocus())
+        {
             toFocus = 0;
+        }
+    }
+
+    if (toFocus == 0) {
+        toFocus = getFrameUnderMouse(workspace);
     }
 
     if (toFocus == 0) {
@@ -1762,8 +1801,11 @@ YFrameWindow *YWindowManager::getLastFocus(bool skipAllWorkspaces, long workspac
                     continue;
                 if (w->avoidFocus() || pass == 2)
                     continue;
-                if ((w->isAllWorkspaces() && w != fFocusWin) || pass == 1)
+                if ((w->isAllWorkspaces() && w != fFocusWin) || pass == 1) {
+                    if (w->client() != taskBar && toFocus == 0)
+                        toFocus = w;
                     continue;
+                }
                 if (w->client() == taskBar)
                     continue;
                 toFocus = w;
@@ -2323,8 +2365,6 @@ void YWindowManager::initWorkspaces() {
 
 void YWindowManager::activateWorkspace(long workspace) {
     if (workspace != fActiveWorkspace) {
-        YFrameWindow *toFocus = getLastFocus(true, workspace);
-
         lockFocus();
 ///        XSetInputFocus(app->display(), desktop->handle(), RevertToNone, CurrentTime);
 
@@ -2370,13 +2410,16 @@ void YWindowManager::activateWorkspace(long workspace) {
                 w->updateTaskBar();
             }
         unlockFocus();
+
+        YFrameWindow *toFocus = getLastFocus(true, workspace);
         setFocus(toFocus);
         resetColormap(true);
 
         if (taskBar) taskBar->relayoutNow();
 
         if (workspaceSwitchStatus
-            && (!showTaskBar || !taskBarShowWorkspaces || taskBarAutoHide)
+            && (!showTaskBar || !taskBarShowWorkspaces || taskBarAutoHide
+                || (taskBar && taskBar->hidden()))
            )
             statusWorkspace->begin(workspace);
         wmapp->signalGuiEvent(geWorkspaceChange);
@@ -2456,7 +2499,7 @@ bool YWindowManager::readCurrentDesktop(long &workspace) {
     int r_format;
     unsigned long count;
     unsigned long bytes_remain;
-    unsigned char *prop;
+    xsmart<unsigned char> prop;
     workspace = 0;
 
     r_type = None;
@@ -2469,16 +2512,9 @@ bool YWindowManager::readCurrentDesktop(long &workspace) {
                            XA_CARDINAL, &r_type, &r_format,
                            &count, &bytes_remain, &prop) == Success && prop) {
         if (r_type == XA_CARDINAL && r_format == 32 && count == 1) {
-            long ws = *(long *)prop;
-            if (ws < 0)
-                ws = 0;
-            if (ws >= workspaceCount())
-                ws = workspaceCount() - 1;
-            workspace = ws;
-            XFree(prop);
+            workspace = clamp(prop.extract<long>(), 0L, workspaceCount() - 1L);
             return true;
         }
-        XFree(prop);
     }
     r_type = None;
     r_format = 0;
@@ -2490,16 +2526,9 @@ bool YWindowManager::readCurrentDesktop(long &workspace) {
                            XA_CARDINAL, &r_type, &r_format,
                            &count, &bytes_remain, &prop) == Success && prop) {
         if (r_type == XA_CARDINAL && r_format == 32 && count == 1) {
-            long ws = *(long *)prop;
-            if (ws < 0)
-                ws = 0;
-            if (ws >= workspaceCount())
-                ws = workspaceCount() - 1;
-            workspace = ws;
-            XFree(prop);
+            workspace = clamp(prop.extract<long>(), 0L, workspaceCount() - 1L);
             return true;
         }
-        XFree(prop);
     }
     return false;
 }
@@ -3263,7 +3292,7 @@ void YWindowManager::undoArrange() {
 
 bool YWindowManager::haveClients() {
     for (YFrameWindow * f(topLayer()); f ; f = f->nextLayer())
-        if (f->canClose() && f->client()->adopted())
+        if (f->canClose() && f->client() && f->client()->adopted())
             return true;
 
     return false;

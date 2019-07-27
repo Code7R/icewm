@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.2.15\n"
 "Report-Msgid-Bugs-To: https://github.com/bbidulock/icewm/issues\n"
-"POT-Creation-Date: 2018-10-20 18:34+0200\n"
-"PO-Revision-Date: 2018-04-19 09:26+0000\n"
+"POT-Creation-Date: 2019-06-07 00:39+0200\n"
+"PO-Revision-Date: 2019-02-07 06:32+0000\n"
 "Last-Translator: Ewelina Michalowska <ewelina.michalowska@stgambit.com>\n"
 "Language-Team: Polish <https://l10n.opensuse.org/projects/icewm/icewm-1-4-"
 "branch/pl/>\n"
@@ -16,40 +16,40 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 2.18\n"
+"X-Generator: Weblate 3.3\n"
 
-#: src/aapm.cc:177 src/aapm.cc:459 src/aapm.cc:681 src/aapm.cc:806
+#: src/aapm.cc:180 src/aapm.cc:462 src/aapm.cc:684 src/aapm.cc:809
 msgid " - Power"
 msgstr " - Zasilanie"
 
-#: src/aapm.cc:179 src/aapm.cc:462 src/aapm.cc:684
+#: src/aapm.cc:182 src/aapm.cc:465 src/aapm.cc:687
 msgid "P"
 msgstr "P"
 
-#: src/aapm.cc:183 src/aapm.cc:436 src/aapm.cc:664 src/aapm.cc:774
+#: src/aapm.cc:186 src/aapm.cc:439 src/aapm.cc:667 src/aapm.cc:777
 msgid " - Charging"
 msgstr " - Ładowanie"
 
-#: src/aapm.cc:185 src/aapm.cc:438 src/aapm.cc:666
+#: src/aapm.cc:188 src/aapm.cc:441 src/aapm.cc:669
 msgid "C"
 msgstr "C"
 
-#: src/aapm.cc:440
+#: src/aapm.cc:443
 msgid " - Full"
 msgstr " - Pełny"
 
-#: src/aapm.cc:985
+#: src/aapm.cc:988
 #, c-format
 msgid "power:\t%s"
 msgstr "zasilanie:\t%s"
 
 #: src/aclock.cc:173
 msgid "CLOCK"
-msgstr ""
+msgstr "ZEGAR"
 
 #: src/aclock.cc:177
 msgid "Date"
-msgstr ""
+msgstr "Data"
 
 #: src/aclock.cc:178 src/themes.cc:85
 msgid "Default"
@@ -58,11 +58,11 @@ msgstr "Domyślny"
 #: src/aclock.cc:179 src/acpustatus.cc:862 src/amailbox.cc:938
 #: src/amemstatus.cc:264
 msgid "_Disable"
-msgstr ""
+msgstr "Wyłącz"
 
 #: src/aclock.cc:180
 msgid "_UTC"
-msgstr ""
+msgstr "_UTC"
 
 #: src/acpustatus.cc:233
 #, c-format
@@ -88,28 +88,22 @@ msgid "CPU %s Load: %3.2f %3.2f %3.2f, %u"
 msgstr "Obciążenie procesora %s: %3.2f %3.2f %3.2f, %u"
 
 #: src/acpustatus.cc:309
-#, fuzzy, c-format
-#| msgid ""
-#| "\n"
-#| "Ram (free): %5.2f (%.2f) M"
+#, c-format
 msgid ""
 "\n"
 "Ram (free): %5.3f (%.3f) G"
 msgstr ""
 "\n"
-"Ram (wolny): %5.2f (%.2f) M"
+"Ram (wolny): %5.3f (%.3f) G"
 
 #: src/acpustatus.cc:314
-#, fuzzy, c-format
-#| msgid ""
-#| "\n"
-#| "Swap (free): %.2f (%.2f) M"
+#, c-format
 msgid ""
 "\n"
 "Swap (free): %.3f (%.3f) G"
 msgstr ""
 "\n"
-"Pamięć wymiany (wolna): %.2f (%.2f) M"
+"Pamięć wymiany (wolna): %.3f (%.3f) G"
 
 #: src/acpustatus.cc:320
 #, c-format
@@ -138,16 +132,13 @@ msgid "Load: "
 msgstr "Obciążenie: "
 
 #: src/acpustatus.cc:371
-#, fuzzy, c-format
-#| msgid ""
-#| "\n"
-#| "Ram (free): %5.2f (%.2f) M"
+#, c-format
 msgid ""
 "\n"
 "Ram (user): %5.3f (%.3f) G"
 msgstr ""
 "\n"
-"Ram (wolny): %5.2f (%.2f) M"
+"Ram (użytkownika): %5.3f (%.3f) G"
 
 #. TRANSLATORS: Please translate the string "C" into "Celsius Temperature" in your language.
 #. TRANSLATORS: Please make sure the translated string could be shown in your non-utf8 locale.
@@ -156,23 +147,22 @@ msgid "°C"
 msgstr "°C"
 
 #: src/acpustatus.cc:770
-#, fuzzy, c-format
-#| msgid "%s: %llu %llu %llu %llu %llu %llu %llu %llu"
+#, c-format
 msgid "CPU: %llu %llu %llu %llu %llu %llu %llu %llu"
-msgstr "%s: %llu %llu %llu %llu %llu %llu %llu %llu"
+msgstr "CPU: %llu %llu %llu %llu %llu %llu %llu %llu"
 
 #: src/acpustatus.cc:859
 #, c-format
 msgid "CPU%d"
-msgstr ""
+msgstr "CPU%d"
 
 #: src/acpustatus.cc:864
 msgid "_Combine"
-msgstr ""
+msgstr "Połą_cz"
 
 #: src/acpustatus.cc:866
 msgid "_Separate"
-msgstr ""
+msgstr "Rozłącz"
 
 #: src/amailbox.cc:62
 #, c-format
@@ -220,10 +210,8 @@ msgid "Using MailBox \"%s\"\n"
 msgstr "Używana skrzynka: \"%s\"\n"
 
 #: src/amailbox.cc:794
-#, fuzzy
-#| msgid "_Suspend"
 msgid "Suspended"
-msgstr "_Zawieś"
+msgstr "Zawieszone"
 
 #: src/amailbox.cc:798
 msgid "Error checking mailbox."
@@ -251,11 +239,11 @@ msgstr "%ld wiadomości."
 
 #: src/amailbox.cc:936
 msgid "MAIL"
-msgstr ""
+msgstr "POCZTA"
 
 #: src/amailbox.cc:937
 msgid "_Check"
-msgstr ""
+msgstr "Sprawdź"
 
 #: src/amailbox.cc:939
 msgid "_Suspend"
@@ -299,7 +287,7 @@ msgstr "Użytkownik: "
 
 #: src/amemstatus.cc:263
 msgid "MEM"
-msgstr ""
+msgstr "PAM"
 
 #: src/apppstatus.cc:203
 #, c-format
@@ -324,130 +312,130 @@ msgstr ""
 "\n"
 "  ID dzwoniącego:\t"
 
-#: src/apppstatus.cc:717
+#: src/apppstatus.cc:716
 msgid "NET"
-msgstr ""
+msgstr "SIEĆ"
 
-#: src/aworkspaces.cc:294 src/wmstatus.cc:163
+#: src/aworkspaces.cc:294 src/wmstatus.cc:165
 msgid "Workspace: "
 msgstr "Obszar roboczy: "
 
-#: src/icehelp.cc:1201
+#: src/icehelp.cc:1202
 msgid "Back"
 msgstr "Wstecz"
 
-#: src/icehelp.cc:1201
+#: src/icehelp.cc:1202
 msgid "Alt+Left"
 msgstr "Alt+Lewo"
 
-#: src/icehelp.cc:1203
+#: src/icehelp.cc:1204
 msgid "Forward"
 msgstr "Naprzód"
 
-#: src/icehelp.cc:1203
+#: src/icehelp.cc:1204
 msgid "Alt+Right"
 msgstr "Alt+Prawo"
 
-#: src/icehelp.cc:1206
+#: src/icehelp.cc:1207
 msgid "Previous"
 msgstr "Poprzedni"
 
-#: src/icehelp.cc:1207
+#: src/icehelp.cc:1208
 msgid "Next"
 msgstr "Następny"
 
-#: src/icehelp.cc:1209
+#: src/icehelp.cc:1210
 msgid "Contents"
 msgstr "Zawartość"
 
-#: src/icehelp.cc:1210
+#: src/icehelp.cc:1211
 msgid "Index"
 msgstr "Indeks"
 
-#: src/icehelp.cc:1213 src/icesame.cc:62 src/iceview.cc:74 src/wmtitle.cc:99
+#: src/icehelp.cc:1214 src/icesame.cc:62 src/iceview.cc:74 src/wmtitle.cc:99
 msgid "Close"
 msgstr "Zamknij"
 
-#: src/icehelp.cc:1213 src/icesame.cc:62 src/iceview.cc:74
+#: src/icehelp.cc:1214 src/icesame.cc:62 src/iceview.cc:74
 msgid "Ctrl+Q"
 msgstr "Ctrl+Q"
 
-#: src/icehelp.cc:1218
+#: src/icehelp.cc:1219
 msgid "Icewm(1)"
 msgstr "Icewm(1)"
 
-#: src/icehelp.cc:1220
+#: src/icehelp.cc:1221
 msgid "Icewmbg(1)"
 msgstr "Icewmbg(1)"
 
-#: src/icehelp.cc:1222
+#: src/icehelp.cc:1223
 msgid "Icesound(1)"
 msgstr "Icesound(1)"
 
-#: src/icehelp.cc:1224
+#: src/icehelp.cc:1225
 msgid "FAQ"
 msgstr "Często zadawane pytania"
 
-#: src/icehelp.cc:1226
+#: src/icehelp.cc:1227
 msgid "Manual"
 msgstr "Podręcznik"
 
-#: src/icehelp.cc:1228
+#: src/icehelp.cc:1229
 msgid "Support"
 msgstr "Wsparcie"
 
-#: src/icehelp.cc:1230
+#: src/icehelp.cc:1231
 msgid "Theme Howto"
 msgstr "Poradnik motywu"
 
-#: src/icehelp.cc:1232
+#: src/icehelp.cc:1233
 msgid "Website"
 msgstr "Witryna"
 
-#: src/icehelp.cc:1234
+#: src/icehelp.cc:1235
 msgid "Github"
 msgstr "Github"
 
-#: src/icehelp.cc:1936
+#: src/icehelp.cc:1937
 msgid "Unsupported protocol."
 msgstr "Nieobsługiwany protokół."
 
-#: src/icehelp.cc:1961
+#: src/icehelp.cc:1962
 #, c-format
 msgid "Invalid path: %s\n"
 msgstr "Nieprawidłowa ścieżka: %s\n"
 
-#: src/icehelp.cc:1984
+#: src/icehelp.cc:1985
 msgid "Path does not refer to a file."
 msgstr "Ścieżka nie odwołuje się do pliku."
 
-#: src/icehelp.cc:1989
+#: src/icehelp.cc:1990
 msgid "Failed to open file for reading."
 msgstr "Nie można otworzyć pliku do odczytu."
 
-#: src/icehelp.cc:2018
+#: src/icehelp.cc:2019
 msgid "Failed to create a temporary file"
 msgstr "Nie udało się utworzyć pliku tymczasowego"
 
-#: src/icehelp.cc:2110
+#: src/icehelp.cc:2111
 #, c-format
 msgid "Failed to execute system(%s) (%d)"
 msgstr "Nie można wykonać polecenia systemowego (%s) (%d)"
 
-#: src/icehelp.cc:2133
+#: src/icehelp.cc:2134
 #, c-format
 msgid "Failed to decompress %s"
 msgstr "Nie udało się zdekompresować pliku %s"
 
-#: src/icehelp.cc:2141
+#: src/icehelp.cc:2142
 msgid "Could not locate curl or wget in PATH"
 msgstr "Nie udało się zlokalizować programu curl lub wget w zmiennej PATH"
 
-#: src/icehelp.cc:2145
+#: src/icehelp.cc:2146
 msgid "Unsafe characters in URL"
 msgstr "Niebezpieczne znaki w adresie URL"
 
-#: src/icehelp.cc:2182
+#: src/icehelp.cc:2183
 #, c-format
 msgid ""
 "Usage: %s [OPTIONS] [ FILENAME | URL ]\n"
@@ -524,7 +512,7 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: src/icehelp.cc:2259
+#: src/icehelp.cc:2260
 #, c-format
 msgid "Ignoring option '%s'"
 msgstr "Ignorowanie opcji %s"
@@ -569,193 +557,63 @@ msgstr "Ctrl+R"
 msgid "Same Game"
 msgstr "To samo"
 
-#: src/icesh.cc:191
-#, c-format
-msgid "Action `%s' requires at least %d arguments."
-msgstr "Operacja \"%s\" wymaga co najmniej %d argumentów."
+#: src/icesh.cc:58
+msgid "For help please consult the man page icesh(1).\n"
+msgstr ""
 
-#: src/icesh.cc:198
-#, c-format
-msgid "Invalid expression: `%s'"
-msgstr "Nieprawidłowe wyrażenie: \"%s\""
-
-#: src/icesh.cc:319
+#: src/icesh.cc:890
 #, c-format
 msgid "Named symbols of the domain `%s' (numeric range: %ld-%ld):\n"
 msgstr "Nazwane symbole domeny \"%s\" (zakres numeryczny: %ld-%ld):\n"
 
-#: src/icesh.cc:435
+#: src/icesh.cc:1025
 #, c-format
 msgid "Invalid workspace name: `%s'"
 msgstr "Nieprawidłowa nazwa obszaru roboczego: \"%s\""
 
-#: src/icesh.cc:440
+#: src/icesh.cc:1028
 #, c-format
 msgid "Workspace out of range: %ld"
 msgstr "Obszar roboczy poza zakresem: %ld"
 
-#: src/icesh.cc:605
+#: src/icesh.cc:1180
 #, c-format
-msgid ""
-"Usage: %s [OPTIONS] ACTIONS\n"
-"\n"
-"Options:\n"
-"  -d, -display DISPLAY        Connects to the X server specified by "
-"DISPLAY.\n"
-"                              Default: $DISPLAY or :0.0 when not set.\n"
-"  -w, -window WINDOW_ID       Specifies the window to manipulate. Special\n"
-"                              identifiers are `root' for the root window "
-"and\n"
-"                              `focus' for the currently focused window.\n"
-"  -c, -class WM_CLASS         Window management class of the window(s) to\n"
-"                              manipulate. If WM_CLASS contains a period, "
-"only\n"
-"                              windows with exactly the same WM_CLASS "
-"property\n"
-"                              are matched. If there is no period, windows "
-"of\n"
-"                              the same class and windows of the same "
-"instance\n"
-"                              (aka. `-name') are selected.\n"
-"\n"
-"Actions:\n"
-"  setIconTitle   TITLE        Set the icon title.\n"
-"  setWindowTitle TITLE        Set the window title.\n"
-"  setGeometry    geometry     Set the window geometry\n"
-"  setState       MASK STATE   Set the GNOME window state to STATE.\n"
-"                              Only the bits selected by MASK are affected.\n"
-"                              STATE and MASK are expressions of the domain\n"
-"                              `GNOME window state'.\n"
-"  toggleState    STATE        Toggle the GNOME window state bits specified "
-"by\n"
-"                              the STATE expression.\n"
-"  setHints       HINTS        Set the GNOME window hints to HINTS.\n"
-"  setLayer       LAYER        Moves the window to another GNOME window "
-"layer.\n"
-"  setWorkspace   WORKSPACE    Moves the window to another workspace. Select\n"
-"                              the root window to change the current "
-"workspace.\n"
-"                              Select 0xFFFFFFFF or \"All\" for all "
-"workspaces.\n"
-"  listWorkspaces              Lists the names of all workspaces.\n"
-"  setTrayOption  TRAYOPTION   Set the IceWM tray option hint.\n"
-"  logout                      Tell IceWM to logout.\n"
-"  reboot                      Tell IceWM to reboot.\n"
-"  shutdown                    Tell IceWM to shutdown.\n"
-"  cancel                      Tell IceWM to cancel the logout/reboot/"
-"shutdown.\n"
-"  about                       Tell IceWM to show the about window.\n"
-"  windowlist                  Tell IceWM to show the window list.\n"
-"  restart                     Tell IceWM to restart.\n"
-"  suspend                     Tell IceWM to suspend.\n"
-"\n"
-"Expressions:\n"
-"  Expressions are list of symbols of one domain concatenated by `+' or `|':\n"
-"\n"
-"  EXPRESSION ::= SYMBOL | EXPRESSION ( `+' | `|' ) SYMBOL\n"
-"\n"
-msgstr ""
-"Użycie: %s [OPCJE] AKCJE\n"
-"\n"
-"Opcje:\n"
-"  -d, -display WYŚWIETLACZ    Nawiązuje połączenie z serwerem X określonym \n"
-"                              przez zmienną WYŚWIETLACZ. Domyślnie: "
-"$DISPLAY\n"
-"                              0.0 jeśli nie ustawiono.\n"
-"  -w, -window ID_OKNA         Określa okno do manipulowania.\n"
-"                              Specjalne identyfikatory to root dla głównego "
-"okna\n"
-"\t\t\t      i focus dla aktualnie aktywnego okna.\n"
-"  -c, -class KLASA_WM         Klasa zarządzania oknami do manipulowania.\n"
-"                              Jeśli KLASA_WM zawiera kropkę, wybierane są "
-"tylko okna\n"
-"                              o identycznej właściwości KLASA_WM. W "
-"przypadku braku\n"
-"                              kropki wybierane są okna o tej samej klasie i "
-"okna tego\n"
-"                              samego wystąpienia (`-name').\n"
-"\n"
-"Akcje:\n"
-"  setIconTitle   TYTUŁ        Ustawia tytuł ikony.\n"
-"  setWindowTitle TYTUŁ        Ustawia tytuł okna.\n"
-"  setGeometry    geometria    Ustawia geometrię okna.\n"
-"  setState       MASKA STAN   Ustawia stan okna GNOME na STAN.\n"
-"  \t\t\t      Wpływa tylko na bity wybrane przez MASKĘ.\n"
-"                              STAN i MASKA są wyrażeniami domeny\n"
-"                              `GNOME window state'.\n"
-"  toggleState    STAN         Przełącza bity stanu okna GNOME określone "
-"przez\n"
-"                              wyrażenie STAN.\n"
-"  setHints       HINTS        Ustawia okno podpowiedzi GNOME na HINTS.\n"
-"  setLayer       WARSTWA      Przenosi okno do innej warstwy okien GNOME.\n"
-"  setWorkspace   OBSZAR       Przenosi okno na inny obszar roboczy. Wybierz\n"
-"  \t\t\t      główne okno by zmienić bieżący obszar roboczy.\n"
-"  listWorkspaces   \t      Wypisuje nazwy wszystkich obszarów roboczych.\n"
-"  setTrayOption  OPCJAZAS     Ustawia opcje podpowiedzi zasobnika IceWM.\n"
-"  logout                      Polecenie wylogowania dla IceWM.\n"
-"  reboot                      Polecenie rozruchu dla IceWM.\n"
-"  shutdown                    Polecenie zamknięcia dla IceWM.\n"
-"  cancel                      Polecenie anulowania logowania/rozruchu/"
-"zamknięcia dla IceWM.\n"
-"  about                       Polecenie pokazania okna informacji dla "
-"IceWM.\n"
-"  windowlist                  Polecenie pokazania listy okien dla IceWM.\n"
-"  restart                     Polecenie ponownego uruchomienia dla IceWM.\n"
-"  suspend                     Polecenie zawieszenia dla IceWM.\n"
-"\n"
-"Wyrażenia:\n"
-"  Wyrażenia są listą symboli domeny połączonymi przez \"+\" lub \"|\":\n"
-"\n"
-"  WYRAŻENIE ::= SYMBOL | WYRAŻENIE ( \"+\" | \"|\" ) SYMBOL\n"
-"\n"
+msgid "workspace #%d: `%s'\n"
+msgstr "obszar roboczy #%d: \"%s\"\n"
 
-#: src/icesh.cc:653
-msgid "GNOME window state"
-msgstr "Stan okna GNOME"
-
-#: src/icesh.cc:654
-msgid "GNOME window hint"
-msgstr "Podpowiedź okna GNOME"
-
-#: src/icesh.cc:655
-msgid "GNOME window layer"
-msgstr "Warstwa okna GNOME"
-
-#: src/icesh.cc:656
-msgid "IceWM tray option"
-msgstr "Opcje zasobnika IceWM"
-
-#: src/icesh.cc:661
-msgid "Usage error: "
-msgstr "Błąd użycia: "
-
-#: src/icesh.cc:747
+#: src/icesh.cc:1827
 #, c-format
-msgid "Invalid argument: `%s'."
-msgstr "Nieprawidłowy argument: \"%s\"."
+msgid "Action `%s' requires at least %d arguments."
+msgstr "Operacja \"%s\" wymaga co najmniej %d argumentów."
 
-#: src/icesh.cc:753
-msgid "No actions specified."
-msgstr "Nie określono akcji."
+#: src/icesh.cc:1837
+#, c-format
+msgid "Invalid expression: `%s'"
+msgstr "Nieprawidłowe wyrażenie: \"%s\""
 
-#: src/icesh.cc:760 src/icesound.cc:945 src/icewmhint.cc:36 src/yxapp.cc:925
+#: src/icesh.cc:1848 src/icesound.cc:795 src/icewmhint.cc:36 src/yxapp.cc:930
 #, c-format
 msgid "Can't open display: %s. X must be running and $DISPLAY set."
 msgstr ""
 "Nie można otworzyć ekranu: %s. X-y muszą być uruchomione oraz musi być "
 "ustawiona zmienna $DISPLAY."
 
-#: src/icesh.cc:801
+#: src/icesh.cc:1861
+#, fuzzy, c-format
+#| msgid "Invalid argument: `%s'."
+msgid "Invalid argument: `%s'"
+msgstr "Nieprawidłowy argument: \"%s\"."
+
+#: src/icesh.cc:1898
+msgid "No actions specified."
+msgstr "Nie określono akcji."
+
+#: src/icesh.cc:2023
 #, c-format
 msgid "Invalid window identifier: `%s'"
 msgstr "Nieprawidłowy identyfikator okna: \"%s\""
 
-#: src/icesh.cc:955
-#, c-format
-msgid "workspace #%d: `%s'\n"
-msgstr "obszar roboczy #%d: \"%s\"\n"
-
-#: src/icesh.cc:974
+#: src/icesh.cc:2438
 #, c-format
 msgid "Unknown action: `%s'"
 msgstr "Nieznana akcja: \"%s\""
@@ -822,99 +680,131 @@ msgstr ""
 msgid "IceWM crash response"
 msgstr "Odpowiedź na awarię IceWM"
 
-#: src/icesound.cc:219 src/icesound.cc:327 src/icesound.cc:631
+#: src/icesound.cc:216 src/icesound.cc:324 src/icesound.cc:484
 #, c-format
 msgid "Playing sample #%d (%s)"
 msgstr "Odtwarzanie próbki #%d (%s)"
 
-#: src/icesound.cc:337
+#: src/icesound.cc:334
 #, c-format
 msgid "%s: Invalid number of channels"
 msgstr "%s: nieprawidłowa liczba kanałów"
 
-#: src/icesound.cc:343 src/icesound.cc:348
+#: src/icesound.cc:340 src/icesound.cc:345
 msgid "Could not set OSS channels"
 msgstr "Nie udało się ustawić kanałów OSS"
 
-#: src/icesound.cc:353 src/icesound.cc:381
+#: src/icesound.cc:350 src/icesound.cc:378
 msgid "Could not sync OSS"
 msgstr "Nie udało się zsynchronizować OSS"
 
-#: src/icesound.cc:365
+#: src/icesound.cc:362
 msgid "OSS write failed"
 msgstr "Zapis OSS nieudany"
 
-#: src/icesound.cc:369
+#: src/icesound.cc:366
 #, c-format
 msgid "OSS incomplete write (%d/%d)"
 msgstr "Niekompletny zapis OSS (%d/%d)"
 
-#: src/icesound.cc:376
+#: src/icesound.cc:373
 msgid "Could not post OSS"
 msgstr "Nie udało się opublikować OSS"
 
-#: src/icesound.cc:405
+#: src/icesound.cc:402
 #, c-format
 msgid "Could not open OSS device %s"
 msgstr "Nie udało się otworzyć urządzenia OS %s"
 
-#: src/icesound.cc:410
+#: src/icesound.cc:407
 msgid "Could not set OSS stereo"
 msgstr "Nie udało się ustawić stereo OSS"
 
-#: src/icesound.cc:415
+#: src/icesound.cc:412
 msgid "Could not reset OSS DSP"
 msgstr "Nie udało się zresetować DSP OSS"
 
-#: src/icesound.cc:420
+#: src/icesound.cc:417
 msgid "Could not set OSS format"
 msgstr "Nie udało się ustawić formatu OSS"
 
-#: src/icesound.cc:493
-#, c-format
-msgid "Can't connect to ESound daemon: %s"
-msgstr "Nie można połączyć się z demonem ESound: %s"
-
-#: src/icesound.cc:494 src/icewmhint.cc:38 src/yxapp.cc:926
-msgid "<none>"
-msgstr "<brak>"
-
-#: src/icesound.cc:512
-#, c-format
-msgid "Error <%d> while uploading `%s:%s'"
-msgstr "Błąd <%d> podczas wysyłania \"%s:%s\""
-
-#: src/icesound.cc:518
-#, c-format
-msgid "Sample <%d> uploaded as `%s:%s'"
-msgstr "Próbka <%d> wysłana jako \"%s:%s\""
-
-#: src/icesound.cc:576
-#, c-format
-msgid "Playing sample #%d: %d"
-msgstr "Odtwarzanie próbki #%d: %d"
-
-#: src/icesound.cc:651
+#: src/icesound.cc:504
 #, c-format
 msgid "ao_open_live failed with %d"
 msgstr "Błąd funkcji ao_open_live: %d"
 
-#: src/icesound.cc:662
+#: src/icesound.cc:515
 msgid "ao_play failed"
 msgstr "Błąd funkcji ao_play"
 
-#: src/icesound.cc:824
+#: src/icesound.cc:677
 #, c-format
 msgid "Unrecognized option: %s\n"
 msgstr "Nierozpoznana opcja: %s\n"
 
-#: src/icesound.cc:827 src/icesound.cc:1130
+#: src/icesound.cc:680 src/icesound.cc:973
 #, c-format
 msgid "Unrecognized argument: %s\n"
 msgstr "Nierozpoznany argument: %s\n"
 
-#: src/icesound.cc:836
-#, c-format
+#: src/icesound.cc:689
+#, fuzzy, c-format
+#| msgid ""
+#| "Usage: %s [OPTION]...\n"
+#| "\n"
+#| "Plays audio files on GUI events raised by IceWM.\n"
+#| "The currently configured sound interfaces are: %s.\n"
+#| "Icesound will choose the first of these which is usable.\n"
+#| "\n"
+#| "Options:\n"
+#| "\n"
+#| " -d, --display=DISPLAY   X11 display used by IceWM (default: $DISPLAY).\n"
+#| "\n"
+#| " -s, --sample-dir=DIR    Specifies a directory with sound files.\n"
+#| "                         Default is $HOME/.config/icewm/sounds.\n"
+#| "\n"
+#| " -i, --interface=LIST    Specifies audio output interfaces. One or more "
+#| "of:\n"
+#| "                         %s separated by commas.\n"
+#| "\n"
+#| " -D, --device=DEVICE     Backwards compatibility only: the default "
+#| "device. \n"
+#| "                         Please prefer one of the -A/-O/-S options.\n"
+#| "\n"
+#| " -O, --oss=DEVICE        Specifies the OSS device (default: \"%s\").\n"
+#| "\n"
+#| " -A, --alsa=DEVICE       Specifies the ALSA device (default: \"%s\").\n"
+#| "\n"
+#| " -S, --server=ADDR:PORT  Specifies the ESD server address and port "
+#| "number.\n"
+#| "                         For ESD the default is \"localhost:16001\".\n"
+#| "\n"
+#| " -z, --snooze=millisecs  Specifies the snooze interval between sound "
+#| "events\n"
+#| "                         in milliseconds. Default is 500 milliseconds.\n"
+#| "\n"
+#| " -p, --play=sound        Plays the given sound (name or number) and "
+#| "exits.\n"
+#| "\n"
+#| " -l, --list-files        Lists the available sound file paths and exits.\n"
+#| "\n"
+#| "     --list-sounds       Lists the supported sound filenames and exits.\n"
+#| "\n"
+#| "     --list-interfaces   Lists the supported audio interfaces and exits.\n"
+#| "\n"
+#| " -v, --verbose           Be verbose and print out each sound event.\n"
+#| "\n"
+#| " -V, --version           Prints version information and exits.\n"
+#| "\n"
+#| " -h, --help              Prints this help screen and exits.\n"
+#| "\n"
+#| "Return values:\n"
+#| "\n"
+#| "  0    Success.\n"
+#| "  1    General error.\n"
+#| "  2    Command line error.\n"
+#| "  3    Subsystems error (ie cannot connect to server).\n"
+#| "\n"
 msgid ""
 "Usage: %s [OPTION]...\n"
 "\n"
@@ -938,9 +828,6 @@ msgid ""
 " -O, --oss=DEVICE        Specifies the OSS device (default: \"%s\").\n"
 "\n"
 " -A, --alsa=DEVICE       Specifies the ALSA device (default: \"%s\").\n"
-"\n"
-" -S, --server=ADDR:PORT  Specifies the ESD server address and port number.\n"
-"                         For ESD the default is \"localhost:16001\".\n"
 "\n"
 " -z, --snooze=millisecs  Specifies the snooze interval between sound events\n"
 "                         in milliseconds. Default is 500 milliseconds.\n"
@@ -1032,51 +919,51 @@ msgstr ""
 "↵\n"
 "\n"
 
-#: src/icesound.cc:930
+#: src/icesound.cc:780
 #, c-format
 msgid "No audio for %s"
 msgstr "Brak audio dla %s"
 
-#: src/icesound.cc:1007
+#: src/icesound.cc:857
 msgid "Could not get GUI event property"
 msgstr "Nie udało się pobrać właściwości zdarzenia GUI"
 
-#: src/icesound.cc:1011
+#: src/icesound.cc:861
 #, c-format
 msgid "Received invalid GUI event %d"
 msgstr "Odebrano nieprawidłowe zdarzenie GUI: %d"
 
-#: src/icesound.cc:1015
+#: src/icesound.cc:865
 #, c-format
 msgid "Received GUI event %s"
 msgstr "Odebrano zdarzenie GUI: %s"
 
-#: src/icesound.cc:1029
+#: src/icesound.cc:879
 #, c-format
 msgid "Too quick; ignoring %s."
 msgstr "Za szybko; ignorowanie %s."
 
-#: src/icesound.cc:1033
+#: src/icesound.cc:883
 #, c-format
 msgid "Support for the %s interface not compiled."
 msgstr "Obsługa interfejsu %s nie została wkompilowana."
 
-#: src/icesound.cc:1073
+#: src/icesound.cc:916
 #, c-format
 msgid "Unsupported interface: %s."
 msgstr "Nieobsługiwany interfejs: %s."
 
-#: src/icesound.cc:1082
+#: src/icesound.cc:925
 #, c-format
 msgid "Using %s audio."
 msgstr "Używanie audio %s."
 
-#: src/icesound.cc:1086
+#: src/icesound.cc:929
 #, c-format
 msgid "Failed to connect to audio interfaces %s."
 msgstr "Nie udało się połączyć z interfejsami audio %s."
 
-#: src/icesound.cc:1098
+#: src/icesound.cc:941
 #, c-format
 msgid "Received signal %s: Terminating..."
 msgstr "Odebrano sygnał %s: kończenie..."
@@ -1127,52 +1014,7 @@ msgstr "Ctrl+W"
 msgid "Failed to load image '%s'."
 msgstr "Nie udało się wczytać obrazu %s."
 
-#: src/icewmbg.cc:843
-#, fuzzy
-#| msgid ""
-#| "Usage: icewmbg [OPTIONS]\n"
-#| "Where multiple values can be given they are separated by commas.\n"
-#| "When image is a directory then all images from that directory are used.\n"
-#| "\n"
-#| "Options:\n"
-#| "  -p, --replace        Replace an existing icewmbg.\n"
-#| "  -q, --quit           Tell the running icewmbg to quit.\n"
-#| "  -r, --restart        Tell the running icewmbg to restart itself.\n"
-#| "\n"
-#| "  -c, --config=FILE    Load preferences from FILE.\n"
-#| "  -t, --theme=NAME     Load the theme with name NAME.\n"
-#| "\n"
-#| "  -i, --image=FILE(S)  Load background image(s) from FILE(S).\n"
-#| "  -k, --color=NAME(S)  Use background color(s) from NAME(S).\n"
-#| "\n"
-#| "  -s, --semis=FILE(S)  Load transparency image(s) from FILE(S).\n"
-#| "  -x, --trans=NAME(S)  Use transparency color(s) from NAME(S).\n"
-#| "\n"
-#| "  -e, --center=0/1     Disable/Enable centering background.\n"
-#| "  -a, --scaled=0/1     Disable/Enable scaling background.\n"
-#| "  -m, --multi=0/1      Disable/Enable multihead background.\n"
-#| "\n"
-#| "  --display=NAME       Use NAME to connect to the X server.\n"
-#| "  --sync               Synchronize communication with X11 server.\n"
-#| "\n"
-#| "  -h, --help           Print this usage screen and exit.\n"
-#| "  -V, --version        Prints version information and exits.\n"
-#| "\n"
-#| "Loads desktop background according to preferences file:\n"
-#| " DesktopBackgroundCenter  - Display desktop background centered\n"
-#| " DesktopBackgroundScaled  - Display desktop background scaled\n"
-#| " DesktopBackgroundColor   - Desktop background color(s)\n"
-#| " DesktopBackgroundImage   - Desktop background image(s)\n"
-#| " SupportSemitransparency  - Support for semitransparent terminals\n"
-#| " DesktopTransparencyColor - Semitransparency background color(s)\n"
-#| " DesktopTransparencyImage - Semitransparency background image(s)\n"
-#| " DesktopBackgroundMultihead - One background over all monitors\n"
-#| "\n"
-#| " center:0 scaled:0 = tiled\n"
-#| " center:1 scaled:0 = centered\n"
-#| " center:1 scaled:1 = fill one dimension and keep aspect ratio\n"
-#| " center:0 scaled:1 = fill both dimensions and keep aspect ratio\n"
-#| "\n"
+#: src/icewmbg.cc:885
 msgid ""
 "Usage: icewmbg [OPTIONS]\n"
 "Where multiple values can be given they are separated by commas.\n"
@@ -1230,21 +1072,24 @@ msgstr ""
 "  -p, --replace        Zastępuje istniejący program icewmbg.↵\n"
 "  -q, --quit           Kończy działanie uruchomionego programu icewmbg.↵\n"
 "  -r, --restart        Wymusza restart uruchomionego programu icewmbg.↵\n"
+"  -u, --shuffle        Sortuje losowo/ponownie sortuje losowo listę obrazów "
+"tła.\n"
 "↵\n"
 "  -c, --config=PLIK    Wczytuje preferencje z podanego PLIKU.↵\n"
-"  -t, --theme=NAZWA     Wczytuje motyw o podanej NAZWIE.↵\n"
+"  -t, --theme=NAZWA    Wczytuje motyw o podanej NAZWIE.↵\n"
 "↵\n"
-"  -i, --image=PLIKI  Wczytuje obrazy tła z podanych PLIKÓW.↵\n"
-"  -k, --color=NAZWY  Używa kolorów tła o podanych NAZWACH.↵\n"
+"  -i, --image=PLIKI    Wczytuje obrazy tła z podanych PLIKÓW.↵\n"
+"  -k, --color=NAZWY    Używa kolorów tła o podanych NAZWACH.↵\n"
 "↵\n"
-"  -s, --semis=PLIKI  Wczytuje obrazy przezroczystości z podanych PLIKÓW.↵\n"
-"  -x, --trans=NAZWY  Używa kolorów przezroczystości o podanych NAZWACH.↵\n"
+"  -s, --semis=PLIKI    Wczytuje obrazy przezroczystości z podanych PLIKÓW.↵\n"
+"  -x, --trans=NAZWY    Używa kolorów przezroczystości o podanych NAZWACH.↵\n"
 "↵\n"
 "  -e, --center=0/1     Wyłącza/włącza wyśrodkowanie tła.↵\n"
 "  -a, --scaled=0/1     Wyłącza/włącza skalowanie tła.↵\n"
 "  -m, --multi=0/1      Wyłącza/włącza tło wielomonitorowe.↵\n"
+"  -y, --cycle=SEKUNDY  Przełącza tła co podaną liczbę SEKUND.\n"
 "↵\n"
-"  --display=NAZWA       Używa podanej NAZWY do łączenia się z serwerem X.↵\n"
+"  --display=NAZWA      Używa podanej NAZWY do łączenia się z serwerem X.↵\n"
 "  --sync               Synchronizuje komunikację z serwerem X11.↵\n"
 "↵\n"
 "  -h, --help           Wyświetla ten ekran pomocy i kończy działanie.↵\n"
@@ -1255,10 +1100,12 @@ msgstr ""
 " DesktopBackgroundScaled  - wyświetla tło pulpitu zeskalowane↵\n"
 " DesktopBackgroundColor   - kolory tła pulpitu↵\n"
 " DesktopBackgroundImage   - obrazy tła pulpitu↵\n"
+" ShuffleBackgroundImages  - sortuje losowo listę obrazów tła\n"
 " SupportSemitransparency  - obsługuje terminale półprzezroczyste↵\n"
 " DesktopTransparencyColor - kolory tła półprzezroczystości↵\n"
 " DesktopTransparencyImage - obrazy tła półprzezroczystości↵\n"
 " DesktopBackgroundMultihead - jedno tło dla wszystkich monitorów↵\n"
+" CycleBackgroundsPeriod   - sekundy między kolejnymi przełączeniami tła\n"
 "↵\n"
 " center:0 scaled:0 = sąsiadująco↵\n"
 " center:1 scaled:0 = wyśrodkowane↵\n"
@@ -1268,25 +1115,25 @@ msgstr ""
 "proporcji↵\n"
 "\n"
 
-#: src/icewmbg.cc:1057
+#: src/icewmbg.cc:1100
 msgid "Cannot start, because another icewmbg is still running."
 msgstr ""
 "Nie można uruchomić, ponieważ wciąż uruchomiony jest inny program icewmbg."
 
-#: src/icewmhint.cc:23
+#: src/icewmhint.cc:19
 msgid "Usage: icewmhint class.instance option arg\n"
 msgstr "Użycie: icewmhint class.instance opcja arg\n"
 
-#: src/icewmhint.cc:57
+#: src/icewmhint.cc:56
 #, c-format
 msgid "Out of memory (len=%d)."
 msgstr "Brak pamięci (len=%d)."
 
-#: src/misc.cc:466 src/misc.cc:478
+#: src/misc.cc:469 src/misc.cc:481
 msgid "Warning: "
 msgstr "Ostrzeżenie: "
 
-#: src/misc.cc:754
+#: src/misc.cc:757
 #, c-format
 msgid ""
 "Usage: %s [OPTIONS]\n"
@@ -1388,7 +1235,7 @@ msgstr "Zamknij"
 #. TRANSLATORS: This means "energy saving mode" or "suspended system". Not "interrupt". Not "hibernate".
 #: src/wmapp.cc:520 src/wmdialog.cc:75
 msgid "_Sleep mode"
-msgstr ""
+msgstr "Tryb uśpienia"
 
 #: src/wmapp.cc:525
 msgid "Restart _Icewm"
@@ -1426,7 +1273,7 @@ msgstr "Poniżej"
 msgid "D_esktop"
 msgstr "Biurko"
 
-#: src/wmapp.cc:571 src/wmwinlist.cc:305
+#: src/wmapp.cc:571 src/wmwinlist.cc:349
 msgid "_Restore"
 msgstr "P_rzywróć"
 
@@ -1438,71 +1285,79 @@ msgstr "Przenieś"
 msgid "_Size"
 msgstr "Wielkość"
 
-#: src/wmapp.cc:577 src/wmwinlist.cc:306
+#: src/wmapp.cc:577 src/wmwinlist.cc:350
 msgid "Mi_nimize"
 msgstr "Mi_nimalizuj"
 
-#: src/wmapp.cc:579 src/wmwinlist.cc:307
+#: src/wmapp.cc:579 src/wmwinlist.cc:351
 msgid "Ma_ximize"
 msgstr "Maksymalizuj"
 
-#: src/wmapp.cc:581 src/wmwinlist.cc:308
+#: src/wmapp.cc:580 src/wmwinlist.cc:352
+msgid "Maximize_Vert"
+msgstr "MaksymalizujWPionie"
+
+#: src/wmapp.cc:581
+msgid "MaximizeHori_z"
+msgstr "MaksymalizujWPo_ziomie"
+
+#: src/wmapp.cc:584 src/wmwinlist.cc:353
 msgid "_Fullscreen"
 msgstr "Pełny ekran"
 
-#: src/wmapp.cc:584 src/wmwinlist.cc:310
+#: src/wmapp.cc:587 src/wmwinlist.cc:355
 msgid "_Hide"
 msgstr "Sc_howaj"
 
-#: src/wmapp.cc:586 src/wmwinlist.cc:311
+#: src/wmapp.cc:589 src/wmwinlist.cc:356
 msgid "Roll_up"
 msgstr "Rozwiń"
 
-#: src/wmapp.cc:593
+#: src/wmapp.cc:596
 msgid "R_aise"
 msgstr "Podnieś"
 
-#: src/wmapp.cc:595 src/wmwinlist.cc:313
+#: src/wmapp.cc:598 src/wmwinlist.cc:358
 msgid "_Lower"
 msgstr "Obniż"
 
-#: src/wmapp.cc:597
+#: src/wmapp.cc:600
 msgid "La_yer"
 msgstr "Warstwa"
 
-#: src/wmapp.cc:601 src/wmwinlist.cc:315
+#: src/wmapp.cc:604 src/wmwinlist.cc:360
 msgid "Move _To"
 msgstr "Przenieś do"
 
-#: src/wmapp.cc:602 src/wmwinlist.cc:316
+#: src/wmapp.cc:605 src/wmwinlist.cc:361
 msgid "Occupy _All"
 msgstr "Z_ajmij wszystkie"
 
-#: src/wmapp.cc:608
+#: src/wmapp.cc:611
 msgid "Limit _Workarea"
 msgstr "Ogranicz obszar roboczy"
 
-#: src/wmapp.cc:612 src/wmwinlist.cc:317
+#: src/wmapp.cc:615 src/wmwinlist.cc:362
 msgid "Tray _icon"
 msgstr "Ikona zasobnika"
 
-#: src/wmapp.cc:617 src/wmwinlist.cc:295 src/wmwinlist.cc:328
+#: src/wmapp.cc:620 src/wmwinlist.cc:339 src/wmwinlist.cc:373
 msgid "_Close"
 msgstr "Zamknij"
 
-#: src/wmapp.cc:619 src/wmwinlist.cc:297
+#: src/wmapp.cc:622 src/wmwinlist.cc:341
 msgid "_Kill Client"
 msgstr "Zam_knij klienta"
 
-#: src/wmapp.cc:622 src/wmdialog.cc:80 src/wmwinmenu.cc:131
+#: src/wmapp.cc:625 src/wmdialog.cc:80 src/wmwinmenu.cc:131
 msgid "_Window list"
 msgstr "Lista okien"
 
-#: src/wmapp.cc:636
+#: src/wmapp.cc:639
 msgid "Another window manager already running, exiting..."
 msgstr "Inny menadżer okien jest już uruchomiony, kończenie pracy..."
 
-#: src/wmapp.cc:721
+#: src/wmapp.cc:724
 #, c-format
 msgid ""
 "Could not restart: %s\n"
@@ -1511,18 +1366,18 @@ msgstr ""
 "Nie można ponownie uruchomić: %s\n"
 "Czy $PATH wskazuje na %s?"
 
-#: src/wmapp.cc:842
+#: src/wmapp.cc:849
 msgid "Kill IceWM, replace with Xterm"
 msgstr "Zakończ działanie menedżera IceWM, zastąp przez Xterm"
 
-#: src/wmapp.cc:1382
+#: src/wmapp.cc:1397
 msgid ""
 "  --client-id=ID      Client id to use when contacting session manager.\n"
 msgstr ""
 "  --client-id=ID      Identyfikator klienta używany do kontaktu z menedżerem "
 "sesji.\n"
 
-#: src/wmapp.cc:1388
+#: src/wmapp.cc:1403
 msgid ""
 "\n"
 "  --debug             Print generic debug messages.\n"
@@ -1533,7 +1388,7 @@ msgstr ""
 "  --debug-z           Wyświetlenie komunikatów debugowania dotyczących "
 "układania okien.\n"
 
-#: src/wmapp.cc:1396
+#: src/wmapp.cc:1411
 msgid ""
 "\n"
 "  -c, --config=FILE   Load preferences from FILE.\n"
@@ -1546,7 +1401,7 @@ msgstr ""
 "  --postpreferences   Wyświetlenie preferencji po zakończeniu "
 "przetwarzania.\n"
 
-#: src/wmapp.cc:1401
+#: src/wmapp.cc:1416
 #, c-format
 msgid ""
 "Usage: %s [OPTIONS]\n"
@@ -1606,26 +1461,26 @@ msgstr ""
 "↵\n"
 "\n"
 
-#: src/wmapp.cc:1462
+#: src/wmapp.cc:1477
 #, c-format
 msgid "%s configuration directories:\n"
 msgstr "Katalogi konfiguracji %s:\n"
 
-#: src/wmapp.cc:1547
+#: src/wmapp.cc:1562
 #, c-format
 msgid "%s configured options:%s\n"
 msgstr "Skonfigurowane opcje %s: %s\n"
 
-#: src/wmapp.cc:1599
+#: src/wmapp.cc:1615
 #, c-format
 msgid "Unrecognized option '%s'."
 msgstr "Nierozpoznana opcja %s."
 
-#: src/wmapp.cc:1631
+#: src/wmapp.cc:1661
 msgid "Confirm Logout"
 msgstr "Potwierdź wyjście"
 
-#: src/wmapp.cc:1632
+#: src/wmapp.cc:1662
 msgid ""
 "Logout will close all active applications.\n"
 "Proceed?"
@@ -1638,22 +1493,22 @@ msgstr ""
 msgid "Failed to load theme %s"
 msgstr "Nie udało się wczytać motywu %s"
 
-#: src/wmconfig.cc:103
+#: src/wmconfig.cc:104
 #, c-format
 msgid "Unknown value '%s' for option '%s'."
 msgstr "Nieznana wartość %s dla opcji %s."
 
-#: src/wmconfig.cc:111
+#: src/wmconfig.cc:112
 #, c-format
 msgid "Unable to create directory %s"
 msgstr "Nie można utworzyć katalogu %s"
 
-#: src/wmconfig.cc:138 src/wmprog.cc:558 src/wmprog.cc:680 src/wmprog.cc:684
+#: src/wmconfig.cc:139 src/wmprog.cc:564 src/wmprog.cc:686 src/wmprog.cc:690
 #, c-format
 msgid "Unable to write to %s"
 msgstr "Nie można zapisać w %s"
 
-#: src/wmconfig.cc:165 src/wmprog.cc:688
+#: src/wmconfig.cc:166 src/wmprog.cc:694
 #, c-format
 msgid "Unable to rename %s to %s"
 msgstr "Nie można zmienić nazwy %s na %s"
@@ -1666,8 +1521,8 @@ msgstr "Zablo_kuj stację roboczą"
 msgid "_Cancel"
 msgstr "Anuluj"
 
-#: src/wmdialog.cc:77 src/wmprog.cc:838 src/wmprog.cc:840 src/wmtaskbar.cc:292
-#: src/wmtaskbar.cc:294
+#: src/wmdialog.cc:77 src/wmprog.cc:844 src/wmprog.cc:846 src/wmtaskbar.cc:301
+#: src/wmtaskbar.cc:303
 msgid "_Logout..."
 msgstr "Wy_loguj..."
 
@@ -1675,16 +1530,16 @@ msgstr "Wy_loguj..."
 msgid "_Restart icewm"
 msgstr "U_ruchom ponownie IceWM"
 
-#: src/wmdialog.cc:82 src/wmprog.cc:799 src/wmtaskbar.cc:285
-#: src/wmtaskbar.cc:288
+#: src/wmdialog.cc:82 src/wmprog.cc:805 src/wmtaskbar.cc:294
+#: src/wmtaskbar.cc:297
 msgid "_About"
 msgstr "Inform_acje"
 
-#: src/wmframe.cc:1409
+#: src/wmframe.cc:1394
 msgid "Kill Client: "
 msgstr "Zamknij klienta: "
 
-#: src/wmframe.cc:1416
+#: src/wmframe.cc:1401
 msgid ""
 "WARNING! All unsaved changes will be lost when\n"
 "this client is killed. Do you wish to proceed?"
@@ -1692,107 +1547,105 @@ msgstr ""
 "UWAGA! Wszystkie niezapisane zmiany zostaną utracone\n"
 "gdy ten klient zostanie zamknięty. Czy chcesz kontynuować?"
 
-#: src/wmframe.cc:3006
+#: src/wmframe.cc:2997
 msgid "Restore"
 msgstr "Przywróć"
 
-#: src/wmframe.cc:3009 src/wmtitle.cc:69
+#: src/wmframe.cc:3000 src/wmtitle.cc:69
 msgid "Maximize"
 msgstr "Maksymalizuj"
 
-#: src/wmframe.cc:3039
+#: src/wmframe.cc:3030
 msgid "Rolldown"
 msgstr "Zwiń"
 
-#: src/wmframe.cc:3041 src/wmtitle.cc:127
+#: src/wmframe.cc:3032 src/wmtitle.cc:127
 msgid "Rollup"
 msgstr "Rozwiń"
 
-#: src/wmoption.cc:228
+#: src/wmoption.cc:232
 #, c-format
 msgid "Unknown window option: %s"
 msgstr "Nieznana opcja okna: %s"
 
-#: src/wmoption.cc:338
+#: src/wmoption.cc:344
 #, c-format
 msgid "Syntax error in window options on line %d of %s"
 msgstr "Błąd składni w opcjach okna w wierszu %d pliku %s"
 
-#: src/wmprog.cc:386
+#: src/wmprog.cc:392
 msgid "_Click to focus"
 msgstr "_Kliknij, aby ustawić fokus"
 
-#: src/wmprog.cc:387
+#: src/wmprog.cc:393
 msgid "_Explicit focus"
 msgstr "Fokus j_awny"
 
-#: src/wmprog.cc:388
+#: src/wmprog.cc:394
 msgid "_Sloppy mouse focus"
 msgstr "_Swobodny fokus wskaźnika myszki"
 
-#: src/wmprog.cc:389
+#: src/wmprog.cc:395
 msgid "S_trict mouse focus"
 msgstr "_Ograniczony fokus myszki"
 
-#: src/wmprog.cc:390
+#: src/wmprog.cc:396
 msgid "_Quiet sloppy focus"
 msgstr "_Cichy swobodny fokus"
 
-#: src/wmprog.cc:391
+#: src/wmprog.cc:397
 msgid "Custo_m"
 msgstr "Niestandardowy"
 
-#: src/wmprog.cc:478
-#, fuzzy
-#| msgid "Favorite applications"
+#: src/wmprog.cc:484
 msgid "Save Modifications"
-msgstr "Ulubione programy"
+msgstr "Zapisz modyfikacje"
 
-#: src/wmprog.cc:711
+#: src/wmprog.cc:717
 msgid "_Manual"
 msgstr "_Ręcznie"
 
-#: src/wmprog.cc:712
+#: src/wmprog.cc:718
 msgid "_Icewm(1)"
 msgstr "_Icewm(1)"
 
-#: src/wmprog.cc:713
+#: src/wmprog.cc:719
 msgid "Icewm_Bg(1)"
 msgstr "Icewm_Bg(1)"
 
-#: src/wmprog.cc:714
+#: src/wmprog.cc:720
 msgid "Ice_Sound(1)"
 msgstr "Ice_Sound(1)"
 
-#: src/wmprog.cc:776
+#: src/wmprog.cc:782
 msgid "Programs"
 msgstr "Programy"
 
-#: src/wmprog.cc:781
+#: src/wmprog.cc:787
 msgid "_Run..."
 msgstr "U_ruchom..."
 
-#: src/wmprog.cc:786 src/wmtaskbar.cc:275
+#: src/wmprog.cc:792 src/wmtaskbar.cc:284
 msgid "_Windows"
 msgstr "Okna"
 
-#: src/wmprog.cc:805
+#: src/wmprog.cc:811
 msgid "_Help"
 msgstr "Pomoc"
 
-#: src/wmprog.cc:816
+#: src/wmprog.cc:822
 msgid "_Focus"
 msgstr "_Fokus"
 
-#: src/wmprog.cc:821
+#: src/wmprog.cc:827
 msgid "_Preferences"
 msgstr "_Preferencje"
 
-#: src/wmprog.cc:827
+#: src/wmprog.cc:833
 msgid "_Themes"
 msgstr "Mo_tywy"
 
-#: src/wmprog.cc:832
+#: src/wmprog.cc:838
 msgid "Se_ttings"
 msgstr "Us_tawienia"
 
@@ -1801,61 +1654,69 @@ msgstr "Us_tawienia"
 msgid "Session Manager: Unknown line %s"
 msgstr "Menedżer sesji: nieznany wiersz %s"
 
-#: src/wmtaskbar.cc:165 src/wmtaskbar.cc:166
+#: src/wmtaskbar.cc:168 src/wmtaskbar.cc:169
 msgid "Task Bar"
 msgstr "Pasek zadań"
 
-#: src/wmtaskbar.cc:265 src/wmwinlist.cc:319 src/wmwinlist.cc:332
+#: src/wmtaskbar.cc:274 src/wmwinlist.cc:364 src/wmwinlist.cc:377
 msgid "Tile _Vertically"
 msgstr "Wyłóż Poziomo"
 
-#: src/wmtaskbar.cc:266 src/wmwinlist.cc:320 src/wmwinlist.cc:333
+#: src/wmtaskbar.cc:275 src/wmwinlist.cc:365 src/wmwinlist.cc:378
 msgid "T_ile Horizontally"
 msgstr "Wyłóż P_ionowo"
 
-#: src/wmtaskbar.cc:267 src/wmwinlist.cc:321 src/wmwinlist.cc:334
+#: src/wmtaskbar.cc:276 src/wmwinlist.cc:366 src/wmwinlist.cc:379
 msgid "Ca_scade"
 msgstr "Ka_skada"
 
-#: src/wmtaskbar.cc:268 src/wmwinlist.cc:322 src/wmwinlist.cc:335
+#: src/wmtaskbar.cc:277 src/wmwinlist.cc:367 src/wmwinlist.cc:380
 msgid "_Arrange"
 msgstr "Rozmieść"
 
-#: src/wmtaskbar.cc:269 src/wmwinlist.cc:324 src/wmwinlist.cc:336
+#: src/wmtaskbar.cc:278 src/wmwinlist.cc:369 src/wmwinlist.cc:381
 msgid "_Minimize All"
 msgstr "_Minimalizuj wszystkie"
 
-#: src/wmtaskbar.cc:270 src/wmwinlist.cc:325 src/wmwinlist.cc:337
+#: src/wmtaskbar.cc:279 src/wmwinlist.cc:370 src/wmwinlist.cc:382
 msgid "_Hide All"
 msgstr "Sc_howaj wszystkie"
 
-#: src/wmtaskbar.cc:271 src/wmwinlist.cc:326 src/wmwinlist.cc:338
+#: src/wmtaskbar.cc:280 src/wmwinlist.cc:371 src/wmwinlist.cc:383
 msgid "_Undo"
 msgstr "Cofnij"
 
-#: src/wmtaskbar.cc:273
+#: src/wmtaskbar.cc:282
 msgid "Arrange _Icons"
 msgstr "Rozmieść ikony"
 
-#: src/wmtaskbar.cc:277
+#: src/wmtaskbar.cc:286
 msgid "_Refresh"
 msgstr "Odśwież"
 
-#: src/wmtaskbar.cc:283
+#: src/wmtaskbar.cc:292
 msgid "_License"
 msgstr "_Licencja"
 
-#: src/wmtaskbar.cc:364
-msgid "Favorite applications"
-msgstr "Ulubione programy"
+#: src/wmtaskbar.cc:363 src/wmtaskbar.cc:992
+msgid "Hide Taskbar"
+msgstr "Ukryj pasek zadań"
 
-#: src/wmtaskbar.cc:382
-msgid "Window list menu"
+#: src/wmtaskbar.cc:378
+msgid "Favorite Applications"
+msgstr "Ulubione aplikacje"
+
+#: src/wmtaskbar.cc:396
+msgid "Window List Menu"
 msgstr "Menu listy okien"
 
-#: src/wmtaskbar.cc:391
+#: src/wmtaskbar.cc:405
 msgid "Show Desktop"
 msgstr "Pokaż biurko"
+
+#: src/wmtaskbar.cc:992
+msgid "Show Taskbar"
+msgstr "Pokaż pasek zadań"
 
 #: src/wmtitle.cc:85
 msgid "Minimize"
@@ -1869,33 +1730,31 @@ msgstr "Ukryj"
 msgid "Raise/Lower"
 msgstr "Podnieś/Obniż"
 
-#: src/wmwinlist.cc:59
+#: src/wmwinlist.cc:50
 msgid "All Workspaces"
 msgstr "Wszystkie obszary robocze"
 
-#: src/wmwinlist.cc:295
+#: src/wmwinlist.cc:339
 msgid "Del"
 msgstr "Usuń"
 
-#: src/wmwinlist.cc:299
+#: src/wmwinlist.cc:343
 msgid "_Terminate Process"
 msgstr "Zakończ proces"
 
-#: src/wmwinlist.cc:300
+#: src/wmwinlist.cc:344
 msgid "Kill _Process"
 msgstr "Zabij _proces"
 
-#: src/wmwinlist.cc:309
+#: src/wmwinlist.cc:354
 msgid "_Show"
 msgstr "Pokaż"
 
-#: src/wmwinlist.cc:312
-#, fuzzy
-#| msgid "R_aise"
+#: src/wmwinlist.cc:357
 msgid "_Raise"
 msgstr "Podnieś"
 
-#: src/wmwinlist.cc:351 src/wmwinlist.cc:352
+#: src/wmwinlist.cc:396 src/wmwinlist.cc:397
 msgid "Window list"
 msgstr "Lista okien"
 
@@ -1904,7 +1763,7 @@ msgstr "Lista okien"
 msgid "%lu. Workspace %-.32s"
 msgstr "%lu. Obszar roboczy %-.32s"
 
-#: src/yapp.cc:277
+#: src/yapp.cc:280
 #, c-format
 msgid "%s: select failed"
 msgstr "%s: wybór nieudany"
@@ -1915,10 +1774,9 @@ msgid "Unknown key name %s in %s"
 msgstr "Nierozpoznana nazwa klucza %s w %s"
 
 #: src/yconfig.cc:150 src/yconfig.cc:163 src/yconfig.cc:177
-#, fuzzy, c-format
-#| msgid "Bad argument: %s for %s"
+#, c-format
 msgid "Bad argument: %s for %s [%d,%d]"
-msgstr "Nieprawidłowy argument %s dla %s"
+msgstr "Nieprawidłowy argument: %s dla %s [%d,%d]"
 
 #: src/yconfig.cc:214
 #, c-format
@@ -1981,43 +1839,43 @@ msgstr "Błąd ładowania zestawu fontów \"%s\"."
 msgid "Missing codesets for fontset \"%s\":"
 msgstr "Nieokreślone kodowanie zestawu fontów \"%s\":"
 
-#: src/yinput.cc:38
+#: src/yinput.cc:39
 msgid "_Copy"
 msgstr "Kopiuj"
 
-#: src/yinput.cc:38
+#: src/yinput.cc:39
 msgid "Ctrl+C"
 msgstr "Ctrl+C"
 
-#: src/yinput.cc:40
+#: src/yinput.cc:41
 msgid "Cu_t"
 msgstr "Wy_tnij"
 
-#: src/yinput.cc:40
+#: src/yinput.cc:41
 msgid "Ctrl+X"
 msgstr "Ctrl+X"
 
-#: src/yinput.cc:42
+#: src/yinput.cc:43
 msgid "_Paste"
 msgstr "Wklej"
 
-#: src/yinput.cc:42
+#: src/yinput.cc:43
 msgid "Ctrl+V"
 msgstr "Ctrl+V"
 
-#: src/yinput.cc:44
+#: src/yinput.cc:45
 msgid "Paste _Selection"
 msgstr "Wklej wybór"
 
-#: src/yinput.cc:44
+#: src/yinput.cc:45
 msgid "Ctrl+P"
 msgstr "Ctrl+P"
 
-#: src/yinput.cc:47
+#: src/yinput.cc:48
 msgid "Select _All"
 msgstr "Wybierz wszystko"
 
-#: src/yinput.cc:47
+#: src/yinput.cc:48
 msgid "Ctrl+A"
 msgstr "Ctrl+A"
 
@@ -2039,7 +1897,7 @@ msgstr ""
 msgid "iconv doesn't supply (sufficient) %s to %s converters."
 msgstr "iconv nie dostarcza (wystarczającego) %s dla konwerterów %s."
 
-#: src/ylocale.cc:163
+#: src/ylocale.cc:167
 #, c-format
 msgid "Invalid multibyte string \"%s\": %s"
 msgstr "Niepoprawny wielobajtowy łańcuch: \"%s\": %s"
@@ -2050,15 +1908,10 @@ msgstr "_OK"
 
 #: src/ypaths.cc:95
 #, c-format
-msgid "Out of memory for image %s"
-msgstr "Brak pamięci dla obrazu %s"
-
-#: src/ypaths.cc:98
-#, c-format
 msgid "Image not readable: %s"
 msgstr "Nie można odczytać obrazu: %s"
 
-#: src/ypaths.cc:121
+#: src/ypaths.cc:118
 #, c-format
 msgid "Could not find image %s"
 msgstr "Nie udało się znaleźć obrazu %s"
@@ -2082,7 +1935,7 @@ msgstr "Niekompletny szesnastkowy kod unikowy w adresie URL na pozycji %d."
 msgid "Invalid hex escape in URL at position %d."
 msgstr "Nieprawidłowy szesnastkowy kod unikowy w adresie URL na pozycji %d."
 
-#: src/yxapp.cc:885
+#: src/yxapp.cc:890
 msgid ""
 "  -d, --display=NAME  NAME of the X server to use.\n"
 "  --sync              Synchronize X11 commands.\n"
@@ -2090,19 +1943,19 @@ msgstr ""
 "  -d, --display=NAZWA  NAZWA używanego serwera X.\n"
 "  --sync              Synchronizacja poleceń X11.\n"
 
+#: src/yxapp.cc:931
+msgid "<none>"
+msgstr "<brak>"
+
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics
 #: src/fdospecgen.h:43
-#, fuzzy
-#| msgid "Graphics"
 msgid "2DGraphics"
-msgstr "Grafika"
+msgstr "Grafika 2D"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics
 #: src/fdospecgen.h:45
-#, fuzzy
-#| msgid "Graphics"
 msgid "3DGraphics"
-msgstr "Grafika"
+msgstr "Grafika 3D"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings or Utility
 #: src/fdospecgen.h:47 src/fdospecgen.h:49
@@ -2117,168 +1970,162 @@ msgstr "Akcesoria"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:53
 msgid "ActionGame"
-msgstr ""
+msgstr "Gra akcji"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:55
 msgid "Adult"
-msgstr ""
+msgstr "Dla dorosłych"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:57
 msgid "AdventureGame"
-msgstr ""
+msgstr "Gra przygodowa"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:59
 msgid "Amusement"
-msgstr ""
+msgstr "Rozrywka"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:61
-#, fuzzy
-#| msgid "Same Game"
 msgid "ArcadeGame"
-msgstr "To samo"
+msgstr "Gra zręcznościowa"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
 #: src/fdospecgen.h:63
 msgid "Archiving"
-msgstr ""
+msgstr "Archiwizacja"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:65
 msgid "Art"
-msgstr ""
+msgstr "Sztuka"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:67
 msgid "ArtificialIntelligence"
-msgstr ""
+msgstr "Sztuczna inteligencja"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:69
 msgid "Astronomy"
-msgstr ""
+msgstr "Astronomia"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:71
 msgid "Audio"
-msgstr ""
+msgstr "Dźwięk"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:73
 msgid "AudioVideo"
-msgstr ""
+msgstr "Audio-wideo"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Audio or Video or AudioVideo
 #: src/fdospecgen.h:75
 msgid "AudioVideoEditing"
-msgstr ""
+msgstr "Edycja audio-wideo"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:77
 msgid "Biology"
-msgstr ""
+msgstr "Biologia"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:79
 msgid "BlocksGame"
-msgstr ""
+msgstr "Gra typu puzzle"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:81
 msgid "BoardGame"
-msgstr ""
+msgstr "Gra planszowa"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
 #: src/fdospecgen.h:83
 msgid "Building"
-msgstr ""
+msgstr "Budownictwo"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
 #: src/fdospecgen.h:85
 msgid "Calculator"
-msgstr ""
+msgstr "Kalkulator"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:87
 msgid "Calendar"
-msgstr ""
+msgstr "Kalendarz"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:89
-#, fuzzy
-#| msgid "Games"
 msgid "CardGame"
-msgstr "Gry"
+msgstr "Gra karciana"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:91
 msgid "Chart"
-msgstr ""
+msgstr "Wykres"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:93
 msgid "Chat"
-msgstr ""
+msgstr "Czat"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:95
 msgid "Chemistry"
-msgstr ""
+msgstr "Chemia"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
 #: src/fdospecgen.h:97
 msgid "Clock"
-msgstr ""
+msgstr "Zegar"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility;Archiving
 #: src/fdospecgen.h:99
 msgid "Compression"
-msgstr ""
+msgstr "Kompresowanie"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:101
 msgid "ComputerScience"
-msgstr ""
+msgstr "Informatyka"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:103
 msgid "Construction"
-msgstr ""
+msgstr "Konstrukcje"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:105
 msgid "ContactManagement"
-msgstr ""
+msgstr "Zarządzanie kontaktami"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:107
 msgid "Core"
-msgstr ""
+msgstr "Jądro"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:109
 msgid "DataVisualization"
-msgstr ""
+msgstr "Wizualizacja danych"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office or Development or AudioVideo
 #: src/fdospecgen.h:111
 msgid "Database"
-msgstr ""
+msgstr "Baza danych"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
 #: src/fdospecgen.h:113
 msgid "Debugger"
-msgstr ""
+msgstr "Debuger"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings
 #: src/fdospecgen.h:115
-#, fuzzy
-#| msgid "Settings"
 msgid "DesktopSettings"
-msgstr "Ustawienia"
+msgstr "Ustawienia pulpitu"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:117
@@ -2288,27 +2135,27 @@ msgstr "Rozwój"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:119
 msgid "Dialup"
-msgstr ""
+msgstr "Połączenia wdzwaniane"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office or TextTools
 #: src/fdospecgen.h:121
 msgid "Dictionary"
-msgstr ""
+msgstr "Słownik"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo
 #: src/fdospecgen.h:123
 msgid "DiscBurning"
-msgstr ""
+msgstr "Nagrywanie płyt"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:125
 msgid "Documentation"
-msgstr ""
+msgstr "Dokumentacja"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:127
 msgid "Economy"
-msgstr ""
+msgstr "Ekonomia"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:129
@@ -2323,93 +2170,87 @@ msgstr "Edukacja"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:133
 msgid "Electricity"
-msgstr ""
+msgstr "Elektryczność"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:135
 msgid "Electronics"
-msgstr ""
+msgstr "Elektronika"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office or Network
 #: src/fdospecgen.h:137
 msgid "Email"
-msgstr ""
+msgstr "E-mail"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: System or Game
 #: src/fdospecgen.h:139
 msgid "Emulator"
-msgstr ""
+msgstr "Emulator"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:141
 msgid "Engineering"
-msgstr ""
+msgstr "Inżynieria"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:143
 msgid "Feed"
-msgstr ""
+msgstr "Kanały informacyjne"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: System;FileTools
 #: src/fdospecgen.h:145
 msgid "FileManager"
-msgstr ""
+msgstr "Menedżer plików"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility or System
 #: src/fdospecgen.h:147
 msgid "FileTools"
-msgstr ""
+msgstr "Narzędzia do obsługi plików"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:149
 msgid "FileTransfer"
-msgstr ""
+msgstr "Transfer plików"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: System
 #: src/fdospecgen.h:151
-#, fuzzy
-#| msgid "System"
 msgid "Filesystem"
-msgstr "System"
+msgstr "System plików"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:153
-#, fuzzy
-#| msgid "Cancel"
 msgid "Finance"
-msgstr "Anuluj"
+msgstr "Finanse"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:155
 msgid "FlowChart"
-msgstr ""
+msgstr "Diagram przepływu"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
 #: src/fdospecgen.h:157
 msgid "GUIDesigner"
-msgstr ""
+msgstr "Projektant interfejsu"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:159
-#, fuzzy
-#| msgid "Games"
 msgid "Game"
 msgstr "Gry"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:161
 msgid "Geography"
-msgstr ""
+msgstr "Geografia"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:163
 msgid "Geology"
-msgstr ""
+msgstr "Geologia"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:165
 msgid "Geoscience"
-msgstr ""
+msgstr "Nauki o Ziemi"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:167
@@ -2419,105 +2260,97 @@ msgstr "Grafika"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network or Audio
 #: src/fdospecgen.h:169
 msgid "HamRadio"
-msgstr ""
+msgstr "Radio amatorskie"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings
 #: src/fdospecgen.h:171
-#, fuzzy
-#| msgid "Settings"
 msgid "HardwareSettings"
-msgstr "Ustawienia"
+msgstr "Ustawienia sprzętowe"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:173
 msgid "History"
-msgstr ""
+msgstr "Historia"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:175
 msgid "Humanities"
-msgstr ""
+msgstr "Nauki humanistyczne"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
 #: src/fdospecgen.h:177
 msgid "IDE"
-msgstr ""
+msgstr "IDE"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:179
 msgid "IRCClient"
-msgstr ""
+msgstr "Klient IRC"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:181
-#, fuzzy
-#| msgid "_Terminate Process"
 msgid "ImageProcessing"
-msgstr "Zakończ proces"
+msgstr "Przetwarzanie obrazów"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:183
 msgid "InstantMessaging"
-msgstr ""
+msgstr "Wiadomości błyskawiczne"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:185
-#, fuzzy
-#| msgid "Games"
 msgid "KidsGame"
-msgstr "Gry"
+msgstr "Gry dla dzieci"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:187
-#, fuzzy
-#| msgid "Language:"
 msgid "Languages"
-msgstr "Język:"
+msgstr "Języki"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:189
 msgid "Literature"
-msgstr ""
+msgstr "Literatura"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:191
 msgid "LogicGame"
-msgstr ""
+msgstr "Gra logiczna"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science or Utility
 #: src/fdospecgen.h:193
 msgid "Maps"
-msgstr ""
+msgstr "Mapy"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:195
 msgid "Math"
-msgstr ""
+msgstr "Matematyka"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:197
 msgid "MedicalSoftware"
-msgstr ""
+msgstr "Oprogramowanie medyczne"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo;Audio
 #: src/fdospecgen.h:199
 msgid "Midi"
-msgstr ""
+msgstr "MIDI"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo;Audio
 #: src/fdospecgen.h:201
 msgid "Mixer"
-msgstr ""
+msgstr "Mikser"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: System or Network
 #: src/fdospecgen.h:203
 msgid "Monitor"
-msgstr ""
+msgstr "Monitor"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:205
 msgid "Motif"
-msgstr ""
+msgstr "Motyw"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:207
@@ -2527,7 +2360,7 @@ msgstr "Multimedia"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo or Education
 #: src/fdospecgen.h:209
 msgid "Music"
-msgstr ""
+msgstr "Muzyka"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:211
@@ -2537,17 +2370,17 @@ msgstr "Sieć"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:213
 msgid "News"
-msgstr ""
+msgstr "Aktualności"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education;Math or Science;Math
 #: src/fdospecgen.h:215
 msgid "NumericalAnalysis"
-msgstr ""
+msgstr "Analiza numeryczna"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics;Scanning
 #: src/fdospecgen.h:217
 msgid "OCR"
-msgstr ""
+msgstr "OCR"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:219
@@ -2562,104 +2395,102 @@ msgstr "Inne"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:223
 msgid "P2P"
-msgstr ""
+msgstr "P2P"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:225
 msgid "PDA"
-msgstr ""
+msgstr "PDA"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings
 #: src/fdospecgen.h:227
 msgid "PackageManager"
-msgstr ""
+msgstr "Menedżer pakietów"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education;ComputerScience or Science;ComputerScience
 #: src/fdospecgen.h:229
 msgid "ParallelComputing"
-msgstr ""
+msgstr "Przetwarzanie równoległe"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics or Office
 #: src/fdospecgen.h:231
 msgid "Photography"
-msgstr ""
+msgstr "Fotografia"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:233
 msgid "Physics"
-msgstr ""
+msgstr "Fizyka"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Audio or Video or AudioVideo
 #: src/fdospecgen.h:235
 msgid "Player"
-msgstr ""
+msgstr "Odtwarzacz"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:237
 msgid "Presentation"
-msgstr ""
+msgstr "Prezentacja"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings;HardwareSettings
 #: src/fdospecgen.h:239
 msgid "Printing"
-msgstr ""
+msgstr "Drukowanie"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
 #: src/fdospecgen.h:241
 msgid "Profiling"
-msgstr ""
+msgstr "Profilowanie"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office or Development
 #: src/fdospecgen.h:243
 msgid "ProjectManagement"
-msgstr ""
+msgstr "Zarządzanie projektami"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics or Office
 #: src/fdospecgen.h:245
 msgid "Publishing"
-msgstr ""
+msgstr "Publikowanie"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics;2DGraphics
 #: src/fdospecgen.h:247
-#, fuzzy
-#| msgid "Graphics"
 msgid "RasterGraphics"
-msgstr "Grafika"
+msgstr "Grafika rastrowa"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Audio or Video or AudioVideo
 #: src/fdospecgen.h:249
 msgid "Recorder"
-msgstr ""
+msgstr "Rejestrator"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:251
 msgid "RemoteAccess"
-msgstr ""
+msgstr "Dostęp zdalny"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
 #: src/fdospecgen.h:253
 msgid "RevisionControl"
-msgstr ""
+msgstr "Kontrola wersji"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:255
 msgid "Robotics"
-msgstr ""
+msgstr "Robotyka"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:257
 msgid "RolePlaying"
-msgstr ""
+msgstr "RPG"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics
 #: src/fdospecgen.h:259
 msgid "Scanning"
-msgstr ""
+msgstr "Skanowanie"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:261
 msgid "Science"
-msgstr ""
+msgstr "Nauka"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:263
@@ -2669,12 +2500,12 @@ msgstr "Wygaszacze ekranu"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings or System
 #: src/fdospecgen.h:265
 msgid "Security"
-msgstr ""
+msgstr "Zabezpieczenia"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo;Audio
 #: src/fdospecgen.h:267
 msgid "Sequencer"
-msgstr ""
+msgstr "Sekwencer"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:269
@@ -2684,43 +2515,37 @@ msgstr "Ustawienia"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:271
 msgid "Shooter"
-msgstr ""
+msgstr "Strzelanka"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:273
-#, fuzzy
-#| msgid "Education"
 msgid "Simulation"
-msgstr "Edukacja"
+msgstr "Symulacja"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science or Utility
 #: src/fdospecgen.h:275
 msgid "Spirituality"
-msgstr ""
+msgstr "Duchowość"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
 #: src/fdospecgen.h:277
-#, fuzzy
-#| msgid "Support"
 msgid "Sports"
-msgstr "Wsparcie"
+msgstr "Sport"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:279
 msgid "SportsGame"
-msgstr ""
+msgstr "Gra sportowa"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:281
 msgid "Spreadsheet"
-msgstr ""
+msgstr "Arkusz kalkulacyjny"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
 #: src/fdospecgen.h:283
-#, fuzzy
-#| msgid "Same Game"
 msgid "StrategyGame"
-msgstr "To samo"
+msgstr "Gra strategiczna"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:285
@@ -2730,71 +2555,67 @@ msgstr "System"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo;Video
 #: src/fdospecgen.h:287
 msgid "TV"
-msgstr ""
+msgstr "TV"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:289
 msgid "Telephony"
-msgstr ""
+msgstr "Telefonia"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
 #: src/fdospecgen.h:291
 msgid "TelephonyTools"
-msgstr ""
+msgstr "Narzędzia telefoniczne"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: System
 #: src/fdospecgen.h:293
 msgid "TerminalEmulator"
-msgstr ""
+msgstr "Emulator terminala"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
 #: src/fdospecgen.h:295
-#, fuzzy
-#| msgid "Editors"
 msgid "TextEditor"
-msgstr "Edytory"
+msgstr "Edytor tekstu"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
 #: src/fdospecgen.h:297
 msgid "TextTools"
-msgstr ""
+msgstr "Narzędzia do obsługi tekstu"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
 #: src/fdospecgen.h:299
 msgid "Translation"
-msgstr ""
+msgstr "Tłumaczenie"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo;Audio
 #: src/fdospecgen.h:301
 msgid "Tuner"
-msgstr ""
+msgstr "Tuner"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:303
 msgid "Utility"
-msgstr ""
+msgstr "Narzędzie"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics;2DGraphics
 #: src/fdospecgen.h:305
-#, fuzzy
-#| msgid "Graphics"
 msgid "VectorGraphics"
-msgstr "Grafika"
+msgstr "Grafika wektorowa"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:307
 msgid "Video"
-msgstr ""
+msgstr "Wideo"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:309
 msgid "VideoConference"
-msgstr ""
+msgstr "Konferencja wideo"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics or Office
 #: src/fdospecgen.h:311
 msgid "Viewer"
-msgstr ""
+msgstr "Przeglądarka"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:313
@@ -2804,19 +2625,170 @@ msgstr "WINE"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
 #: src/fdospecgen.h:315
 msgid "WebBrowser"
-msgstr ""
+msgstr "Przeglądarka internetowa"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network or Development
 #: src/fdospecgen.h:317
-#, fuzzy
-#| msgid "Development"
 msgid "WebDevelopment"
-msgstr "Rozwój"
+msgstr "Rozbudowa usług w sieci Web"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:319
 msgid "WordProcessor"
-msgstr ""
+msgstr "Edytor tekstu"
+
+#~ msgid ""
+#~ "Usage: %s [OPTIONS] ACTIONS\n"
+#~ "\n"
+#~ "Options:\n"
+#~ "  -d, -display DISPLAY        Connects to the X server specified by "
+#~ "DISPLAY.\n"
+#~ "                              Default: $DISPLAY or :0.0 when not set.\n"
+#~ "  -w, -window WINDOW_ID       Specifies the window to manipulate. "
+#~ "Special\n"
+#~ "                              identifiers are `root' for the root window "
+#~ "and\n"
+#~ "                              `focus' for the currently focused window.\n"
+#~ "  -c, -class WM_CLASS         Window management class of the window(s) "
+#~ "to\n"
+#~ "                              manipulate. If WM_CLASS contains a period, "
+#~ "only\n"
+#~ "                              windows with exactly the same WM_CLASS "
+#~ "property\n"
+#~ "                              are matched. If there is no period, windows "
+#~ "of\n"
+#~ "                              the same class and windows of the same "
+#~ "instance\n"
+#~ "                              (aka. `-name') are selected.\n"
+#~ "\n"
+#~ "Actions:\n"
+#~ "  setIconTitle   TITLE        Set the icon title.\n"
+#~ "  setWindowTitle TITLE        Set the window title.\n"
+#~ "  setGeometry    geometry     Set the window geometry\n"
+#~ "  setState       MASK STATE   Set the GNOME window state to STATE.\n"
+#~ "                              Only the bits selected by MASK are "
+#~ "affected.\n"
+#~ "                              STATE and MASK are expressions of the "
+#~ "domain\n"
+#~ "                              `GNOME window state'.\n"
+#~ "  toggleState    STATE        Toggle the GNOME window state bits "
+#~ "specified by\n"
+#~ "                              the STATE expression.\n"
+#~ "  setHints       HINTS        Set the GNOME window hints to HINTS.\n"
+#~ "  setLayer       LAYER        Moves the window to another GNOME window "
+#~ "layer.\n"
+#~ "  setWorkspace   WORKSPACE    Moves the window to another workspace. "
+#~ "Select\n"
+#~ "                              the root window to change the current "
+#~ "workspace.\n"
+#~ "                              Select 0xFFFFFFFF or \"All\" for all "
+#~ "workspaces.\n"
+#~ "  listWorkspaces              Lists the names of all workspaces.\n"
+#~ "  setTrayOption  TRAYOPTION   Set the IceWM tray option hint.\n"
+#~ "  logout                      Tell IceWM to logout.\n"
+#~ "  reboot                      Tell IceWM to reboot.\n"
+#~ "  shutdown                    Tell IceWM to shutdown.\n"
+#~ "  cancel                      Tell IceWM to cancel the logout/reboot/"
+#~ "shutdown.\n"
+#~ "  about                       Tell IceWM to show the about window.\n"
+#~ "  windowlist                  Tell IceWM to show the window list.\n"
+#~ "  restart                     Tell IceWM to restart.\n"
+#~ "  suspend                     Tell IceWM to suspend.\n"
+#~ "\n"
+#~ "Expressions:\n"
+#~ "  Expressions are list of symbols of one domain concatenated by `+' or "
+#~ "`|':\n"
+#~ "\n"
+#~ "  EXPRESSION ::= SYMBOL | EXPRESSION ( `+' | `|' ) SYMBOL\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Użycie: %s [OPCJE] AKCJE\n"
+#~ "\n"
+#~ "Opcje:\n"
+#~ "  -d, -display WYŚWIETLACZ    Nawiązuje połączenie z serwerem X "
+#~ "określonym \n"
+#~ "                              przez zmienną WYŚWIETLACZ. Domyślnie: "
+#~ "$DISPLAY\n"
+#~ "                              0.0 jeśli nie ustawiono.\n"
+#~ "  -w, -window ID_OKNA         Określa okno do manipulowania.\n"
+#~ "                              Specjalne identyfikatory to root dla "
+#~ "głównego okna\n"
+#~ "\t\t\t      i focus dla aktualnie aktywnego okna.\n"
+#~ "  -c, -class KLASA_WM         Klasa zarządzania oknami do manipulowania.\n"
+#~ "                              Jeśli KLASA_WM zawiera kropkę, wybierane są "
+#~ "tylko okna\n"
+#~ "                              o identycznej właściwości KLASA_WM. W "
+#~ "przypadku braku\n"
+#~ "                              kropki wybierane są okna o tej samej klasie "
+#~ "i okna tego\n"
+#~ "                              samego wystąpienia (`-name').\n"
+#~ "\n"
+#~ "Akcje:\n"
+#~ "  setIconTitle   TYTUŁ        Ustawia tytuł ikony.\n"
+#~ "  setWindowTitle TYTUŁ        Ustawia tytuł okna.\n"
+#~ "  setGeometry    geometria    Ustawia geometrię okna.\n"
+#~ "  setState       MASKA STAN   Ustawia stan okna GNOME na STAN.\n"
+#~ "  \t\t\t      Wpływa tylko na bity wybrane przez MASKĘ.\n"
+#~ "                              STAN i MASKA są wyrażeniami domeny\n"
+#~ "                              `GNOME window state'.\n"
+#~ "  toggleState    STAN         Przełącza bity stanu okna GNOME określone "
+#~ "przez\n"
+#~ "                              wyrażenie STAN.\n"
+#~ "  setHints       HINTS        Ustawia okno podpowiedzi GNOME na HINTS.\n"
+#~ "  setLayer       WARSTWA      Przenosi okno do innej warstwy okien "
+#~ "GNOME.\n"
+#~ "  setWorkspace   OBSZAR       Przenosi okno na inny obszar roboczy. "
+#~ "Wybierz\n"
+#~ "  \t\t\t      główne okno by zmienić bieżący obszar roboczy.\n"
+#~ "  listWorkspaces   \t      Wypisuje nazwy wszystkich obszarów roboczych.\n"
+#~ "  setTrayOption  OPCJAZAS     Ustawia opcje podpowiedzi zasobnika IceWM.\n"
+#~ "  logout                      Polecenie wylogowania dla IceWM.\n"
+#~ "  reboot                      Polecenie rozruchu dla IceWM.\n"
+#~ "  shutdown                    Polecenie zamknięcia dla IceWM.\n"
+#~ "  cancel                      Polecenie anulowania logowania/rozruchu/"
+#~ "zamknięcia dla IceWM.\n"
+#~ "  about                       Polecenie pokazania okna informacji dla "
+#~ "IceWM.\n"
+#~ "  windowlist                  Polecenie pokazania listy okien dla IceWM.\n"
+#~ "  restart                     Polecenie ponownego uruchomienia dla "
+#~ "IceWM.\n"
+#~ "  suspend                     Polecenie zawieszenia dla IceWM.\n"
+#~ "\n"
+#~ "Wyrażenia:\n"
+#~ "  Wyrażenia są listą symboli domeny połączonymi przez \"+\" lub \"|\":\n"
+#~ "\n"
+#~ "  WYRAŻENIE ::= SYMBOL | WYRAŻENIE ( \"+\" | \"|\" ) SYMBOL\n"
+#~ "\n"
+
+#~ msgid "GNOME window state"
+#~ msgstr "Stan okna GNOME"
+
+#~ msgid "GNOME window hint"
+#~ msgstr "Podpowiedź okna GNOME"
+
+#~ msgid "GNOME window layer"
+#~ msgstr "Warstwa okna GNOME"
+
+#~ msgid "IceWM tray option"
+#~ msgstr "Opcje zasobnika IceWM"
+
+#~ msgid "Can't connect to ESound daemon: %s"
+#~ msgstr "Nie można połączyć się z demonem ESound: %s"
+
+#~ msgid "Error <%d> while uploading `%s:%s'"
+#~ msgstr "Błąd <%d> podczas wysyłania \"%s:%s\""
+
+#~ msgid "Sample <%d> uploaded as `%s:%s'"
+#~ msgstr "Próbka <%d> wysłana jako \"%s:%s\""
+
+#~ msgid "Playing sample #%d: %d"
+#~ msgstr "Odtwarzanie próbki #%d: %d"
+
+#~ msgid "Usage error: "
+#~ msgstr "Błąd użycia: "
+
+#~ msgid "Out of memory for image %s"
+#~ msgstr "Brak pamięci dla obrazu %s"
 
 #~ msgid "_Minimize"
 #~ msgstr "_Minimalizuj"

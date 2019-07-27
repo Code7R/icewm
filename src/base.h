@@ -13,6 +13,9 @@
 #else
 #define OVERRIDE override
 #endif
+#if __cplusplus == 199711L
+#define nullptr NULL
+#endif
 
 /*** Essential Arithmetic Functions *******************************************/
 
@@ -60,7 +63,7 @@ inline T Elvis(T a, T b) {
 
 template <class T>
 inline T non_zero(T x) {
-    return Elvis(x, (T) 1);
+    return Elvis(x, static_cast<T>(1));
 }
 
 template <class L, class R>
@@ -102,6 +105,8 @@ void fail(char const *msg, ...) __attribute__((format(printf, 1, 2) ));
 void msg(char const *msg, ...) __attribute__((format(printf, 1, 2) ));
 void tlog(char const *msg, ...) __attribute__((format(printf, 1, 2) ));
 void precondition(const char *expr, const char *file, int line);
+char* path_lookup(const char* name);
+char* progpath(void);
 void show_backtrace(const int limit = 0);
 
 #define DEPRECATE(x) \
@@ -112,10 +117,6 @@ void show_backtrace(const int limit = 0);
 /*** Misc Stuff (clean up!!!) *************************************************/
 
 #define ACOUNT(x) (sizeof(x)/sizeof(x[0]))
-
-#ifndef DIR_DELIMINATOR
-#define DIR_DELIMINATOR '/'
-#endif
 
 #define REDIR_ROOT(path) (path)
 
@@ -170,17 +171,17 @@ bool testOnce(const char* file, const int line);
 
 template <class M, class B>
 inline bool hasbit(M mask, B bits) {
-    return (mask & bits) != 0;
+    return (mask & static_cast<M>(bits)) != 0;
 }
 
 template <class M, class B>
 inline bool hasbits(M mask, B bits) {
-    return (mask & bits) == (M) bits;
+    return (mask & static_cast<M>(bits)) == static_cast<M>(bits);
 }
 
 template <class M, class B>
 inline bool notbit(M mask, B bits) {
-    return (mask & bits) == 0;
+    return (mask & static_cast<M>(bits)) == 0;
 }
 
 /*
@@ -194,7 +195,7 @@ inline unsigned lowbit(T mask) {
     asm ("bsf %1,%0" : "=r" (bit) : "r" (mask));
 #else
     unsigned bit(0);
-    while (!(mask & (((T) 1) << bit)) && bit < sizeof(mask) * 8) ++bit;
+    while (!(mask & ((static_cast<T>(1)) << bit)) && bit < sizeof(mask) * 8) ++bit;
 #endif
 
     return bit;
@@ -211,7 +212,7 @@ inline unsigned highbit(T mask) {
     asm ("bsr %1,%0" : "=r" (bit) : "r" (mask));
 #else
     unsigned bit(sizeof(mask) * 8 - 1);
-    while (!(mask & (((T) 1) << bit)) && bit > 0) --bit;
+    while (!(mask & ((static_cast<T>(1)) << bit)) && bit > 0) --bit;
 #endif
 
     return bit;
