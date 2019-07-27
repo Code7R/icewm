@@ -116,6 +116,7 @@ YXTrayProxy::YXTrayProxy(const YAtom& atom, YXTray *tray):
     _NET_WM_NAME("_NET_WM_NAME"),
     fTray(tray)
 {
+    setStyle(wsNoExpose);
     setTitle("YXTrayProxy");
     if (isExternal()) {
         long orientation = SYSTEM_TRAY_ORIENTATION_HORZ;
@@ -124,13 +125,11 @@ YXTrayProxy::YXTrayProxy(const YAtom& atom, YXTray *tray):
                         XA_CARDINAL, 32, PropModeReplace,
                         (unsigned char *) &orientation, 1);
 
-    /** Visual not needed as long as we always use the default.
         unsigned long visualid = xapp->visual()->visualid;
         XChangeProperty(xapp->display(), handle(),
                         YAtom("_NET_SYSTEM_TRAY_VISUAL"),
                         XA_VISUALID, 32, PropModeReplace,
                         (unsigned char *) &visualid, 1);
-    **/
     }
 
     XSetSelectionOwner(xapp->display(),
@@ -358,8 +357,8 @@ YXTrayEmbedder::YXTrayEmbedder(YXTray *tray, Window win, Window ldr, cstring tit
     if (fClient->destroyed())
         return;
 
+    setStyle(wsManager | wsNoExpose);
     setParentRelative();
-    setStyle(wsManager);
     setTitle("YXTrayEmbedder");
 
     fClient->setBorderWidth(0);
@@ -398,7 +397,8 @@ YXTrayEmbedder::YXTrayEmbedder(YXTray *tray, Window win, Window ldr, cstring tit
     xev.data.l[4] = 0; // no data2
     xapp->send(xev, win, NoEventMask);
 
-    fClient->setParentRelative();
+    if (xapp->alpha() == false)
+        fClient->setParentRelative();
     fVisible = true;
     fClient->show();
 }
@@ -449,8 +449,11 @@ void YXTrayEmbedder::paint(Graphics &g, const YRect& r) {
 }
 
 void YXTrayEmbedder::configure(const YRect &r) {
-    YWindow::configure(r);
     fClient->setGeometry(YRect(0, 0, r.width(), r.height()));
+}
+
+void YXTrayEmbedder::repaint() {
+    GraphicsBuffer(this).paint();
 }
 
 void YXTrayEmbedder::handleConfigureRequest(const XConfigureRequestEvent &configureRequest)
@@ -477,6 +480,7 @@ YXTray::YXTray(YXTrayNotifier *notifier,
     fRunProxy(internal == false),
     fDrawBevel(drawBevel)
 {
+    setStyle(wsNoExpose);
     setTitle("YXTray");
     setParentRelative();
     fTrayProxy = new YXTrayProxy(atom, this);
@@ -629,12 +633,8 @@ void YXTray::showClient(Window win, bool showClient) {
 }
 
 void YXTray::detachTray() {
-    for (IterType ec = fDocked.reverseIterator(); ++ec; ) {
-        ec->detach();
-    }
     fDocked.clear();
 }
-
 
 void YXTray::paint(Graphics &g, const YRect &/*r*/) {
     if (!fDrawBevel)
@@ -647,8 +647,13 @@ void YXTray::paint(Graphics &g, const YRect &/*r*/) {
 void YXTray::configure(const YRect& rect) {
     bool enforce = (fGeometry != rect);
     fGeometry = rect;
-    YWindow::configure(rect);
+    if (enforce)
+        repaint();
     relayout(enforce);
+}
+
+void YXTray::repaint() {
+    GraphicsBuffer(this).paint();
 }
 
 void YXTray::backgroundChanged() {
