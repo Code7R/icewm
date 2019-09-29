@@ -1,3 +1,9 @@
+icewm (1.6.2+git20190929-1) UNRELEASED; urgency=low
+
+  * New upstream release, plus config build fixes
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 29 Sep 2019 19:02:55 +0200
+
 icewm (1.5.5+git20190728-1) experimental; urgency=low
 
   * New experimental upstream snapshot
