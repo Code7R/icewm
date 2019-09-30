@@ -1,6 +1,8 @@
-icewm (1.6.2+git20190929-1) UNRELEASED; urgency=low
+icewm (1.6.2+git20190929-1) unstable; urgency=low
 
   * New upstream release, plus config build fixes
+  * Stop removing/reinstalling alternatives on every upgrade (closes: #931360)
+  * Added hard Build-Conflicts on libesd0-dev (closes: #896655)
 
  -- Eduard Bloch <blade@debian.org>  Sun, 29 Sep 2019 19:02:55 +0200
 
