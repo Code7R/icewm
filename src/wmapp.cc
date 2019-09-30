@@ -32,6 +32,8 @@
 #include <ft2build.h>
 #include <X11/Xft/Xft.h>
 #endif
+#undef override
+#include <X11/Xproto.h>
 #include "intl.h"
 
 char const *ApplicationName("IceWM");
@@ -41,12 +43,6 @@ void SetLiteDefaults();
 
 YWMApp *wmapp(NULL);
 YWindowManager *manager(NULL);
-
-Atom XA_IcewmWinOptHint(None);
-Atom XA_ICEWM_FONT_PATH(None);
-
-Atom _XA_XROOTPMAP_ID(None);
-Atom _XA_XROOTCOLOR_PIXEL(None);
 
 YCursor YWMApp::sizeRightPointer;
 YCursor YWMApp::sizeTopRightPointer;
@@ -61,11 +57,11 @@ YCursor YWMApp::scrollRightPointer;
 YCursor YWMApp::scrollUpPointer;
 YCursor YWMApp::scrollDownPointer;
 
-lazily<SharedWindowList> windowListMenu;
-lazily<RootMenu> rootMenu;
 lazy<MoveMenu> moveMenu;
 lazy<LayerMenu> layerMenu;
+lazily<SharedWindowList> windowListMenu;
 lazy<LogoutMenu> logoutMenu;
+lazily<RootMenu> rootMenu;
 
 static ref<YIcon> defaultAppIcon;
 
@@ -76,7 +72,6 @@ static bool show_extensions;
 static Window registerProtocols1(char **argv, int argc) {
     long timestamp = CurrentTime;
     YAtom wmSx("WM_S", true);
-    YAtom wm_manager("MANAGER");
 
     Window current_wm = XGetSelectionOwner(xapp->display(), wmSx);
 
@@ -112,16 +107,6 @@ static Window registerProtocols1(char **argv, int argc) {
         msg(_("done."));
     }
 
-    char hostname[64] = { 0, };
-    gethostname(hostname, 64);
-
-    XTextProperty hname = {
-        (unsigned char *) hostname,
-        XA_STRING,
-        8,
-        strnlen(hostname, 64)
-    };
-
     static char wm_class[] = "IceWM";
     static char wm_instance[] = "icewm";
 
@@ -134,14 +119,13 @@ static Window registerProtocols1(char **argv, int argc) {
 
     Xutf8SetWMProperties(xapp->display(), xid, wm_name, NULL,
             argv, argc, NULL, NULL, &class_hint);
-    XSetWMClientMachine(xapp->display(), xid, &hname);
 
     XClientMessageEvent ev;
 
     memset(&ev, 0, sizeof(ev));
     ev.type = ClientMessage;
     ev.window = xroot;
-    ev.message_type = wm_manager;
+    ev.message_type = _XA_MANAGER;
     ev.format = 32;
     ev.data.l[0] = timestamp;
     ev.data.l[1] = wmSx;
@@ -367,14 +351,6 @@ void YWMApp::initIconSize() {
     }
 }
 
-
-void YWMApp::initAtoms() {
-    XA_IcewmWinOptHint = XInternAtom(xapp->display(), "_ICEWM_WINOPTHINT", False);
-    XA_ICEWM_FONT_PATH = XInternAtom(xapp->display(), "ICEWM_FONT_PATH", False);
-    _XA_XROOTPMAP_ID = XInternAtom(xapp->display(), "_XROOTPMAP_ID", False);
-    _XA_XROOTCOLOR_PIXEL = XInternAtom(xapp->display(), "_XROOTCOLOR_PIXEL", False);
-}
-
 static void initFontPath(IApp *app) {
     if (themeName) { // =================== find the current theme directory ===
         upath themesFile(themeName);
@@ -438,7 +414,7 @@ static void initFontPath(IApp *app) {
 
             if (XGetWindowProperty(xapp->display(),
                                    manager->handle(),
-                                   XA_ICEWM_FONT_PATH,
+                                   _XA_ICEWM_FONT_PATH,
                                    0, PATH_MAX, False, XA_STRING,
                                    &r_type, &r_format,
                                    &count, &bytes_remain,
@@ -463,7 +439,7 @@ static void initFontPath(IApp *app) {
 #endif
             // ----------------------------------------- set the new font path ---
             XChangeProperty(xapp->display(), manager->handle(),
-                            XA_ICEWM_FONT_PATH, XA_STRING, 8, PropModeReplace,
+                            _XA_ICEWM_FONT_PATH, XA_STRING, 8, PropModeReplace,
                             (unsigned char *) fontsdir, strlen(fontsdir));
             XSetFontPath(xapp->display(), newFontPath, ndirs + 1);
 
@@ -541,7 +517,7 @@ void LogoutMenu::updatePopup() {
 
             logoutMenu->addItem(_("Restart _Icewm"), -2, null, actionRestart, "restart");
 
-            logoutMenu->addItem(_("Restart _Xterm"), -2, null, actionRestartXterm, "xterm");
+            logoutMenu->addItem(_("Restart _Xterm"), -2, null, actionRestartXterm, TERM);
 
         }
     }
@@ -877,7 +853,7 @@ void YWMApp::actionPerformed(YAction action, unsigned int /*modifiers*/) {
                 if (msgbox)
                     manager->unmanageClient(msgbox);
                 if (operation == YMsgBox::mbOK)
-                    listener->restartClient(QUOTE(XTERMCMD), 0);
+                    listener->restartClient(TERM, nullptr);
             }
         };
         static t_executor delegate(this);
@@ -1085,18 +1061,30 @@ void YWMApp::initFocusMode() {
 }
 
 static void showExtensions() {
-    if (shapesSupported)
-        printf("shapes %d.%d\n", shapeVersionMajor, shapeVersionMinor);
-    else
-        printf("shapes unavailable\n");
-    if (renderSupported)
-        printf("render %d.%d\n", renderVersionMajor, renderVersionMinor);
-    else
-        printf("render unavailable\n");
-    if (xrandrSupported)
-        printf("xrandr %d.%d\n", xrandrVersionMajor, xrandrVersionMinor);
-    else
-        printf("xrandr unavailable\n");
+    struct {
+        const char* str;
+        YExtension* ext;
+    } xs[] = {
+        { "composite", &composite },
+        { "damage",    &damage    },
+        { "fixes",     &fixes     },
+        { "render",    &render    },
+        { "shapes",    &shapes    },
+        { "xrandr",    &xrandr    },
+    };
+    printf("[name]   [ver] [ev][err]\n");
+    for (int i = 0; i < int ACOUNT(xs); ++i) {
+        const char* s = xs[i].str;
+        YExtension* x = xs[i].ext;
+        if (x->versionMajor | x->versionMinor) {
+            printf("%-9s %d.%-2d (%2d, %3d)\n", s,
+                    x->versionMajor, x->versionMinor,
+                    x->eventBase, x->errorBase);
+        }
+        if (!x->supported) {
+            printf("%-9s unsupported\n", s);
+        }
+    }
 }
 
 static int restartWM(const char* displayName, const char* overrideTheme) {
@@ -1193,7 +1181,6 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName,
     actionPerformed(actionWinOptions, 0);
     MenuLoader(this, this, this).loadMenus(findConfigFile("keys"), 0);
 
-    initAtoms();
     initPointers();
 
     if (post_preferences)
@@ -1418,14 +1405,11 @@ void YWMApp::signalGuiEvent(GUIEvent ge) {
     }
     next = now + millitime(100L);
 
-    static Atom GUIEventAtom = None;
     unsigned char num = (unsigned char)ge;
 
-    if (GUIEventAtom == None)
-        GUIEventAtom = XInternAtom(xapp->display(), XA_GUI_EVENT_NAME, False);
     XChangeProperty(xapp->display(), desktop->handle(),
-                    GUIEventAtom, GUIEventAtom, 8, PropModeReplace,
-                    &num, 1);
+                    _XA_ICEWM_GUIEVENT, _XA_ICEWM_GUIEVENT,
+                    8, PropModeReplace, &num, 1);
 }
 
 bool YWMApp::filterEvent(const XEvent &xev) {

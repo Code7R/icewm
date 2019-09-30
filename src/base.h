@@ -15,6 +15,8 @@
 #endif
 #if __cplusplus == 199711L
 #define nullptr NULL
+#define override
+#define final
 #endif
 
 /*** Essential Arithmetic Functions *******************************************/
@@ -106,7 +108,7 @@ void msg(char const *msg, ...) __attribute__((format(printf, 1, 2) ));
 void tlog(char const *msg, ...) __attribute__((format(printf, 1, 2) ));
 void precondition(const char *expr, const char *file, int line);
 char* path_lookup(const char* name);
-char* progpath(void);
+char* progpath();
 void show_backtrace(const int limit = 0);
 
 #define DEPRECATE(x) \
@@ -117,8 +119,6 @@ void show_backtrace(const int limit = 0);
 /*** Misc Stuff (clean up!!!) *************************************************/
 
 #define ACOUNT(x) (sizeof(x)/sizeof(x[0]))
-
-#define REDIR_ROOT(path) (path)
 
 //!!! clean these up
 #define KEY_MODMASK(x) ((x) & (xapp->KeyMask))
@@ -283,6 +283,8 @@ void logShape(const union _XEvent& xev);
 void logVisibility(const union _XEvent& xev);
 void logEvent(const union _XEvent& xev);
 
+typedef const char* (*AtomNameFunc)(unsigned long atom);
+void setAtomName(AtomNameFunc atomNameFunc);
 void setLogEvent(int evtype, bool enable);
 bool toggleLogEvents();
 const char* eventName(int eventType);

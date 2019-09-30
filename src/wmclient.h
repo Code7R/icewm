@@ -19,6 +19,10 @@ typedef int FrameState;
 class ClassHint : public XClassHint {
 public:
     ClassHint() { res_name = res_class = 0; }
+    ClassHint(const char* name, const char* klas) {
+        res_name = strdup(name);
+        res_class = strdup(klas);
+    }
     ~ClassHint() { reset(); }
     void reset() {
         if (res_name) { XFree(res_name); res_name = 0; }
@@ -64,6 +68,7 @@ public:
     virtual unsigned frameOptions() const = 0;
     virtual bool isSticky() const = 0;
     virtual bool isAllWorkspaces() const = 0;
+    virtual bool startMinimized() const = 0;
     virtual void wmOccupyWorkspace(int workspace) = 0;
     virtual void wmOccupyOnlyWorkspace(int workspace) = 0;
     virtual void popupSystemMenu(YWindow *owner) = 0;
@@ -71,6 +76,7 @@ public:
                          unsigned int flags,
                          YWindow *forWindow = 0) = 0;
     virtual void updateSubmenus() = 0;
+    virtual Time since() const = 0;
 protected:
     virtual ~ClientData() {}
 };

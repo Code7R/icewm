@@ -712,12 +712,16 @@ static node *parse(FILE *fp, int flags, node *parent, node *&nextsub, node::node
                     else if (strcmp(entity, "&quot") == 0)
                         c = '"';
                     else if (strcmp(entity, "&nbsp") == 0)
-                        c = 32+128;
+                        c = ' ';    // 32+128;
                     else if (strcmp(entity, "&#160") == 0)
-                        c = 32+128;
+                        c = ' ';    // 32+128;
                     else if (strcmp(entity, "&#8203") == 0)
-                        c = 32+128; // zero width space
-                    else if (strcmp(entity, "&#8212") == 0)
+                        c = ' ';    // 32+128;  zero width space
+                    else if (strcmp(entity, "&#8211") == 0
+                          || strcmp(entity, "&ndash") == 0)
+                        c = '-';    // en dash
+                    else if (strcmp(entity, "&#8212") == 0
+                          || strcmp(entity, "&mdash") == 0)
                         c = '-';    // em dash
                     else if (strcmp(entity, "&#8217") == 0)
                         c = '\'';   // right single quote
@@ -1798,7 +1802,7 @@ void HTextView::handleClick(const XButtonEvent &up, int /*count*/) {
 
 class FileView: public YWindow, public HTListener {
 public:
-    FileView(YApplication *app, const char *path, int argc, char **argv);
+    FileView(YApplication *app, int argc, char **argv);
     ~FileView() {
         delete view;
         delete scroll;
@@ -1831,7 +1835,7 @@ private:
     ref<YPixmap> large_icon;
 };
 
-FileView::FileView(YApplication *iapp, const char *path, int argc, char **argv)
+FileView::FileView(YApplication *iapp, int argc, char **argv)
     : fPath(), app(iapp), view(0), scroll(0)
 {
     setDND(true);
@@ -1885,8 +1889,6 @@ FileView::FileView(YApplication *iapp, const char *path, int argc, char **argv)
     XSetWMProperties(xapp->display(), handle(),
                      &name, &icon, argv, argc,
                      &size, &wmhints, &klas);
-
-    activateURL(path);
 }
 
 void FileView::activateURL(const cstring& url, bool relative) {
@@ -2262,7 +2264,7 @@ int main(int argc, char **argv) {
             else if (is_long_switch(*arg, "sync")) {
                 /*ignore*/; }
             else {
-                char *dummy(0);
+                char *dummy(nullptr);
                 if (GetArgument(dummy, "d", "display", arg, argv + argc)) {
                     /*ignore*/; }
                 else
@@ -2274,7 +2276,7 @@ int main(int argc, char **argv) {
         }
     }
 
-    if (helpfile == 0) {
+    if (helpfile == nullptr) {
         helpfile = ICEHELPIDX;
     }
 
@@ -2282,7 +2284,8 @@ int main(int argc, char **argv) {
 
     YXApplication app(&argc, &argv);
 
-    FileView view(&app, helpfile, argc, argv);
+    FileView view(&app, argc, argv);
+    view.activateURL(helpfile);
 
     if (nodelete) {
         extern Atom _XA_WM_PROTOCOLS;

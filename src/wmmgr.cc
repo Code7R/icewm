@@ -83,7 +83,7 @@ YWindowManager::YWindowManager(
     setStyle(wsManager);
     setPointer(YXApplication::leftPointer);
 #ifdef CONFIG_XRANDR
-    if (xrandrSupported) {
+    if (xrandr.supported) {
 #if RANDR_MAJOR >= 1
         XRRSelectInput(xapp->display(), handle(),
                        RRScreenChangeNotifyMask
@@ -603,7 +603,7 @@ void YWindowManager::handleButton(const XButtonEvent &button) {
             popupWindowListMenu(this, button.x, button.y);
             break;
         }
-    } while (0);
+    } while (false);
     YWindow::handleButton(button);
 }
 
@@ -625,7 +625,7 @@ void YWindowManager::handleClick(const XButtonEvent &up, int count) {
             windowList->showFocused(up.x_root, up.y_root);
             break;
         }
-    } while (0);
+    } while (false);
 }
 
 void YWindowManager::handleConfigure(const XConfigureEvent &configure) {
@@ -1213,7 +1213,7 @@ bool YWindowManager::getSmartPlace(bool down, YFrameWindow *frame1, int &x, int 
     int xn = 0, yn = 0;
     px = x; py = y;
     cover = calcCoverage(down, frame1, x, y, w, h);
-    while (1) {
+    while (true) {
         x = xcoord[xn];
         y = ycoord[yn];
 
@@ -1381,6 +1381,11 @@ void YWindowManager::placeWindow(YFrameWindow *frame,
         WindowOption wo(null);
         frame->getWindowOptions(wo, true);
 
+        if (frame->frameOptions() & YFrameWindow::foClose) {
+            frame->wmClose();
+            doActivate = false;
+        }
+
         if (wo.opacity && inrange(wo.opacity, 1, 100)) {
             Atom omax = 0xFFFFFFFF;
             Atom oper = omax / 100;
@@ -1509,7 +1514,7 @@ YFrameWindow *YWindowManager::manageClient(Window win, bool mapClient) {
 
         // temp workaro/und for flashblock problems
         // reverted, causes problems with Qt5
-        if (client->isEmbed() && 0) {
+        if (client->isEmbed() && false) {
             warn("app trying to map XEmbed window 0x%lX, ignoring", client->handle());
             delete client;
             goto end;
@@ -1531,7 +1536,13 @@ YFrameWindow *YWindowManager::manageClient(Window win, bool mapClient) {
 
     manager->updateFullscreenLayerEnable(false);
 
-    frame = new YFrameWindow(wmActionListener);
+    {
+        unsigned depth = client->depth() == 32 ? 32 : xapp->depth();
+        bool sameDepth = (depth == xapp->depth());
+        Visual* visual = (sameDepth ? xapp->visual() : client->visual());
+        Colormap clmap = (sameDepth ? xapp->colormap() : client->colormap());
+        frame = new YFrameWindow(wmActionListener, depth, visual, clmap);
+    }
 
     if (frame == 0) {
         delete client;
@@ -1597,11 +1608,10 @@ YFrameWindow *YWindowManager::manageClient(Window win, bool mapClient) {
             frame->setAllWorkspaces();
         if (frame->frameOptions() & YFrameWindow::foFullscreen)
             frame->setState(WinStateFullscreen, WinStateFullscreen);
-        if (frame->frameOptions() & (YFrameWindow::foMaximizedVert | YFrameWindow::foMaximizedHorz))
-            frame->setState(WinStateMaximizedVert | WinStateMaximizedHoriz,
-                            ((frame->frameOptions() & YFrameWindow::foMaximizedVert) ? WinStateMaximizedVert : 0) |
-                            ((frame->frameOptions() & YFrameWindow::foMaximizedHorz) ? WinStateMaximizedHoriz : 0));
-        if (frame->frameOptions() & YFrameWindow::foMinimized) {
+        if (frame->frameOptions() & YFrameWindow::foMaximizedBoth)
+            frame->setState(WinStateMaximizedBoth,
+                  (frame->frameOptions() & WinStateMaximizedBoth));
+        if (frame->startMinimized()) {
             frame->setState(WinStateMinimized, WinStateMinimized);
             doActivate = false;
             requestFocus = false;
@@ -2514,7 +2524,7 @@ void YWindowManager::setDesktopGeometry() {
 }
 
 void YWindowManager::setShowingDesktop() {
-    long value = fShowingDesktop ? 1 : 0;
+    long value = fShowingDesktop;
     MSG(("setting: _NET_SHOWING_DESKTOP = %ld", value));
     XChangeProperty(xapp->display(), handle(),
                     _XA_NET_SHOWING_DESKTOP, XA_CARDINAL, 32,
@@ -2862,18 +2872,11 @@ void YWindowManager::resetColormap(bool active) {
 }
 
 void YWindowManager::handleProperty(const XPropertyEvent &property) {
-    if (property.atom == XA_IcewmWinOptHint) {
-        Atom type;
-        int format;
-        unsigned long nitems, lbytes;
-        unsigned char *propdata(0);
-
-        if (XGetWindowProperty(xapp->display(), handle(),
-                               XA_IcewmWinOptHint, 0, 8192,
-                               True, XA_IcewmWinOptHint,
-                               &type, &format, &nitems, &lbytes,
-                               &propdata) == Success && propdata)
-        {
+    if (property.atom == _XA_ICEWM_HINT) {
+        YProperty prop(this, _XA_ICEWM_HINT, F8, 8192, _XA_ICEWM_HINT, True);
+        if (prop) {
+            unsigned long nitems = prop.size();
+            unsigned char* propdata = prop.data<unsigned char>();
             for (unsigned i = 0; i + 3 < nitems; ) {
                 const char* s[3] = { 0, 0, 0, };
                 for (int k = 0; k < 3 && i < nitems; ++k) {
@@ -2884,7 +2887,6 @@ void YWindowManager::handleProperty(const XPropertyEvent &property) {
                     hintOptions->setWinOption(s[0], s[1], s[2]);
                 }
             }
-            XFree(propdata);
         }
     }
     else if (property.atom == _XA_NET_DESKTOP_NAMES) {
@@ -3334,13 +3336,13 @@ bool EdgeSwitch::handleTimer(YTimer *t) {
     int corner  = fManager->layout().corner;
 
     if (rows == 0)
-        rows = (worksps + (columns - 1)) / columns;
+        rows = (worksps + (columns - 1)) / non_zero(columns);
     if (columns == 0)
-        columns = (worksps + (rows - 1)) / rows;
+        columns = (worksps + (rows - 1)) / non_zero(rows);
     if (orient == _NET_WM_ORIENTATION_VERT) {
-        columns = (worksps + (rows - 1)) / rows;
+        columns = (worksps + (rows - 1)) / non_zero(rows);
     } else {
-        rows = (worksps + (columns - 1)) / columns;
+        rows = (worksps + (columns - 1)) / non_zero(columns);
     }
 
     int dx = fVert ? 0 : fDelta;
@@ -3354,8 +3356,8 @@ bool EdgeSwitch::handleTimer(YTimer *t) {
         swap(dx, dy);
     }
 
-    int col = fManager->activeWorkspace() % columns;
-    int row = fManager->activeWorkspace() / columns;
+    int col = fManager->activeWorkspace() % non_zero(columns);
+    int row = fManager->activeWorkspace() / non_zero(columns);
 
     if (dx == 0 && rows == 1) {
         swap(dx, dy);
@@ -3416,6 +3418,10 @@ void YWindowManager::doWMAction(WMAction action) {
 #ifdef CONFIG_XRANDR
 void YWindowManager::handleRRScreenChangeNotify(const XRRScreenChangeNotifyEvent &xrrsc) {
     UpdateScreenSize((XEvent *)&xrrsc);
+}
+
+void YWindowManager::handleRRNotify(const XRRNotifyEvent &notify) {
+    // logRandrNotify((XEvent *)&notify);
 }
 
 void YWindowManager::UpdateScreenSize(XEvent *event) {

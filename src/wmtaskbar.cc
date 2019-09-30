@@ -128,6 +128,7 @@ TaskBar::TaskBar(IApp *app, YWindow *aParent, YActionListener *wmActionListener,
     fMEMStatus(0),
     fCPUStatus(0),
     fApm(0),
+    fNetStatus(0),
     fObjectBar(0),
     fApplications(0),
     fWinList(0),
@@ -154,10 +155,6 @@ TaskBar::TaskBar(IApp *app, YWindow *aParent, YActionListener *wmActionListener,
     initPixmaps();
 
     setStyle(wsNoExpose);
-    setTitle("TaskBar");
-    setWindowTitle(_("Task Bar"));
-    setIconTitle(_("Task Bar"));
-    setClassHint("icewm", "TaskBar");
     //!!!setWinStateHint(WinStateDockHorizontal, WinStateDockHorizontal);
 
     setWinHintsHint(WinHintsSkipFocus |
@@ -175,14 +172,14 @@ TaskBar::TaskBar(IApp *app, YWindow *aParent, YActionListener *wmActionListener,
       //_NET_WM_SYNC_REQUEST,
     };
     XSetWMProtocols(xapp->display(), handle(), protocols, 2);
-    getProtocols(false);
 
     {
-        XWMHints wmh = {};
-        wmh.flags = InputHint;
-        wmh.input = False;
-        wmh.initial_state = WithdrawnState;
-        XSetWMHints(xapp->display(), handle(), &wmh);
+        XWMHints wmhints = { InputHint, False, };
+        ClassHint clhint("icewm", "TaskBar");
+        YTextProperty text("TaskBar");
+        XSetWMProperties(xapp->display(), handle(), &text, &text,
+                         nullptr, 0, nullptr, &wmhints, &clhint);
+        setProperty(_XA_NET_WM_PID, XA_CARDINAL, getpid());
     }
     {
         long wk[4] = { 0, 0, 0, 0 };
@@ -232,6 +229,7 @@ TaskBar::~TaskBar() {
 #ifdef IWM_STATES
     delete fCPUStatus; fCPUStatus = 0;
 #endif
+    delete fNetStatus; fCPUStatus = 0;
     delete fAddressBar; fAddressBar = 0;
     delete fTasks; fTasks = 0;
     delete fWindowTray; fWindowTray = 0;
@@ -294,7 +292,10 @@ void TaskBar::initApplets() {
 #endif
 
     if (taskBarShowNetStatus)
-        fNetStatus.init(new NetStatusControl(app, smActionListener, this, this));
+        fNetStatus = new NetStatusControl(app, smActionListener, this, this);
+    else
+        fNetStatus = nullptr;
+
     if (taskBarShowClock)
         fClock = new YClock(smActionListener, this, this);
     else
@@ -605,7 +606,7 @@ void TaskBar::updateLayout(unsigned &size_w, unsigned &size_h) {
         }
     }
     if (fAddressBar) {
-        int row = taskBarDoubleHeight ? 1 : 0;
+        int row = taskBarDoubleHeight;
 
         fAddressBar->setGeometry(YRect(left[row],
                                        y[row] + 2,
@@ -744,22 +745,23 @@ void TaskBar::updateWMHints() {
 
 void TaskBar::handleCrossing(const XCrossingEvent &crossing) {
     unsigned long last = YWindow::getLastEnterNotifySerial();
-    if (crossing.serial != last &&
-        (crossing.serial != last + 1 || crossing.detail != NotifyVirtual))
-    {
-        if (crossing.type == EnterNotify /* && crossing.mode != NotifyNormal */) {
-            fEdgeTrigger->stopHide();
-        } else if (crossing.type == LeaveNotify /* && crossing.mode != NotifyNormal */) {
-            if (crossing.detail != NotifyInferior &&
-                !(crossing.detail == NotifyVirtual &&
-                  crossing.mode == NotifyGrab) &&
-                !(crossing.detail == NotifyAncestor &&
-                  crossing.mode != NotifyNormal))
-            {
-                MSG(("taskbar hide: %d", crossing.detail));
-                fEdgeTrigger->startHide();
-            } else {
+    bool ahwm_hack = (crossing.serial != last &&
+        (crossing.serial != last + 1 || crossing.detail != NotifyVirtual));
+
+    if (crossing.type == EnterNotify) {
+        fEdgeTrigger->stopHide();
+    }
+    else if (crossing.type == LeaveNotify) {
+        if (crossing.detail == NotifyInferior ||
+           (crossing.detail == NotifyVirtual && crossing.mode == NotifyGrab) ||
+           (crossing.detail == NotifyAncestor && crossing.mode != NotifyNormal))
+        {
+            if (ahwm_hack) {
                 fEdgeTrigger->stopHide();
+            }
+        } else {
+            if (ahwm_hack) {
+                fEdgeTrigger->startHide();
             }
         }
     }

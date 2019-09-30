@@ -121,7 +121,7 @@ bool initLogEvents() {
         // setLogEvent(SelectionRequest, true);
         // setLogEvent(SelectionNotify, true);
         // setLogEvent(ColormapNotify, true);
-        // setLogEvent(ClientMessage, true);
+        setLogEvent(ClientMessage, true);
         // setLogEvent(MappingNotify, true);
         // setLogEvent(GenericEvent, true);
 
@@ -146,6 +146,10 @@ void setLogEvent(int evtype, bool enable) {
     (void) enable;
 #endif
 }
+
+static const char* emptyAtom(Atom atom) { return ""; }
+static AtomNameFunc atomName = emptyAtom;
+void setAtomName(AtomNameFunc func) { atomName = func; }
 
 #undef msg
 #define msg tlog
@@ -176,10 +180,14 @@ void logButton(const union _XEvent& xev) {
 }
 
 void logClientMessage(const union _XEvent& xev) {
-    msg("window=0x%lX: clientMessage message_type=0x%lX format=%d",
+    msg("window=0x%lX: clientMessage %s fmt=%d data=%ld,0x%lx,0x%lx",
         xev.xclient.window,
-        xev.xclient.message_type,
-        xev.xclient.format);
+        atomName(xev.xclient.message_type),
+        xev.xclient.format,
+        xev.xclient.data.l[0],
+        xev.xclient.data.l[1],
+        xev.xclient.data.l[2]
+        );
 }
 
 void logColormap(const union _XEvent& xev) {
@@ -236,8 +244,8 @@ void logCreate(const union _XEvent& xev) {
 }
 
 void logCrossing(const union _XEvent& xev) {
-    msg("window=0x%lX: %s serial=%10lu root=0x%lX, subwindow=0x%lX, time=%ld, "
-        "(%d:%d %d:%d) mode=%d detail=%d same_screen=%s, focus=%s state=0x%X",
+    msg("window=0x%06lX: %s serial=%6lu root=0x%lX, subwindow=0x%lX, time=%ld, "
+        "(%d:%d %d:%d) mode=%s detail=%s same_screen=%s, focus=%s state=0x%X",
         xev.xcrossing.window,
         eventName(xev.type),
         (unsigned long) xev.xany.serial,
@@ -246,8 +254,18 @@ void logCrossing(const union _XEvent& xev) {
         xev.xcrossing.time,
         xev.xcrossing.x, xev.xcrossing.y,
         xev.xcrossing.x_root, xev.xcrossing.y_root,
-        xev.xcrossing.mode,
-        xev.xcrossing.detail,
+        xev.xcrossing.mode == NotifyNormal ? "Normal" :
+        xev.xcrossing.mode == NotifyGrab ? "Grab" :
+        xev.xcrossing.mode == NotifyUngrab ? "Ungrab" :
+        xev.xcrossing.mode == NotifyWhileGrabbed ? "Grabbed" : "Unknown",
+        xev.xcrossing.detail == NotifyAncestor ? "Ancestor" :
+        xev.xcrossing.detail == NotifyVirtual ? "Virtual" :
+        xev.xcrossing.detail == NotifyInferior ? "Inferior" :
+        xev.xcrossing.detail == NotifyNonlinear ? "Nonlinear" :
+        xev.xcrossing.detail == NotifyNonlinearVirtual ? "NonlinearVirtual" :
+        xev.xcrossing.detail == NotifyPointer ? "Pointer" :
+        xev.xcrossing.detail == NotifyPointerRoot ? "PointerRoot" :
+        xev.xcrossing.detail == NotifyDetailNone ? "DetailNone" : "Unknown",
         xev.xcrossing.same_screen ? "True" : "False",
         xev.xcrossing.focus ? "True" : "False",
         xev.xcrossing.state);
@@ -346,11 +364,12 @@ void logMotion(const union _XEvent& xev) {
 }
 
 void logProperty(const union _XEvent& xev) {
-    msg("window=0x%lX: propertyNotify atom=0x%lX time=%ld state=%d",
+    msg("window=0x%lX: propertyNotify %s time=%ld state=%s",
         xev.xproperty.window,
-        xev.xproperty.atom,
+        atomName(xev.xproperty.atom),
         xev.xproperty.time,
-        xev.xproperty.state);
+        xev.xproperty.state == PropertyNewValue ? "NewValue" :
+        xev.xproperty.state == PropertyDelete ? "Delete" : "?");
 }
 
 void logReparent(const union _XEvent& xev) {
@@ -792,7 +811,7 @@ bool GetLongArgument(char* &ret, const char *name, char** &argpp, char **endpp)
 bool GetArgument(char* &ret, const char *sn, const char *ln, char** &arg, char **end)
 {
     bool got = false;
-    if (**arg == '-') {
+    if (arg && *arg && **arg == '-') {
         if (arg[0][1] == '-') {
             got = GetLongArgument(ret, ln, arg, end);
         } else {
@@ -877,7 +896,7 @@ void check_help_version(const char *arg, const char *help, const char *version)
 
 void check_argv(int argc, char **argv, const char *help, const char *version)
 {
-    if (ApplicationName == NULL) {
+    if (ApplicationName == nullptr) {
         ApplicationName = my_basename(argv[0]);
     }
     for (char **arg = argv + 1; arg < argv + argc; ++arg) {

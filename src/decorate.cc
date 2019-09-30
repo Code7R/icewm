@@ -109,7 +109,7 @@ void YFrameWindow::updateSubmenus() {
 
 #ifdef CONFIG_SHAPE
 void YFrameWindow::setShape() {
-    if (!shapesSupported)
+    if (!shapes.supported)
         return ;
 
     if (client()->shaped()) {
@@ -187,11 +187,11 @@ void YFrameWindow::layoutShape() {
         fShapeBorderY = borderY();
 
 #ifdef CONFIG_SHAPE
-        if (shapesSupported &&
+        if (shapes.supported &&
             (frameDecors() & fdBorder) &&
             !(isIconic() || isFullscreen()))
         {
-            int const a(focused() ? 1 : 0);
+            int const a(focused());
             int const t((frameDecors() & fdResize) ? 0 : 1);
 
             Pixmap shape = XCreatePixmap(xapp->display(), desktop->handle(),
@@ -394,8 +394,8 @@ void YFrameWindow::layoutClient() {
         int x = borderX();
         int y = borderY();
         int title = titleY();
-        int w = this->width() - 2 * x;
-        int h = this->height() - 2 * y - title;
+        int w = max(1, int(width()) - 2 * x);
+        int h = max(1, int(height()) - 2 * y - title);
 
         fClientContainer->setGeometry(YRect(x, y + title, w, h));
         fClient->setGeometry(YRect(0, 0, w, h));

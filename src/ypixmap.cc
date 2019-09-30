@@ -62,6 +62,28 @@ YPixmap::~YPixmap() {
             XFreePixmap(xapp->display(), fMask);
         fMask = 0;
     }
+    freePicture();
+}
+
+Picture YPixmap::picture() {
+    if (fPicture == None) {
+        XRenderPictFormat* format = xapp->formatForDepth(fDepth);
+        if (format) {
+            XRenderPictureAttributes attr;
+            unsigned long mask = fMask ? CPClipMask : None;
+            attr.clip_mask = fMask;
+            fPicture = XRenderCreatePicture(xapp->display(), fPixmap,
+                                            format, mask, &attr);
+        }
+    }
+    return fPicture;
+}
+
+void YPixmap::freePicture() {
+    if (fPicture) {
+        XRenderFreePicture(xapp->display(), fPicture);
+        fPicture = None;
+    }
 }
 
 ref<YImage> YPixmap::image() {
@@ -105,15 +127,13 @@ ref<YPixmap> YPixmap::scale(unsigned const w, unsigned const h) {
     if (w == width() && h == height())
         return ref<YPixmap>(this);
 
-    ref<YPixmap> pixmap;
-    pixmap.init(this);
-    ref<YImage> image = YImage::createFromPixmap(pixmap);
-    if (image != null) {
-        image = image->scale(w, h);
-        if (image != null)
-            pixmap = YPixmap::createFromImage(image, depth());
+    if (image() != null) {
+        ref<YImage> scaled(image()->scale(w, h));
+        if (scaled != null) {
+            return YPixmap::createFromImage(scaled, depth());
+        }
     }
-    return pixmap;
+    return null;
 }
 
 ref<YPixmap> YPixmap::subimage(unsigned x, unsigned y, unsigned w, unsigned h) {
@@ -130,8 +150,8 @@ ref<YPixmap> YPixmap::create(unsigned w, unsigned h, unsigned depth, bool useMas
     ref<YPixmap> n;
 
     Pixmap pixmap = createPixmap(w, h, depth);
-    Pixmap mask = useMask ? createMask(w, h) : None;
-    if (pixmap != None && (!useMask || mask != None)) {
+    if (pixmap) {
+        Pixmap mask = useMask ? createMask(w, h) : None;
         n.init(new YPixmap(pixmap, mask, w, h, depth, null));
     }
     return n;

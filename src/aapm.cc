@@ -121,7 +121,7 @@ void YApm::ApmStr(char *s, bool Tool) {
     close(fd);
 
     strlcpy(apmver, "?.?", sizeof apmver);
-    ACstatus = (ai.ac_state == APM_AC_ON) ? 1 : 0;
+    ACstatus = (ai.ac_state == APM_AC_ON) ? AC_ONLINE : AC_UNKNOWN;
     BATflag = (ai.battery_state == APM_BATT_CHARGING) ? 8 : 0;
     BATlife = ai.battery_life;
     BATtime = (ai.minutes_left == 0) ? -1 : ai.minutes_left;
@@ -132,7 +132,7 @@ void YApm::ApmStr(char *s, bool Tool) {
 
     buf[len] = 0;
 
-    acIsOnLine     = (ACstatus == 0x1);
+    acIsOnLine     = (ACstatus == AC_ONLINE);
     energyFull = energyNow = 0;
 
     if ((i = sscanf(buf, "%s %s 0x%x 0x%x 0x%x 0x%x %d%% %d %s",
@@ -182,7 +182,7 @@ void YApm::ApmStr(char *s, bool Tool) {
 
 
 
-    if (ACstatus == 0x1) {
+    if (ACstatus == AC_ONLINE) {
         if (Tool)
             strlcat(s, _(" - Power"), SYS_STR_SIZE);
         else
@@ -938,16 +938,16 @@ void YApm::updateToolTip() {
 
     switch (mode) {
     case ACPI:
-        AcpiStr(s, 1);
+        AcpiStr(s, true);
         break;
     case SYSFS:
-        SysStr(s, 1);
+        SysStr(s, true);
         break;
     case APM:
-        ApmStr(s, 1);
+        ApmStr(s, true);
         break;
     case PMU:
-        PmuStr(s, 1);
+        PmuStr(s, true);
         break;
     }
 
@@ -983,16 +983,16 @@ bool YApm::updateState() {
 
     switch (mode) {
     case ACPI:
-        AcpiStr(s, 0);
+        AcpiStr(s, false);
         break;
     case SYSFS:
-        SysStr(s, 0);
+        SysStr(s, false);
         break;
     case APM:
-        ApmStr(s, 0);
+        ApmStr(s, false);
         break;
     case PMU:
-        PmuStr(s, 0);
+        PmuStr(s, false);
         break;
     }
     MSG((_("power:\t%s"), s));
