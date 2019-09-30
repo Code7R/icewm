@@ -198,10 +198,10 @@ XIV(int, taskBarCPUDelay,                       500)
 XIV(int, taskBarMEMDelay,                       500)
 XIV(int, taskBarNetSamples,                     20)
 XIV(int, taskBarNetDelay,                       500)
-XSV(const char *, cpuCommand,                   TERM " -name top -title Process\\ Status -e top")
+XSV(const char *, cpuCommand,                   TERM " -T 'Process Status' -e top")
 XSV(const char *, cpuClassHint,                 "top.XTerm")
 XIV(bool, cpuCombine,                           true)
-XSV(const char *, netCommand,                   "x-terminal-emulator -name netstat -title 'Network Status' -e /bin/sh /usr/share/icewm/netstat.sh")
+XSV(const char *, netCommand,                   TERM " -T 'Network Status' -e /bin/sh /usr/share/icewm/netstat.sh")
 XSV(const char *, netClassHint,                 "ss.XTerm")
 XSV(const char *, netDevice,                    "[ew]*"
 #ifdef __OpenBSD__
