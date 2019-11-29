@@ -2,6 +2,8 @@ icewm (1.6.3+git20191121-1) UNRELEASED; urgency=low
 
   * New upstream release, plus minor additions
   * handle prerm argument "upgrade" (as no-op)
+  * replaced old FAQ snapshot with latest version from ice-wm.org, now
+    generating with pandoc from markdown (closes: #912530, #924155)
 
  -- Eduard Bloch <blade@debian.org>  Fri, 29 Nov 2019 12:33:44 +0100
 

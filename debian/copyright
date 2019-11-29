@@ -5,6 +5,8 @@ https://github.com/Code7R/icewm that contains code from
 https://github.com/bbidulock/icewm which is based on the original icewm as
 available on http://www.icewm.org/ or in the related Sourceforge project space.
 
+The included FAQ is from https://github.com/ice-wm/FAQ/blob/master/index.md
+
 Upstream Authors:
         Marko Macek <marko.macek@gmx.net>
         Mathias Hasselmann <mathias.hasselmann@gmx.de>
@@ -40,6 +42,11 @@ Various bugfixes and improvements:
       Thorsten “mirabilos” Glaser <t.glaser@tarent.de>
       Tomá¨ Chvátal <tomas.chvatal@gmail.com>
       ... and others
+
+Icewm FAQ:
+- Adam Pribyl <covex@lowlevel.cz>
+- Markus Ackermann <maol@gmx.net>
+- Josef 'Jupp' Schugt <jupp@themes.org>
 
 This software is released under the GNU Lesser General Public Licence. See
 /usr/share/common-licenses/LGPL-2 on Debian systems for details.
