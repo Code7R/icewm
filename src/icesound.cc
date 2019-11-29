@@ -70,7 +70,7 @@
 #undef ENABLE_OSS
 #endif
 
-#ifdef HAVE_SNDFILE_H
+#if defined(ENABLE_ALSA) || defined(ENABLE_AO) || defined(ENABLE_OSS)
 #include <sndfile.h>
 #endif
 
@@ -122,7 +122,6 @@ public:
     virtual bool verbose() const = 0;
     virtual const char* alsaDevice() const = 0;
     virtual const char* ossDevice() const = 0;
-    virtual const char* esdServer() const = 0;
 
     /**
      * Finds a filename for sample with the specified gui event.
@@ -546,9 +545,6 @@ public:
         return ossDeviceFile ? ossDeviceFile :
             deviceFile ? deviceFile : OSS_DEFAULT_DEVICE;
     }
-    virtual const char* esdServer() const {
-        return esdServerName ? esdServerName : getenv("ESPEAKER");
-    }
     virtual char* findSample(int sound) const;
 
     int run();
@@ -560,7 +556,6 @@ private:
     char const* deviceFile;
     char const* alsaDeviceFile;
     char const* ossDeviceFile;
-    char const* esdServerName;
     char const* displayName;
     char const* interfaceNames;
     class YAudioInterface* audio;
@@ -595,7 +590,6 @@ IceSound::IceSound() :
     deviceFile(0),
     alsaDeviceFile(0),
     ossDeviceFile(0),
-    esdServerName(0),
     displayName(0),
     interfaceNames(audio_interfaces),
     audio(0),
@@ -636,7 +630,7 @@ void IceSound::parseArgs(int argc, char** argv)
                 ossDeviceFile = value;
             }
             else if (GetArgument(value, "S", "server", arg, argv + argc)) {
-                esdServerName = value;
+                /*ignore*/;
             }
             else if (GetArgument(value, "z", "snooze", arg, argv + argc)) {
                 long t = strtol(value, NULL, 10);
