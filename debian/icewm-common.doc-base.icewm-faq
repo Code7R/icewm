@@ -6,5 +6,5 @@ Section: Window Managers
 
 
 Format: HTML
-Index: /usr/share/doc/icewm-common/FAQ/IceWM-FAQ.html
-Files: /usr/share/doc/icewm-common/FAQ/*.html
+Index: /usr/share/doc/icewm-common/FAQ/index.html
+Files: /usr/share/doc/icewm-common/FAQ/IceWM-FAQ.html
