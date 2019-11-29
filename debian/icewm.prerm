@@ -20,7 +20,7 @@ case "${1}" in
       update-alternatives --remove x-window-manager /usr/bin/icewm$FLAVOR
       update-alternatives --remove x-session-manager /usr/bin/icewm-session$FLAVOR
       ;;
-   failed-upgrade)
+   failed-upgrade|upgrade)
       ;;
    *)
       echo "prerm called with unknown argument \`${1}'" >&2
