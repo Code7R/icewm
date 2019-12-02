@@ -83,7 +83,7 @@ override_dh_install:
 	install -m 755 debian/netstat.sh $(ICEWM_COMMON)/usr/share/icewm
 	# Extra docs
 	mkdir -p "$(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ"
-	pandoc $(CURDIR)/debian/FAQ/source/index.md -o "$(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ/index.html"
+	pandoc $(CURDIR)/debian/FAQ/source/index.md -o "$(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ/IceWM-FAQ.html"
 	pandoc -t asciidoc $(CURDIR)/debian/FAQ/source/index.md -o "$(ICEWM_COMMON)/usr/share/doc/icewm-common/FAQ/IceWM-FAQ.txt"
 	cd debian ; for x in icewm icewm-lite icewm-experimental ; do mkdir -p $$x/usr/share/lintian/overrides ; cp $$x.lintian $$x/usr/share/lintian/overrides/$$x ; done	
 	sed -e 's,^.link.*fonts.googleapis.*,,' -i "$(ICEWM_COMMON)/usr/share/doc/icewm-common/html/"*.html

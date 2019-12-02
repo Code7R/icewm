@@ -1,6 +1,9 @@
-icewm (1.6.3+git20191121-1) UNRELEASED; urgency=low
+icewm (1.6.3+git20191202-1) UNRELEASED; urgency=low
 
   * New upstream release, plus minor additions
+    - includes some documentation improvements (closes: #771603)
+    - includes some impovements for transparency, SupportSemitransparency
+      should now work for sure (closes: #271012)
   * handle prerm argument "upgrade" (as no-op)
   * replaced old FAQ snapshot with latest version from ice-wm.org, now
     generating with pandoc from markdown (closes: #912530, #924155, #918462)
