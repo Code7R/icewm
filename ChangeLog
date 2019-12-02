@@ -1,3 +1,480 @@
+commit 8800f3c0000f9c85b98a0fedd8870669c18875d7
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Mon Dec 2 12:45:34 2019 +0100
+
+    -p, -s.
+
+ man/icewm.pod | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 2e7d2a82cc6860fc93c9b7a4ed3317936a6050ec
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Mon Dec 2 12:43:29 2019 +0100
+
+    Add --trace to --help.
+
+ src/wmapp.cc | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+commit d6802e6a0d1ba0e966791c683dec131aceaea111
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Dec 1 17:20:09 2019 -0700
+
+    full placement is applicable
+
+ COMPLIANCE | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit f96b7db8e6a0aaa8a4eca7a3244449d2b3cdd460
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Dec 1 21:06:08 2019 +0100
+
+    Focus urgent window if same leader as focused for #358.
+
+ src/wmframe.cc | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+commit 3b207539ed1533f8d696d2f5d4d146bd5477a3eb
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Dec 1 20:14:43 2019 +0100
+
+    Always keep track of WM_CLIENT_LEADER property.
+
+ src/wmclient.cc | 30 +++++++++---------------------
+ 1 file changed, 9 insertions(+), 21 deletions(-)
+
+commit 619f6086a6a2f9706099d757851657e5dc34a9ad
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Dec 1 20:14:20 2019 +0100
+
+    add getAtomName.
+
+ src/base.h  | 1 +
+ src/misc.cc | 3 +++
+ 2 files changed, 4 insertions(+)
+
+commit e1f2fd4b0effb5a29781af20328f17e6f95f1e8d
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sat Nov 30 03:04:01 2019 +0100
+
+    If theme could not be found then try the default theme.
+
+ src/wmapp.cc    | 10 +++++++++-
+ src/wmconfig.cc |  3 ++-
+ src/wmconfig.h  |  2 +-
+ 3 files changed, 12 insertions(+), 3 deletions(-)
+
+commit 6ffe66eb545c0c911751576bccb9af01212fcd53
+Author: Eduard Bloch <blade@debian.org>
+Date:   Fri Nov 29 11:28:42 2019 +0100
+
+    Replaced xterm with XTERMCMD in calculator command
+
+ lib/keys.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit f6c75f3fd155dbf858c388677f7a34aa620bceb1
+Author: Eduard Bloch <blade@debian.org>
+Date:   Mon Nov 18 19:57:08 2019 +0100
+
+    Added explicit hint to check preferences manpage for key inbinding.
+
+    Related to #398 and Debian bug #944414.
+
+ man/icewm-keys.pod | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+commit 1f6c4e2ca243ec6f7a40d265353ac04688497483
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Thu Nov 28 20:28:30 2019 +0100
+
+    Allow mouse pointer buttons to trigger actions from "keys" for #333.
+
+ man/icewm-keys.pod |  2 ++
+ src/wmapp.h        |  5 +++-
+ src/wmmgr.cc       | 80 ++++++++++++++++++++++++++------------------------
+ src/wmprog.cc      |  2 +-
+ src/yconfig.cc     |  6 ++--
+ src/yxapp.cc       |  8 +++++
+ src/yxapp.h        |  3 ++
+ 7 files changed, 63 insertions(+), 43 deletions(-)
+
+commit 230f3d0a7b7021f08b752030eecd312c98a5b709
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Wed Nov 27 00:41:43 2019 +0100
+
+    Update winoptions (+ keys).
+
+ man/icewm-keys.pod       |  2 ++
+ man/icewm-winoptions.pod | 20 +++++++++-----------
+ 2 files changed, 11 insertions(+), 11 deletions(-)
+
+commit 88cfb4445056ce241399b1c30e37d781695551a4
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Nov 26 22:34:47 2019 +0100
+
+    Use "icesh keys" to let icewm reload the keybindings from the "keys" file.
+
+ man/icesh.pod  |  6 +++++-
+ src/bindkey.h  |  7 +++----
+ src/icesh.cc   |  1 +
+ src/wmaction.h |  2 ++
+ src/wmapp.cc   | 13 ++++++++++++-
+ src/wmmgr.cc   |  1 +
+ 6 files changed, 24 insertions(+), 6 deletions(-)
+
+commit d3b263c3999e1c30d778128d9c43733fdcb5b486
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Mon Nov 25 00:03:01 2019 +0100
+
+    Update from released.
+
+ AUTHORS |  107 +-
+ NEWS    | 4358 +++++++----------------------------------------------------
+ 2 files changed, 553 insertions(+), 3912 deletions(-)
+
+commit b35f120542529449eb08cf3f345f5290e2e17101
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Nov 24 23:29:50 2019 +0100
+
+    add ytrace.h.
+
+ src/Makefile.am | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit d1e13a27340ce8527f7b7d523d8f0cc9ceed1e75
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Nov 24 23:29:25 2019 +0100
+
+    Clean .bak files.
+
+ man/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 350ff4c35f16c00de290b65bc02ea2b6d8b7557e
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Nov 24 21:28:49 2019 +0100
+
+    Improve drawing of dashes for window list.
+
+ src/ypaint.cc | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
+
+commit a11a6e9ec3d92dfc3bcdcfec1ee2a46336e6bc13
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Nov 24 16:23:04 2019 +0100
+
+    Clarify icon.
+
+ man/icewm-winoptions.pod | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+commit 9fc1e33ff1ab94b7cd0bc6c6887e10475b97bb25
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Nov 24 14:18:44 2019 +0100
+
+    Improve icon handling in WindowList for #392.
+
+ src/ylistbox.cc | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+commit d7c749d4de2223ef8c5c52b2b5c1b24e7423f359
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Nov 24 12:39:56 2019 +0100
+
+    update po files
+
+ po/ar.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/be.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/bg.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/ca.po     | 382 +++++++++++++++++++++++++--------------------------
+ po/cs.po     | 382 +++++++++++++++++++++++++--------------------------
+ po/da.po     | 382 +++++++++++++++++++++++++--------------------------
+ po/de.po     | 386 +++++++++++++++++++++++++--------------------------
+ po/el.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/en.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/es.po     | 410 +++++++++++++++++++++++++++----------------------------
+ po/fi.po     | 382 +++++++++++++++++++++++++--------------------------
+ po/fr.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/he.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/hr.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/hu.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/icewm.pot | 380 +++++++++++++++++++++++++--------------------------
+ po/id.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/it.po     | 398 ++++++++++++++++++++++++++---------------------------
+ po/ja.po     | 388 ++++++++++++++++++++++++++--------------------------
+ po/ko.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/lt.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/lv.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/mk.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/nb.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/nl.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/no.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/pl.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/pt_BR.po  | 382 +++++++++++++++++++++++++--------------------------
+ po/ro.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/ru.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/sk.po     | 382 +++++++++++++++++++++++++--------------------------
+ po/sl.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/sv.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/tr.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/uk.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/vi.po     | 378 +++++++++++++++++++++++++-------------------------
+ po/zh_CN.po  | 378 +++++++++++++++++++++++++-------------------------
+ po/zh_TW.po  | 378 +++++++++++++++++++++++++-------------------------
+ 38 files changed, 7231 insertions(+), 7229 deletions(-)
+
+commit 3cb65a80a573fd5707fb75bfb5fe8a1e18a3789c
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Nov 24 09:37:37 2019 +0100
+
+    Only premultiply alpha if image depth == 32 for #392.
+
+ src/ypaint.cc | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit fa81e42017eff4fe10583e2b55ab0b97e9e2d11b
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Nov 24 09:31:03 2019 +0100
+
+    Revert "Set alpha threshold to 128 for issue #392."
+
+    This reverts commit 981ce098b467e8e5e52bb1141b2305dc7bc97a41.
+
+ src/yimage_gdk.cc | 2 +-
+ src/yximage.cc    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit b48663e27682ba173743699909a8695c41dc7745
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sat Nov 23 22:12:16 2019 +0100
+
+    Premultiply colors by alpha channel when XRender for #392.
+
+ src/yimage.h      | 2 +-
+ src/yimage_gdk.cc | 9 +++++++--
+ src/ypaint.cc     | 6 ++++--
+ src/ypixmap.cc    | 2 ++
+ src/yximage.cc    | 4 ++--
+ 5 files changed, 16 insertions(+), 7 deletions(-)
+
+commit ffbde63e4d2e98523b9671c5a61371aa84425298
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sat Nov 23 22:05:48 2019 +0100
+
+    Remove ESD server (obsolete EsounD).
+
+ src/icesound.cc | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
+
+commit a5a5bcf1246e35dbc6bd9385c787931c985fa5cd
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sat Nov 23 09:58:45 2019 +0100
+
+    Replace perl by date to reduce dependencies for #397.
+
+ autogen.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 9b93181501ad6be5e03f95adc36b84dc974b5a1f
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Nov 22 23:31:51 2019 +0100
+
+    Document --trace.
+
+ man/icewm.pod | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+commit b9544467fdd4430db9bc0c15cda4f85c0fc2bff8
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Nov 22 23:15:23 2019 +0100
+
+    Trace icon loading and config parsing by --trace="icon,conf".
+
+ src/wmapp.cc    |  2 ++
+ src/wmmenu.cc   |  1 +
+ src/wmoption.cc |  2 ++
+ src/yapp.cc     |  5 +++++
+ src/yapp.h      |  1 +
+ src/yconfig.cc  |  1 +
+ src/yicon.cc    |  1 +
+ src/ytrace.h    | 61 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 8 files changed, 74 insertions(+)
+
+commit 12e03333cf0ba2e5ce8b38148ba0ad14c5136143
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Nov 22 15:00:53 2019 +0100
+
+    Remove eval and indirect variable evaluation for FreeBSD for #397.
+
+ configure.ac | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+commit 32bbabf70cad94f78bce4e872e965180836cb6b2
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Nov 22 15:00:08 2019 +0100
+
+    If either alsa, ao or oss then always include sndfile.h for #397.
+
+ src/icesound.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit df4f26e1fadb187766bd0e81df1031ee16373c74
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Nov 17 11:49:34 2019 -0700
+
+    address issue #398
+
+ man/icewm-preferences.pod | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+commit 00ef17cb031aeabf00e1014348ff086ad36a4457
+Author: Brian Bidulock <bidulock@openss7.org>
+Date:   Sun Nov 17 11:33:34 2019 -0700
+
+    address issue #399
+
+ man/icewm-env.pod          | 4 ++++
+ man/icewm-focus_mode.pod   | 3 +++
+ man/icewm-keys.pod         | 3 +++
+ man/icewm-menu.pod         | 3 +++
+ man/icewm-preferences.pod  | 3 +++
+ man/icewm-prefoverride.pod | 3 +++
+ man/icewm-programs.pod     | 3 +++
+ man/icewm-shutdown.pod     | 3 +++
+ man/icewm-startup.pod      | 3 +++
+ man/icewm-theme.pod        | 3 +++
+ man/icewm-toolbar.pod      | 3 +++
+ man/icewm-winoptions.pod   | 3 +++
+ 12 files changed, 37 insertions(+)
+
+commit a07c9b3472f4666e958b2beb852cbb55edf35dae
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Nov 17 09:51:24 2019 +0100
+
+    Give sed -i option a backup extension for #397.
+
+ man/Makefile.am | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+commit 5074e044b175968f5b88fcdd153350163345e06d
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sat Nov 16 22:22:48 2019 +0100
+
+    Remove duplicate text and simplify restart.
+
+ man/icewm-keys.pod | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+commit 872a8861368f44dddf1829a10129085429a6b5ff
+Author: Kimmo Kujansuu <mrkujansuu@gmail.com>
+Date:   Thu Nov 14 15:56:23 2019 +0000
+
+    Translated using Weblate (Finnish)
+
+    Currently translated at 49.2% (229 of 465 strings)
+
+ po/fi.po | 158 +++++++++++++++++++++++++++++------------------------------
+ 1 file changed, 79 insertions(+), 79 deletions(-)
+
+commit db31ed4008c50d1883f6f2c40c720c1679fc7045
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Tue Nov 12 08:24:22 2019 +0100
+
+    make doActivate declared even if not CONFIG_SESSION for #397.
+
+ src/wmmgr.cc | 2 --
+ 1 file changed, 2 deletions(-)
+
+commit 5968d9f03da10a662adf4606226b09364887fb78
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Thu Oct 31 20:18:13 2019 +0100
+
+    Update taskbar geometry on screen resize for #394.
+
+ src/wmmgr.cc | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+commit 15e3d2b68d69d57d00f6b8432c12acfd1c7ffdd1
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Oct 27 10:17:25 2019 +0100
+
+    Support PNG format for theme image files for issue #377.
+    Improve support for depcrecated linux.xpm for old themes.
+
+ src/wmtaskbar.cc |  8 -------
+ src/wpixmaps.h   |  1 -
+ src/wpixres.cc   | 66 +++++++++++++++++++++++++++++++++++++---------------
+ 3 files changed, 47 insertions(+), 28 deletions(-)
+
+commit 981ce098b467e8e5e52bb1141b2305dc7bc97a41
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sat Oct 26 22:30:41 2019 +0200
+
+    Set alpha threshold to 128 for issue #392.
+
+ src/yimage_gdk.cc | 2 +-
+ src/yximage.cc    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 9b165e866c05a5837da8929facd4b1730a553616
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sat Oct 26 00:51:26 2019 +0200
+
+    Reduce debugging output if not DEBUG.
+
+ src/wmmgr.cc     | 6 +++---
+ src/wmtaskbar.cc | 2 +-
+ src/yxtray.cc    | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+commit b31f08cbe07481ea67e7b9c380171ebd1bafcc5b
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sat Oct 26 00:48:32 2019 +0200
+
+    Highlight current workspace on startup for #393.
+
+ src/aworkspaces.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit bce25cdf041588f7386b376bc2ecc5a7f7e09e47
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Wed Oct 16 09:51:39 2019 +0200
+
+    update version for #389
+
+ configure.ac | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit c8a57a309057354e3897243379f36a9429c93b63
+Author: Artem Polishchuk <tim77@users.noreply.github.com>
+Date:   Sat Oct 12 09:43:28 2019 +0300
+
+    Convert tab to spaces (#390)
+
+ lib/keys.in | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
+
+commit 6aca8ab0472a97e2e528fd8518d81969d53eec39
+Author: Kimmo Kujansuu <mrkujansuu@gmail.com>
+Date:   Sat Oct 5 22:48:20 2019 +0000
+
+    Translated using Weblate (Finnish)
+
+    Currently translated at 36.3% (169 of 465 strings)
+
+ po/fi.po | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
+
+commit a99730fb5b368f9678cfac5c1ff5613d1edf7888
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Sep 29 20:57:01 2019 +0200
+
+    Use install-data instead of install-desktop for ice-wm/icewm#5.
+
+ icewm.spec.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
 commit e13dcbf8f8b0b0401a372906248fd002ba3e3595
 Author: Bert Gijsbers <gijsbers@science.uva.nl>
 Date:   Wed Sep 25 21:57:58 2019 +0200
