@@ -1,6 +1,7 @@
 icewm (1.6.4-1) unstable; urgency=low
 
   * New upstream release
+    + upstream fix for cmake driven build (bc6ff129)
 
  -- Eduard Bloch <blade@debian.org>  Sun, 16 Feb 2020 12:54:58 +0100
 
