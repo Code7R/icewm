@@ -84,18 +84,12 @@ YWindowManager::YWindowManager(
     setPointer(YXApplication::leftPointer);
 #ifdef CONFIG_XRANDR
     if (xrandr.supported) {
-#if RANDR_MAJOR >= 1
         XRRSelectInput(xapp->display(), handle(),
                        RRScreenChangeNotifyMask
-#if RANDR_MINOR >= 2
                        | RRCrtcChangeNotifyMask
                        | RROutputChangeNotifyMask
                        | RROutputPropertyNotifyMask
-#endif
                       );
-#else
-        XRRScreenChangeSelectInput(xapp->display(), handle(), True);
-#endif
     }
 #endif
 
@@ -635,7 +629,7 @@ void YWindowManager::handleClick(const XButtonEvent &up, int count) {
 void YWindowManager::handleConfigure(const XConfigureEvent &configure) {
     if (configure.window == handle()) {
 #ifdef CONFIG_XRANDR
-        UpdateScreenSize((XEvent *)&configure);
+        updateScreenSize((XEvent *)&configure);
 #endif
     }
 }
@@ -2263,7 +2257,7 @@ void YWindowManager::announceWorkArea() {
         }
     }
 
-    const YRect desktopArea(0, 0, desktop->width(), desktop->height());
+    const YRect desktopArea(desktop->geometry());
     for (int ws = 0; ws < nw; ws++) {
         YRect r(desktopArea);
         if (netWorkAreaBehaviour != 1) {
@@ -2963,33 +2957,16 @@ void YWindowManager::updateUserTime(const UserTime& userTime) {
         fLastUserTime = userTime;
 }
 
-void YWindowManager::execAfterFork(const char *command) {
-        if (!command || !*command)
-                return;
-    msg("Running system command in shell: %s", command);
-        pid_t pid = fork();
-    switch(pid) {
-    case -1: /* Failed */
-        fail("fork failed");
-        return;
-    case 0: /* Child */
-        execl("/bin/sh", "sh", "-c", command, (char *) 0);
-        _exit(99);
-    default: /* Parent */
-        return;
-    }
-}
-
 void YWindowManager::checkLogout() {
     if (fShuttingDown && !haveClients()) {
         fShuttingDown = false; /* Only run the command once */
 
         if (rebootOrShutdown == Reboot && nonempty(rebootCommand)) {
             msg("reboot... (%s)", rebootCommand);
-            execAfterFork(rebootCommand);
+            smActionListener->runCommand(rebootCommand);
         } else if (rebootOrShutdown == Shutdown && nonempty(shutdownCommand)) {
             msg("shutdown ... (%s)", shutdownCommand);
-            execAfterFork(shutdownCommand);
+            smActionListener->runCommand(shutdownCommand);
         } else if (rebootOrShutdown == Logout)
             app->exit(0);
     }
@@ -3396,10 +3373,9 @@ end:
     return false;
 }
 
-int YWindowManager::getScreen() {
-    if (fFocusWin)
-        return fFocusWin->getScreen();
-    return 0;
+int YWindowManager::getSwitchScreen() {
+    int s = fFocusWin ? fFocusWin->getScreen() : xineramaPrimaryScreen;
+    return inrange(s, 0, getScreenCount() - 1) ? s : 0;
 }
 
 void YWindowManager::doWMAction(WMAction action) {
@@ -3420,37 +3396,24 @@ void YWindowManager::doWMAction(WMAction action) {
 
 #ifdef CONFIG_XRANDR
 void YWindowManager::handleRRScreenChangeNotify(const XRRScreenChangeNotifyEvent &xrrsc) {
-    UpdateScreenSize((XEvent *)&xrrsc);
+    // logRandrScreen((const union _XEvent&) xrrsc);
+    updateScreenSize((XEvent *)&xrrsc);
 }
 
 void YWindowManager::handleRRNotify(const XRRNotifyEvent &notify) {
-    // logRandrNotify((XEvent *)&notify);
+    // logRandrNotify((const union _XEvent&) notify);
 }
 
-void YWindowManager::UpdateScreenSize(XEvent *event) {
-#if RANDR_MAJOR >= 1
-    XRRUpdateConfiguration(event);
-#endif
-
+void YWindowManager::updateScreenSize(XEvent *event) {
     unsigned nw = xapp->displayWidth();
     unsigned nh = xapp->displayHeight();
-    updateXineramaInfo(nw, nh);
 
-    if (width() != nw ||
-        height() != nh)
-    {
+    XRRUpdateConfiguration(event);
 
-        MSG(("xrandr: %d %d",
-             nw,
-             nh));
-
-        unsigned long data[2];
-        data[0] = nw;
-        data[1] = nh;
-        XChangeProperty(xapp->display(), manager->handle(),
-                        _XA_NET_DESKTOP_GEOMETRY, XA_CARDINAL,
-                        32, PropModeReplace, (unsigned char *)&data, 2);
-
+    if (updateXineramaInfo(nw, nh)) {
+        MSG(("xrandr: %d %d", nw, nh));
+        Atom data[2] = { nw, nh };
+        setProperty(_XA_NET_DESKTOP_GEOMETRY, XA_CARDINAL, data, 2);
         setSize(nw, nh);
         updateWorkArea();
         if (taskBar && pagerShowPreview) {
@@ -3463,7 +3426,7 @@ void YWindowManager::UpdateScreenSize(XEvent *event) {
         for (int i = 0; i < edges.getCount(); ++i)
             edges[i]->setGeometry();
 
-/// TODO #warning "make something better"
+        /// TODO #warning "make something better"
         if (arrangeWindowsOnScreenSizeChange) {
             wmActionListener->actionPerformed(actionArrange, 0);
         }
