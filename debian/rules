@@ -93,6 +93,7 @@ override_dh_auto_clean:
 	rm -rf $(BDIR)-lite $(BDIR)-normal IceWM-FAQ.txt configure.in
 	# the variants are just symlinks
 	rm -f debian/icewm-*.postinst debian/icewm-*.prerm
+	dh_auto_clean
 
 override_dh_installchangelogs:
 	dh_installchangelogs -picewm-common CHANGES

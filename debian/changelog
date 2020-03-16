@@ -1,3 +1,9 @@
+icewm (1.6.5-1) UNRELEASED; urgency=medium
+
+  * Fix dh_auto_clean call
+
+ -- Eduard Bloch <blade@debian.org>  Mon, 16 Mar 2020 20:55:22 +0100
+
 icewm (1.6.4-1) unstable; urgency=low
 
   * New upstream release
