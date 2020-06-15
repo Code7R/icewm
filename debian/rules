@@ -26,7 +26,7 @@ ifeq (linux,$(DEB_TARGET_ARCH_OS))
 endif
 
 %:
-	dh $@ --parallel -Scmake
+	dh $@ -Scmake
 
 # DEBVERSION=$(shell dpkg-parsechangelog -SVersion)
 # that one also works with wheezy

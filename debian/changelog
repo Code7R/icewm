@@ -1,9 +1,9 @@
-icewm (1.6.6-1) UNRELEASED; urgency=low
+icewm (1.6.6-1) unstable; urgency=low
 
   * New upstream release
   * Upgrading compat level to 10, standards to 4.5.0
 
- -- Eduard Bloch <blade@debian.org>  Mon, 15 Jun 2020 19:33:28 +0200
+ -- Eduard Bloch <blade@debian.org>  Mon, 15 Jun 2020 19:46:43 +0200
 
 icewm (1.6.5-1) unstable; urgency=low
 
