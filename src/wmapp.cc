@@ -1648,11 +1648,11 @@ static void print_configured(const char *argv0) {
 #ifdef CONFIG_GDK_PIXBUF_XLIB
     " gdkpixbuf"
 #endif
-#ifdef CONFIG_GNOME_MENUS
-    " gnomemenus"
-#endif
 #ifdef CONFIG_I18N
     " i18n"
+#endif
+#ifdef CONFIG_LIBICONV
+    " libiconv"
 #endif
 #ifdef CONFIG_LIBJPEG
     " libjpeg"
@@ -1695,9 +1695,6 @@ static void print_configured(const char *argv0) {
 #endif
 #ifdef CONFIG_XRANDR
     " xrandr"
-#endif
-#ifdef CONFIG_RENDER
-    " xrender"
 #endif
     "\n";
     printf(_("%s configured options:%s\n"), argv0,
