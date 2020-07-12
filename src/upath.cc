@@ -64,7 +64,7 @@ upath upath::child(const char *npath) const {
 }
 
 upath upath::addExtension(const char *ext) const {
-    return upath(path().append(ext));
+    return upath(mstring(path(), ext));
 }
 
 mstring upath::getExtension() const {

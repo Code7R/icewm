@@ -8,99 +8,112 @@
 #include "ref.h"
 #include <stdlib.h>
 
-/*
- * A reference counted string buffer of arbitrary but fixed size.
- */
-class MStringData {
+#define MSTRING_INPLACE_SIZE (sizeof(mstring::spod) - 1)
+class mstring;
+class mstring_view {
+    const char *m_data;
+    size_t m_size;
 public:
-    MStringData() : fRefCount(0) {}
-
-    int fRefCount;
-    char fStr[];
+    mstring_view(const char *s);
+    mstring_view(const char *s, size_t len);
+    mstring_view(null_ref &) : m_data(nullptr), m_size(0) {}
+    mstring_view() : mstring_view(null) {}
+    mstring_view(const mstring& s);
+    size_t length() const { return m_size; }
+    const char* data() const { return m_data; }
+    bool operator==(mstring_view rv) const;
+    bool isEmpty() const { return length() == 0; }
 };
-
-class MStringRef {
-public:
-    MStringRef(): fStr(nullptr) {}
-    explicit MStringRef(MStringData* data): fStr(data) {}
-    explicit MStringRef(size_t len) { alloc(len); }
-    MStringRef(const char* str, size_t len) { create(str, len); }
-
-    void alloc(size_t len);
-    void create(const char* str, size_t len);
-    operator bool() const { return fStr; }
-    MStringData* operator->() const { return fStr; }
-    bool operator!=(const MStringRef& r) const { return fStr != r.fStr; }
-    char& operator[](size_t index) const { return fStr->fStr[index]; }
-    void operator=(MStringData* data) { fStr = data; }
-    void acquire() const { fStr->fRefCount++; }
-    void release() const { if (fStr->fRefCount-- == 1) free(fStr); }
-
-private:
-
-    MStringData* fStr;
-};
-
 /*
- * Mutable strings with a reference counted string buffer.
+ * Mutable strings with a small string optimization.
  */
 class mstring {
 private:
-    friend class MStringArray;
     friend mstring operator+(const char* s, const mstring& m);
-
-    MStringRef fRef;
-    size_t fOffset;
-    size_t fCount;
-
-    void acquire() {
-        if (fRef) { fRef.acquire(); }
+    friend void swap(mstring& a, mstring& b);
+    friend class mstring_view;
+    struct {
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+        union {
+            size_t fCount;
+            char cBytes[sizeof(size_t)];
+        };
+#endif
+        struct TRefData {
+            char *pData;
+            size_t nUnused;
+            //size_t nUnused2;
+        };
+        union {
+            TRefData ext;
+            char extraBytes[sizeof(TRefData)];
+        };
+#if __BYTE_ORDER__ != __ORDER_LITTLE_ENDIAN__
+        union {
+            size_t fCount;
+            char cBytes[sizeof(size_t)];
+        };
+#endif
+    } spod;
+    const char* data() const;
+    char* data();
+    bool isLocal() const {
+        return (unsigned(spod.cBytes[0]) < MSTRING_INPLACE_SIZE)
+                || (spod.fCount < MSTRING_INPLACE_SIZE);
     }
-    void release() {
-        if (fRef) { fRef.release(); }
-    }
-    mstring(const MStringRef& str, size_t offset, size_t count);
-    mstring(const char* str1, size_t len1, const char* str2, size_t len2);
-    const char* data() const { return &fRef[fOffset]; }
+
+    mstring& extend(size_t amount);
+    // detect parameter data coming from this string, to take the slower path
+    bool input_from_here(mstring_view sv);
 
 public:
-    mstring(const char *str);
-    mstring(const char *str1, const char *str2);
-    mstring(const char *str1, const char *str2, const char *str3);
-    mstring(const char *str, size_t len);
+    mstring(const char *s, size_t len);
+    mstring(mstring_view sv) : mstring(sv.data(), sv.length()) {}
+    mstring(const mstring& s) : mstring(s.data(), s.length()) {}
+    mstring(const char *s) : mstring(mstring_view(s)) {}
+    mstring(mstring&& other);
     explicit mstring(long);
 
-    mstring(null_ref &): fRef(nullptr), fOffset(0), fCount(0) { }
-    mstring():           fRef(nullptr), fOffset(0), fCount(0) { }
+    // fast in-place concatenation for often uses
+    mstring(mstring_view a, mstring_view b, mstring_view c = mstring_view(),
+            mstring_view d = mstring_view(), mstring_view e = mstring_view());
 
-    mstring(const mstring &r):
-        fRef(r.fRef),
-        fOffset(r.fOffset),
-        fCount(r.fCount)
-    {
-        acquire();
+    mstring(null_ref &) { spod.fCount = 0; data()[0] = 0x0; }
+    mstring() { spod.fCount = 0; data()[0] = 0x0; }
+
+    ~mstring() { clear(); };
+
+    size_t length() const { return isLocal() ? spod.cBytes[0] : spod.fCount; }
+    bool isEmpty() const { return 0 == length(); }
+    bool nonempty() const { return !isEmpty(); }
+
+    mstring& operator=(mstring_view rv);
+    mstring& operator=(const mstring& rv) { return *this = mstring_view(rv); }
+    mstring& operator+=(const mstring_view& rv);
+    mstring& operator+=(const mstring& rv) {return *this += mstring_view(rv); }
+    mstring operator+(const mstring_view& rv) const;
+    mstring operator+(const char* s) const { return *this + mstring_view(s); }
+    mstring operator+(const mstring& rv) const {
+        return *this + mstring_view(rv);
     }
-    ~mstring() {
-        release();
-    }
+    // moves might just steal the other buffer
+    mstring& operator=(mstring&& rv);
+    mstring& operator+=(mstring&& rv);
+    mstring operator+(mstring&& rv) const;
+    // plain types
+    mstring& operator=(const char* sz) { return *this = mstring_view(sz); }
+    mstring& operator+=(const char* s) { return *this += mstring_view(s); }
 
-    size_t length() const { return fCount; }
-    size_t offset() const { return fOffset; }
-    bool isEmpty() const { return 0 == fCount; }
-    bool nonempty() const { return 0 < fCount; }
-
-    mstring& operator=(const mstring& rv);
-    void operator+=(const mstring& rv);
-    mstring operator+(const mstring& rv) const;
-
-    bool operator==(const char *rv) const { return equals(rv); }
+    bool operator==(const char * rv) const { return equals(rv); }
+    bool operator==(mstring_view rv) const { return equals(rv); }
     bool operator!=(const char *rv) const { return !equals(rv); }
+    bool operator!=(mstring_view rv) const { return !equals(rv); }
     bool operator==(const mstring &rv) const { return equals(rv); }
     bool operator!=(const mstring &rv) const { return !equals(rv); }
     bool operator==(null_ref &) const { return isEmpty(); }
     bool operator!=(null_ref &) const { return nonempty(); }
 
-    mstring operator=(null_ref &) { return *this = mstring(); }
+    mstring operator=(null_ref &) { clear(); return mstring(); }
     mstring substring(size_t pos) const;
     mstring substring(size_t pos, size_t len) const;
     mstring match(const char* regex, const char* flags = nullptr) const;
@@ -111,17 +124,21 @@ public:
     int lastIndexOf(char ch) const;
     int count(char ch) const;
 
-    bool equals(const char *s) const;
-    bool equals(const char *s, size_t len) const;
-    bool equals(const mstring &s) const;
-    int collate(mstring s, bool ignoreCase = false);
+    bool equals(const char *&sz) const { return equals(mstring_view(sz)); }
+    bool equals(mstring_view sv) const { return sv == *this; }
+    bool equals(const mstring &s) const { return mstring_view(s) == *this; };
+    bool equals(const char *sz, size_t len) const {
+        return equals(mstring_view(sz, len));
+    }
+
+    int collate(const mstring& s, bool ignoreCase = false) const;
     int compareTo(const mstring &s) const;
     bool operator<(const mstring& other) const { return compareTo(other) < 0; }
     bool copyTo(char *dst, size_t len) const;
 
-    bool startsWith(const mstring &s) const;
-    bool endsWith(const mstring &s) const;
-    int find(const mstring &s) const;
+    bool startsWith(mstring_view sv) const;
+    bool endsWith(mstring_view sv) const;
+    int find(mstring_view) const;
 
     bool split(unsigned char token, mstring *left, mstring *remain) const;
     bool splitall(unsigned char token, mstring *left, mstring *remain) const;
@@ -129,21 +146,32 @@ public:
     mstring replace(int position, int len, const mstring &insert) const;
     mstring remove(int position, int len) const;
     mstring insert(int position, const mstring &s) const;
-    mstring append(const mstring &str) const { return *this + str; }
     mstring searchAndReplaceAll(const mstring& s, const mstring& r) const;
     mstring lower() const;
     mstring upper() const;
 
     operator const char *() { return c_str(); }
-    const char* c_str();
+    const char* c_str() const { return data();}
+
+    void clear();
 };
 
-inline bool operator==(const char* s, const mstring& c) { return c == s; }
-inline bool operator!=(const char* s, const mstring& c) { return c != s; }
-
-inline mstring operator+(const char* s, const mstring& m) {
-    return mstring(s) + m;
+inline bool operator==(const char* s, const mstring& c) {
+    return c == s;
 }
+inline bool operator!=(const char* s, const mstring& c) {
+    return !(c == s);
+}
+inline mstring operator+(const char* s, const mstring& m) {
+    return (s && *s) ? (mstring(s) + m) : m;
+}
+inline mstring_view::mstring_view(const char *s, size_t len) :
+        m_data(s), m_size(len) {
+}
+inline mstring_view::mstring_view(const mstring &s) :
+        mstring_view(s.data(), s.length()) {
+}
+void swap(mstring &a, mstring &b);
 
 #endif
 

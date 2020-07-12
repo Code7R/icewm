@@ -343,7 +343,7 @@ void MailCheck::startSSL() {
                 close(other);
             dup2(open("/dev/null", O_WRONLY), 2);
 
-            mstring hostnamePort(mstring(fURL.host, ":", mstring(fPort)));
+            mstring hostnamePort(fURL.host, ":", mstring(fPort));
             const char* args[] = {
                 file, "s_client", "-quiet", "-no_ign_eof",
                 "-connect", hostnamePort, nullptr
@@ -939,9 +939,9 @@ void MailBoxControl::populate()
     if (fMailBoxes.isEmpty() &&
         ((env = getenv("LOGNAME")) != nullptr || (env = getlogin()) != nullptr))
     {
-        const char* varmail[] = { "/var/spool/mail/", "/var/mail/", };
-        for (int i = 0; i < int ACOUNT(varmail); ++i) {
-            upath s(mstring(varmail[i], env));
+        const static mstring_view varmail[] = { "/var/spool/mail/", "/var/mail/", };
+        for (const auto& it: varmail) {
+            upath s(mstring(it, env));
             if (s.isReadable()) {
                 createStatus(s);
                 break;

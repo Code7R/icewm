@@ -19,6 +19,7 @@
 #include <string.h>
 #include "base.h"
 #include "ref.h"
+#include <deque>
 
 template <class DataType>
 class YArray;
@@ -26,7 +27,8 @@ template <class DataType, class ArrayType = YArray<DataType> >
 class YArrayIterator;
 
 /*******************************************************************************
- * A dynamic array for anonymous data
+ * A dynamic array for anonymous data.
+ * Data is expected to be trivially copyable!
  ******************************************************************************/
 
 class YBaseArray {
@@ -105,6 +107,7 @@ private:
 
 /*******************************************************************************
  * A dynamic array for typed data
+ * Data is expected to be trivially copyable!
  ******************************************************************************/
 
 template <class DataType>
@@ -368,83 +371,38 @@ public:
 
 /*******************************************************************************
  * An array of mstrings
+ * Using std type because YBaseArray trivially-copying behavior
+ * does not work well for data with pointers.
+ * This adapter contains a few wrappers to disguise this as original
+ * MStringArray class.
  ******************************************************************************/
 
 #ifdef MSTRING_H
-class MStringArray: public YArray<mstring> {
+class MStringArray: public std::deque<mstring> {
 public:
-    typedef YArray<mstring> BaseType;
-    typedef BaseType::IterType IterType;
 
-    MStringArray() { }
-    MStringArray(MStringArray& other) :
-        YArray<mstring>(static_cast<BaseType&>(other))
-    { }
-
-    MStringArray(const MStringArray& other) :
-        YArray<mstring>(static_cast<const BaseType&>(other))
-    {
-        for (SizeType i = 0; i < getCount(); ++i)
-            getItemPtr(i)->acquire();
+    void append(mstring item) { *this += std::move(item); }
+    void insert(int index, const mstring& item) {
+        std::deque<mstring>::insert(begin() + index, item);
     }
-
-    MStringArray(const YStringArray& other): YArray<mstring>(other.getCount())
-    {
-        for (SizeType i = 0; i < getCount(); ++i) {
-            mstring copy(other[i]);
-            append(copy);
-        }
+    void insert(int index, mstring&& item) {
+        std::deque<mstring>::insert(begin() + index, std::move(item));
     }
-
-    virtual ~MStringArray() {
-        clear();
-    }
-
-    void append(mstring item) {
-        item.acquire();
-        YBaseArray::append(&item);
-    }
-    void insert(const SizeType index, mstring item) {
-        item.acquire();
-        YBaseArray::insert(index, &item);
-    }
-
-    mstring& getItem(const SizeType index) const {
-        return *getItemPtr(index);
-    }
-    mstring& operator[](const SizeType index) const {
-        return getItem(index);
-    }
+    mstring& getItem(const size_t index) { return at(index); }
+    mstring& operator[](const size_t index) { return at(index); }
+    const mstring& operator[](const size_t index) const { return at(index); }
     MStringArray& operator+=(const mstring& item) {
-        append(item); return *this;
+        push_back(item); return *this;
+    }
+    MStringArray& operator+=(mstring&& item) {
+        emplace_back(item); return *this;
     }
 
-    virtual void remove(const SizeType index) {
-        if (index < getCount()) {
-            getItemPtr(index)->release();
-            YBaseArray::remove(index);
-        }
-    }
-
-    virtual void clear() {
-        for (SizeType i = 0; i < getCount(); ++i)
-            getItemPtr(i)->release();
-        YBaseArray::clear();
-    }
-
-    virtual void shrink(int reducedCount) {
-        for (SizeType n = getCount(); n > reducedCount; )
-            getItemPtr(--n)->release();
-        YBaseArray::shrink(reducedCount);
-    }
-
+    void remove(const size_t index) { erase(begin() + index); }
     void sort();
-
-private:
-    mstring* getItemPtr(const SizeType index) const {
-        return static_cast<mstring *>(
-                const_cast<void *>(YBaseArray::getItem(index)));
-    }
+    int getCount() const { return size(); }
+    bool nonempty() const { return !empty(); }
+    bool isEmpty() const { return empty(); }
 };
 #endif /* MSTRING_H */
 
