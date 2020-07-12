@@ -360,6 +360,8 @@ public:
 #ifdef MSTRING_H
 class MStringArray: public YArray<mstring> {
 public:
+    void sort();
+#if 0
     typedef YArray<mstring> BaseType;
     typedef BaseType::IterType IterType;
 
@@ -425,13 +427,12 @@ public:
         YBaseArray::shrink(reducedCount);
     }
 
-    void sort();
-
 private:
     mstring* getItemPtr(const SizeType index) const {
         return static_cast<mstring *>(
                 const_cast<void *>(YBaseArray::getItem(index)));
     }
+#endif
 };
 #endif /* MSTRING_H */
 

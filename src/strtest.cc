@@ -517,14 +517,15 @@ static void test_sdir()
     {
         sdir s("/etc");
         assert(s.path(), s.isOpen());
-        char buf[300] = "";
+        char prevBuf[300] = "";
         while (s.next()) {
             mstring c(s.entry());
             const char *e = c.c_str();
-            assert(e, strcoll(buf, e) < 0);
-            strlcpy(buf, e, sizeof buf);
+            auto r = strcoll(prevBuf, e);
+            assert(e, r < 0);
+            strlcpy(prevBuf, e, sizeof prevBuf);
         }
-        assert(buf, strcoll(buf, "~~~~~~~~~") < 0);
+        assert(prevBuf, strcoll(prevBuf, "~~~~~~~~~") < 0);
     }
 
 }

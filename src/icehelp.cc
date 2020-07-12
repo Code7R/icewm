@@ -830,7 +830,7 @@ public:
     History() : where(-1) { }
     bool empty() const { return array.isEmpty(); }
     int size() const { return array.getCount(); }
-    const char* get(int i) const { return array[i]; }
+    const char* get(int i) const { return array[i].c_str(); }
     void push(const mstring& s) {
         if (where == -1 || (s.nonempty() && s != get(where))) {
             for (int k = size() - 1; k > where; --k) {

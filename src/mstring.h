@@ -9,59 +9,29 @@
 #include <stdlib.h>
 
 /*
- * A reference counted string buffer of arbitrary but fixed size.
- */
-class MStringData {
-public:
-    MStringData() : fRefCount(0) {}
-
-    int fRefCount;
-    char fStr[];
-};
-
-class MStringRef {
-public:
-    MStringRef(): fStr(nullptr) {}
-    explicit MStringRef(MStringData* data): fStr(data) {}
-    explicit MStringRef(size_t len) { alloc(len); }
-    MStringRef(const char* str, size_t len) { create(str, len); }
-
-    void alloc(size_t len);
-    void create(const char* str, size_t len);
-    operator bool() const { return fStr; }
-    MStringData* operator->() const { return fStr; }
-    bool operator!=(const MStringRef& r) const { return fStr != r.fStr; }
-    char& operator[](size_t index) const { return fStr->fStr[index]; }
-    void operator=(MStringData* data) { fStr = data; }
-    void acquire() const { fStr->fRefCount++; }
-    void release() const { if (fStr->fRefCount-- == 1) free(fStr); }
-
-private:
-
-    MStringData* fStr;
-};
-
-/*
  * Mutable strings with a reference counted string buffer.
  */
 class mstring {
 private:
-    friend class MStringArray;
     friend mstring operator+(const char* s, const mstring& m);
 
-    MStringRef fRef;
-    size_t fOffset;
-    size_t fCount;
-
-    void acquire() {
-        if (fRef) { fRef.acquire(); }
-    }
-    void release() {
-        if (fRef) { fRef.release(); }
-    }
-    mstring(const MStringRef& str, size_t offset, size_t count);
+    struct TRefData
+    {
+        size_t fCount;
+        char *pData;
+        size_t just_padding; // to be used in case we need an offset for in-place trim later
+        size_t just_padding2; // to be used in case we need an offset for in-place trim later
+    };
+    union
+    {
+        TRefData ext;
+        char here[sizeof(TRefData)];
+    };
     mstring(const char* str1, size_t len1, const char* str2, size_t len2);
-    const char* data() const { return &fRef[fOffset]; }
+    const char* data() const;
+    char* data();
+    bool isExt() const;
+    mstring(const char *str, size_t len, bool nocopy);
 
 public:
     mstring(const char *str);
@@ -70,26 +40,20 @@ public:
     mstring(const char *str, size_t len);
     explicit mstring(long);
 
-    mstring(null_ref &): fRef(nullptr), fOffset(0), fCount(0) { }
-    mstring():           fRef(nullptr), fOffset(0), fCount(0) { }
+    mstring(null_ref &) { ext.fCount = 0; data()[0] = 0x0; }
+    mstring() { ext.fCount = 0; data()[0] = 0x0; }
 
-    mstring(const mstring &r):
-        fRef(r.fRef),
-        fOffset(r.fOffset),
-        fCount(r.fCount)
-    {
-        acquire();
-    }
-    ~mstring() {
-        release();
-    }
+    mstring(const mstring &r) : mstring(r.data(), r.length()) {};
+    mstring(mstring&& other);
+    ~mstring();
 
-    size_t length() const { return fCount; }
-    size_t offset() const { return fOffset; }
-    bool isEmpty() const { return 0 == fCount; }
-    bool nonempty() const { return 0 < fCount; }
+    size_t length() const { return ext.fCount; }
+//    size_t offset() const { return fOffset; }
+    bool isEmpty() const { return 0 == ext.fCount; }
+    bool nonempty() const { return !isEmpty(); }
 
     mstring& operator=(const mstring& rv);
+    mstring& operator=(mstring&& rv);
     void operator+=(const mstring& rv);
     mstring operator+(const mstring& rv) const;
 
@@ -134,7 +98,8 @@ public:
     mstring upper() const;
 
     operator const char *() { return c_str(); }
-    const char* c_str();
+    const char* c_str() const { auto ret=data();
+    return ret;};
 };
 
 inline bool operator==(const char* s, const mstring& c) { return c == s; }

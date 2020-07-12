@@ -14,6 +14,11 @@
 #include "base.h"
 #include "ascii.h"
 
+
+#define dsoffset offsetof(mstring::TRefData, pData)
+#define dsmax (sizeof(mstring::TRefData) - dsoffset)
+
+/*
 void MStringRef::alloc(size_t len) {
     fStr = new (malloc(sizeof(MStringData) + len + 1)) MStringData();
 }
@@ -52,74 +57,143 @@ mstring::mstring(const char* str1, size_t len1, const char* str2, size_t len2):
         fRef.acquire();
     }
 }
+*/
 
 mstring::mstring(const char* str):
     mstring(str, str ? strlen(str) : 0)
 {
 }
 
-mstring::mstring(const char* str, size_t len):
-    fRef(str, len), fOffset(0), fCount(len)
+mstring::mstring(const char* str, size_t len) : mstring(str, len, false)
 {
-    acquire();
 }
 
-mstring::mstring(const char *str1, const char *str2):
-    mstring(str1, str1 ? strlen(str1) : 0, str2, str2 ? strlen(str2) : 0)
+mstring::mstring(const char* str, size_t len, bool nocopy)
 {
+    ext.fCount = len;
+    if(isExt())
+        ext.pData = (char*) malloc(len+1);
+    if(nocopy)
+        return;
+    memcpy(data(), str, len);
+    data()[len] = 0x0;
 }
 
 mstring::mstring(const char *str1, const char *str2, const char *str3) {
     size_t len1 = str1 ? strlen(str1) : 0;
     size_t len2 = str2 ? strlen(str2) : 0;
     size_t len3 = str3 ? strlen(str3) : 0;
-    fOffset = 0;
-    fCount = len1 + len2 + len3;
-    fRef.alloc(fCount);
-    if (len1) memcpy(fRef->fStr, str1, len1);
-    if (len2) memcpy(fRef->fStr + len1, str2, len2);
-    if (len3) memcpy(fRef->fStr + len1 + len2, str3, len3);
-    fRef[fCount] = 0;
-    fRef.acquire();
+    ext.fCount = len1 + len2 + len3;
+    if (isExt()) ext.pData = (char*) malloc(ext.fCount + 1);
+    if(len1) memcpy(data(), str1, len1);
+    if(len2) memcpy(data() + len1, str2, len2);
+    if(len3) memcpy(data() + len1 + len2, str3, len3);
+    data()[ext.fCount] = 0x0;
 }
 
-mstring::mstring(long n):
-    fRef(size_t(23)), fOffset(0), fCount(0)
+
+mstring::mstring(const char *str1, size_t len1, const char *str2, size_t len2)
 {
-    snprintf(fRef->fStr, 23, "%ld", n);
-    fCount = strlen(fRef->fStr);
-    fRef.acquire();
+    ext.fCount = len1 + len2;
+    if (isExt())
+        ext.pData = (char*) malloc(ext.fCount + 1);
+    if (len1)
+        memcpy(data(), str1, len1);
+    if (len2)
+        memcpy(data() + len1, str2, len2);
+    data()[ext.fCount] = 0x0;
 }
+
+mstring::mstring(mstring&& r)
+{
+    (*this) = r;
+}
+
+mstring::~mstring() {
+    if(isExt())
+        free(data());
+    ext.fCount=0;
+}
+
+mstring::mstring(const char *str1, const char *str2) :
+        mstring(str1, str1?strlen(str1):0, str2, str2?strlen(str2):0) {
+}
+
 
 mstring mstring::operator+(const mstring& rv) const {
-    return rv.isEmpty() ? *this : isEmpty() ? rv :
-        mstring(data(), length(), rv.data(), rv.length());
+    return mstring(data(), length(), rv.data(), rv.length());
 }
 
 void mstring::operator+=(const mstring& rv) {
-    *this = *this + rv;
+    auto nlen = rv.length() + length();
+    if (isExt()) {
+        auto pNew = (char*) realloc((void*) ext.pData, nlen + 1);
+        // XXX: do something more useful if failed?
+        if (pNew == ext.pData)
+            abort();
+        ext.pData = pNew;
+    } else if (nlen + 1 >= dsmax) {
+        // ATM local, to become external -> transition
+        auto p = (char*) malloc(ext.fCount + 1);
+        memcpy(p, data(), ext.fCount);
+        ext.pData = p;
+    }
+    auto dst = data() + ext.fCount;
+    memcpy(dst, rv.data(), rv.length());
+    ext.fCount+=rv.length();
+    dst[rv.length()] = 0x0;
 }
 
-mstring& mstring::operator=(const mstring& rv) {
-    if (fRef != rv.fRef) {
-        release();
-        fRef = rv.fRef;
-        acquire();
+mstring& mstring::operator=(const mstring &rv) {
+    if(&rv == this)
+        return *this;
+
+    if(rv.isExt())
+    {
+        ext.fCount = rv.ext.fCount;
+        ext.pData = (char*) malloc(ext.fCount + 1);
+        memcpy(ext.pData, rv.ext.pData, rv.ext.fCount+1); // with terminator
     }
-    fOffset = rv.fOffset;
-    fCount = rv.fCount;
+    else
+        memcpy(here, rv.here, sizeof(here));
+    return *this;
+}
+
+
+mstring& mstring::operator=(mstring&& rv) {
+    if(this == &rv)
+        return *this;
+
+    if(isExt())
+    {
+        free(ext.pData);
+    }
+    ext.fCount = rv.ext.fCount;
+
+    if(rv.isExt())
+    {
+        ext.pData = rv.ext.pData;
+        rv.ext.pData = nullptr;
+        rv.ext.fCount = 0;
+    }
+    else
+    {
+        memcpy(data(), rv.data(), rv.length());
+        data()[ext.fCount] = 0x0;
+    }
+
     return *this;
 }
 
 mstring mstring::substring(size_t pos) const {
     return pos <= length()
-        ? mstring(fRef, fOffset + pos, fCount - pos)
+        ? mstring(data() + pos, ext.fCount - pos)
         : null;
 }
 
 mstring mstring::substring(size_t pos, size_t len) const {
     return pos <= length()
-        ? mstring(fRef, fOffset + pos, min(len, fCount - pos))
+        ? mstring(data() + pos, min(len, ext.fCount - pos))
         : null;
 }
 
@@ -172,13 +246,13 @@ int mstring::find(const mstring &str) const {
 
 int mstring::indexOf(char ch) const {
     const char *str = isEmpty() ? nullptr :
-        static_cast<const char *>(memchr(data(), ch, fCount));
+        static_cast<const char *>(memchr(data(), ch, ext.fCount));
     return str ? int(str - data()) : -1;
 }
 
 int mstring::lastIndexOf(char ch) const {
     const char *str = isEmpty() ? nullptr :
-        static_cast<const char *>(memrchr(data(), ch, fCount));
+        static_cast<const char *>(memrchr(data(), ch, ext.fCount));
     return str ? int(str - data()) : -1;
 }
 
@@ -220,11 +294,11 @@ int mstring::compareTo(const mstring &s) const {
 
 bool mstring::copyTo(char *dst, size_t len) const {
     if (len > 0) {
-        size_t copy = min(len - 1, fCount);
+        size_t copy = min(len - 1, ext.fCount);
         if (copy) memcpy(dst, data(), copy);
         dst[copy] = 0;
     }
-    return fCount < len;
+    return ext.fCount < len;
 }
 
 mstring mstring::replace(int pos, int len, const mstring &insert) const {
@@ -254,18 +328,20 @@ mstring mstring::searchAndReplaceAll(const mstring& s, const mstring& r) const {
 }
 
 mstring mstring::lower() const {
-    mstring mstr(nullptr, fCount);
-    for (size_t i = 0; i < fCount; ++i) {
-        mstr.fRef[i] = ASCII::toLower(data()[i]);
+    mstring mstr(nullptr, ext.fCount, true);
+    for (size_t i = 0; i < ext.fCount; ++i) {
+        mstr.data()[i] = ASCII::toLower(data()[i]);
     }
+    mstr.data()[ext.fCount] = 0x0;
     return mstr;
 }
 
 mstring mstring::upper() const {
-    mstring mstr(nullptr, fCount);
-    for (size_t i = 0; i < fCount; ++i) {
-        mstr.fRef[i] = ASCII::toUpper(data()[i]);
+    mstring mstr(nullptr, ext.fCount, true);
+    for (size_t i = 0; i < ext.fCount; ++i) {
+        mstr.data()[i] = ASCII::toUpper(data()[i]);
     }
+    mstr.data()[ext.fCount] = 0x0;
     return mstr;
 }
 
@@ -278,25 +354,6 @@ mstring mstring::trim() const {
         --n;
     }
     return substring(k, n - k);
-}
-
-const char* mstring::c_str()
-{
-    if (isEmpty()) {
-        return "";
-    }
-    else if (data()[fCount]) {
-        if (fRef->fRefCount == 1) {
-            fRef[fOffset + fCount] = '\0';
-        } else {
-            const char* str = data();
-            fRef.release();
-            fRef.create(str, fCount);
-            fRef.acquire();
-            fOffset = 0;
-        }
-    }
-    return data();
 }
 
 mstring mstring::match(const char* regex, const char* flags) const {
@@ -312,6 +369,7 @@ mstring mstring::match(const char* regex, const char* flags) const {
     }
 
     regex_t preg;
+    // XXX: maybe the compiled result should be cached for reuse, giving the user some handle to store
     int comp = regcomp(&preg, regex, compFlags);
     if (comp) {
         if (testOnce(regex, __LINE__)) {
@@ -331,6 +389,22 @@ mstring mstring::match(const char* regex, const char* flags) const {
         return null;
 
     return mstring(data() + pos.rm_so, size_t(pos.rm_eo - pos.rm_so));
+}
+
+const char* mstring::data() const {
+    return isExt() ? ext.pData : here + dsoffset;
+}
+char* mstring::data() {
+    return isExt() ? ext.pData : here + dsoffset;
+}
+bool mstring::isExt() const
+{
+    static_assert(offsetof(mstring::TRefData, pData) < sizeof(mstring::TRefData) - dsoffset);
+    return ext.fCount >= dsmax;
+}
+
+mstring::mstring(long n) {
+    ext.fCount = snprintf(data(), dsmax, "%ld", n);
 }
 
 // vim: set sw=4 ts=4 et:
