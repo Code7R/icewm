@@ -123,6 +123,7 @@ get-orig-source:
 
 update-debian-mod:
 	grep debian .git/HEAD
-	set -x && git log $$(git log $(UPSTREAM_BRANCH) ChangeLog | head -n1  | cut -c 8- )..$(UPSTREAM_BRANCH) --stat=76 -M -C |fmt -sct -w80 > ChangeLog
-	git show $(UPSTREAM_BRANCH):ChangeLog >> ChangeLog
+	set -x && (echo -e "# created with git log --stat=76 -M -C -500|fmt -sct -w80\n" ; \
+		  git log $(UPSTREAM_BRANCH) --stat=76 -M -C -500|fmt -sct -w80 \
+		)|head -10000 > ChangeLog
 	git commit ChangeLog -m "Updating ChangeLog for a new Debian snapshot"
