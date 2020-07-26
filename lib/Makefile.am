@@ -447,8 +447,6 @@ nobase_dist_pkgdata_DATA = \
 	themes/NanoBlue/dframeIT.xpm \
 	themes/NanoBlue/dframeITL.xpm \
 	themes/NanoBlue/dframeITR.xpm \
-	themes/NanoBlue/drameAB.xpm \
-	themes/NanoBlue/drameATR.xpm \
 	themes/NanoBlue/eos.jpg \
 	themes/NanoBlue/expandA.xpm \
 	themes/NanoBlue/expandI.xpm \
@@ -507,21 +505,22 @@ nobase_dist_pkgdata_DATA = \
 	themes/NanoBlue/taskbar/windows.xpm \
 	themes/NanoBlue/taskbar/workspacebuttonactive.xpm \
 	themes/NanoBlue/taskbar/workspacebuttonbg.xpm \
-	themes/NanoBlue/icons/IceWM_16x16.png \
-	themes/NanoBlue/icons/IceWM_32x32.png \
-	themes/NanoBlue/icons/app_16x16.png \
-	themes/NanoBlue/icons/firefox_16x16.png \
-	themes/NanoBlue/icons/firefox_32x32.png \
-	themes/NanoBlue/icons/folder_16x16.png \
-	themes/NanoBlue/icons/folder_32x32.png \
-	themes/NanoBlue/icons/gimp_16x16.png \
-	themes/NanoBlue/icons/gimp_32x32.png \
-	themes/NanoBlue/icons/mplayer_16x16.png \
-	themes/NanoBlue/icons/mplayer_32x32.png \
-	themes/NanoBlue/icons/thunderbird_16x16.png \
-	themes/NanoBlue/icons/thunderbird_32x32.png \
-	themes/NanoBlue/icons/xterm_16x16.png \
-	themes/NanoBlue/icons/xterm_32x32.png \
+	themes/NanoBlue/icons/IceWM_16x16.xpm \
+	themes/NanoBlue/icons/IceWM_32x32.xpm \
+	themes/NanoBlue/icons/app_16x16.xpm \
+	themes/NanoBlue/icons/app_32x32.xpm \
+	themes/NanoBlue/icons/firefox_16x16.xpm \
+	themes/NanoBlue/icons/firefox_32x32.xpm \
+	themes/NanoBlue/icons/folder_16x16.xpm \
+	themes/NanoBlue/icons/folder_32x32.xpm \
+	themes/NanoBlue/icons/gimp_16x16.xpm \
+	themes/NanoBlue/icons/gimp_32x32.xpm \
+	themes/NanoBlue/icons/mplayer_16x16.xpm \
+	themes/NanoBlue/icons/mplayer_32x32.xpm \
+	themes/NanoBlue/icons/thunderbird_16x16.xpm \
+	themes/NanoBlue/icons/thunderbird_32x32.xpm \
+	themes/NanoBlue/icons/xterm_16x16.xpm \
+	themes/NanoBlue/icons/xterm_32x32.xpm \
 	themes/NanoBlue/ledclock/a.xpm \
 	themes/NanoBlue/ledclock/colon.xpm \
 	themes/NanoBlue/ledclock/dot.xpm \

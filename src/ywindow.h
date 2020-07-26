@@ -100,9 +100,6 @@ public:
     virtual void handleSelectionRequest(const XSelectionRequestEvent &request);
     virtual void handleSelection(const XSelectionEvent &selection);
     virtual void handleVisibility(const XVisibilityEvent &visibility);
-#if 0
-    virtual void handleCreateWindow(const XCreateWindowEvent &createWindow);
-#endif
     virtual void handleGravityNotify(const XGravityEvent &gravity);
     virtual void handleMapNotify(const XMapEvent &map);
     virtual void handleUnmapNotify(const XUnmapEvent &unmap);
@@ -209,7 +206,7 @@ public:
     void installAccelerator(unsigned key, unsigned mod, YWindow *win);
     void removeAccelerator(unsigned key, unsigned mod, YWindow *win);
 
-    void setToolTip(const ustring &tip);
+    void setToolTip(const mstring &tip);
 
     void mapToGlobal(int &x, int &y);
     void mapToLocal(int &x, int &y);
@@ -268,6 +265,7 @@ private:
     };
 
     Window create();
+    void adopt();
     void destroy();
 
     void insertWindow();
@@ -330,7 +328,7 @@ private:
 
 class YDesktop: public YWindow {
 public:
-    YDesktop(YWindow *aParent = 0, Window win = 0);
+    YDesktop(YWindow *aParent = nullptr, Window win = 0);
     virtual ~YDesktop();
 
     bool updateXineramaInfo(unsigned& horizontal, unsigned& vertical);

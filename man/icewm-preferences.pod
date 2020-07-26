@@ -47,7 +47,8 @@ Splash image on startup (IceWM.jpg)
 
 =item B<Trace>=""
 
-Enable tracing for the given modules
+Enable tracing for the given list of modules.
+Modules which are traceable include B<conf, icon, prog, systray>.
 
 =item B<ClickToFocus>=1
 
@@ -148,6 +149,7 @@ Consider border frames when maximizing vertically.
 =item B<ConsiderSizeHintsMaximized>=1
 
 Consider XSizeHints if frame is maximized.
+Turning this off allows the titlebar to cover the width of the screen.
 
 =item B<CenterMaximizedWindows>=0
 
@@ -707,6 +709,20 @@ Maximum scaled height of tray icons.
 
 Surround the tray with plastic border.
 
+=item B<KeyboardLayouts>=""
+
+A comma-separated list of keyboard layouts.
+A layout may be enclosed in double quotes.
+Each layout is a name with optional arguments,
+which is to be parsed by the C<setxkbmap> program.
+To support changing keyboard layouts, the
+C<setxkbmap> program must be installed.
+The first in the list is the default layout.
+Programs may have their own keyboard layout
+defined in the F<winoptions> file.
+The first two letters of a layout are used
+to locate an icon image file.
+
 =back
 
 =head2 MENUS
@@ -926,9 +942,17 @@ Create four workspaces with names C< 1 >, C< 2 >, C< 3 > and C< 4 >.
 
 =over
 
-=item B<IconPath>="/usr/share/icons/hicolor:/usr/share/icons:/usr/share/pixmaps"
+=item B<IconPath>="/usr/local/share/icons:/usr/local/share/pixmaps:/usr/share/icons:/usr/share/pixmaps"
 
-Icon search path (colon separated).
+Icon search path (colon separated). Also, the icons/ subdirectory in
+IceWM resource folders are searched first.
+
+=item B<IconThemes>="*:-HighContrast"
+
+List of icon themes (colon separated), acting as additional filter of
+icon subdirectories in any of the B<IconPath> folders. Expressions can be
+wildcards, also special wildcards (starting with B<->) can exclude matched
+themes from selection.
 
 =item B<MailBoxPath>=""
 
@@ -1064,7 +1088,7 @@ Description of the theme, credits.
 
 Choose a theme look from one of:
 "win95", "motif", "warp3", "warp4",
-"nice", "pixmap", "metal", "gtk", "flat".
+"nice", "metal2", "gtk2", and some others.
 
 =item B<Gradients>=""
 

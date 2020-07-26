@@ -27,7 +27,7 @@ WorkspaceButton::WorkspaceButton(int ws, YWindow *parent, WorkspaceDragger* d):
     fDelta(0),
     fDownX(0),
     fDragging(false),
-    fGraphics(this),
+    fGraphics(this, true),
     fPane(d)
 {
     addStyle(wsNoExpose);
@@ -48,6 +48,7 @@ void WorkspaceButton::repaint() {
 
 void WorkspaceButton::paintBackground(Graphics& g, const YRect& r) {
     if (taskbackPixbuf != null) {
+        g.clearArea(r.x(), r.y(), r.width(), r.height());
         g.drawGradient(taskbackPixbuf,
                        r.x(), r.y(), r.width(), r.height(),
                        0, 0, width(), height());
@@ -78,7 +79,7 @@ void WorkspaceButton::handleClick(const XButtonEvent &up, int count) {
     switch (up.button) {
         case 1:
             if (count == 2) {
-                if (fInput == 0) {
+                if (fInput == nullptr) {
                     fInput = new YInputLine(this, this);
                 }
                 if (fInput) {
@@ -173,26 +174,26 @@ bool WorkspaceButton::handleTimer(YTimer *t) {
 
 void WorkspaceButton::inputReturn(YInputLine* input) {
     if (input == fInput) {
-        cstring text(input->getText());
+        mstring text(input->getText());
         if (text != name()) {
             csmart str(newstr(text));
             swap(*&str, *workspaces[fWorkspace]);
             manager->setDesktopNames();
             fPane->relabel(fWorkspace);
         }
-        fInput = 0;
+        fInput = nullptr;
     }
 }
 
 void WorkspaceButton::inputEscape(YInputLine* input) {
     if (input == fInput) {
-        fInput = 0;
+        fInput = nullptr;
     }
 }
 
 void WorkspaceButton::inputLostFocus(YInputLine* input) {
     if (input == fInput) {
-        fInput = 0;
+        fInput = nullptr;
     }
 }
 
@@ -258,7 +259,7 @@ long WorkspacesPane::limitWidth(long paneWidth) {
     long maxButtons = 0;
     long maxPercent = 0;
     if (nonempty(str)) {
-        char* end = 0;
+        char* end = nullptr;
         long num = strtol(str, &end, 0);
         if (end && str < end && inrange(num, 0L, long(SHRT_MAX))) {
             maxPixels = max(50L, taskBarWidth - x() - reserved);
@@ -354,6 +355,7 @@ void WorkspacesPane::relabelButtons() {
         repositionButtons();
 
     paths = null;
+    repaint();
 }
 
 void WorkspacesPane::configure(const YRect2& r) {
@@ -403,8 +405,10 @@ WorkspaceButton* WorkspacesPane::create(int workspace, unsigned height) {
     WorkspaceButton *wk = new WorkspaceButton(workspace, this, this);
     fButtons += wk;
     if (pagerShowPreview) {
-        double scaled = double(height * desktop->width()) / desktop->height();
-        wk->setSize(unsigned(lround(scaled)), height);
+        unsigned dw = desktop->width();
+        unsigned dh = desktop->height();
+        unsigned scaled = (height * dw + (dh / 2)) / dh;
+        wk->setSize(scaled, height);
         wk->updateName();
     } else {
         label(wk);
@@ -438,7 +442,7 @@ ref<YImage> WorkspaceIcons::load(const char* name) {
             }
         }
     }
-    cstring trim(mstring(name).trim());
+    mstring trim(mstring(name).trim());
     return (trim.length() && trim != name) ? load(trim) : null;
 }
 
@@ -615,9 +619,6 @@ void WorkspaceButton::paint(Graphics &g, const YRect& r) {
             x += 1; y += 1; w -= 2; h -= 2;
         }
 
-        unsigned wx, wy, ww, wh;
-        double sf = (double) desktop->width() / w;
-
         ref<YIcon> icon;
         YColor colors[] = {
             surface.color,
@@ -632,16 +633,22 @@ void WorkspaceButton::paint(Graphics &g, const YRect& r) {
                 yfw && yfw->getActiveLayer() <= WinLayerDock;
                 yfw = yfw->prevLayer()) {
             if (yfw->isHidden() ||
-                    !yfw->visibleOn(fWorkspace) ||
-                    hasbit(yfw->frameOptions(),
-                        YFrameWindow::foIgnoreWinList |
-                        YFrameWindow::foIgnorePagerPreview))
+                hasbit(yfw->frameOptions(),
+                       YFrameWindow::foIgnoreWinList |
+                       YFrameWindow::foIgnorePagerPreview)) {
                 continue;
-            wx = (unsigned) round(double(yfw->x()) / sf) + x;
-            wy = (unsigned) round(double(yfw->y()) / sf) + y;
-            ww = (unsigned) round(double(yfw->width()) / sf);
-            wh = (unsigned) round(double(yfw->height()) / sf);
-            if (ww < 1 || wh < 1)
+            }
+            if (yfw->isAllWorkspaces() ?
+                fWorkspace != manager->activeWorkspace() :
+                fWorkspace != yfw->getWorkspace()) {
+                continue;
+            }
+            unsigned dw = desktop->width();
+            unsigned wx = x + (yfw->x() * w + (dw / 2)) / dw;
+            unsigned wy = y + (yfw->y() * w + (dw / 2)) / dw;
+            unsigned ww = (yfw->width() * w + (dw / 2)) / dw;
+            unsigned wh = (yfw->height() * w + (dw / 2)) / dw;
+            if (ww <= 1 || wh <= 1)
                 continue;
             if (yfw->isMaximizedVert()) { // !!! hack
                 wy = y; wh = h;
@@ -684,13 +691,13 @@ void WorkspaceButton::paint(Graphics &g, const YRect& r) {
             snprintf(label, sizeof label, "%d", int(fWorkspace+1) % 100);
         }
         else if (pagerShowLabels) {
-            strlcpy(label, cstring(baseName()), min(5, int(sizeof label)));
+            strlcpy(label, baseName(), min(5, int(sizeof label)));
         }
         if (label[0] != 0) {
             ref<YFont> font = getFont();
 
-            wx = (w - font->textWidth(label)) / 2 + x;
-            wy = (h - font->height()) / 2 + font->ascent() + y;
+            unsigned wx = (w - font->textWidth(label)) / 2 + x;
+            unsigned wy = (h - font->height()) / 2 + font->ascent() + y;
 
             g.setFont(font);
             g.setColor(colors[0]);

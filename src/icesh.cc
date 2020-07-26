@@ -87,20 +87,82 @@ class NAtom {
     const char* fName;
     Atom fAtom;
     bool fExists;
+    bool fDynamic;
+    static vector<NAtom*> fAtoms;
+    static bool lookup(Atom atom, int* pos) {
+        int lo = 0, hi = int(fAtoms.size());
+        while (lo < hi) {
+            const int pv = (lo + hi) / 2;
+            NAtom* pivot = fAtoms[pv];
+            if (atom > pivot->fAtom)
+                lo = pv + 1;
+            else if (atom < pivot->fAtom)
+                hi = pv;
+            else {
+                *pos = pv;
+                return true;
+            }
+        }
+        *pos = lo;
+        return false;
+    }
+    void insert() {
+        if (fAtom) {
+            int pos;
+            if (lookup(fAtom, &pos)) {
+                NAtom* old = this;
+                std::swap(old, fAtoms[pos]);
+                if (old->fDynamic) {
+                    XFree(const_cast<char *>(old->fName));
+                    delete old;
+                }
+            } else {
+                fAtoms.insert(fAtoms.begin() + pos, this);
+            }
+        }
+    }
 public:
     explicit NAtom(const char* name, bool exists = false) :
-        fName(name), fAtom(None), fExists(exists)
+        fName(name), fAtom(None), fExists(exists), fDynamic(false)
     { }
     const char* name() const { return fName; }
     operator Atom() {
         if (fAtom == None && fName) {
             fAtom = XInternAtom(display, fName, fExists);
+            if (fExists == false) {
+                insert();
+            }
         }
         return fAtom;
     }
+    static const char* lookup(Atom atom) {
+        int pos;
+        if (lookup(atom, &pos)) {
+            return fAtoms[pos]->fName;
+        } else {
+            char* name = XGetAtomName(display, atom);
+            NAtom* ptr = new NAtom(name);
+            ptr->fAtom = atom;
+            ptr->fDynamic = true;
+            fAtoms.insert(fAtoms.begin() + pos, ptr);
+            return name;
+        }
+    }
+    static void free() {
+        for (auto ptr : fAtoms) {
+            if (ptr && ptr->fDynamic) {
+                XFree(const_cast<char *>(ptr->fName));
+                delete ptr;
+            }
+        }
+        fAtoms.clear();
+    }
 };
 
+vector<NAtom*> NAtom::fAtoms;
+
 static NAtom ATOM_WM_STATE("WM_STATE");
+static NAtom ATOM_WM_CHANGE_STATE("WM_CHANGE_STATE");
 static NAtom ATOM_WM_LOCALE_NAME("WM_LOCALE_NAME");
 static NAtom ATOM_WM_WINDOW_ROLE("WM_WINDOW_ROLE");
 static NAtom ATOM_NET_WM_PID("_NET_WM_PID");
@@ -146,6 +208,8 @@ static NAtom ATOM_NET_WM_STATE_SHADED("_NET_WM_STATE_SHADED");
 static NAtom ATOM_NET_WM_STATE_SKIP_PAGER("_NET_WM_STATE_SKIP_PAGER");
 static NAtom ATOM_NET_WM_STATE_SKIP_TASKBAR("_NET_WM_STATE_SKIP_TASKBAR");
 static NAtom ATOM_NET_WM_STATE_STICKY("_NET_WM_STATE_STICKY");
+static NAtom ATOM_NET_WM_USER_TIME("_NET_WM_USER_TIME");
+static NAtom ATOM_NET_WM_USER_TIME_WINDOW("_NET_WM_USER_TIME_WINDOW");
 
 enum NetStateBits {
     NetAbove       = 1,
@@ -182,10 +246,6 @@ static const struct NetStateAtoms {
     { NetSticky,      ATOM_NET_WM_STATE_STICKY },
 };
 const int netStateAtomCount = int ACOUNT(netStateAtoms);
-
-static inline char* atomName(Atom atom) {
-    return XGetAtomName(display, atom);
-}
 
 static inline void newline() {
     putchar('\n');
@@ -496,6 +556,7 @@ public:
         YProperty(window, property, XA_WINDOW, count)
     {
     }
+    Window* data() { return YProperty::data<Window>(); }
     Window* extract() { return YProperty::extract<Window>(); }
 };
 
@@ -613,8 +674,8 @@ public:
 
 class YStringProperty : public YProperty {
 public:
-    YStringProperty(Window window, Atom property) :
-        YProperty(window, property, XA_STRING, BUFSIZ)
+    YStringProperty(Window window, Atom property, Atom kind = XA_STRING) :
+        YProperty(window, property, kind, BUFSIZ)
     {
     }
 
@@ -628,19 +689,11 @@ public:
     }
 };
 
-class YUtf8Property : public YProperty {
+class YUtf8Property : public YStringProperty {
 public:
     YUtf8Property(Window window, Atom property) :
-        YProperty(window, property, ATOM_UTF8_STRING, BUFSIZ)
+        YStringProperty(window, property, ATOM_UTF8_STRING)
     {
-    }
-
-    const char* operator&() const { return data<char>(); }
-
-    char operator[](int index) const { return data<char>()[index]; }
-
-    void replace(const char* text) {
-        YProperty::replace(text, int(strlen(text)), 8);
     }
 };
 
@@ -856,10 +909,10 @@ public:
         append(window);
     }
 
-    void append(Window window) {
-        if (have(window) == false) {
-            fChildren.push_back(window);
-        }
+    bool append(Window window) {
+        fFiltered.clear();
+        return have(window) ? false
+            : (fChildren.push_back(window), true);
     }
 
     void query(Window window) {
@@ -880,7 +933,7 @@ public:
         YClient clients(root, property, 100000);
         if (clients) {
             unsigned num = clients.count();
-            Window* data = clients.data<Window>();
+            Window* data = clients.data();
             copy(data, data + num, back_inserter(fChildren));
             fParent = None;
         }
@@ -895,8 +948,11 @@ public:
     }
 
     void filterLast() {
-        if (1 < count()) {
-            single(fChildren.back());
+        if (count()) {
+            Window w = fChildren.back();
+            fChildren.pop_back();
+            fFiltered = fChildren;
+            fChildren.push_back(w);
         }
     }
 
@@ -1134,6 +1190,7 @@ public:
 
     void release() {
         fChildren.clear();
+        fFiltered.clear();
         fParent = None;
     }
 
@@ -1188,6 +1245,7 @@ private:
     Confine fConfine;
     Window fParent;
     vector<Window> fChildren;
+    vector<Window> fFiltered;
     YTreeLeaf fLeaf;
 };
 
@@ -1255,7 +1313,10 @@ private:
     bool listWorkspaces();
     bool setWorkspaceName();
     bool setWorkspaceNames();
+    void changeState();
     bool colormaps();
+    bool current();
+    bool runonce();
     void click();
     bool delay();
     bool desktops();
@@ -1266,9 +1327,15 @@ private:
     void doSync();
     bool check(const struct SymbolTable& symtab, long code, const char* str);
     unsigned count() const;
+    void xerror(XErrorEvent* evt);
 
+    const char* atomName(Atom atom) {
+        return NAtom::lookup(atom);
+    }
+    static int xerrors(Display* dpy, XErrorEvent* evt);
     static void catcher(int);
     static bool running;
+    static IceSh* singleton;
 };
 
 /******************************************************************************/
@@ -1997,6 +2064,38 @@ bool IceSh::listScreens()
     return false;
 }
 
+bool IceSh::current()
+{
+    if ( !isAction("current", 0))
+        return false;
+
+    long current = currentWorkspace();
+    const char* name = "";
+    WorkspaceInfo info;
+    if (info && inrange(current, 0L, info.count())) {
+        name = info[current];
+    }
+    printf(_("workspace #%d: `%s'\n"), int(current), name);
+
+    return true;
+}
+
+bool IceSh::runonce()
+{
+    if ( !isAction("runonce", 1))
+        return false;
+
+    if (count() == 0 || windowList.isRoot()) {
+        execvp(argp[0], argp);
+        perror(argp[0]);
+        THROW(1);
+    } else {
+        THROW(0);
+    }
+
+    return true;
+}
+
 bool IceSh::listWorkspaces()
 {
     if ( !isAction("listWorkspaces", 0))
@@ -2074,9 +2173,10 @@ bool IceSh::wmcheck()
 
     YClient check(root, ATOM_NET_SUPPORTING_WM_CHECK);
     if (check) {
+        YUtf8Property netName(*check, ATOM_NET_WM_NAME);
         YStringProperty name(*check, XA_WM_NAME);
-        if (name) {
-            printf("Name: %s\n", &name);
+        if (netName || name) {
+            printf("Name: %s\n", netName ? &netName : &name);
         }
         YStringProperty cls(*check, XA_WM_CLASS);
         if (cls) {
@@ -2209,7 +2309,7 @@ bool IceSh::colormaps()
     while (running) {
         int n = 0;
         Colormap* map = XListInstalledColormaps(display, root, &n);
-        if (n != m || old == 0 || memcmp(map, old, n * sizeof(Colormap)) || !(++k % 100)) {
+        if (n != m || old == nullptr || memcmp(map, old, n * sizeof(Colormap)) || !(++k % 100)) {
             char buf[2000] = "";
             for (int i = 0; i < n; ++i) {
                 snprintf(buf + strlen(buf), sizeof buf - strlen(buf),
@@ -2228,6 +2328,27 @@ bool IceSh::colormaps()
 
     signal(SIGINT, previous);
     return true;
+}
+
+void IceSh::changeState()
+{
+    const char* arg = getArg();
+    int state = -1;
+    if (!strncmp(arg, "NormalState", strlen(arg)))
+        state = NormalState;
+    else if (!strncmp(arg, "IconicState", strlen(arg)))
+        state = IconicState;
+    else if (!strncmp(arg, "WithdrawnState", strlen(arg)))
+        state = WithdrawnState;
+    if (state == -1 || isEmpty(arg)) {
+        msg(_("Invalid state: `%s'."), arg);
+        THROW(1);
+    }
+    else {
+        FOREACH_WINDOW(window) {
+            send(ATOM_WM_CHANGE_STATE, window, state, None);
+        }
+    }
 }
 
 void IceSh::click()
@@ -2296,12 +2417,7 @@ bool IceSh::delay()
             getArg();
         }
     }
-    if (delay > 0) {
-        const long sec = long(trunc(delay));
-        const long nano = long((delay - double(sec)) * 1e9);
-        const struct timespec req = { sec, nano };
-        nanosleep(&req, nullptr);
-    }
+    fsleep(delay);
     return true;
 }
 
@@ -2381,6 +2497,8 @@ bool IceSh::icewmAction()
         || delay()
         || desktops()
         || desktop()
+        || current()
+        || runonce()
         || wmcheck()
         || change()
         || sync()
@@ -2562,7 +2680,7 @@ static void setIconTitle(Window window, const char* title) {
 /******************************************************************************/
 
 static Window getActive() {
-    Window active;
+    Window active = None;
 
     YClient client(root, ATOM_NET_ACTIVE_WINDOW);
     if (client) {
@@ -2674,7 +2792,7 @@ static Window pickWindow() {
 
 static bool isOptArg(const char* arg, const char* opt, const char* val) {
     const char buf[3] = { opt[0], opt[1], '\0', };
-    return (strpcmp(arg, opt) == 0 || strcmp(arg, buf) == 0) && val != 0;
+    return (strpcmp(arg, opt) == 0 || strcmp(arg, buf) == 0) && val != nullptr;
 }
 
 static void removeOpacity(Window window) {
@@ -2847,7 +2965,7 @@ void IceSh::showProperty(Window window, Atom atom, const char* prefix) {
         XSizeHints h;
         long supplied;
         if (XGetWMSizeHints(display, window, &h, &supplied, atom) == True) {
-            xsmart<char> name(atomName(atom));
+            const char* name(atomName(atom));
             printf("%s%s", prefix, (char *) name);
             if (h.flags & USPosition) {
                 printf(" UPos(%d,%d)", h.x, h.y);
@@ -2882,7 +3000,7 @@ void IceSh::showProperty(Window window, Atom atom, const char* prefix) {
         xsmart<XWMHints> h(XGetWMHints(display, window));
         if (h) {
             long f = h->flags;
-            xsmart<char> name(atomName(atom));
+            const char* name(atomName(atom));
             printf("%s%s", prefix, (char *) name);
             if (f & InputHint) {
                 printf(" Input");
@@ -2900,6 +3018,12 @@ void IceSh::showProperty(Window window, Atom atom, const char* prefix) {
             if (f & WindowGroupHint) {
                 printf(" Group(%lu)", h->window_group);
             }
+            if (f & IconPixmapHint) {
+                printf(" Pixmap(0x%lx)", h->icon_pixmap);
+            }
+            if (f & IconWindowHint) {
+                printf(" Window(0x%lx)", h->icon_window);
+            }
             newline();
         }
         return;
@@ -2908,7 +3032,7 @@ void IceSh::showProperty(Window window, Atom atom, const char* prefix) {
     YProperty prop(window, atom, AnyPropertyType, 64);
     if (prop.status() == Success && prop.data<void>()) {
         if (prop.format() == 8) {
-            xsmart<char> name(atomName(atom));
+            const char* name(atomName(atom));
             printf("%s%s = ", prefix, (char*) name);
             if (prop.type() == ATOM_GUI_EVENT) {
                 int gev = prop.data<unsigned char>(0);
@@ -2926,14 +3050,14 @@ void IceSh::showProperty(Window window, Atom atom, const char* prefix) {
         }
         else if (prop.format() == 32) {
             if (prop.type() == XA_WINDOW) {
-                xsmart<char> name(atomName(atom));
+                const char* name(atomName(atom));
                 printf("%s%s = ", prefix, (char *) name);
                 for (int i = 0; i < prop.count(); ++i)
                     printf("%s0x%lx", i ? ", " : "", prop[i]);
                 newline();
             }
             else if (prop.type() == XA_ATOM) {
-                xsmart<char> name(atomName(atom));
+                const char* name(atomName(atom));
                 printf("%s%s = ", prefix, (char*) name);
                 for (int i = 0; i < prop.count(); ++i) {
                     name = atomName(prop[i]);
@@ -2942,8 +3066,8 @@ void IceSh::showProperty(Window window, Atom atom, const char* prefix) {
                 newline();
             }
             else {
-                xsmart<char> name(atomName(atom));
-                xsmart<char> type(atomName(prop.type()));
+                const char* name(atomName(atom));
+                const char* type(atomName(prop.type()));
                 printf("%s%s(%s) = ", prefix, (char *) name, (char *) type);
                 for (int i = 0; i < prop.count(); ++i)
                     printf("%s%ld", i ? ", " : "", prop[i]);
@@ -2951,8 +3075,14 @@ void IceSh::showProperty(Window window, Atom atom, const char* prefix) {
             }
         }
         else {
-            xsmart<char> name(atomName(atom));
+            const char* name(atomName(atom));
             printf("%s%s(%d)\n", prefix, (char *) name, prop.format());
+        }
+    }
+    else if (atom == ATOM_NET_WM_USER_TIME) {
+        YClient user(window, ATOM_NET_WM_USER_TIME_WINDOW);
+        if (user) {
+            showProperty(*user.data(), atom, prefix);
         }
     }
 }
@@ -3030,6 +3160,8 @@ IceSh::IceSh(int ac, char **av) :
     selecting(false),
     filtering(false)
 {
+    singleton = this;
+    setAtomName(NAtom::lookup);
     if (setjmp(jmpbuf) == 0) {
         xinit();
         flags();
@@ -3154,10 +3286,15 @@ void IceSh::flag(char* arg)
         return;
     }
     if (isOptArg(arg, "-focus", "") || isOptArg(arg, "+focus", "")) {
-        if (*arg == '+') {
-            addWindow(getActive());
-        } else {
-            setWindow(getActive());
+        Window active = getActive();
+        if (active && *arg == '+') {
+            addWindow(active);
+        }
+        else if (active && *arg == '-') {
+            setWindow(active);
+        }
+        else if (*arg == '-') {
+            windowList.release();
         }
         MSG(("focus window selected"));
         selecting = true;
@@ -3509,7 +3646,7 @@ void IceSh::spy()
                     if (event.xproperty.state == PropertyNewValue) {
                         showProperty(window, event.xproperty.atom, head);
                     } else {
-                        xsmart<char> name(atomName(event.xproperty.atom));
+                        const char* name(atomName(event.xproperty.atom));
                         printf("%sDelete %s\n", head, (char *) name);
                     }
                     break;
@@ -3539,6 +3676,29 @@ void IceSh::spy()
             }
         }
     }
+}
+
+IceSh* IceSh::singleton;
+
+int IceSh::xerrors(Display* dpy, XErrorEvent* evt) {
+    singleton->xerror(evt);
+    return Success;
+}
+
+void IceSh::xerror(XErrorEvent* evt) {
+    char message[80], req[80], number[80];
+
+    snprintf(number, 80, "%d", evt->request_code);
+    XGetErrorDatabaseText(display, "XRequest",
+                          number, "",
+                          req, sizeof(req));
+    if (req[0] == 0)
+        snprintf(req, 80, "[request_code=%d]", evt->request_code);
+
+    if (XGetErrorText(display, evt->error_code, message, 80) != Success)
+        *message = '\0';
+
+    tlog("%s(0x%08lx): %s", req, evt->resourceid, message);
 }
 
 /******************************************************************************/
@@ -3995,15 +4155,6 @@ void IceSh::parseAction()
             FOREACH_WINDOW(window)
                 opacity(window, opaq);
         }
-        else if (isAction("runonce", 1)) {
-            if (count() == 0 || windowList.isRoot()) {
-                execvp(argp[0], argp);
-                perror(argp[0]);
-                THROW(1);
-            } else {
-                THROW(0);
-            }
-        }
         else if (isAction("motif", 0)) {
             char** args = argp;
             int count = 0;
@@ -4040,6 +4191,9 @@ void IceSh::parseAction()
         else if (isAction("click", 3)) {
             click();
         }
+        else if (isAction("changeState", 1)) {
+            changeState();
+        }
         else {
             msg(_("Unknown action: `%s'"), *argp);
             THROW(1);
@@ -4054,6 +4208,7 @@ IceSh::~IceSh()
         XCloseDisplay(display);
         display = nullptr;
         root = None;
+        NAtom::free();
     }
 }
 

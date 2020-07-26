@@ -107,8 +107,8 @@ void YFrameWindow::updateSubmenus() {
 #endif
 }
 
-#ifdef CONFIG_SHAPE
 void YFrameWindow::setShape() {
+#ifdef CONFIG_SHAPE
     if (!shapes.supported)
         return ;
 
@@ -169,27 +169,31 @@ void YFrameWindow::setShape() {
                                ShapeBounding, nrect ? ShapeUnion : ShapeSet);
         }
     }
-}
 #endif
+}
 
 void YFrameWindow::layoutShape() {
-
+#ifdef CONFIG_SHAPE
     if (fShapeWidth != width() ||
         fShapeHeight != height() ||
         fShapeTitleY != titleY() ||
         fShapeBorderX != borderX() ||
-        fShapeBorderY != borderY())
+        fShapeBorderY != borderY() ||
+        fShapeDecors != frameDecors() ||
+        fShapeTitle != getTitle())
     {
         fShapeWidth = width();
         fShapeHeight = height();
         fShapeTitleY = titleY();
         fShapeBorderX = borderX();
         fShapeBorderY = borderY();
+        fShapeDecors = frameDecors();
+        fShapeTitle = getTitle();
 
-#ifdef CONFIG_SHAPE
         if (shapes.supported &&
             (frameDecors() & fdBorder) &&
-            !(isIconic() || isFullscreen()))
+            !isIconic() &&
+            !isFullscreen())
         {
             int const a(focused());
             int const t((frameDecors() & fdResize) ? 0 : 1);
@@ -267,7 +271,7 @@ void YFrameWindow::layoutShape() {
                           width() - frameR[t][a]->width(), yTR, yBR - yTR);
 
             if (titlebar() && titleY())
-                titlebar()->renderShape(shape);
+                titlebar()->renderShape(g);
             XShapeCombineMask(xapp->display(), handle(),
                               ShapeBounding, 0, 0, shape, ShapeSet);
             XFreePixmap(xapp->display(), shape);
@@ -275,11 +279,9 @@ void YFrameWindow::layoutShape() {
             XShapeCombineMask(xapp->display(), handle(),
                               ShapeBounding, 0, 0, None, ShapeSet);
         }
-#endif
-#ifdef CONFIG_SHAPE
         setShape();
-#endif
     }
+#endif
 }
 
 void YFrameWindow::configure(const YRect2& r) {
@@ -301,14 +303,16 @@ void YFrameWindow::performLayout()
     layoutResizeIndicators();
     layoutClient();
     layoutShape();
+    if (titlebar())
+        titlebar()->activate();
 }
 
 void YFrameWindow::layoutTitleBar() {
-    if (titlebar() == 0)
+    if (titlebar() == nullptr || isIconic())
         return;
 
     if (titleY() == 0) {
-        titlebar()->hide();
+        delete fTitleBar; fTitleBar = nullptr;
     } else {
         titlebar()->show();
 
@@ -452,7 +456,7 @@ bool YFrameWindow::canRaise() {
                 o = o->owner();
                 if (o == this)
                     break;
-                else if (o == 0)
+                else if (o == nullptr)
                     return true;
             }
         }
@@ -463,7 +467,7 @@ bool YFrameWindow::canRaise() {
 unsigned YFrameWindow::overlap(YFrameWindow* f) {
     if (false == f->isHidden() &&
         false == f->isMinimized() &&
-        f->visibleOn(manager->activeWorkspace()))
+        f->visibleNow())
     {
         return geometry().intersect(f->geometry()).pixels();
     }

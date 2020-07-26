@@ -55,7 +55,7 @@ YFrameClient::YFrameClient(YWindow *parent, YFrameWindow *frame, Window win,
     fShaped = false;
     fPinging = false;
     fPingTime = 0;
-    fHints = 0;
+    fHints = nullptr;
     fWinHints = 0;
     fSavedFrameState = InvalidFrameState;
     fSavedWinState[0] = 0;
@@ -63,32 +63,37 @@ YFrameClient::YFrameClient(YWindow *parent, YFrameWindow *frame, Window win,
     fSizeHints = XAllocSizeHints();
     fTransientFor = 0;
     fClientLeader = None;
-    fMwmHints = 0;
+    fMwmHints = nullptr;
     fPid = 0;
+    prop = {};
 
-    getPropertiesList();
-
-    getProtocols(false);
-    getNameHint();
-    getIconNameHint();
-    getNetWmName();
-    getNetWmIconName();
-    getSizeHints();
-    getClassHint();
-    getTransient();
-    getClientLeader();
-    getWMHints();
-    getWMWindowRole();
-    getWindowRole();
-    getWinHintsHint(&fWinHints);
-    getMwmHints();
+    if (win == None) {
+        getSizeHints();
+    } else {
+        getPropertiesList();
+        getProtocols(false);
+        getNameHint();
+        getIconNameHint();
+        getNetWmName();
+        getNetWmIconName();
+        getSizeHints();
+        getClassHint();
+        getTransient();
+        getClientLeader();
+        getWMHints();
+        getWMWindowRole();
+        getWindowRole();
+        getWinHintsHint(&fWinHints);
+        getMwmHints();
 
 #ifdef CONFIG_SHAPE
-    if (shapes.supported) {
-        XShapeSelectInput(xapp->display(), handle(), ShapeNotifyMask);
-        queryShape();
-    }
+        if (shapes.supported) {
+            XShapeSelectInput(xapp->display(), handle(), ShapeNotifyMask);
+            queryShape();
+        }
 #endif
+    }
+
     if (getFrame()) {
         frameContext.save(handle(), getFrame());
     }
@@ -105,16 +110,16 @@ YFrameClient::~YFrameClient() {
         clientContext.remove(handle());
     }
 
-    if (fSizeHints) { XFree(fSizeHints); fSizeHints = 0; }
-    if (fHints) { XFree(fHints); fHints = 0; }
-    if (fMwmHints) { XFree(fMwmHints); fMwmHints = 0; }
+    if (fSizeHints) { XFree(fSizeHints); fSizeHints = nullptr; }
+    if (fHints) { XFree(fHints); fHints = nullptr; }
+    if (fMwmHints) { XFree(fMwmHints); fMwmHints = nullptr; }
 }
 
 void YFrameClient::getProtocols(bool force) {
     if (!prop.wm_protocols && !force)
         return;
 
-    Atom *wmp = 0;
+    Atom *wmp = nullptr;
     int count = 0;
 
     fProtocols &= wpDeleteWindow; // always keep WM_DELETE_WINDOW
@@ -293,7 +298,7 @@ void YFrameClient::gravityOffsets(int &xp, int &yp) {
     xp = 0;
     yp = 0;
 
-    if (fSizeHints == 0 || notbit(fSizeHints->flags, PWinGravity))
+    if (fSizeHints == nullptr || notbit(fSizeHints->flags, PWinGravity))
         return;
 
     static struct {
@@ -374,14 +379,14 @@ bool YFrameClient::sendPing() {
 }
 
 bool YFrameClient::handleTimer(YTimer* timer) {
-    if (timer == 0 || timer != fPingTimer) {
+    if (timer == nullptr || timer != fPingTimer) {
         return false;
     }
 
     fPingTimer = null;
     fPinging = false;
 
-    if (destroyed() || getFrame() == 0) {
+    if (destroyed() || getFrame() == nullptr) {
         return false;
     }
 
@@ -543,11 +548,14 @@ void YFrameClient::handleProperty(const XPropertyEvent &property) {
         break;
 
     case XA_WM_CLASS:
-        if (new_prop) prop.wm_class = true;
-        getClassHint();
-        if (getFrame())
-            getFrame()->getFrameHints();
         prop.wm_class = new_prop;
+        if (prop.wm_class) {
+            ClassHint old(fClassHint);
+            getClassHint();
+            if (fClassHint.nonempty() && fClassHint != old && getFrame()) {
+                getFrame()->getFrameHints();
+            }
+        }
         break;
 
     case XA_WM_HINTS:
@@ -684,6 +692,11 @@ void YFrameClient::handleProperty(const XPropertyEvent &property) {
             prop.net_wm_window_type = new_prop;
         } else if (property.atom == _XA_NET_WM_PID) {
             prop.net_wm_pid = new_prop;
+        } else if (property.atom == _XA_NET_WM_VISIBLE_NAME) {
+        } else if (property.atom == _XA_NET_WM_VISIBLE_ICON_NAME) {
+        } else if (property.atom == _XA_NET_WM_ALLOWED_ACTIONS) {
+        } else if (property.atom == _XA_NET_FRAME_EXTENTS) {
+        } else if (property.atom == _XA_WIN_TRAY) {
         } else {
             MSG(("Unknown property changed: %s, window=0x%lX",
                  XGetAtomName(xapp->display(), property.atom), handle()));
@@ -730,78 +743,40 @@ void YFrameClient::handleShapeNotify(const XShapeEvent &shape) {
 #endif
 
 void YFrameClient::setWindowTitle(const char *title) {
-    if (title == 0 || fWindowTitle == null || !fWindowTitle.equals(title)) {
-        fWindowTitle = mstring(title);
-        if (title != 0) {
-            cstring cs(fWindowTitle);
+    if (fWindowTitle != title) {
+        fWindowTitle = title;
+        if (title) {
             XChangeProperty(xapp->display(), handle(),
                     _XA_NET_WM_VISIBLE_NAME, _XA_UTF8_STRING,
                     8, PropModeReplace,
-                    (const unsigned char *)cs.c_str(),
-                    cs.c_str_len());
+                    (const unsigned char *) title,
+                    strlen(title));
         } else {
             XDeleteProperty(xapp->display(), handle(),
                     _XA_NET_WM_VISIBLE_NAME);
         }
-        if (getFrame()) getFrame()->updateTitle();
+        if (getFrame())
+            getFrame()->updateTitle();
     }
 }
 
 void YFrameClient::setIconTitle(const char *title) {
-    if (title == 0 || fIconTitle == null || !fIconTitle.equals(title)) {
-        fIconTitle = mstring(title);
-        if (title != 0) {
-            cstring cs(fIconTitle);
+    if (fIconTitle != title) {
+        fIconTitle = title;
+        if (title) {
             XChangeProperty(xapp->display(), handle(),
                     _XA_NET_WM_VISIBLE_ICON_NAME, _XA_UTF8_STRING,
                     8, PropModeReplace,
-                    (const unsigned char *)cs.c_str(),
-                    cs.c_str_len());
+                    (const unsigned char *) title,
+                    strlen(title));
         } else {
             XDeleteProperty(xapp->display(), handle(),
                     _XA_NET_WM_VISIBLE_ICON_NAME);
         }
-        if (getFrame()) getFrame()->updateIconTitle();
+        if (getFrame())
+            getFrame()->updateIconTitle();
     }
 }
-
-#ifdef CONFIG_I18N
-void YFrameClient::setWindowTitle(const XTextProperty & title) {
-    if (NULL == title.value /*|| title.encoding == XA_STRING*/)
-        setWindowTitle((const char *)title.value);
-    else {
-        int count;
-        char ** strings(NULL);
-
-        if (XmbTextPropertyToTextList(xapp->display(), const_cast<XTextProperty *>(&title),
-                                      &strings, &count) >= 0 &&
-            count > 0 && strings[0])
-            setWindowTitle((const char *)strings[0]);
-        else
-            setWindowTitle((const char *)title.value);
-
-        if (strings) XFreeStringList(strings);
-    }
-}
-
-void YFrameClient::setIconTitle(const XTextProperty & title) {
-    if (NULL == title.value /*|| title.encoding == XA_STRING*/)
-        setIconTitle((const char *)title.value);
-    else {
-        int count;
-        char ** strings(NULL);
-
-        if (XmbTextPropertyToTextList(xapp->display(), const_cast<XTextProperty *>(&title),
-                                      &strings, &count) >= 0 &&
-            count > 0 && strings[0])
-            setIconTitle((const char *)strings[0]);
-        else
-            setIconTitle((const char *)title.value);
-
-        if (strings) XFreeStringList(strings);
-    }
-}
-#endif
 
 void YFrameClient::setColormap(Colormap cmap) {
     fColormap = cmap;
@@ -809,22 +784,24 @@ void YFrameClient::setColormap(Colormap cmap) {
         manager->installColormap(cmap);
 }
 
-#ifdef CONFIG_SHAPE
 void YFrameClient::queryShape() {
+#ifdef CONFIG_SHAPE
     fShaped = false;
 
     if (shapes.supported) {
         int xws, yws, xbs, ybs;
         unsigned wws, hws, wbs, hbs;
-        Bool boundingShaped, clipShaped;
+        Bool boundingShaped = False, clipShaped;
 
-        XShapeQueryExtents(xapp->display(), handle(),
-                           &boundingShaped, &xws, &yws, &wws, &hws,
-                           &clipShaped, &xbs, &ybs, &wbs, &hbs);
-        fShaped = boundingShaped;
+        if (XShapeQueryExtents(xapp->display(), handle(),
+                               &boundingShaped, &xws, &yws, &wws, &hws,
+                               &clipShaped, &xbs, &ybs, &wbs, &hbs))
+        {
+            fShaped = boundingShaped;
+        }
     }
-}
 #endif
+}
 
 long getMask(Atom a) {
     return a == _XA_NET_WM_STATE_ABOVE ? WinStateAbove :
@@ -860,18 +837,23 @@ void YFrameClient::setNetWMAllowedActions(Atom *actions, int count) {
 
 void YFrameClient::handleClientMessage(const XClientMessageEvent &message) {
     if (message.message_type == _XA_WM_CHANGE_STATE) {
-        YFrameWindow *frame = manager->findFrame(message.window);
-
-        if (message.data.l[0] == IconicState) {
-            if (frame && !(frame->isMinimized() || frame->isRollup()))
-                frame->wmMinimize();
-        } else if (message.data.l[0] == NormalState) {
-            if (frame)
-                frame->setState(WinStateHidden |
-                                WinStateRollup |
-                                WinStateMinimized, 0);
-        } // !!! handle WithdrawnState if needed
-
+        const long state = message.data.l[0];
+        YFrameWindow* frame = getFrame();
+        if (state == IconicState && frame &&
+            !frame->hasState(WinStateMinimized | WinStateRollup))
+        {
+            frame->actionPerformed(actionMinimize, None);
+        }
+        else if (state == NormalState && frame &&
+            frame->hasState(WinStateMinimized | WinStateRollup | WinStateHidden))
+        {
+            frame->actionPerformed(actionRestore, None);
+        }
+        else if (state == WithdrawnState && frame &&
+            !frame->hasState(WinStateHidden))
+        {
+            frame->actionPerformed(actionHide, None);
+        }
     } else if (message.message_type == _XA_NET_RESTACK_WINDOW) {
         if (getFrame()) {
             XConfigureRequestEvent cre;
@@ -885,9 +867,10 @@ void YFrameClient::handleClientMessage(const XClientMessageEvent &message) {
         }
     } else if (message.message_type == _XA_NET_ACTIVE_WINDOW) {
         //printf("active window w=0x%lX\n", message.window);
-        if (getFrame()) {
-            getFrame()->activate();
-            getFrame()->wmRaise();
+        YFrameWindow* f = getFrame();
+        if (f && !f->frameOption(YFrameWindow::foIgnoreActivationMessages)) {
+            f->activate();
+            f->wmRaise();
         }
     } else if (message.message_type == _XA_NET_CLOSE_WINDOW) {
         //printf("close window w=0x%lX\n", message.window);
@@ -922,8 +905,8 @@ void YFrameClient::handleClientMessage(const XClientMessageEvent &message) {
         }
     } else if (message.message_type == _XA_NET_WM_FULLSCREEN_MONITORS) {
         if (getFrame()) {
-            getFrame()->updateNetWMFullscreenMonitors(message.data.l[0], message.data.l[1],
-                                                      message.data.l[2], message.data.l[3]);
+            const long* l = message.data.l;
+            getFrame()->updateNetWMFullscreenMonitors(l[0], l[1], l[2], l[3]);
         }
     } else if (message.message_type == _XA_NET_WM_STATE) {
         long mask =
@@ -985,38 +968,20 @@ void YFrameClient::getNameHint() {
     if (prop.net_wm_name)
         return;
 
-#ifdef CONFIG_I18N
-    XTextProperty name;
-    if (XGetWMName(xapp->display(), handle(), &name))
-#else
-    char *name;
-    if (XFetchName(xapp->display(), handle(), &name))
-#endif
-    {
-        setWindowTitle(name);
-#ifdef CONFIG_I18N
-        XFree(name.value);
-#else
-        XFree(name);
-#endif
-    }
-    else
-        setWindowTitle(NULL);
+    XTextProperty text = { nullptr, None, 0, 0 };
+    XGetWMName(xapp->display(), handle(), &text);
+    setWindowTitle((char *)text.value);
+    XFree(text.value);
 }
 
 void YFrameClient::getNetWmName() {
     if (!prop.net_wm_name)
         return;
 
-    XTextProperty name;
-    if (XGetTextProperty(xapp->display(), handle(), &name,
-                _XA_NET_WM_NAME))
-    {
-        setWindowTitle((char *)name.value);
-        XFree(name.value);
-    }
-    else
-        setWindowTitle(NULL);
+    XTextProperty text = { nullptr, None, 0, 0 };
+    XGetTextProperty(xapp->display(), handle(), &text, _XA_NET_WM_NAME);
+    setWindowTitle((char *)text.value);
+    XFree(text.value);
 }
 
 void YFrameClient::getIconNameHint() {
@@ -1025,38 +990,20 @@ void YFrameClient::getIconNameHint() {
     if (prop.net_wm_icon_name)
         return;
 
-#ifdef CONFIG_I18N
-    XTextProperty name;
-    if (XGetWMIconName(xapp->display(), handle(), &name))
-#else
-    char *name;
-    if (XGetIconName(xapp->display(), handle(), &name))
-#endif
-    {
-        setIconTitle(name);
-#ifdef CONFIG_I18N
-        XFree(name.value);
-#else
-        XFree(name);
-#endif
-    }
-    else
-        setIconTitle(NULL);
+    XTextProperty text = { nullptr, None, 0, 0 };
+    XGetWMIconName(xapp->display(), handle(), &text);
+    setIconTitle((char *)text.value);
+    XFree(text.value);
 }
 
 void YFrameClient::getNetWmIconName() {
     if (!prop.net_wm_icon_name)
         return;
 
-    XTextProperty name;
-    if (XGetTextProperty(xapp->display(), handle(), &name,
-                _XA_NET_WM_ICON_NAME))
-    {
-        setIconTitle((char *)name.value);
-        XFree(name.value);
-    }
-    else
-        setIconTitle(NULL);
+    XTextProperty text = { nullptr, None, 0, 0 };
+    XGetTextProperty(xapp->display(), handle(), &text, _XA_NET_WM_ICON_NAME);
+    setIconTitle((char *)text.value);
+    XFree(text.value);
 }
 
 void YFrameClient::getWMHints() {
@@ -1188,7 +1135,7 @@ bool YFrameClient::getKwmIcon(int *count, Pixmap **pixmap) {
 bool YFrameClient::getWinIcons(Atom *type, int *count, long **elem) {
     *type = None;
     *count = 0;
-    *elem = 0;
+    *elem = nullptr;
 
     if (!prop.win_icons)
         return false;
@@ -1302,7 +1249,7 @@ void YFrameClient::setWinStateHint(long mask, long state) {
     /* the next one is kinda messy */
     if ((state & WinStateMinimized) || (state & WinStateHidden))
         a[i++] = _XA_NET_WM_STATE_HIDDEN;
-    if (state & WinStateFocused)
+    else if ((state & WinStateFocused) && !(state & WinStateRollup))
         a[i++] = _XA_NET_WM_STATE_FOCUSED;
     if (state & WinStateSkipPager)
         a[i++] = _XA_NET_WM_STATE_SKIP_PAGER;
@@ -1399,7 +1346,7 @@ void YFrameClient::getWindowRole() {
     YProperty prop(this, _XA_WINDOW_ROLE, F8, 256, XA_STRING);
     if (prop) {
         fWindowRole = prop.data<char>();
-        MSG(("window_role=%s", fWindowRole));
+        MSG(("window_role=%s", fWindowRole.c_str()));
     } else {
         fWindowRole = null;
     }
@@ -1412,13 +1359,13 @@ void YFrameClient::getWMWindowRole() {
     YProperty prop(this, _XA_WM_WINDOW_ROLE, F8, 256, XA_STRING);
     if (prop) {
         fWMWindowRole = prop.data<char>();
-        MSG(("wm_window_role=%s", fWMWindowRole));
+        MSG(("wm_window_role=%s", fWMWindowRole.c_str()));
     } else {
         fWMWindowRole = null;
     }
 }
 
-ustring YFrameClient::getClientId(Window leader) { /// !!! fix
+mstring YFrameClient::getClientId(Window leader) { /// !!! fix
 
     if (!prop.sm_client_id)
         return null;
@@ -1673,7 +1620,7 @@ bool ClassHint::match(const char* resource) const {
 
 char* ClassHint::resource() const {
     mstring str(res_name, ".", res_class);
-    return str == "." ? nullptr : strdup(cstring(str));
+    return str == "." ? nullptr : strdup(str);
 }
 
 // vim: set sw=4 ts=4 et:
