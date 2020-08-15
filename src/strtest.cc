@@ -253,6 +253,9 @@ static void test_mstring()
     expect(u, "#fffff");
     u = mstring("f#ffffff").match("#f{5}");
     expect(u, "#fffff");
+
+    u = "";
+    expect(u, "");
 }
 
 static void test_upath()

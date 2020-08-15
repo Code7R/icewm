@@ -14,91 +14,83 @@
 #include "base.h"
 #include "ascii.h"
 
+// local area minus SSO counter minus terminator
+#define MSTRING_INPLACE_MAXLEN (sizeof(mstring::spod) - 2)
+
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
 #define dsoffset (offsetof(decltype(mstring::spod), cBytes) + 1)
+#define posSmallCounter 0
 #else
 #define dsoffset 0
+#define posSmallCounter 0 (sizeof(size_type)-1)
 #endif
 
-mstring::mstring(const char *str, size_t len) {
-    spod.fCount = 0;
-    if(!len)
-        return;
-    extend(len);
-    memcpy(data(), str, len);
-    data()[len] = 0x0;
+mstring::mstring(const char *str, size_type len) {
+    set_len(0);
+    if (len) {
+        extendTo(len);
+        memcpy(data(), str, len);
+    }
+    term(len);
 }
 
-
 mstring mstring::operator+(const mstring_view &rv) const {
-    mstring ret;
-    auto curLen = length();
-    ret.extend(curLen + rv.length());
-    memcpy(ret.data(), data(), length());
-    memcpy(ret.data() + curLen, rv.data(), rv.length());
-    ret.data()[ret.length()] = 0x0;
-    return ret;
+    return mstring(*this, rv);
 }
 
 mstring::mstring(mstring &&other) {
-    spod.fCount = 0;
+    set_len(0);
     *this = std::move(other);
 }
 
 mstring& mstring::operator=(mstring_view rv) {
-
-    // cannot optimize
-    if(input_from_here(rv))
+    // cannot optimize?
+    if (input_from_here(rv))
         return *this = mstring(rv);
-
+    auto l = rv.length();
     // if needing to move back to inplace, just reset
-    if (rv.length() < MSTRING_INPLACE_SIZE)
+    if (l <= MSTRING_INPLACE_MAXLEN)
         clear();
-    if (rv.length() > length())
-        extend(rv.length() - length());
-    memcpy(data(), rv.data(), rv.length() + 1);
+    extendTo(l);
+    memcpy(data(), rv.data(), l);
+    term(l);
     return *this;
 }
 
 mstring& mstring::operator=(mstring &&rv) {
     if (this == &rv)
         return *this;
-
-    // cannot optimize
-    if(input_from_here(rv))
+    // cannot optimize?
+    if (input_from_here(rv))
         return *this = mstring(rv);
-
     clear();
-    memcpy(&spod, &rv.spod, sizeof(spod));
-    // invalidate!
-    rv.spod.fCount = 0;
+    swap(*this, rv);
     return *this;
 }
 
 mstring& mstring::operator +=(mstring &&rv) {
-
-    if (!length())
+    if (isEmpty())
         *this = std::move(rv);
-    else if(input_from_here(rv))
-        return (*this = mstring(mstring_view(*this)) + rv);
+    else if (input_from_here(rv))
+        *this = mstring(mstring_view(*this)) + rv;
     else
-        *this += (const mstring&) rv;
+        *this += mstring_view(rv);
 
     return *this;
 }
 
-mstring& mstring::operator +=(const mstring_view& rv) {
+mstring& mstring::operator +=(const mstring_view &rv) {
 
-    if(input_from_here(rv))
+    if (input_from_here(rv))
         return (*this = mstring(mstring_view(*this)) + rv);
 
     auto len = rv.length();
     auto curLen = length();
     if (len) {
-        extend(len);
+        extendBy(len);
         memcpy(data() + curLen, rv.data(), len);
     }
-    data()[curLen + len] = 0x0;
+    term(curLen + len);
     return *this;
 }
 
@@ -109,60 +101,87 @@ mstring mstring::operator +(mstring &&rv) const {
 }
 
 mstring::mstring(long n) {
-    spod.fCount = 0;
-    spod.cBytes[0] = snprintf(data(), MSTRING_INPLACE_SIZE, "%ld", n);
+    set_len(0);
+    // XXX: that system dependent crap, better create a mstring::from_number
+    // function with various overloads, so short/int can be done inplace
+    //spod.cBytes[0] = snprintf(data(), MSTRING_INPLACE_MAXLEN, "%ld", n);
+    //data()[spod.fCount];
+    char buf[32];
+    auto len = snprintf(buf, sizeof(buf), "%ld", n);
+    *this = mstring_view(buf, len);
+}
+inline void mstring::term(size_type len) {
+    data()[len] = 0x0;
+}
+
+inline void mstring::set_len(size_type len) {
+    if (len > MSTRING_INPLACE_MAXLEN) {
+        spod.count = (0x1 | (len << 1));
+    } else {
+        spod.cBytes[posSmallCounter] = (uint8_t(len) << 1);
+    }
 }
 
 void mstring::clear() {
     if (!isLocal())
         free(data());
-    spod.fCount = 0;
+    set_len(0);
+    term(0);
 }
 
 void swap(mstring &a, mstring &b) {
     std::swap(a.spod, b.spod);
 }
+
+inline void mstring::extendBy(size_type amount) {
+    return extendTo(length() + amount);
+}
+
 // user must fill in the extended data (=amount) AND terminator later
-mstring& mstring::extend(size_t amount) {
-    auto cur_len = length();
-    auto new_len = cur_len + amount;
-    if (!isLocal()) {
+inline void mstring::extendTo(size_type new_len) {
+    if (isLocal()) {
+        if (new_len <= MSTRING_INPLACE_MAXLEN) {
+            set_len(new_len);
+        } else {
+            // local before, to become external now
+            auto p = (char*) malloc(new_len + 1);
+            memcpy(p, data(), length() + 1);
+            spod.ext.pData = p;
+            set_len(new_len);
+        }
+    } else {
         spod.ext.pData = (char*) realloc((void*) spod.ext.pData, new_len + 1);
         // XXX: do something more useful if failed?
         if (!spod.ext.pData)
             abort();
-        spod.fCount = new_len;
-    } else if ((new_len + 1) > MSTRING_INPLACE_SIZE) {
-        // ATM local, to become external -> transition
-        auto p = (char*) malloc(new_len + 1);
-        memcpy(p, data(), cur_len + 1);
-        spod.ext.pData = p;
-        spod.fCount = new_len;
-    } else {
-        // otherwise still in SSO range!
-#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-        spod.cBytes[0] = new_len;
-#else
-    spod.fCount = new_len;
-#endif
+        set_len(new_len);
     }
-
-    return *this;
 }
 
 const char* mstring::data() const {
-    return !isLocal() ? spod.ext.pData : spod.cBytes + dsoffset;
+    auto inplace = isLocal();
+    auto ret =
+            inplace ?
+                    (static_cast<const char*>(spod.cBytes) + dsoffset) :
+                    spod.ext.pData;
+    return ret;
 }
 char* mstring::data() {
-    return !isLocal() ? spod.ext.pData : spod.cBytes + dsoffset;
+    auto inplace = isLocal();
+    auto ret =
+            inplace ?
+                    (static_cast<char*>(spod.cBytes) + dsoffset) :
+                    spod.ext.pData;
+    return ret;
 }
 // static_assert(offsetof(mstring::TRefData, pData) < sizeof(mstring::TRefData) - dsoffset);
 
-mstring mstring::substring(size_t pos) const {
-    return pos <= length() ? mstring(data() + pos, length() - pos) : null;
+mstring mstring::substring(size_type pos) const {
+    auto l = length();
+    return pos <= l ? mstring(data() + pos, l - pos) : null;
 }
 
-mstring mstring::substring(size_t pos, size_t len) const {
+mstring mstring::substring(size_type pos, size_type len) const {
     return pos <= length() ?
             mstring(data() + pos, min(len, length() - pos)) : null;
 }
@@ -172,7 +191,7 @@ bool mstring::split(unsigned char token, mstring *left, mstring *remain) const {
     int splitAt = indexOf(char(token));
     if (splitAt < 0)
         return false;
-    size_t i = size_t(splitAt);
+    size_type i = size_t(splitAt);
     mstring l(substring(0, i));
     mstring r(substring(i + 1, length() - i - 1));
     *left = l;
@@ -248,24 +267,25 @@ int mstring::count(char ch) const {
 }
 
 bool mstring_view::operator==(mstring_view sv) const {
-    return sv.length() == length() && 0 == memcmp(sv.data(), data(), sv.length());
+    return sv.length() == length()
+            && 0 == memcmp(sv.data(), data(), sv.length());
 }
 
-int mstring::collate(const mstring& s, bool ignoreCase) const {
+int mstring::collate(const mstring &s, bool ignoreCase) const {
     if (ignoreCase)
         return strcoll(this->lower(), s.lower());
     return strcoll(c_str(), s.c_str());
 }
 
 int mstring::compareTo(const mstring &s) const {
-    size_t len = min(s.length(), length());
+    auto len = min(s.length(), length());
     int cmp = len ? memcmp(data(), s.data(), len) : 0;
     return cmp ? cmp : int(length()) - int(s.length());
 }
 
-bool mstring::copyTo(char *dst, size_t len) const {
+bool mstring::copyTo(char *dst, size_type len) const {
     if (len > 0) {
-        size_t copy = min(len - 1, length());
+        auto copy = min(len - 1, length());
         if (copy)
             memcpy(dst, data(), copy);
         dst[copy] = 0;
@@ -273,16 +293,21 @@ bool mstring::copyTo(char *dst, size_t len) const {
     return length() < len;
 }
 
-mstring mstring::replace(int pos, int len, const mstring &insert) const {
+mstring mstring::replace(size_type pos, size_type len,
+        const mstring &insert) const {
     return substring(0, size_t(pos)) + insert + substring(size_t(pos + len));
 }
 
-mstring mstring::remove(int pos, int len) const {
-    return substring(0, size_t(pos)) + substring(size_t(pos + len));
+mstring mstring::remove(size_type pos, size_type len) const {
+    mstring_view l(data(), size_t(pos));
+    mstring_view r(data() + size_t(pos) + size_t(len), length() - pos - len);
+    return mstring(l, r);
 }
 
-mstring mstring::insert(int pos, const mstring &str) const {
-    return substring(0, size_t(pos)) + str + substring(size_t(pos));
+mstring mstring::insert(size_type pos, const mstring &str) const {
+    mstring_view l(data(), pos);
+    mstring_view r(data() + pos, length() - pos);
+    return mstring(l, str, r);
 }
 
 mstring mstring::searchAndReplaceAll(const mstring &s, const mstring &r) const {
@@ -300,26 +325,28 @@ mstring mstring::searchAndReplaceAll(const mstring &s, const mstring &r) const {
 
 mstring mstring::lower() const {
     mstring ret;
-    ret.extend(length());
-    for (size_t i = 0; i < length(); ++i) {
+    auto l = length();
+    ret.extendTo(l);
+    for (size_type i = 0; i < l; ++i) {
         ret.data()[i] = ASCII::toLower(data()[i]);
     }
-    ret.data()[length()] = 0x0;
+    ret.term(l);
     return ret;
 }
 
 mstring mstring::upper() const {
     mstring ret;
-    ret.extend(length());
-    for (size_t i = 0; i < length(); ++i) {
+    auto l = length();
+    ret.extendBy(l);
+    for (size_type i = 0; i < l; ++i) {
         ret.data()[i] = ASCII::toUpper(data()[i]);
     }
-    ret.data()[length()] = 0x0;
+    ret.term(l);
     return ret;
 }
 
 mstring mstring::trim() const {
-    size_t k = 0, n = length();
+    size_type k = 0, n = length();
     while (k < n && ASCII::isWhiteSpace(data()[k])) {
         ++k;
     }
@@ -384,26 +411,32 @@ inline bool mstring::input_from_here(mstring_view sv) {
 }
 
 // this is extra copy-pasty in order to let the compiler optimize it better
-mstring::mstring(mstring_view a, mstring_view b, mstring_view c,
-        mstring_view d, mstring_view e) {
-    spod.fCount = 0;
+mstring::mstring(mstring_view a, mstring_view b, mstring_view c, mstring_view d,
+        mstring_view e) {
+    set_len(0);
     auto len = a.length() + b.length() + c.length() + d.length() + e.length();
-    extend(len);
+    extendBy(len);
+    term(len);
     memcpy(data(), a.data(), a.length());
-    if(b.length())
-        memcpy(data() + a.length(), b.data(), b.length());
-    if (c.length()) {
-        memcpy(data() + a.length() + b.length(), c.data(), c.length());
+    auto pos = a.length();
+    if (!b.isEmpty()) {
+        memcpy(data() + pos, b.data(), b.length());
+        pos += b.length();
     }
-    if (d.length()) {
-        memcpy(data() + a.length() + b.length() + c.length(), d.data(),
-                d.length());
+    if (!c.isEmpty()) {
+        memcpy(data() + pos, c.data(), c.length());
+        pos += c.length();
     }
-    if (e.length()) {
-        memcpy(data() + a.length() + b.length() + c.length() + d.length(),
-                e.data(), e.length());
+    if (!d.isEmpty()) {
+        memcpy(data() + pos, d.data(), d.length());
+        pos += d.length();
     }
-    data()[len] = 0x0;
+    if (!e.isEmpty()) {
+        memcpy(data() + pos, e.data(), e.length());
+        pos += e.length();
+    }
+    term(pos);
+    //assert(pos == len);
 }
 
 // vim: set sw=4 ts=4 et:

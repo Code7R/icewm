@@ -490,14 +490,15 @@ const upath& YApplication::getPrivConfDir() {
         }
         else {
             env = getenv("XDG_CONFIG_HOME");
+            auto hd = getHomeDir();
             if (env)
                 dir = env;
             else {
-                dir = getHomeDir() + "/.config";
+                dir = hd + "/.config";
             }
             dir += "/icewm";
             if (!dir.dirExists()) {
-                dir = getHomeDir() + "/.icewm";
+                dir = hd + "/.icewm";
                 if ( ! dir.dirExists())
                     dir.mkdir();
             }
