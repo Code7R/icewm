@@ -14,6 +14,8 @@
 #include <fnmatch.h>
 #include "base.h"
 #include "yapp.h"
+#include "ypointer.h"
+#include "mstringex.h"
 
 const mstring upath::slash("/");
 const upath upath::rootPath(slash);
@@ -83,6 +85,8 @@ upath upath::replaceExtension(const char* ext) const {
     return removeExtension().addExtension(ext);
 }
 
+static precompiled_regex rex("^\\$[_A-Za-z][_A-Za-z0-9]*");
+
 mstring upath::expand() const {
     int c = fPath[0];
     if (c == '~') {
@@ -92,7 +96,7 @@ mstring upath::expand() const {
                     fPath.substring(size_t(min(2, length())))).fPath;
     }
     else if (c == '$') {
-        mstring m(fPath.match("^\\$[_A-Za-z][_A-Za-z0-9]*"));
+        auto m = fPath.match(rex);
         if (m.nonempty()) {
             const char* e = getenv(m.substring(1));
             if (e && *e && *e != '~' && *e != '$') {

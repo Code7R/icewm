@@ -9,8 +9,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <regex.h>
 #include <new>
+#include <cstdint>
 #include "base.h"
 #include "ascii.h"
 
@@ -356,49 +356,6 @@ mstring mstring::trim() const {
     return substring(k, n - k);
 }
 
-mstring mstring::match(const char *regex, const char *flags) const {
-    int compFlags = REG_EXTENDED;
-    int execFlags = 0;
-    for (int i = 0; flags && flags[i]; ++i) {
-        switch (flags[i]) {
-        case 'i':
-            compFlags |= REG_ICASE;
-            break;
-        case 'n':
-            compFlags |= REG_NEWLINE;
-            break;
-        case 'B':
-            execFlags |= REG_NOTBOL;
-            break;
-        case 'E':
-            execFlags |= REG_NOTEOL;
-            break;
-        }
-    }
-
-    regex_t preg;
-    // XXX: maybe the compiled result should be cached for reuse, giving the user some handle to store
-    int comp = regcomp(&preg, regex, compFlags);
-    if (comp) {
-        if (testOnce(regex, __LINE__)) {
-            char rbuf[123] = "";
-            regerror(comp, &preg, rbuf, sizeof rbuf);
-            warn("match regcomp: %s", rbuf);
-        }
-        return null;
-    }
-
-    regmatch_t pos;
-    int exec = regexec(&preg, data(), 1, &pos, execFlags);
-
-    regfree(&preg);
-
-    if (exec)
-        return null;
-
-    return mstring(data() + pos.rm_so, size_t(pos.rm_eo - pos.rm_so));
-}
-
 mstring_view::mstring_view(const char *s) :
         m_data(s), m_size(s ? strlen(s) : 0) {
 }
@@ -438,5 +395,23 @@ mstring::mstring(mstring_view a, mstring_view b, mstring_view c, mstring_view d,
     term(pos);
     //assert(pos == len);
 }
+
+
+size_t mstring::getHashCode() const {
+    union {
+        size_t ret;
+        char bytes[sizeof(ret)];
+    };
+    ret = length();
+    auto p = data();
+    const auto end = p + ret;
+    const auto fastEnd = end - (ret % sizeof(ret));
+    for (; p < fastEnd; p += sizeof(ret))
+        ret ^= *((size_t*) p);
+    for (auto pr = bytes; p < end; ++p, ++pr)
+        *pr ^= *p;
+    return ret;
+}
+
 
 // vim: set sw=4 ts=4 et:

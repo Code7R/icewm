@@ -7,15 +7,18 @@
 
 #include "ref.h"
 #include <stdlib.h>
-#include <stdint.h>
 
 class mstring;
+class precompiled_regex;
+
 class mstring_view {
     const char *m_data;
     size_t m_size;
 public:
     mstring_view(const char *s);
-    mstring_view(const char *s, size_t len);
+    mstring_view(const char *s, size_t len) :
+            m_data(s), m_size(len) {
+    }
     mstring_view(null_ref &) : m_data(nullptr), m_size(0) {}
     mstring_view() : mstring_view(null) {}
     mstring_view(const mstring& s);
@@ -122,6 +125,7 @@ public:
     mstring substring(size_type pos) const;
     mstring substring(size_type pos, size_type len) const;
     mstring match(const char* regex, const char* flags = nullptr) const;
+    mstring match(const precompiled_regex&) const;
 
     int operator[](int pos) const { return charAt(pos); }
     int charAt(int pos) const;
@@ -159,6 +163,7 @@ public:
     const char* c_str() const { return data();}
 
     void clear();
+    size_t getHashCode() const;
 };
 
 inline bool operator==(const char* s, const mstring& c) {
@@ -170,13 +175,11 @@ inline bool operator!=(const char* s, const mstring& c) {
 inline mstring operator+(const char* s, const mstring& m) {
     return (s && *s) ? (mstring(s) + m) : m;
 }
-inline mstring_view::mstring_view(const char *s, size_t len) :
-        m_data(s), m_size(len) {
-}
 inline mstring_view::mstring_view(const mstring &s) :
         mstring_view(s.data(), s.length()) {
 }
 void swap(mstring &a, mstring &b);
+
 
 #endif
 

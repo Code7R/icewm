@@ -1,5 +1,6 @@
 #include "config.h"
 #include "mstring.h"
+#include "mstringex.h"
 #include "upath.h"
 #include "base.h"
 #include "udir.h"
@@ -9,6 +10,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <fnmatch.h>
+#include <unordered_set>
 
 char const *ApplicationName = "strtest";
 static const char source[] = __FILE__;
@@ -256,6 +258,14 @@ static void test_mstring()
 
     u = "";
     expect(u, "");
+
+    std::unordered_set<mstring> container;
+    auto added1 = container.emplace("foo");
+    auto added2 = container.emplace("bar");
+    auto added3 = container.emplace("foo");
+    EXPECT_EQ(added1.second, true);
+    EXPECT_EQ(added2.second, true);
+    EXPECT_EQ(added3.second, false);
 }
 
 static void test_upath()
