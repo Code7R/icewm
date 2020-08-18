@@ -14,9 +14,6 @@
 #include "base.h"
 #include "ascii.h"
 
-// local area minus SSO counter minus terminator
-#define MSTRING_INPLACE_MAXLEN (sizeof(mstring::spod) - 2)
-
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
 #define dsoffset (offsetof(decltype(mstring::spod), cBytes) + 1)
 #define posSmallCounter 0
@@ -114,12 +111,16 @@ inline void mstring::term(size_type len) {
     data()[len] = 0x0;
 }
 
-inline void mstring::set_len(size_type len) {
+void mstring::set_len(size_type len) {
+#ifdef SSO_NOUTYPUN
+    spod.count = len;
+#else
     if (len > MSTRING_INPLACE_MAXLEN) {
         spod.count = (0x1 | (len << 1));
     } else {
         spod.cBytes[posSmallCounter] = (uint8_t(len) << 1);
     }
+#endif
 }
 
 void mstring::clear() {
@@ -139,12 +140,38 @@ inline void mstring::extendBy(size_type amount) {
 
 // user must fill in the extended data (=amount) AND terminator later
 inline void mstring::extendTo(size_type new_len) {
+#ifdef SSO_NOUTYPUN
     if (isLocal()) {
         if (new_len <= MSTRING_INPLACE_MAXLEN) {
             set_len(new_len);
         } else {
             // local before, to become external now
             auto p = (char*) malloc(new_len + 1);
+            if(!p)
+                abort();
+
+            memcpy(p, data(), length() + 1);
+            memcpy(spod.cBytes, &p, sizeof(p));
+            set_len(new_len);
+        }
+    } else {
+        auto p = data();
+        p = (char*) realloc((void*) p, new_len + 1);
+        // XXX: do something more useful if failed?
+        if (!p)
+            abort();
+        memcpy(spod.cBytes, &p, sizeof(p));
+        set_len(new_len);
+    }
+#else
+    if (isLocal()) {
+        if (new_len <= MSTRING_INPLACE_MAXLEN) {
+            set_len(new_len);
+        } else {
+            // local before, to become external now
+            auto p = (char*) malloc(new_len + 1);
+            if(!p)
+                abort();
             memcpy(p, data(), length() + 1);
             spod.ext.pData = p;
             set_len(new_len);
@@ -156,22 +183,37 @@ inline void mstring::extendTo(size_type new_len) {
             abort();
         set_len(new_len);
     }
+#endif
 }
 
 const char* mstring::data() const {
     auto inplace = isLocal();
+#ifdef SSO_NOUTYPUN
+    if(inplace)
+        return spod.cBytes;
+    char *ret;
+    memcpy(&ret, spod.cBytes, sizeof(ret));
+#else
     auto ret =
             inplace ?
                     (static_cast<const char*>(spod.cBytes) + dsoffset) :
                     spod.ext.pData;
+#endif
     return ret;
 }
 char* mstring::data() {
     auto inplace = isLocal();
+#ifdef SSO_NOUTYPUN
+    if(inplace)
+        return spod.cBytes;
+    char *ret;
+    memcpy(&ret, spod.cBytes, sizeof(ret));
+#else
     auto ret =
             inplace ?
                     (static_cast<char*>(spod.cBytes) + dsoffset) :
                     spod.ext.pData;
+#endif
     return ret;
 }
 // static_assert(offsetof(mstring::TRefData, pData) < sizeof(mstring::TRefData) - dsoffset);
@@ -267,8 +309,9 @@ int mstring::count(char ch) const {
 }
 
 bool mstring_view::operator==(mstring_view sv) const {
-    return sv.length() == length()
-            && 0 == memcmp(sv.data(), data(), sv.length());
+    auto lenA=sv.length();
+    auto lenB = length();
+    return lenA == lenB && 0 == memcmp(sv.data(), data(), lenA);
 }
 
 int mstring::collate(const mstring &s, bool ignoreCase) const {

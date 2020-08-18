@@ -37,6 +37,18 @@ private:
     friend mstring operator+(const char* s, const mstring& m);
     friend void swap(mstring& a, mstring& b);
     friend class mstring_view;
+
+#if defined(__GNUC__) && ! defined(NOUTYPUN)
+    struct TRefData {
+        char *pData;
+        // for now: inflate a bit, later: to implement set preservation
+        size_type nReserved;
+    };
+
+    // local area minus SSO counter minus terminator
+    #define MSTRING_INPLACE_MAXLEN (sizeof(mstring::spod) - 2)
+
+    // can take a shortcut here, union-based type punning is legal
     struct {
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
         union {
@@ -44,26 +56,38 @@ private:
             char cBytes[sizeof(size_type)];
         };
 #endif
-        struct TRefData {
-            char *pData;
-            // for now: just inflate, later: to implement set preservation
-            size_type nReserved;
-        };
         union {
             TRefData ext;
             char extraBytes[sizeof(TRefData)];
         };
 #if __BYTE_ORDER__ != __ORDER_LITTLE_ENDIAN__
         union {
-                    size_type count;
-                    char cBytes[sizeof(size_type)];
+            size_type count;
+            char cBytes[sizeof(size_type)];
         };
 #endif
     } spod;
+#else
+    // for other compilers: no punning on count var and extra careful access
+#define SSO_NOUTYPUN
+
+    // local area minus SSO counter minus terminator
+    #define MSTRING_INPLACE_MAXLEN (3*sizeof(size_type)-1)
+
+    struct {
+        size_type count;
+        char cBytes[MSTRING_INPLACE_MAXLEN + 1];
+    } spod;
+#endif
+
     const char* data() const;
     char* data();
     bool isLocal() const {
+#ifdef SSO_NOUTYPUN
+        return spod.count <= MSTRING_INPLACE_MAXLEN;
+#else
         return 0 == (spod.count & 0x1);
+#endif
     }
     void set_len(size_type len);
     void term(size_type len);
@@ -90,7 +114,11 @@ public:
     ~mstring() { clear(); };
 
     size_type length() const {
+#ifdef SSO_NOUTYPUN
+        return spod.count;
+#else
         return (isLocal() ? (spod.count & 0xff) : spod.count) >> 1;
+#endif
     }
     bool isEmpty() const {
         return 0 == length();
@@ -164,6 +192,8 @@ public:
 
     void clear();
     size_t getHashCode() const;
+    // XXX: shortcut to load from file into this
+    static mstring from_file(const char* path, int timeoutMS, bool* timedOut);
 };
 
 inline bool operator==(const char* s, const mstring& c) {
