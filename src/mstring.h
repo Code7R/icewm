@@ -7,6 +7,7 @@
 
 #include "ref.h"
 #include <stdlib.h>
+#include <cinttypes>
 
 class mstring;
 class precompiled_regex;
@@ -42,28 +43,30 @@ private:
     struct TRefData {
         char *pData;
         // for now: inflate a bit, later: to implement set preservation
-        size_type nReserved;
+        uint64_t nReserved;
     };
 
-    // local area minus SSO counter minus terminator
-    #define MSTRING_INPLACE_MAXLEN (sizeof(mstring::spod) - 2)
+// local area minus SSO counter minus terminator minus local flag
+#define MSTRING_INPLACE_MAXLEN (sizeof(mstring::spod) - 3)
+#define MSTRING_INPLACE_FLAG   spod.extraBytes[sizeof(spod.extraBytes)-1]
 
-    // can take a shortcut here, union-based type punning is legal
+    // can compress more where union-based type punning are legal!
     struct {
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
         union {
             size_type count;
-            char cBytes[sizeof(size_type)];
+            uint8_t cBytes[sizeof(size_type)];
         };
 #endif
         union {
             TRefData ext;
-            char extraBytes[sizeof(TRefData)];
+            // for easier debugging & compensate smaller pointer size on 32bit
+            char extraBytes[sizeof(ext)];
         };
 #if __BYTE_ORDER__ != __ORDER_LITTLE_ENDIAN__
         union {
             size_type count;
-            char cBytes[sizeof(size_type)];
+            uint8_t cBytes[sizeof(size_type)];
         };
 #endif
     } spod;
@@ -82,14 +85,7 @@ private:
 
     const char* data() const;
     char* data();
-    bool isLocal() const {
-#ifdef SSO_NOUTYPUN
-        return spod.count <= MSTRING_INPLACE_MAXLEN;
-#else
-        return 0 == (spod.count & 0x1);
-#endif
-    }
-    void set_len(size_type len);
+    bool isLocal() const { return MSTRING_INPLACE_FLAG; }
     void term(size_type len);
     void extendBy(size_type amount);
     void extendTo(size_type new_len);
@@ -113,11 +109,12 @@ public:
 
     ~mstring() { clear(); };
 
+    void set_len(size_type len);
     size_type length() const {
 #ifdef SSO_NOUTYPUN
         return spod.count;
 #else
-        return (isLocal() ? (spod.count & 0xff) : spod.count) >> 1;
+        return isLocal() ? (spod.count & 0xff) : spod.count;
 #endif
     }
     bool isEmpty() const {

@@ -24,6 +24,7 @@
 
 mstring::mstring(const char *str, size_type len) {
     set_len(0);
+    spod.ext.pData = nullptr;
     if (len) {
         extendTo(len);
         memcpy(data(), str, len);
@@ -116,9 +117,11 @@ void mstring::set_len(size_type len) {
     spod.count = len;
 #else
     if (len > MSTRING_INPLACE_MAXLEN) {
-        spod.count = (0x1 | (len << 1));
+        spod.count = len;
+        MSTRING_INPLACE_FLAG = false;
     } else {
-        spod.cBytes[posSmallCounter] = (uint8_t(len) << 1);
+        spod.cBytes[posSmallCounter] = uint8_t(len);
+        MSTRING_INPLACE_FLAG = true;
     }
 #endif
 }
@@ -193,13 +196,12 @@ const char* mstring::data() const {
         return spod.cBytes;
     char *ret;
     memcpy(&ret, spod.cBytes, sizeof(ret));
-#else
-    auto ret =
-            inplace ?
-                    (static_cast<const char*>(spod.cBytes) + dsoffset) :
-                    spod.ext.pData;
-#endif
     return ret;
+#else
+    if (!inplace)
+        return spod.ext.pData;
+    return ((const char*) spod.cBytes) + dsoffset;
+#endif
 }
 char* mstring::data() {
     auto inplace = isLocal();
@@ -208,13 +210,12 @@ char* mstring::data() {
         return spod.cBytes;
     char *ret;
     memcpy(&ret, spod.cBytes, sizeof(ret));
-#else
-    auto ret =
-            inplace ?
-                    (static_cast<char*>(spod.cBytes) + dsoffset) :
-                    spod.ext.pData;
-#endif
     return ret;
+#else
+    if (!inplace)
+        return spod.ext.pData;
+    return ((char*) spod.cBytes) + dsoffset;
+#endif
 }
 // static_assert(offsetof(mstring::TRefData, pData) < sizeof(mstring::TRefData) - dsoffset);
 
