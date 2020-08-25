@@ -9,9 +9,15 @@
 #include "base.h"
 #include "ascii.h"
 
+enum STATE_FLAGS {
+    STATE_NONE = 0,
+    STATE_COMPILED = 1,
+    STATE_ERROR = 2
+};
+
 mstring mstring::match(const precompiled_regex &rex) const {
-    if (rex.mCompError) {
-        warn("match regcomp: %s", rex.mCompError.data());
+    if (rex.stateFlags == STATE_ERROR) {
+        warn("match regcomp: %s", rex.mCompError);
         return null;
     }
     regmatch_t pos;
@@ -25,10 +31,9 @@ mstring mstring::match(const char *regex, const char *flags) const {
 }
 
 precompiled_regex::precompiled_regex(const char *regex, const char *flags) :
-        mCompError(nullptr) {
+        execFlags(0), stateFlags(0) {
 
     auto compFlags = REG_EXTENDED;
-    execFlags = 0;
     for (int i = 0; flags && flags[i]; ++i) {
         switch (flags[i]) {
         case 'i':
@@ -47,21 +52,34 @@ precompiled_regex::precompiled_regex(const char *regex, const char *flags) :
     }
 
     int comp = regcomp(&preg, regex, compFlags);
-    if (comp) {
-        mCompError = new char[200];
-        mCompError[200] = 0x0;
-        regerror(comp, &preg, mCompError.data(), 200);
+    if (0 == comp) {
+        stateFlags = STATE_COMPILED;
+    } else {
+        stateFlags = STATE_ERROR;
+        auto sResult = new char[200];
+        regerror(comp, &preg, sResult, 200);
+        sResult[199] = 0x0;
+        regfree(&preg);
+        mCompError = sResult;
     }
 }
 
 precompiled_regex::~precompiled_regex() {
-    if (!mCompError)
+    switch(stateFlags)
+    {
+    case STATE_NONE: return;
+    case STATE_COMPILED:
         regfree(&preg);
+        return;
+    case STATE_ERROR:
+        delete [] mCompError;
+        return;
+    }
 }
 
 bool precompiled_regex::inside(const char *s) {
-    if (mCompError) {
-        warn("match regcomp: %s", mCompError.data());
+    if (STATE_ERROR == stateFlags) {
+        warn("match regcomp: %s", mCompError);
         return false;
     }
     regmatch_t pos;

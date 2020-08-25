@@ -21,9 +21,12 @@ struct hash<mstring> {
 // helper class to keep precompiled regex on stack
 class precompiled_regex {
     // XXX: actually, can use a union for them
-    regex_t preg;
-    csmart mCompError;
+    union {
+        regex_t preg;
+        const char* mCompError;
+    };
     int execFlags;
+    int stateFlags;
     friend class mstring;
 public:
     precompiled_regex(const char* regex, const char* flags = nullptr);
