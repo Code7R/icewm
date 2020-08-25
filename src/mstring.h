@@ -6,8 +6,9 @@
 #endif
 
 #include "ref.h"
-#include <stdlib.h>
+#include <cstdlib>
 #include <cinttypes>
+#include <utility>
 
 class mstring;
 class precompiled_regex;

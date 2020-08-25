@@ -43,7 +43,7 @@ mstring upath::name() const {
     return fPath.substring(size_t(start), size_t(length() - start));
 }
 
-upath upath::relative(const upath &npath) const {
+upath upath::relative(upath &&npath) const {
     if (npath.isEmpty())
         return *this;
     else if (isEmpty()) {
@@ -98,7 +98,7 @@ mstring upath::expand() const {
     else if (c == '$') {
         auto m = fPath.match(rex);
         if (m.nonempty()) {
-            const char* e = getenv(m.substring(1));
+            auto* e = getenv(m.substring(1));
             if (e && *e && *e != '~' && *e != '$') {
                 return e + fPath.substring(m.length());
             }
@@ -224,14 +224,14 @@ bool upath::equals(const upath &s) const {
 #include <glob.h>
 #include "yarray.h"
 
-bool upath::hasglob(mstring pattern) {
-    const char* s = pattern;
+bool upath::hasglob(const mstring& pattern) {
+    auto s = pattern.c_str();
     while (*s && *s != '*' && *s != '?' && *s != '[')
         s += 1 + (*s == '\\' && s[1]);
     return *s != 0;
 }
 
-bool upath::glob(mstring pattern, YStringArray& list, const char* flags) {
+bool upath::glob(const mstring& pattern, YStringArray& list, const char* flags) {
     bool okay = false;
     int flagbits = 0;
     int (*const errfunc) (const char *epath, int eerrno) = nullptr;
@@ -249,7 +249,7 @@ bool upath::glob(mstring pattern, YStringArray& list, const char* flags) {
         }
     }
 
-    if (0 == ::glob(pattern, flagbits, errfunc, &gl)) {
+    if (0 == ::glob(pattern.c_str(), flagbits, errfunc, &gl)) {
         double limit = 1e6;
         if (gl.gl_pathc < limit) {
             int count = int(gl.gl_pathc);
