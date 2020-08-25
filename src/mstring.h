@@ -15,16 +15,16 @@ class precompiled_regex;
 
 class mstring_view {
     const char *m_data;
-    size_t m_size;
+    std::size_t m_size;
 public:
     mstring_view(const char *s);
-    mstring_view(const char *s, size_t len) :
+    mstring_view(const char *s, std::size_t len) :
             m_data(s), m_size(len) {
     }
     mstring_view(null_ref &) : m_data(nullptr), m_size(0) {}
     mstring_view() : mstring_view(null) {}
     mstring_view(const mstring& s);
-    size_t length() const { return m_size; }
+    std::size_t length() const { return m_size; }
     const char* data() const { return m_data; }
     bool operator==(mstring_view rv) const;
     bool isEmpty() const { return length() == 0; }
@@ -34,7 +34,7 @@ public:
  */
 class mstring {
 public:
-    using size_type = size_t;
+    using size_type = std::size_t;
 private:
     friend mstring operator+(const char* s, const mstring& m);
     friend void swap(mstring& a, mstring& b);
@@ -92,6 +92,7 @@ private:
     void extendTo(size_type new_len);
     // detect parameter data coming from this string, to take the slower path
     bool input_from_here(mstring_view sv);
+    void set_len(size_type len);
 
 public:
     mstring(const char *s, size_type len);
@@ -110,7 +111,6 @@ public:
 
     ~mstring() { clear(); };
 
-    void set_len(size_type len);
     size_type length() const {
 #ifdef SSO_NOUTYPUN
         return spod.count;
@@ -189,7 +189,7 @@ public:
     const char* c_str() const { return data();}
 
     void clear();
-    size_t getHashCode() const;
+    std::size_t getHashCode() const;
     // XXX: shortcut to load from file into this
     static mstring from_file(const char* path, int timeoutMS, bool* timedOut);
 };

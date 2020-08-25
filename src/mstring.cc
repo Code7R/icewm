@@ -442,6 +442,8 @@ mstring::mstring(mstring_view a, mstring_view b, mstring_view c, mstring_view d,
 
 
 size_t mstring::getHashCode() const {
+    // shortcut with little type punning on GCC but better not with others
+#ifndef SSO_NOUTYPUN
     union {
         size_t ret;
         char bytes[sizeof(ret)];
@@ -455,6 +457,9 @@ size_t mstring::getHashCode() const {
     for (auto pr = bytes; p < end; ++p, ++pr)
         *pr ^= *p;
     return ret;
+#else
+    return strhash(c_str());
+#endif
 }
 
 
