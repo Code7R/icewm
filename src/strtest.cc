@@ -266,6 +266,18 @@ static void test_mstring()
     EXPECT_EQ(added1.second, true);
     EXPECT_EQ(added2.second, true);
     EXPECT_EQ(added3.second, false);
+
+    u = mstring("...").appendFormat("%d", 123);
+    expect(u, "...123");
+
+    u = mstring().appendFormat("%i---", 1234567);
+    expect(u, "1234567---");
+
+    u.appendFormat("more");
+    expect(u, "1234567---more");
+
+    u.appendFormat("%s", "even much more until it reallocates");
+    expect(u, "1234567---moreeven much more until it reallocates");
 }
 
 static void test_upath()

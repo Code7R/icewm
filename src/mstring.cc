@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <new>
 #include <cstdint>
+#include <cstdarg>
+
 #include "base.h"
 #include "ascii.h"
 
@@ -446,6 +448,43 @@ mstring::mstring(mstring_view a, mstring_view b) :
 
 mstring::mstring(mstring_view a, mstring_view b, mstring_view c) :
         mstring(a, b, c, mstring_view(), mstring_view()) {
+}
+
+bool mstring::equals(const char *&sz) const {
+    return 0 == strcmp(sz, c_str());
+}
+
+mstring& mstring::appendFormat(const char *fmt, ...) {
+    auto startLen = length();
+    // it might fit into locally available space, can try that for free!
+    auto haveLocalSpace =
+            startLen < MSTRING_INPLACE_MAXLEN ?
+                    (MSTRING_INPLACE_MAXLEN + 1 - startLen) : 0;
+    va_list ap;
+    va_start(ap, fmt);
+    auto wantsLen = vsnprintf(haveLocalSpace ? data() + startLen : nullptr,
+            haveLocalSpace, fmt, ap);
+    va_end(ap);
+    if (wantsLen < 0)
+    {
+        warn("bad format string or parameters: %s", fmt);
+        data()[startLen] = 0x0;
+        return *this;
+    }
+    if (haveLocalSpace) {
+        if (size_type(wantsLen) < haveLocalSpace) {
+            // it did all fit? Great!
+            set_len(startLen + wantsLen);
+            return *this;
+        }
+        // not lucky, undo the effects
+        data()[startLen] = 0x0;
+    }
+    extendBy(wantsLen);
+    va_start(ap, fmt);
+    vsnprintf(data() + startLen, wantsLen + 1, fmt, ap);
+    va_end(ap);
+    return *this;
 }
 
 size_t mstring::getHashCode() const {

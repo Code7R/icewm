@@ -161,7 +161,7 @@ public:
     int lastIndexOf(char ch) const;
     int count(char ch) const;
 
-    bool equals(const char *&sz) const { return equals(mstring_view(sz)); }
+    bool equals(const char *&sz) const;
     bool equals(mstring_view sv) const { return sv == *this; }
     bool equals(const mstring &s) const { return mstring_view(s) == *this; };
     bool equals(const char *sz, size_type len) const {
@@ -186,6 +186,17 @@ public:
     mstring searchAndReplaceAll(const mstring& s, const mstring& r) const;
     mstring lower() const;
     mstring upper() const;
+    /**
+     * Calculates the required amount of memory (first run), then formats
+     * the data via vsnprintf.
+     */
+    mstring& appendFormat(const char *fmtString, ...);
+    /**
+     * Like appendFormat before but first takes an optimistic approach and
+     * allocates the specified amount of memory beforehand.
+     *
+    mstring& appendFormat(size_type sizeHint, const char *fmtString, ...);
+     */
 
     operator const char *() { return c_str(); }
     const char* c_str() const { return data();}
