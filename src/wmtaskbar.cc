@@ -1055,7 +1055,7 @@ void TaskBar::workspacesRelabelButtons() {
     }
 }
 
-void TaskBar::keyboardUpdate(mstring keyboard) {
+void TaskBar::keyboardUpdate(const mstring& keyboard) {
     if (fKeyboardStatus) {
         fKeyboardStatus->updateKeyboard(keyboard);
     }

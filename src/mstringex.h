@@ -34,7 +34,7 @@ public:
     precompiled_regex(const precompiled_regex&) =delete;
     precompiled_regex& operator=(const precompiled_regex&) =delete;
     // a basic check the existence of the matched pattern
-    bool inside(const char*);
+    bool matchIn(const char*) const;
 };
 
 

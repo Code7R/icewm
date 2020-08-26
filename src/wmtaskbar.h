@@ -88,7 +88,7 @@ public:
     void workspacesRepaint();
     void workspacesUpdateButtons();
     void workspacesRelabelButtons();
-    void keyboardUpdate(mstring keyboard);
+    void keyboardUpdate(const mstring& keyboard);
 
     void removeTasksApp(YFrameWindow *w);
     class TaskBarApp *addTasksApp(YFrameWindow *w);

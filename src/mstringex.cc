@@ -77,7 +77,7 @@ precompiled_regex::~precompiled_regex() {
     }
 }
 
-bool precompiled_regex::inside(const char *s) {
+bool precompiled_regex::matchIn(const char *s) const {
     if (STATE_ERROR == stateFlags) {
         warn("match regcomp: %s", mCompError);
         return false;

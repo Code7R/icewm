@@ -244,9 +244,9 @@ void YColor::alloc(const char* name) {
         if (strncmp(name, "rgb:rgb:", 8) == 0)
             return alloc(name + 4);
 
-        if (reSixHex.inside(name))
+        if (reSixHex.matchIn(name))
             return alloc(mstring("#", name));
-        if (reHashFiveHex.inside(name))
+        if (reHashFiveHex.matchIn(name))
             return alloc(mstring(name, &name[5]));
         mstring str(name);
         mstring rgb = (str.match(reRgb));
