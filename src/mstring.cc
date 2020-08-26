@@ -100,16 +100,6 @@ mstring mstring::operator +(mstring &&rv) const {
     return ret;
 }
 
-mstring::mstring(long n) {
-    set_len(0);
-    // XXX: that system dependent crap, better create a mstring::from_number
-    // function with various overloads, so short/int can be done inplace
-    //spod.cBytes[0] = snprintf(data(), MSTRING_INPLACE_MAXLEN, "%ld", n);
-    //data()[spod.fCount];
-    char buf[32];
-    auto len = snprintf(buf, sizeof(buf), "%ld", n);
-    *this = mstring_view(buf, len);
-}
 inline void mstring::term(size_type len) {
     data()[len] = 0x0;
 }

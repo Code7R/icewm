@@ -100,13 +100,12 @@ public:
     mstring(const mstring& s) : mstring(s.data(), s.length()) {}
     mstring(const char *s) : mstring(mstring_view(s)) {}
     mstring(mstring&& other);
-    explicit mstring(long);
 
     // fast in-place concatenation for often uses
     mstring(mstring_view a, mstring_view b);
     mstring(mstring_view a, mstring_view b, mstring_view c);
     mstring(mstring_view a, mstring_view b, mstring_view c,
-            mstring_view d, mstring_view e);
+            mstring_view d, mstring_view e = mstring_view());
 
     mstring(null_ref &) { set_len(0); data()[0] = 0x0; }
     mstring() : mstring(null) {}
@@ -197,6 +196,8 @@ public:
      *
     mstring& appendFormat(size_type sizeHint, const char *fmtString, ...);
      */
+
+    explicit mstring(long val) : mstring() { appendFormat("%ld", val); }
 
     operator const char *() { return c_str(); }
     const char* c_str() const { return data();}

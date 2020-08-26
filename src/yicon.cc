@@ -214,16 +214,16 @@ public:
                 if (kv.size == SCALABLE)
                     continue;
 
-                mstring szSize(long(kv.size));
+                mstring sepX = mstring().appendFormat("/%u", kv.size);
+                mstring sepXY = sepX + mstring().appendFormat("x%u", kv.size);
 
                 for (const auto &contentDir : subcats) {
                     for (const auto &testDir : {
                             // XXX: optimize concatenation with MStringBuilder
-                            mstring(iconPathToken) + "/" + szSize + "x" + szSize
-                            + contentDir, mstring(iconPathToken) + "/base/"
-                            + szSize + "x" + szSize + contentDir,
+                            mstring(iconPathToken, sepXY, contentDir),
+                                    mstring(iconPathToken, "/base", sepXY, contentDir),
 // some old themes contain just one dimension and different naming convention
-                            mstring(iconPathToken) + contentDir + "/" + szSize
+                            mstring(iconPathToken, contentDir, "/", sepX)
                     }) {
                         ret+=gotcha(testDir, kv);
                     }
@@ -342,10 +342,8 @@ public:
         auto checkFilesAtBasePath = [&](mstring basePath, unsigned size,
                 bool addSizeSfx) {
             // XXX: optimize string concatenation? Or go back to plain printf?
-            if (addSizeSfx) {
-                basePath += "_";
-                basePath += mstring(long(size)) + "x" + mstring(long(size));
-            }
+            if (addSizeSfx)
+                basePath.appendFormat("_%ldx%ld", long(size), long(size));
             for (const auto &imgExt : iconExts) {
                 if (checkFile(basePath + imgExt))
                     return true;
