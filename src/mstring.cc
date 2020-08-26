@@ -440,6 +440,13 @@ mstring::mstring(mstring_view a, mstring_view b, mstring_view c, mstring_view d,
     //assert(pos == len);
 }
 
+mstring::mstring(mstring_view a, mstring_view b) :
+        mstring(a, b, mstring_view(), mstring_view(), mstring_view()) {
+}
+
+mstring::mstring(mstring_view a, mstring_view b, mstring_view c) :
+        mstring(a, b, c, mstring_view(), mstring_view()) {
+}
 
 size_t mstring::getHashCode() const {
     // shortcut with little type punning on GCC but better not with others

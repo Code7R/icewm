@@ -103,8 +103,10 @@ public:
     explicit mstring(long);
 
     // fast in-place concatenation for often uses
-    mstring(mstring_view a, mstring_view b, mstring_view c = mstring_view(),
-            mstring_view d = mstring_view(), mstring_view e = mstring_view());
+    mstring(mstring_view a, mstring_view b);
+    mstring(mstring_view a, mstring_view b, mstring_view c);
+    mstring(mstring_view a, mstring_view b, mstring_view c,
+            mstring_view d, mstring_view e);
 
     mstring(null_ref &) { set_len(0); data()[0] = 0x0; }
     mstring() : mstring(null) {}
@@ -207,7 +209,6 @@ inline mstring_view::mstring_view(const mstring &s) :
         mstring_view(s.data(), s.length()) {
 }
 void swap(mstring &a, mstring &b);
-
 
 #endif
 
