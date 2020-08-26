@@ -697,14 +697,6 @@ void operator delete[](void *p) {
 #if !defined(HAVE_STRLCPY) || !HAVE_STRLCPY
 size_t strlcpy(char *dest, const char *from, size_t dest_size)
 {
-#ifdef __GNUC__
-    // let's benefit from compiler intrinsics and SIMD
-    size_t ilen = strlen(from);
-    auto imax = ilen < dest_size ? ilen : (dest_size - 1);
-    memcpy(dest, from, imax);
-    dest[imax] = '\0';
-    return ilen;
-#else
     const char *in = from;
     if (dest_size > 0) {
         char *to = dest;
@@ -715,7 +707,6 @@ size_t strlcpy(char *dest, const char *from, size_t dest_size)
     }
     while (*in) ++in;
     return in - from;
-#endif
 }
 #endif
 
