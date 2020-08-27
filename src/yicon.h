@@ -57,9 +57,6 @@ private:
     upath fPath;
 
     ref<YImage> bestLoad(int size, ref<YImage>& img, bool& flag);
-
-    void removeFromCache();
-    static int cacheFind(upath name);
     ref<YImage> loadIcon(unsigned size);
 };
 

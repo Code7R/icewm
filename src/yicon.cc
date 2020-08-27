@@ -27,10 +27,6 @@
 // place holder for scalable category, a size beyond normal limits
 #define SCALABLE 9000
 
-#ifdef DEBUG
-unsigned compCount = 0;
-#endif
-
 YIcon::YIcon(upath filename) :
         fSmall(null), fLarge(null), fHuge(null), loadedS(false), loadedL(false),
         loadedH(false), fCached(false), fPath(filename.expand()) {
@@ -507,62 +503,103 @@ ref<YImage> YIcon::getScaledIcon(unsigned size) {
     return null;
 }
 
-static YRefArray<YIcon> iconCache;
+#define DEFAULT_HT_SIZE 256
+static std::vector<ref<YIcon>> iconCache(DEFAULT_HT_SIZE);
+static unsigned rekeyHighMark(23), cacheMask(DEFAULT_HT_SIZE - 1), cacheUsed(0);
 
-void YIcon::removeFromCache() {
-    int n = cacheFind(iconName());
-    if (n >= 0) {
-        fPath = null;
-        iconCache.remove(n);
+#ifdef DEBUG
+static unsigned cacheCompCount = 0, cacheLookupCount = 0;
+#endif
+
+/**
+ * Locate cached item, return either the item itself or a reference to position
+ * where such element can be stored for later lookup.
+ */
+static ref<YIcon>& cacheFind(const char* name, decltype(iconCache) &cache,
+        unsigned mask) {
+#ifdef DEBUG
+    cacheLookupCount++;
+#endif
+    auto hval = strhash(name);
+    // hash function is good enough to avoid clustering, apparently no further
+    // prime number trickery seems
+    auto hpos = hval & mask;
+    for (auto i = hpos; i < cache.size(); ++i) {
+        if (cache[i] == null)
+            return cache[i];
+#ifdef DEBUG
+        cacheCompCount++;
+#endif
+        if (cache[i]->iconName() == name)
+            return cache[i];
     }
+    for (auto i = int(hpos) - 1; i >= 0; --i) {
+        if (cache[i] == null)
+            return cache[i];
+#ifdef DEBUG
+        cacheCompCount++;
+#endif
+        if (cache[i]->iconName() == name)
+            return cache[i];
+    }
+    // that should never happen, actually, but better have a rescue plan
+    if (cache[0] != null) {
+        cache[0]->setCached(false);
+        cache[0] = null;
+        cacheUsed--;
+    }
+    return cache[0];
 }
 
-int YIcon::cacheFind(upath name) {
-    int l, r, m;
-
-    l = 0;
-    r = iconCache.getCount();
-    while (l < r) {
-        m = (l + r) / 2;
-        ref<YIcon> found = iconCache.getItem(m);
-#ifdef DEBUG
-        compCount++;
-#endif
-        int cmp = name.path().compareTo(found->iconName().path());
-        if (cmp == 0) {
-            return m;
-        } else if (cmp < 0)
-            r = m;
-        else
-            l = m + 1;
+static void cacheResize(bool inflate)
+{
+    auto new_size = inflate ? iconCache.size() * 2 : iconCache.size() / 2;
+    auto new_mask = inflate ? (1 | (cacheMask << 1)) : (cacheMask >> 1);
+    decltype(iconCache) new_revision(new_size);
+    for (auto &it : iconCache) {
+        if (it == null)
+            continue;
+        auto &tgt = cacheFind(it->iconName().path(), new_revision, new_mask);
+        swap(it, tgt);
     }
-    return -(l + 1);
+    cacheMask = new_mask;
+    rekeyHighMark = (new_size / 4) * 3;
+    new_revision.swap(iconCache);
+}
+
+static void cacheIncUse()
+{
+    cacheUsed++;
+    if (cacheUsed > rekeyHighMark)
+        cacheResize(true);
 }
 
 ref<YIcon> YIcon::getIcon(const char *name) {
-    int n = cacheFind(name);
-    if (n >= 0)
-        return iconCache.getItem(n);
+    auto& cached = ::cacheFind(name, iconCache, cacheMask);
+    if (cached != null)
+        return cached;
 
-    ref<YIcon> newicon(new YIcon(name));
-    if (newicon != null) {
-        newicon->setCached(true);
-        iconCache.insert(-n - 1, newicon);
-    }
-    return newicon;
+    ref<YIcon> ret(new YIcon(name));
+    cached = ret;
+    ret->setCached(true);
+    // mark as added, cached ref might become invalidated now
+    cacheIncUse();
+
+    return ret;
 }
 
 void YIcon::freeIcons() {
-    for (int k = iconCache.getCount(); --k >= 0;) {
-        ref<YIcon> icon = iconCache.getItem(k);
-        icon->fPath = null;
-        icon->fSmall = null;
-        icon->fLarge = null;
-        icon->fHuge = null;
-        icon = null;
-        iconCache.remove(k);
+
+    MSG(("icon cache stats, lookups: %u, compcount: %u, CU/CS: %u/%u, LF: %F",
+                    cacheLookupCount, cacheCompCount,
+                    cacheUsed, unsigned(iconCache.size()),
+                    double(cacheUsed)/iconCache.size()));
+
+    for (auto &it : iconCache) {
+        if(it != null)
+            it->setCached(false);
     }
-    MSG(("icon keys compared: %u", compCount));
+    iconCache.clear();
 }
 
 unsigned YIcon::menuSize() {

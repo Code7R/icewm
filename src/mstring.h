@@ -199,7 +199,7 @@ public:
 
     explicit mstring(long val) : mstring() { appendFormat("%ld", val); }
 
-    operator const char *() { return c_str(); }
+    operator const char *() const { return c_str(); }
     const char* c_str() const { return data();}
 
     void clear();
