@@ -27,6 +27,10 @@
 // place holder for scalable category, a size beyond normal limits
 #define SCALABLE 9000
 
+#ifdef DEBUG
+unsigned compCount = 0;
+#endif
+
 YIcon::YIcon(upath filename) :
         fSmall(null), fLarge(null), fHuge(null), loadedS(false), loadedL(false),
         loadedH(false), fCached(false), fPath(filename.expand()) {
@@ -521,6 +525,9 @@ int YIcon::cacheFind(upath name) {
     while (l < r) {
         m = (l + r) / 2;
         ref<YIcon> found = iconCache.getItem(m);
+#ifdef DEBUG
+        compCount++;
+#endif
         int cmp = name.path().compareTo(found->iconName().path());
         if (cmp == 0) {
             return m;
@@ -555,6 +562,7 @@ void YIcon::freeIcons() {
         icon = null;
         iconCache.remove(k);
     }
+    MSG(("icon keys compared: %u", compCount));
 }
 
 unsigned YIcon::menuSize() {
