@@ -477,26 +477,4 @@ mstring& mstring::appendFormat(const char *fmt, ...) {
     return *this;
 }
 
-size_t mstring::getHashCode() const {
-    // shortcut with little type punning on GCC but better not with others
-#ifndef SSO_NOUTYPUN
-    union {
-        size_t ret;
-        char bytes[sizeof(ret)];
-    };
-    ret = length();
-    auto p = data();
-    const auto end = p + ret;
-    const auto fastEnd = end - (ret % sizeof(ret));
-    for (; p < fastEnd; p += sizeof(ret))
-        ret ^= *((size_t*) p);
-    for (auto pr = bytes; p < end; ++p, ++pr)
-        *pr ^= *p;
-    return ret;
-#else
-    return strhash(c_str());
-#endif
-}
-
-
 // vim: set sw=4 ts=4 et:

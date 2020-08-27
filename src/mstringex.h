@@ -5,6 +5,7 @@
 #include <functional>
 #include "ypointer.h"
 #include "mstring.h"
+#include "base.h"
 
 // some code parts with heavier dependencies that are optional to mstring:
 // STL-complieant hash code for unordered containers
@@ -14,7 +15,7 @@ namespace std {
 template<>
 struct hash<mstring> {
     std::size_t operator()(const mstring &c) const {
-        return c.getHashCode();
+        return strhash(c);
     }
 };
 }

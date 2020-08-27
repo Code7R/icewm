@@ -203,7 +203,6 @@ public:
     const char* c_str() const { return data();}
 
     void clear();
-    std::size_t getHashCode() const;
     // XXX: shortcut to load from file into this
     static mstring from_file(const char* path, int timeoutMS, bool* timedOut);
 };
