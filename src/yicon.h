@@ -14,7 +14,7 @@ public:
 
     ref<YImage> getScaledIcon(unsigned size);
 
-    upath iconName() const { return fPath; }
+    const mstring& iconName() const { return fPath.path(); }
 
     static ref<YIcon> getIcon(const char *name);
     static void freeIcons();

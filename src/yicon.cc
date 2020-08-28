@@ -503,103 +503,138 @@ ref<YImage> YIcon::getScaledIcon(unsigned size) {
     return null;
 }
 
-#define DEFAULT_HT_SIZE 256
-static std::vector<ref<YIcon>> iconCache(DEFAULT_HT_SIZE);
-static unsigned rekeyHighMark(23), cacheMask(DEFAULT_HT_SIZE - 1), cacheUsed(0);
-
-#ifdef DEBUG
-static unsigned cacheCompCount = 0, cacheLookupCount = 0;
-#endif
-
+struct cacheKeyGetter {
+    const mstring& operator()(const ref<YIcon> &el) { return el->iconName(); }
+};
 /**
- * Locate cached item, return either the item itself or a reference to position
- * where such element can be stored for later lookup.
+ * Simple associative array for string keys, element-provided key storage,
+ * open addressing collision handling with linear probing.
+ *
+ * The user of this structure must make some promises:
+ * - after getting an element (by reference), the reference will be initialised
+ *   with a non-default value (i.e. comparing to TElement() must become false)
+ * - the element returned from TKeyGetter functor (i.e. its operator() ) must
+ *   be convertible to const char *.
+ * - iteration via begin()/end() shall ignore default-initialised values since
+ *   it obviously will contain some
+ * - the element returned by TKeyGetter must be value-comparable (so probably
+ *   NOT plain const char* or something which implicitly converts to it)
  */
-static ref<YIcon>& cacheFind(const char* name, decltype(iconCache) &cache,
-        unsigned mask) {
+template<typename TElement, typename TKeyGetter, int Power = 7>
+class YSparseHashTable {
+    unsigned poolSize, cacheMask, rekeyHighMark, cacheUsed;
+    TElement *pool;
 #ifdef DEBUG
-    cacheLookupCount++;
+public:
+    unsigned cacheCompCount = 0, cacheLookupCount = 0;
+private:
 #endif
-    auto hval = strhash(name);
-    // hash function is good enough to avoid clustering, apparently no further
-    // prime number trickery seems
-    auto hpos = hval & mask;
-    for (auto i = hpos; i < cache.size(); ++i) {
-        if (cache[i] == null)
-            return cache[i];
+    const TElement inval;
+    /**
+     * Locate cached item, return either the item itself or a reference to position
+     * where such element can be stored for later lookup.
+     */
+    ref<YIcon>& cacheFind(const char *name, decltype(pool) &cache,
+            unsigned mask) {
 #ifdef DEBUG
-        cacheCompCount++;
+        cacheLookupCount++;
 #endif
-        if (cache[i]->iconName() == name)
-            return cache[i];
-    }
-    for (auto i = int(hpos) - 1; i >= 0; --i) {
-        if (cache[i] == null)
-            return cache[i];
-#ifdef DEBUG
-        cacheCompCount++;
-#endif
-        if (cache[i]->iconName() == name)
-            return cache[i];
-    }
-    // that should never happen, actually, but better have a rescue plan
-    if (cache[0] != null) {
-        cache[0]->setCached(false);
-        cache[0] = null;
-        cacheUsed--;
-    }
-    return cache[0];
-}
+        auto hval = strhash(name);
+        // hash function is good enough to avoid clustering
+        auto hpos = hval & mask;
 
-static void cacheResize(bool inflate)
-{
-    auto new_size = inflate ? iconCache.size() * 2 : iconCache.size() / 2;
-    auto new_mask = inflate ? (1 | (cacheMask << 1)) : (cacheMask >> 1);
-    decltype(iconCache) new_revision(new_size);
-    for (auto &it : iconCache) {
-        if (it == null)
-            continue;
-        auto &tgt = cacheFind(it->iconName().path(), new_revision, new_mask);
-        swap(it, tgt);
-    }
-    cacheMask = new_mask;
-    rekeyHighMark = (new_size / 4) * 3;
-    new_revision.swap(iconCache);
-}
+        for (auto i = hpos; i < poolSize; ++i) {
+            if (inval == cache[i])
+                return cache[i];
+#ifdef DEBUG
+            cacheCompCount++;
+#endif
+            if (TKeyGetter()(cache[i]) == name)
+                return cache[i];
+        }
 
-static void cacheIncUse()
-{
-    cacheUsed++;
-    if (cacheUsed > rekeyHighMark)
-        cacheResize(true);
-}
+        for (auto i = int(hpos) - 1; i >= 0; --i) {
+            if (inval == cache[i])
+                return cache[i];
+#ifdef DEBUG
+            cacheCompCount++;
+#endif
+            if (TKeyGetter()(cache[i]) == name)
+                return cache[i];
+        }
+        throw std::exception();
+    }
+
+    void inflate()
+    {
+        auto new_mask = 1 | (cacheMask << 1);
+        decltype(pool) new_revision = new TElement[new_mask + 1];
+        for (auto p = pool, pe = pool + poolSize; p < pe; ++p) {
+            if (inval == *p)
+                continue;
+            auto &tgt = cacheFind(TKeyGetter()(*p), new_revision, new_mask);
+            tgt = std::move(*p);
+        }
+        cacheMask = new_mask;
+        poolSize = new_mask + 1;
+        rekeyHighMark = poolSize * 3 / 4;
+        delete[] pool;
+        pool = new_revision;
+    }
+
+public:
+    YSparseHashTable(unsigned power = Power) :
+            poolSize(1 << power), cacheMask((1 << power) - 1),
+            rekeyHighMark(3 * (1 << (power - 2))), cacheUsed(0),
+            pool(new TElement[poolSize]), inval(TElement()) {
+    }
+    ~YSparseHashTable() { delete [] pool; }
+    /**
+     * WARNING: using this operator has consequences, see class description
+     */
+    TElement& operator[](const char *key) {
+        if (cacheUsed >= rekeyHighMark)
+            inflate();
+        auto &res = cacheFind(key, pool, cacheMask);
+        if (inval == res) // so the access call will resize
+            cacheUsed++;
+        return res;
+    }
+    // STL-friendly iterators, although includes unset entries in the sequence
+    TElement* begin() { return pool; }
+    TElement* end() { return pool + poolSize; }
+
+#ifdef DEBUG
+    void print_stats(const char *pfx) {
+        MSG(("%s, lookups: %u, compcount: %u, CU/CS: %u/%u, LF: %F",
+                        pfx,
+                        cacheLookupCount, cacheCompCount,
+                        cacheUsed, unsigned(poolSize),
+                        double(cacheUsed)/poolSize));
+    }
+#endif
+
+};
+lazily<YSparseHashTable<ref<YIcon>, cacheKeyGetter, 8>> iconCache;
 
 ref<YIcon> YIcon::getIcon(const char *name) {
-    auto& cached = ::cacheFind(name, iconCache, cacheMask);
-    if (cached != null)
-        return cached;
-
-    ref<YIcon> ret(new YIcon(name));
-    cached = ret;
+    auto& ret = (*iconCache)[name];
+    if (ret != null)
+        return ret;
+    ret = ref<YIcon>(new YIcon(name));
     ret->setCached(true);
-    // mark as added, cached ref might become invalidated now
-    cacheIncUse();
-
     return ret;
 }
 
 void YIcon::freeIcons() {
-
-    MSG(("icon cache stats, lookups: %u, compcount: %u, CU/CS: %u/%u, LF: %F",
-                    cacheLookupCount, cacheCompCount,
-                    cacheUsed, unsigned(iconCache.size()),
-                    double(cacheUsed)/iconCache.size()));
-
-    for (auto &it : iconCache) {
+#ifdef DEBUG
+    iconCache->print_stats("icon cache");
+#endif
+    for (auto &it : (*iconCache)) {
         if(it != null)
             it->setCached(false);
     }
-    iconCache.clear();
+    iconCache = null;
 }
 
 unsigned YIcon::menuSize() {
