@@ -20,6 +20,9 @@
 #include "base.h"
 #include "ref.h"
 #include <deque>
+#ifdef DEBUG
+#include <stdexcept>
+#endif
 
 template <class DataType>
 class YArray;
@@ -536,6 +539,7 @@ public:
  * open addressing collision handling with linear probing.
  *
  * The user of this structure must make some promises:
+ * - default-constructed elements are considered invalid
  * - after getting an element (by reference), the reference will be initialised
  *   with a non-default value (i.e. comparing to TElement() must become false)
  * - the element returned from TKeyGetter functor (i.e. its operator() ) must
@@ -545,14 +549,20 @@ public:
  * - the element returned by TKeyGetter must be value-comparable (so probably
  *   NOT plain const char* or something which implicitly converts to it but
  *   preferably mstring or std::string reference)
+ *
+ * XXX: create find() functions which returns a special helper (probably
+ * derive from iterator class) which does a plain lookup without intent to
+ * insert data. OTOH that iterator instance could have a commit-on-destruction
+ * behaviour, so if the user has written it, it would eventually update the
+ * hash config if needed.
  */
 template<typename TElement, typename TKeyGetter, int Power = 7>
 class YSparseHashTable {
-    unsigned poolSize, cacheMask, rekeyHighMark, cacheUsed;
+    unsigned m_poolSize, m_mask, rekeyHighMark, m_count;
     TElement *pool;
 #ifdef DEBUG
 public:
-    unsigned cacheCompCount = 0, cacheLookupCount = 0;
+    unsigned m_compCount = 0, m_lookupCount = 0;
 private:
 #endif
     const TElement inval;
@@ -563,17 +573,17 @@ private:
     TElement& cacheFind(const char *name, decltype(pool) &cache,
             unsigned mask) {
 #ifdef DEBUG
-        cacheLookupCount++;
+        m_lookupCount++;
 #endif
         auto hval = strhash(name);
         // hash function is good enough to avoid clustering
         auto hpos = hval & mask;
 
-        for (auto i = hpos; i < poolSize; ++i) {
+        for (auto i = hpos; i < m_poolSize; ++i) {
             if (inval == cache[i])
                 return cache[i];
 #ifdef DEBUG
-            cacheCompCount++;
+            m_compCount++;
 #endif
             if (TKeyGetter()(cache[i]) == name)
                 return cache[i];
@@ -583,7 +593,7 @@ private:
             if (inval == cache[i])
                 return cache[i];
 #ifdef DEBUG
-            cacheCompCount++;
+            m_compCount++;
 #endif
             if (TKeyGetter()(cache[i]) == name)
                 return cache[i];
@@ -593,50 +603,96 @@ private:
 
     void inflate()
     {
-        auto new_mask = 1 | (cacheMask << 1);
+        auto new_mask = 1 | (m_mask << 1);
         decltype(pool) new_revision = new TElement[new_mask + 1];
-        for (auto p = pool, pe = pool + poolSize; p < pe; ++p) {
+        for (auto p = pool, pe = pool + m_poolSize; p < pe; ++p) {
             if (inval == *p)
                 continue;
             auto &tgt = cacheFind(TKeyGetter()(*p), new_revision, new_mask);
             tgt = std::move(*p);
         }
-        cacheMask = new_mask;
-        poolSize = new_mask + 1;
-        rekeyHighMark = poolSize * 3 / 4;
+        m_mask = new_mask;
+        m_poolSize = new_mask + 1;
+        rekeyHighMark = m_poolSize * 3 / 4;
         delete[] pool;
         pool = new_revision;
     }
 
 public:
     YSparseHashTable(unsigned power = Power) :
-            poolSize(1 << power), cacheMask((1 << power) - 1),
-            rekeyHighMark(3 * (1 << (power - 2))), cacheUsed(0),
-            pool(new TElement[poolSize]), inval(TElement()) {
+            m_poolSize(1 << power), m_mask((1 << power) - 1),
+            rekeyHighMark(3 * (1 << (power - 2))), m_count(0),
+            pool(new TElement[m_poolSize]), inval(TElement()) {
     }
+#ifdef DEBUG
+    ~YSparseHashTable() throw() {
+        unsigned scheck = 0;
+        for(auto p = pool, pe =pool+m_poolSize; p < pe; ++p )
+            scheck += (inval != *p);
+        if (scheck != m_count) {
+            throw std::runtime_error("Hash contents mismatch, some content"
+                    " illegally invalidated or added");
+        }
+        delete [] pool;
+    }
+#else
     ~YSparseHashTable() { delete [] pool; }
+#endif
     /**
-     * WARNING: using this operator has consequences, see class description
+     * WARNING:
+     * after getting an element (by reference), the reference will be
+     * initialised, with a non-default value (i.e. comparing to TElement()
+     * must become false)
      */
     TElement& operator[](const char *key) {
-        if (cacheUsed >= rekeyHighMark)
+        if (m_count >= rekeyHighMark)
             inflate();
-        auto &res = cacheFind(key, pool, cacheMask);
+        auto &res = cacheFind(key, pool, m_mask);
         if (inval == res) // so the access call will resize
-            cacheUsed++;
+            m_count++;
         return res;
     }
-    // STL-friendly iterators, although includes unset entries in the sequence
-    TElement* begin() { return pool; }
-    TElement* end() { return pool + poolSize; }
+    /**
+     * STL-friendly iterators, although just good enough for range-for loops.
+     * Validity rules (lifecycle) are similar to std::unordere_map::iterator.
+     */
+    struct TIterator
+    {
+        TElement* p;
+        YSparseHashTable& parent;
+        TIterator(TElement* ap, YSparseHashTable& par) : p(ap), parent(par) {}
+        TElement& operator*() { return *p; }
+        bool operator==(const TIterator &b) const {
+            return p == b.p;
+        }
+        bool operator!=(const TIterator &b) const {
+            return p != b.p;
+        }
+        TIterator& operator++() {
+            for (++p; p < parent.pool + parent.m_poolSize; ++p) {
+                if (TElement() != *p)
+                    break;
+            }
+            return *this;
+        }
+    };
+    TIterator begin() {
+        TIterator it(pool, *this), eit(end());
+        while (it != eit)
+            ++it;
+        return it;
+    }
+    TIterator end() {
+        return TIterator(pool + m_poolSize, *this);
+    }
 
 #ifdef DEBUG
     void print_stats(const char *pfx) {
-        MSG(("%s, lookups: %u, compcount: %u, CU/CS: %u/%u, LF: %F",
+        MSG(("%s, lookups: %u, compcount: %u, used/reserved: %u/%u AKA LF: %F",
                         pfx,
-                        cacheLookupCount, cacheCompCount,
-                        cacheUsed, unsigned(poolSize),
-                        double(cacheUsed)/poolSize));
+                        m_lookupCount, m_compCount,
+                        m_count, unsigned(m_poolSize),
+                        double(m_count)/m_poolSize));
     }
 #endif
 

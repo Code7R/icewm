@@ -522,10 +522,7 @@ void YIcon::freeIcons() {
 #ifdef DEBUG
     iconCache->print_stats("icon cache");
 #endif
-    for (auto &it : (*iconCache)) {
-        if(it != null)
-            it->setCached(false);
-    }
+    for (auto &it : (*iconCache)) it->setCached(false);
     iconCache = null;
 }
 
