@@ -531,6 +531,116 @@ public:
     }
 };
 
+/**
+ * Simple associative array for string keys, element-provided key storage,
+ * open addressing collision handling with linear probing.
+ *
+ * The user of this structure must make some promises:
+ * - after getting an element (by reference), the reference will be initialised
+ *   with a non-default value (i.e. comparing to TElement() must become false)
+ * - the element returned from TKeyGetter functor (i.e. its operator() ) must
+ *   be convertible to const char *.
+ * - iteration via begin()/end() shall ignore default-initialised values since
+ *   it obviously will contain some
+ * - the element returned by TKeyGetter must be value-comparable (so probably
+ *   NOT plain const char* or something which implicitly converts to it but
+ *   preferably mstring or std::string reference)
+ */
+template<typename TElement, typename TKeyGetter, int Power = 7>
+class YSparseHashTable {
+    unsigned poolSize, cacheMask, rekeyHighMark, cacheUsed;
+    TElement *pool;
+#ifdef DEBUG
+public:
+    unsigned cacheCompCount = 0, cacheLookupCount = 0;
+private:
+#endif
+    const TElement inval;
+    /**
+     * Locate cached item, return either the item itself or a reference to position
+     * where such element can be stored for later lookup.
+     */
+    TElement& cacheFind(const char *name, decltype(pool) &cache,
+            unsigned mask) {
+#ifdef DEBUG
+        cacheLookupCount++;
+#endif
+        auto hval = strhash(name);
+        // hash function is good enough to avoid clustering
+        auto hpos = hval & mask;
+
+        for (auto i = hpos; i < poolSize; ++i) {
+            if (inval == cache[i])
+                return cache[i];
+#ifdef DEBUG
+            cacheCompCount++;
+#endif
+            if (TKeyGetter()(cache[i]) == name)
+                return cache[i];
+        }
+
+        for (auto i = int(hpos) - 1; i >= 0; --i) {
+            if (inval == cache[i])
+                return cache[i];
+#ifdef DEBUG
+            cacheCompCount++;
+#endif
+            if (TKeyGetter()(cache[i]) == name)
+                return cache[i];
+        }
+        throw std::exception();
+    }
+
+    void inflate()
+    {
+        auto new_mask = 1 | (cacheMask << 1);
+        decltype(pool) new_revision = new TElement[new_mask + 1];
+        for (auto p = pool, pe = pool + poolSize; p < pe; ++p) {
+            if (inval == *p)
+                continue;
+            auto &tgt = cacheFind(TKeyGetter()(*p), new_revision, new_mask);
+            tgt = std::move(*p);
+        }
+        cacheMask = new_mask;
+        poolSize = new_mask + 1;
+        rekeyHighMark = poolSize * 3 / 4;
+        delete[] pool;
+        pool = new_revision;
+    }
+
+public:
+    YSparseHashTable(unsigned power = Power) :
+            poolSize(1 << power), cacheMask((1 << power) - 1),
+            rekeyHighMark(3 * (1 << (power - 2))), cacheUsed(0),
+            pool(new TElement[poolSize]), inval(TElement()) {
+    }
+    ~YSparseHashTable() { delete [] pool; }
+    /**
+     * WARNING: using this operator has consequences, see class description
+     */
+    TElement& operator[](const char *key) {
+        if (cacheUsed >= rekeyHighMark)
+            inflate();
+        auto &res = cacheFind(key, pool, cacheMask);
+        if (inval == res) // so the access call will resize
+            cacheUsed++;
+        return res;
+    }
+    // STL-friendly iterators, although includes unset entries in the sequence
+    TElement* begin() { return pool; }
+    TElement* end() { return pool + poolSize; }
+
+#ifdef DEBUG
+    void print_stats(const char *pfx) {
+        MSG(("%s, lookups: %u, compcount: %u, CU/CS: %u/%u, LF: %F",
+                        pfx,
+                        cacheLookupCount, cacheCompCount,
+                        cacheUsed, unsigned(poolSize),
+                        double(cacheUsed)/poolSize));
+    }
+#endif
+
+};
 /*******************************************************************************
  * A fixed multi-dimension array
  ******************************************************************************/
