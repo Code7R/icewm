@@ -204,7 +204,7 @@ public:
 #if defined(CONFIG_GDK_PIXBUF_XLIB) && defined(CONFIG_LIBRSVG)
             auto& scaleCat = pools[fromResources].getCat(SCALABLE);
             for (const auto &contentDir : subcats) {
-                ret += gotcha(mstring(iconPathToken) + "/scalable" + contentDir,
+                ret += gotcha(mstring(iconPathToken, "/scalable", contentDir),
                         scaleCat);
             }
 #endif
@@ -251,7 +251,7 @@ public:
             // try base path in any case (later), for any icon type, loading
             // with the filename expansion scheme
             add(pool.anyCategory, IconCategory::entry {
-                iPath + "/"
+                mstring(iPath, "/")
 #ifdef SUPPORT_XDG_ICON_TYPE_CATEGORIES
                 , YIcon::FOR_ANY_PURPOSE //| privFlag
 #endif
@@ -264,7 +264,8 @@ public:
 
                 unsigned nFoundForFolder = 0;
 
-                for (auto themeExpr : { iPath, iPath + "/" + themeExprTok }) {
+                for (auto themeExpr : { iPath, mstring(iPath, "/",
+                        themeExprTok)}) {
 
                     // were already XDG-like found by fishing in the simple
                     // attempt?
@@ -345,7 +346,7 @@ public:
             if (addSizeSfx)
                 basePath.appendFormat("_%ldx%ld", long(size), long(size));
             for (const auto &imgExt : iconExts) {
-                if (checkFile(basePath + imgExt))
+                if (checkFile(mstring(basePath, imgExt)))
                     return true;
             }
             return false;

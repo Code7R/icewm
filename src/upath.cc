@@ -46,19 +46,15 @@ mstring upath::name() const {
 upath upath::relative(upath &&npath) const {
     if (npath.isEmpty())
         return *this;
-    else if (isEmpty()) {
+    if (isEmpty())
         return npath;
+    if (isSeparator(path()[length() - 1])) {
+        return mstring(path(), isSeparator(npath.path()[0]) ?
+                                npath.path().substring(1) : npath.path());
     }
-    else if (isSeparator(path()[length() - 1])) {
-        if (isSeparator(npath.path()[0]))
-            return upath(path() + npath.path().substring(1));
-        else
-            return upath(path() + npath.path());
-    }
-    else if (isSeparator(npath.path()[0]))
-        return upath(path() + npath.path());
-    else
-        return upath(path() + slash + npath.path());
+    if (isSeparator(npath.path()[0]))
+        return mstring(path(), npath.path());
+    return mstring(path(), slash, npath.path());
 }
 
 upath upath::child(const char *npath) const {
