@@ -550,11 +550,12 @@ public:
  *   NOT plain const char* or something which implicitly converts to it but
  *   preferably mstring or std::string reference)
  *
- * XXX: create find() functions which returns a special helper (probably
- * derive from iterator class) which does a plain lookup without intent to
- * insert data. OTOH that iterator instance could have a commit-on-destruction
- * behaviour, so if the user has written it, it would eventually update the
- * hash config if needed.
+ * There are two ways of inserting elements:
+ * a) via operator[] - using this, the caller MUST assign a non-default
+ *   value immediately afterwards
+ * b) using find() returned iterator helper - if a value is assigned via iter,
+ *   it will be commited in lazy fashion, when the iterator goes out of scope.
+ *   NO other iterator object or [] access must interfere in the meantime!
  */
 template<typename TElement, typename TKeyGetter, int Power = 7>
 class YSparseHashTable {
@@ -570,7 +571,7 @@ private:
      * Locate cached item, return either the item itself or a reference to position
      * where such element can be stored for later lookup.
      */
-    TElement& cacheFind(const char *name, decltype(pool) &cache,
+    TElement& hashFind(const char *name, decltype(pool) &cache,
             unsigned mask) {
 #ifdef DEBUG
         m_lookupCount++;
@@ -608,12 +609,12 @@ private:
         for (auto p = pool, pe = pool + m_poolSize; p < pe; ++p) {
             if (inval == *p)
                 continue;
-            auto &tgt = cacheFind(TKeyGetter()(*p), new_revision, new_mask);
+            auto &tgt = hashFind(TKeyGetter()(*p), new_revision, new_mask);
             tgt = std::move(*p);
         }
         m_mask = new_mask;
         m_poolSize = new_mask + 1;
-        rekeyHighMark = m_poolSize * 3 / 4;
+        rekeyHighMark = (m_poolSize / 4) * 3;
         delete[] pool;
         pool = new_revision;
     }
@@ -638,6 +639,9 @@ public:
 #else
     ~YSparseHashTable() { delete [] pool; }
 #endif
+
+    unsigned long getCount() { return m_count; }
+
     /**
      * WARNING:
      * after getting an element (by reference), the reference will be
@@ -647,7 +651,7 @@ public:
     TElement& operator[](const char *key) {
         if (m_count >= rekeyHighMark)
             inflate();
-        auto &res = cacheFind(key, pool, m_mask);
+        auto &res = hashFind(key, pool, m_mask);
         if (inval == res) // so the access call will resize
             m_count++;
         return res;
@@ -656,11 +660,29 @@ public:
      * STL-friendly iterators, although just good enough for range-for loops.
      * Validity rules (lifecycle) are similar to std::unordere_map::iterator.
      */
-    struct TIterator
+    class TIterator
     {
         TElement* p;
         YSparseHashTable& parent;
-        TIterator(TElement* ap, YSparseHashTable& par) : p(ap), parent(par) {}
+        bool fromFind = false, hadValue = false;
+        friend class YSparseHashTable;
+    public:
+        TIterator(TElement *ap, YSparseHashTable &par) :
+                p(ap), parent(par) {
+        }
+        ~TIterator() {
+            if (!fromFind)
+                return;
+            bool gotValue = p && TElement() != *p;
+            if (gotValue && !hadValue) {
+                // okay, newly added. Pending resize?
+                if (parent.m_count >= parent.rekeyHighMark)
+                    parent.inflate();
+                parent.m_count++;
+            }
+        }
+        friend class YSparseHashTable;
+    public:
         TElement& operator*() { return *p; }
         bool operator==(const TIterator &b) const {
             return p == b.p;
@@ -684,6 +706,16 @@ public:
     }
     TIterator end() {
         return TIterator(pool + m_poolSize, *this);
+    }
+    TIterator find(const char *key) {
+        auto& it = hashFind(key, pool, m_mask);
+        TIterator ret(it, *this);
+        ret.fromFind = true;
+        ret.hadValue = it != inval;
+        return ret;
+    }
+    bool has(const char* key) {
+        return inval != * find(key);
     }
 
 #ifdef DEBUG
