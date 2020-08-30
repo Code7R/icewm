@@ -483,12 +483,12 @@ void MenuLoader::progMenus(
         _exit(99);
     }
     else {
-        bool timedOut = false;
+        int ec(0);
         file_raii cleaner(readWriteFds[1]);
         filereader rdr(readWriteFds[0]);
-        auto buf = rdr.read_all(false, TIMEOUT_MS, &timedOut);
-        if (timedOut) {
-            warn("'%s' timed out!", command);
+        auto buf = rdr.read_all(false, TIMEOUT_MS, &ec);
+        if (ec) {
+            warn("'%s' timed out or failed!", command);
             kill(child_pid, SIGKILL);
         }
         int status = 0;

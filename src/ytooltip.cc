@@ -50,7 +50,7 @@ void YToolTipWindow::paint(Graphics& g, const YRect& /*r*/) {
         g.drawStringMultiline(TTXMargin, y, fText);
     }
 }
-
+#warning pass by move
 void YToolTipWindow::setText(const mstring& tip) {
     fText = tip;
     YDimension size(toolTipFont->multilineAlloc(fText));
@@ -60,6 +60,7 @@ void YToolTipWindow::setText(const mstring& tip) {
 void YToolTip::setText(const mstring& tip) {
     fText = tip;
     if (fWindow) {
+#warning pass by move
         fWindow->setText(tip);
         fWindow->locate(fLocate);
         fWindow->repaint();

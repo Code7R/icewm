@@ -17,11 +17,18 @@ void set_nb(int fd) {
 }
 
 /* read from file descriptor and zero terminate buffer. */
-static int read_fd(int fd, char *buf, size_t buflen,
+static int read_fd(int fd, char * const buf, size_t buflen,
         const timeval *pExpTime,
-        bool *bTimedOut) {
-    if (fd == -1 || !buf || !buflen)
+        int &nErrorCode) {
+    nErrorCode = 0;
+    if (fd == -1) {
+        nErrorCode = EBADF;
         return -1;
+    }
+    if(!buf || !buflen) {
+        nErrorCode = ENOMEM;
+        return -1;
+    }
     auto ptr = buf;
     auto len = ssize_t(buflen) - 1;
     while (len > 0) {
@@ -34,15 +41,17 @@ static int read_fd(int fd, char *buf, size_t buflen,
             auto nRes = select(fd + 1, &rfds, nullptr, nullptr, &timeout);
             switch (nRes) {
             case 0:
-                if (bTimedOut)
-                    *bTimedOut = true;
+                nErrorCode = ETIMEDOUT;
                 return -1;
             case 1:
-                if (!FD_ISSET(fd, &rfds))
+                if (!FD_ISSET(fd, &rfds)) {
+                    nErrorCode = errno ? errno : EIO;
                     return -1;
+                }
                 break;
             default:
                 MSG(("select failed, errno: %d.", errno));
+                nErrorCode = errno ? errno : EIO;
                 return -1;
             }
         }
@@ -73,27 +82,31 @@ filereader::~filereader() {
 }
 
 int filereader::read_all(char *buf, size_t buflen) {
-    return nFd == -1 ? -1 : read_fd(nFd, buf, buflen, nullptr, nullptr);
+    int ec(0);
+    return read_fd(nFd, buf, buflen, nullptr, ec);
 }
 
 /* read all of filedescriptor and return a zero-terminated new[] string. */
 fcsmart filereader::read_all(bool assumeRegular, int timeoutMS,
-        bool *bTimedOut) {
-
+        int *nErrorCode) {
     timeval expTime;
     timeval *pExpTime = nullptr;
+    if (nErrorCode)
+        *nErrorCode = 0;
     if (timeoutMS >= 0) {
         set_nb (nFd);
         expTime = monotime() + millitime(timeoutMS);
         pExpTime = &expTime;
     }
     struct stat st;
+    int dummy;
     if (assumeRegular && (fstat(nFd, &st) == 0) && S_ISREG(st.st_mode)
             && (st.st_size > 0)) {
         auto ret = fcsmart::create(st.st_size + 1);
         if (!ret)
             return ret;
-        int len = read_fd(nFd, ret, st.st_size + 1, pExpTime, bTimedOut);
+        int len = read_fd(nFd, ret, st.st_size + 1, pExpTime,
+                nErrorCode ? *nErrorCode : dummy);
         if (len != st.st_size)
             ret.release();
         return ret;
@@ -103,7 +116,7 @@ fcsmart filereader::read_all(bool assumeRegular, int timeoutMS,
     auto ret = fcsmart::create(bufsiz + 1);
     while (ret) {
         int len = read_fd(nFd, ret.data() + offset, bufsiz + 1 - offset,
-                pExpTime, bTimedOut);
+                pExpTime, nErrorCode ? *nErrorCode : dummy);
         if (len <= 0 || ((offset + len) < bufsiz)) {
             if (len < 0 && offset == 0) {
                 ret.release();

@@ -27,14 +27,24 @@ public:
      * single-step reading of that size. Otherwise, go to open-end
      * reading immediately.
      * @param timeoutMS Value to wait (milliseconds) and abort reading
-     * @bTimedOut Flag will be set (if pointed) when timeout was the cause of
-     * a short read
+     * @nErrorCode Error code (errno) or zero if succeeded
      * */
     fcsmart read_all(bool assumeRegular = true,
             int timeoutMS = -1,
-            bool* bTimedOut = nullptr);
+            int* nErrorCode = nullptr);
 
-    // XXX: with SSO, add a version which reads into an mstring too
+    /**
+     * Alternative, fully controllable version.
+     * Returns 0 if succeeded, errno value otherwise.
+     * Can take an existing buffer as input (owning it), will return
+     * a new (or same) buffer with result data. fetchedSize must contain a
+     * correct (less or equal) size of the specified buffer.
+     */
+    size_t read_all(bool assumeRegular,
+                int timeoutMS,
+                char* &buf,
+                int *fetchedSize,
+                size_t &allocatedSize);
 
     static bool make_pipe(int fds[2]);
 };

@@ -203,8 +203,9 @@ public:
     const char* c_str() const { return data();}
 
     void clear();
-    // XXX: shortcut to load from file into this
-    static mstring from_file(const char* path, int timeoutMS, bool* timedOut);
+
+    // clear and fetch data from a file
+    bool load(const char* path, int timeoutMS);
 };
 
 inline bool operator==(const char* s, const mstring& c) {
