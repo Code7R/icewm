@@ -58,8 +58,8 @@ override_dh_auto_configure:
 #override_dh_auto_configure:
 #	$(MAKE) -f debian/rules -j2 config_normal config_lite
 
-#override_dh_auto_build:
-#	dh_auto_build
+override_dh_auto_build:
+	dh_auto_build -- all strtest
 #	cd debian && for x in -lite -experimental ; do cp -lf icewm.postinst icewm$$x.postinst ; cp -lf icewm.prerm icewm$$x.prerm ; done
 
 #override_dh_auto_install:
