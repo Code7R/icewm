@@ -13,6 +13,8 @@
 #include "argument.h"
 #include "intl.h"
 
+#define TIMEOUT_MS 700
+
 static char* getWord(char* word, size_t wordsize, char* start) {
     char *p = start;
     while (ASCII::isAlnum(*p))
@@ -449,11 +451,8 @@ void MenuLoader::loadMenus(upath menufile, ObjectContainer *container)
 
     MSG(("menufile: %s", menufile.string()));
     YTraceConfig trace(menufile.string());
-    char *buf = menufile.loadText();
-    if (buf) {
-        parseMenus(buf, container);
-        delete[] buf;
-    }
+    auto buf = menufile.loadText();
+    if (buf) parseMenus(buf, container);
 }
 
 void MenuLoader::progMenus(
@@ -461,48 +460,54 @@ void MenuLoader::progMenus(
     char *const argv[],
     ObjectContainer *container)
 {
-    fileptr fpt(tmpfile());
-    if (fpt == nullptr) {
-        fail("tmpfile");
+    int fds[2];
+    if (pipe(fds) == -1) {
+        fail("pipe");
         return;
     }
 
-    int tfd = fileno(fpt);
-    int status = 0;
-    pid_t child_pid = fork();
-
-    if (child_pid == -1) {
+    int pid = fork();
+    if (pid == -1) {
         fail("Forking '%s' failed", command);
     }
-    else if (child_pid == 0) {
+    else if (pid == 0) {
+        close(fds[0]);
         int devnull = open("/dev/null", O_RDONLY);
         if (devnull > 0) {
             dup2(devnull, 0);
             close(devnull);
         }
-        if (dup2(tfd, 1) == 1) {
-            if (tfd > 2) close(tfd);
-            execvp(command, argv);
-        }
-        fail("Exec '%s' failed", command);
-        _exit(99);
-    }
-    else if (waitpid(child_pid, &status, 0) == 0 && status != 0) {
-        warn("'%s' exited with code %d.", command, status);
-    }
-    else if (lseek(tfd, (off_t) 0L, SEEK_SET) == (off_t) -1) {
-        fail("lseek failed");
-    }
-    else {
-        char *buf = load_fd(tfd);
-        fpt.close();
-        if (buf && *buf) {
-            parseMenus(buf, container);
+        if (fds[1] > 1 && (dup2(fds[1], 1) != 1 || close(fds[1]))) {
+            fail("dup2!=1");
         }
         else {
+            char* path = path_lookup(command);
+            if (path) {
+                execv(path, argv);
+            }
+            fail("Exec '%s' failed", path ? path : command);
+        }
+        _exit(99);
+    }
+    else {
+        close(fds[1]);
+        bool expired = false;
+        filereader rdr(fds[0]);
+        auto buf = rdr.read_pipe(TIMEOUT_MS, &expired);
+        if (expired) {
+            warn("'%s' timed out!", command);
+            kill(pid, SIGKILL);
+        }
+        int status = 0;
+        if (waitpid(pid, &status, 0) == 0 && status) {
+            warn("'%s' exited with code %d.", command, status);
+        }
+        else if (nonempty(buf)) {
+            parseMenus(buf, container);
+        }
+        else if (expired == false) {
             warn(_("'%s' produces no output"), command);
         }
-        delete[] buf;
     }
 }
 

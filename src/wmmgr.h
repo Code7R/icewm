@@ -81,7 +81,7 @@ public:
     virtual void handleButton(const XButtonEvent &button);
 };
 
-class YWindowManager: public YDesktop, private YMsgBoxListener {
+class YWindowManager: private YDesktop, private YMsgBoxListener {
 public:
     YWindowManager(
         IApp *app,
@@ -138,7 +138,7 @@ public:
     void removeClientFrame(YFrameWindow *frame);
 
     void updateScreenSize(XEvent *event);
-    void getWorkArea(YFrameWindow *frame, int *mx, int *my, int *Mx, int *My, int xiscreen = -1);
+    void getWorkArea(const YFrameWindow *frame, int *mx, int *my, int *Mx, int *My, int xiscreen = -1);
     void getWorkAreaSize(YFrameWindow *frame, int *Mw,int *Mh);
 
     int calcCoverage(bool down, YFrameWindow *frame, int x, int y, int w, int h);
@@ -156,8 +156,8 @@ public:
     YFrameWindow *topLayer(long layer = WinLayerCount - 1);
     YFrameWindow *bottomLayer(long layer = 0);
 
-    void setAbove(YFrameWindow* frame, YFrameWindow* above);
-    void setBelow(YFrameWindow* frame, YFrameWindow* below);
+    bool setAbove(YFrameWindow* frame, YFrameWindow* above);
+    bool setBelow(YFrameWindow* frame, YFrameWindow* below);
     void removeLayeredFrame(YFrameWindow *);
     void appendCreatedFrame(YFrameWindow *f);
     void removeCreatedFrame(YFrameWindow *f);
@@ -170,13 +170,12 @@ public:
     void lowerFocusFrame(YFrameWindow* frame);
     void raiseFocusFrame(YFrameWindow* frame);
 
-    void restackWindows(YFrameWindow *win);
+    void restackWindows();
     void focusTopWindow();
     YFrameWindow *getFrameUnderMouse(long workspace = AllWorkspaces);
     YFrameWindow *getLastFocus(bool skipAllWorkspaces = false, long workspace = AllWorkspaces);
     void focusLastWindow();
     bool focusTop(YFrameWindow *f);
-    void relocateWindows(long workspace, int screen, int dx, int dy);
     void updateClientList();
     void updateUserTime(const UserTime& userTime);
 
@@ -217,7 +216,7 @@ public:
     void announceWorkArea();
     void setWinWorkspace(int workspace);
     void updateWorkArea();
-    void updateWorkAreaInner();
+    bool updateWorkAreaInner();
     void debugWorkArea(const char* prefix);
     void workAreaUpdated();
     void resizeWindows();
@@ -257,7 +256,6 @@ public:
 
     bool haveClients();
     void setupRootProxy();
-    void setWorkAreaMoveWindows(bool m) { fWorkAreaMoveWindows = m; }
     void setKeyboard(mstring keyboard);
     void setKeyboard(int configIndex);
     mstring getKeyboard();
@@ -358,8 +356,6 @@ private:
     WindowPosState *fArrangeInfo;
     YProxyWindow *rootProxy;
     YWindow *fTopWin;
-    bool fWorkAreaMoveWindows;
-    bool fOtherScreenFocused;
     int fIconColumn;
     int fIconRow;
     int lockFocusCount;

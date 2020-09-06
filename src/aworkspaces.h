@@ -29,6 +29,7 @@ public:
     void setPosition(int x, int y);
     int extent() const { return x() + int(width()); }
     virtual void repaint();
+    static void freeFonts() { normalButtonFont = null; activeButtonFont = null; }
 
 private:
     virtual void handleButton(const XButtonEvent &button);
@@ -45,15 +46,16 @@ private:
     virtual bool handleTimer(YTimer *t);
 
     virtual void actionPerformed(YAction button, unsigned int modifiers);
+    virtual ref<YFont> getActiveFont();
     virtual ref<YFont> getFont();
     virtual YColor   getColor();
     virtual YSurface getSurface();
+    virtual YDimension getTextSize();
 
     virtual void inputReturn(YInputLine* input);
     virtual void inputEscape(YInputLine* input);
     virtual void inputLostFocus(YInputLine* input);
     virtual void paint(Graphics &g, const YRect &r);
-    virtual void paintBackground(Graphics &g, const YRect &r);
 
     int fWorkspace;
     int fDelta;
@@ -106,6 +108,7 @@ class WorkspacesPane:
 
 public:
     WorkspacesPane(YWindow *parent);
+    ~WorkspacesPane() { WorkspaceButton::freeFonts(); }
 
     virtual void repaint();
     virtual void relabelButtons();

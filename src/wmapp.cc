@@ -35,7 +35,7 @@
 #endif
 #undef override
 #include <X11/Xproto.h>
-#include <wordexp.h>
+#include "ywordexp.h"
 #include "intl.h"
 
 char const *ApplicationName("IceWM");
@@ -157,7 +157,7 @@ static void registerWinProtocols(Window xid) {
     };
     int win_count = int ACOUNT(win_proto);
 
-    XChangeProperty(xapp->display(), manager->handle(),
+    XChangeProperty(xapp->display(), desktop->handle(),
                     _XA_WIN_PROTOCOLS, XA_ATOM, 32,
                     PropModeReplace, (unsigned char *)win_proto, win_count);
 }
@@ -167,17 +167,17 @@ static void registerWinProperties(Window xid) {
                     _XA_WIN_SUPPORTING_WM_CHECK, XA_CARDINAL, 32,
                     PropModeReplace, (unsigned char *)&xid, 1);
 
-    XChangeProperty(xapp->display(), manager->handle(),
+    XChangeProperty(xapp->display(), desktop->handle(),
                     _XA_WIN_SUPPORTING_WM_CHECK, XA_CARDINAL, 32,
                     PropModeReplace, (unsigned char *)&xid, 1);
 
     unsigned long ac[2] = { 1, 1 };
     unsigned long ca[2] = { 0, 0 };
 
-    XChangeProperty(xapp->display(), manager->handle(),
+    XChangeProperty(xapp->display(), desktop->handle(),
                     _XA_WIN_AREA_COUNT, XA_CARDINAL, 32,
                     PropModeReplace, (unsigned char *)&ac, 2);
-    XChangeProperty(xapp->display(), manager->handle(),
+    XChangeProperty(xapp->display(), desktop->handle(),
                     _XA_WIN_AREA, XA_CARDINAL, 32,
                     PropModeReplace, (unsigned char *)&ca, 2);
 }
@@ -294,7 +294,7 @@ static void registerNetProtocols(Window xid) {
         }
     }
 
-    XChangeProperty(xapp->display(), manager->handle(),
+    XChangeProperty(xapp->display(), desktop->handle(),
                     _XA_NET_SUPPORTED, XA_ATOM, 32,
                     PropModeReplace, (unsigned char *)net_proto, net_count);
 }
@@ -317,7 +317,7 @@ static void registerNetProperties(Window xid) {
                     PropModeReplace, (unsigned char *)wmname,
                     strnlen(wmname, sizeof(wmname)));
 
-    XChangeProperty(xapp->display(), manager->handle(),
+    XChangeProperty(xapp->display(), desktop->handle(),
                     _XA_NET_SUPPORTING_WM_CHECK, XA_WINDOW, 32,
                     PropModeReplace, (unsigned char *)&xid, 1);
 }
@@ -365,7 +365,7 @@ void YWMApp::initIconSize() {
         is->min_width = is->min_height = int(sizes[0]);
         is->max_width = is->max_height = int(sizes[count - 1]);
         is->width_inc = is->height_inc = int(delta);
-        XSetIconSizes(xapp->display(), manager->handle(), is, 1);
+        XSetIconSizes(xapp->display(), desktop->handle(), is, 1);
         XFree(is);
     }
 }
@@ -380,14 +380,14 @@ ref<YIcon> YWMApp::getDefaultAppIcon() {
 
 CtrlAltDelete* YWMApp::getCtrlAltDelete() {
     if (ctrlAltDelete == nullptr) {
-        ctrlAltDelete = new CtrlAltDelete(this, manager);
+        ctrlAltDelete = new CtrlAltDelete(this, desktop);
     }
     return ctrlAltDelete;
 }
 
 SwitchWindow* YWMApp::getSwitchWindow() {
     if (switchWindow == nullptr && quickSwitch) {
-        switchWindow = new SwitchWindow(manager, nullptr, quickSwitchVertical);
+        switchWindow = new SwitchWindow(desktop, nullptr, quickSwitchVertical);
     }
     return switchWindow;
 }
@@ -416,7 +416,7 @@ void LogoutMenu::updatePopup() {
     if (showLogoutMenu) {
         setShared(true); /// !!! get rid of this (refcount objects)
         if (showLogoutSubMenu) {
-            addItem(_("_Logout"), -2, null, actionLogout)->setChecked(true);
+            addItem(_("_Logout"), -2, null, actionLogout);
             addItem(_("_Cancel logout"), -2, null, actionCancelLogout)->setEnabled(false);
             addSeparator();
 
@@ -537,7 +537,7 @@ YMenu* YWMApp::getWindowMenu() {
     if (strchr(winMenuItems, 'c'))
         windowMenu->addItem(_("_Close"), -2, KEY_NAME(gKeyWinClose), actionClose);
     if (strchr(winMenuItems, 'k'))
-        windowMenu->addItem(_("_Kill Client"), -2, KEY_NAME(gKeyWinKill), actionKill);
+        windowMenu->addItem(_("_Kill Client"), -2, null, actionKill);
     if (strchr(winMenuItems, 'w')) {
         windowMenu->addSeparator();
         windowMenu->addItem(_("_Window list"), -2, KEY_NAME(gKeySysWindowList), actionWindowList);
@@ -601,9 +601,8 @@ int YWMApp::handleError(XErrorEvent *xev) {
 
 #ifdef DEBUG
 void dumpZorder(const char *oper, YFrameWindow *w, YFrameWindow *a) {
-    YFrameWindow *p = manager->top(w->getActiveLayer());
     msg("--- %s ", oper);
-    while (p) {
+    for (YFrameWindow *p = manager->top(w->getActiveLayer()); p; p = p->next()) {
         if (p && p->client()) {
             mstring cs(p->client()->windowTitle());
             msg(" %c %c 0x%lX: %s", (p == w) ? '*' : ' ',  (p == a) ? '#' : ' ', p->client()->handle(), cs.c_str());
@@ -614,7 +613,6 @@ void dumpZorder(const char *oper, YFrameWindow *w, YFrameWindow *a) {
         if (p->next()) {
             PRECONDITION(p->next()->prev() == p);
         }
-        p = p->next();
     }
 }
 #endif
@@ -920,7 +918,6 @@ void YWMApp::actionPerformed(YAction action, unsigned int /*modifiers*/) {
         }
     } else if (action == actionCollapseTaskbar && taskBar) {
         taskBar->handleCollapseButton();
-        manager->focusLastWindow();
     } else {
         for (int w = 0; w < workspaceCount; w++) {
             if (workspaceActionActivate[w] == action) {
@@ -1305,11 +1302,13 @@ YWMApp::~YWMApp() {
     }
 
     // shared menus last
-    logoutMenu = null;
+    if (logoutMenu) {
+        logoutMenu->setShared(false);
+        logoutMenu = null;
+    }
     windowListMenu = null;
     layerMenu = null;
     moveMenu = null;
-    delete manager; desktop = manager = nullptr;
 
     keyProgs.clear();
     workspaces.reset();
@@ -1652,6 +1651,7 @@ static void loadStartup(const char* configFile)
 int main(int argc, char **argv) {
     YLocale locale;
     bool restart_wm(false);
+    bool log_events(false);
     bool notify_parent(false);
     const char* configFile(nullptr);
     const char* displayName(nullptr);
@@ -1697,7 +1697,7 @@ int main(int argc, char **argv) {
             else if (is_long_switch(*arg, "sync"))
                 YXApplication::synchronizeX11 = true;
             else if (is_long_switch(*arg, "logevents"))
-                loggingEvents = true;
+                log_events = true;
             else if (is_switch(*arg, "a", "alpha"))
                 YXApplication::alphaBlending = true;
             else if (GetArgument(value, "d", "display", arg, argv+argc))
@@ -1720,6 +1720,7 @@ int main(int argc, char **argv) {
 
     if (nonempty(overrideTheme))
         themeName = overrideTheme;
+    loggingEvents |= log_events;
     if (loggingEvents)
         initLogEvents();
 
@@ -1741,7 +1742,7 @@ int main(int argc, char **argv) {
 void YWMApp::createTaskBar() {
     if (showTaskBar && taskBar == nullptr) {
         manager->lockWorkArea();
-        taskBar = new TaskBar(this, manager, this, this);
+        taskBar = new TaskBar(this, desktop, this, this);
         for (YFrameIter frame = manager->focusedIterator(); ++frame; ) {
             frame->updateTaskBar();
         }
@@ -1770,6 +1771,11 @@ void YWMApp::doLogout(RebootShutdown reboot) {
 }
 
 void YWMApp::logout() {
+    if (logoutMenu) {
+        logoutMenu->checkCommand(actionLogout, true);
+        logoutMenu->disableCommand(actionLogout);
+        logoutMenu->enableCommand(actionCancelLogout);
+    }
     if (logoutCommand && logoutCommand[0]) {
         runCommand(logoutCommand);
 #ifdef CONFIG_SESSION
@@ -1781,15 +1787,15 @@ void YWMApp::logout() {
         // should we always do this??
         manager->exitAfterLastClient(true);
     }
-
-    if (logoutMenu) {
-        logoutMenu->disableCommand(actionLogout);
-        logoutMenu->enableCommand(actionCancelLogout);
-    }
 }
 
 void YWMApp::cancelLogout() {
     rebootOrShutdown = Logout;
+    if (logoutMenu) {
+        logoutMenu->checkCommand(actionLogout, false);
+        logoutMenu->enableCommand(actionLogout);
+        logoutMenu->disableCommand(actionCancelLogout);
+    }
     if (logoutCancelCommand && logoutCancelCommand[0]) {
         runCommand(logoutCancelCommand);
 #ifdef CONFIG_SESSION
@@ -1799,11 +1805,6 @@ void YWMApp::cancelLogout() {
     } else {
         // should we always do this??
         manager->exitAfterLastClient(false);
-    }
-
-    if (logoutMenu) {
-        logoutMenu->enableCommand(actionLogout);
-        logoutMenu->disableCommand(actionCancelLogout);
     }
 }
 

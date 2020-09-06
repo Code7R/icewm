@@ -193,6 +193,8 @@ public:
     void setClipRectangles(XRectangle *rect, int count);
     void setClipMask(Pixmap mask = None);
     void resetClip();
+    void maxOpacity();
+
 private:
     Drawable fDrawable;
     GC gc;
@@ -205,6 +207,9 @@ private:
     Picture fPicture;
     int xOrigin, yOrigin;
     unsigned rWidth, rHeight, rDepth;
+
+    Graphics(Graphics const&) = delete;
+    Graphics& operator=(Graphics const&) = delete;
 };
 
 /******************************************************************************/

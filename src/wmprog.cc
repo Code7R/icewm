@@ -51,11 +51,10 @@ void DFile::open() {
     app->runProgram(openCommand, args);
 }
 
-ObjectMenu::ObjectMenu(YActionListener *actionListener, YWindow *parent): YMenu(parent) {
+ObjectMenu::ObjectMenu(YActionListener *actionListener, YWindow *parent):
+        YMenu(parent),
+        wmActionListener(nullptr) {
     setActionListener(actionListener);
-}
-
-ObjectMenu::~ObjectMenu() {
 }
 
 void ObjectMenu::addObject(DObject *fObject) {
@@ -251,7 +250,7 @@ void KProgram::open(unsigned mods) {
 
     if (bIsDynSwitchMenu) {
         if (!pSwitchWindow) {
-            pSwitchWindow = new SwitchWindow(manager, new MenuProgSwitchItems(fProg, fKey, fMod), quickSwitchVertical);
+            pSwitchWindow = new SwitchWindow(desktop, new MenuProgSwitchItems(fProg, fKey, fMod), quickSwitchVertical);
         }
         pSwitchWindow->begin(true, mods);
     }
@@ -567,9 +566,9 @@ public:
         if (path == null)
             return fail(_("Unable to write to %s"), "preferences");
 
-        csmart text(path.loadText());
-        if (text == nullptr)
-            (text = new char[1])[0] = 0;
+        auto text(path.loadText());
+        if (!text)
+            (text = fcsmart::create(1)).data()[0] = 0;
         size_t tlen = strlen(text);
         for (int k = 0; k < n; ++k) {
             const int i = mods[k];
@@ -597,7 +596,7 @@ public:
 
     static bool updateOption(cfoption* o, char* text) {
         char buf[99];
-        snprintf(buf, sizeof buf, "^[ \t]*%s[ \t]*=[ \t]*[!-~]", o->name);
+        snprintf(buf, sizeof buf, "^[ \t]*%s[ \t]*=", o->name);
         regex_t pat = {};
         int c = regcomp(&pat, buf, REG_EXTENDED | REG_NEWLINE);
         if (c) {
@@ -632,7 +631,7 @@ public:
 
     static bool insertOption(cfoption* o, char* text) {
         char buf[99];
-        snprintf(buf, sizeof buf, "^#+[ \t]*%s[ \t]*=[ \t]*[!-~]", o->name);
+        snprintf(buf, sizeof buf, "^#+[ \t]*%s[ \t]*=", o->name);
         regex_t pat = {};
         int c = regcomp(&pat, buf, REG_EXTENDED | REG_NEWLINE);
         if (c) {
@@ -658,11 +657,11 @@ public:
     static char* retrieveComment(cfoption* o) {
         static const char path[] = LIBDIR "/preferences";
         char* res = nullptr;
-        csmart text(load_text_file(path));
+        auto text(filereader(path).read_all());
         if (text) {
             char buf[99];
             snprintf(buf, sizeof buf,
-                     "(\n(#  .*\n)*)#+[ \t]*%s[ \t]*=[ \t]*[!-~]",
+                     "(\n(#  .*\n)*)#+[ \t]*%s[ \t]*=",
                      o->name);
             regex_t pat = {};
             int c = regcomp(&pat, buf, REG_EXTENDED | REG_NEWLINE);
