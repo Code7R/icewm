@@ -145,7 +145,7 @@ private:
     osmart<YMenu> fMenu;
 
 #ifdef __linux__
-    // preprocessed data from procfs with offset table (name, values, name, vaues, ...)
+    // preprocessed data from procfs with offset table (name, values, name, values, ...)
     fcsmart devicesText;
     YArray<netpair> devStats;
     typedef YArray<netpair>::IterType IterStats;
