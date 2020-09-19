@@ -58,6 +58,9 @@ override_dh_auto_configure:
 override_dh_autoreconf:
 	true
 
+override_dh_auto_test:
+	true
+
 #override_dh_auto_configure:
 #	$(MAKE) -f debian/rules -j2 config_normal config_lite
 

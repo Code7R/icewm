@@ -1,3 +1,10 @@
+icewm (1.8.3-2) unstable; urgency=low
+
+  * Upload to Unstable
+  * Disabling upstream tests (not ready for buildd environment)
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 20 Sep 2020 00:51:30 +0200
+
 icewm (1.8.3-1) experimental; urgency=low
 
   * New upstream release
