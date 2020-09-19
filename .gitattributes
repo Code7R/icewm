@@ -1,1 +1,2 @@
-debian/gbp.conf merge=ours
+# dummy, to avoid merging, enabling: git config merge.noop.driver true
+debian/gbp.conf merge=noop
