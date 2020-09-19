@@ -53,6 +53,7 @@
 #include "yrect.h"
 #define GUI_EVENT_NAMES
 #include "guievent.h"
+#include "logevent.h"
 
 #ifndef __GLIBC__
 typedef void (*sighandler_t)(int);
@@ -952,6 +953,7 @@ public:
             Window w = fChildren.back();
             fChildren.pop_back();
             fFiltered = fChildren;
+            fChildren.clear();
             fChildren.push_back(w);
         }
     }
@@ -1241,6 +1243,14 @@ public:
             fChildren.erase(it);
     }
 
+    void operator+=(const YWindowTree& other) {
+        for (Window w : other.fChildren) {
+            if (have(w) == false) {
+                fChildren.push_back(w);
+            }
+        }
+    }
+
 private:
     Confine fConfine;
     Window fParent;
@@ -1280,6 +1290,8 @@ private:
     void THROW(int val);
 
     void spy();
+    void spyEvent(const XEvent& event);
+    void spyClient(const XClientMessageEvent& event, const char* head);
     void flush();
     void flags();
     void flag(char* arg);
@@ -1313,7 +1325,7 @@ private:
     bool listWorkspaces();
     bool setWorkspaceName();
     bool setWorkspaceNames();
-    void changeState();
+    void changeState(const char* arg);
     bool colormaps();
     bool current();
     bool runonce();
@@ -1577,6 +1589,13 @@ static void toggleState(Window window, long newState) {
 
     long newMask = (state & mask & newState) ^ newState;
     MSG(("new mask/state: %ld/%ld", newState, newMask));
+
+    if (newState & WinStateFullscreen) {
+        long nets = YNetState(window).state();
+        if (nets & NetFullscreen) {
+            newMask &= ~WinStateFullscreen;
+        }
+    }
 
     setState(window, newState, newMask);
 }
@@ -2330,9 +2349,8 @@ bool IceSh::colormaps()
     return true;
 }
 
-void IceSh::changeState()
+void IceSh::changeState(const char* arg)
 {
-    const char* arg = getArg();
     int state = -1;
     if (!strncmp(arg, "NormalState", strlen(arg)))
         state = NormalState;
@@ -3065,6 +3083,13 @@ void IceSh::showProperty(Window window, Atom atom, const char* prefix) {
                 }
                 newline();
             }
+            else if (prop.type() == XA_CARDINAL) {
+                const char* name(atomName(atom));
+                printf("%s%s = ", prefix, (char *) name);
+                for (int i = 0; i < prop.count(); ++i)
+                    printf("%s%u", i ? ", " : "", unsigned(prop[i]));
+                newline();
+            }
             else {
                 const char* name(atomName(atom));
                 const char* type(atomName(prop.type()));
@@ -3243,7 +3268,7 @@ void IceSh::flags()
                 arg++;
             flag(arg);
         }
-        else if (argp[0][0] == '+' && strchr("frw", argp[0][1])) {
+        else if (argp[0][0] == '+' && strchr("frwT", argp[0][1])) {
             flag(getArg());
         }
         else {
@@ -3338,6 +3363,14 @@ void IceSh::flag(char* arg)
         windowList.query(root);
         windowList.findTaskbar();
         MSG(("taskbar selected"));
+        selecting = true;
+        return;
+    }
+    if (isOptArg(arg, "+T", "")) {
+        YWindowTree taskbar(root);
+        taskbar.findTaskbar();
+        windowList += taskbar;
+        MSG(("taskbar appended"));
         selecting = true;
         return;
     }
@@ -3538,143 +3571,192 @@ void IceSh::spy()
         StructureNotifyMask | PropertyChangeMask;
 
     FOREACH_WINDOW(window) {
-        XSelectInput(display, window, selectMask);
+        XSelectInput(display, window, selectMask +
+                SubstructureNotifyMask * (window == root));
     }
     while (windowList) {
         XEvent event;
         XNextEvent(display, &event);
         Window window = event.xany.window;
         if (windowList.have(window)) {
-            timeval now(walltime());
-            struct tm* local = localtime(&now.tv_sec);
-            int secs = local->tm_sec;
-            int mins = local->tm_min;
-            int mils = int(now.tv_usec / 1000L);
-            char head[80];
-            snprintf(head, sizeof head,
-                    "%02d:%02d.%03d: 0x%07x: %s",
-                    mins, secs, mils, int(window),
-                    (event.xany.send_event && event.type != ConfigureNotify)
-                        ? "Send " : "");
-            switch (event.type) {
-                case FocusIn:
-                case FocusOut:
-                    printf("%s%s%s%s\n",
-                        head,
-                        event.type == FocusIn
-                            ? "Focus" : "Defocus",
-                        event.xfocus.mode == NotifyNormal
-                            ? " Normal" :
-                        event.xfocus.mode == NotifyWhileGrabbed
-                            ? " WhileGrabbed" :
-                        event.xfocus.mode == NotifyGrab
-                            ? " Grab" :
-                        event.xfocus.mode == NotifyUngrab
-                            ? " Ungrab" : " ???",
-                        event.xfocus.detail == NotifyAncestor
-                            ? " Ancestor" :
-                        event.xfocus.detail == NotifyVirtual
-                            ? " Virtual" :
-                        event.xfocus.detail == NotifyInferior
-                            ? " Inferior" :
-                        event.xfocus.detail == NotifyNonlinear
-                            ? " Nonlinear" :
-                        event.xfocus.detail == NotifyNonlinearVirtual
-                            ? " NonlinearVirtual" :
-                        event.xfocus.detail == NotifyPointer
-                            ? " Pointer" :
-                        event.xfocus.detail == NotifyPointerRoot
-                            ? " PointerRoot" :
-                        event.xfocus.detail == NotifyDetailNone
-                            ? "" : " ???");
-                    break;
-                case EnterNotify:
-                case LeaveNotify:
-                    printf("%s%s%s%s%s\n", head,
-                        event.type == EnterNotify ? "Enter" : "Leave",
-                        event.xcrossing.mode == NotifyNormal
-                            ? " Normal" :
-                        event.xcrossing.mode == NotifyGrab
-                            ? " Grab" :
-                        event.xcrossing.mode == NotifyUngrab
-                            ? " Ungrab" :
-                        event.xcrossing.mode == NotifyWhileGrabbed
-                            ? " Grabbed" : " Unknown",
-                        event.xcrossing.detail == NotifyAncestor
-                            ? " Ancestor" :
-                        event.xcrossing.detail == NotifyVirtual
-                            ? " Virtual" :
-                        event.xcrossing.detail == NotifyInferior
-                            ? " Inferior" :
-                        event.xcrossing.detail == NotifyNonlinear
-                            ? " Nonlinear" :
-                        event.xcrossing.detail == NotifyNonlinearVirtual
-                            ? " NonlinearVirtual" :
-                        event.xcrossing.detail == NotifyPointer
-                            ? " Pointer" :
-                        event.xcrossing.detail == NotifyPointerRoot
-                            ? " PointerRoot" :
-                        event.xcrossing.detail == NotifyDetailNone
-                            ? "" : " ???",
-                        event.xcrossing.focus
-                            ? " Focus" : " Nofocus");
-                    break;
-                case UnmapNotify:
-                    printf("%sUnmap%s%s\n", head,
-                            event.xunmap.from_configure ? " Configure" : "",
-                            event.xunmap.send_event ? " Send" : "");
-                    break;
-                case MapNotify:
-                    printf("%sMapped%s\n", head,
-                            event.xmap.override_redirect ? " Override" : "");
-                    break;
-                case VisibilityNotify:
-                    printf("%sVisibility %s\n", head,
-                        event.xvisibility.state == VisibilityPartiallyObscured
-                            ? "PartiallyObscured " :
-                        event.xvisibility.state == VisibilityFullyObscured
-                            ? "FullyObscured " :
-                        event.xvisibility.state == VisibilityUnobscured
-                            ? "Unobscured " : "Bogus "
-                        );
-                    break;
-                case DestroyNotify:
-                    printf("%sDestroyed\n", head);
-                    windowList.remove(window);
-                    break;
-                case PropertyNotify:
-                    if (event.xproperty.state == PropertyNewValue) {
-                        showProperty(window, event.xproperty.atom, head);
-                    } else {
-                        const char* name(atomName(event.xproperty.atom));
-                        printf("%sDelete %s\n", head, (char *) name);
-                    }
-                    break;
-                case ConfigureNotify:
-                    printf("%sConfigure %dx%d+%d+%d%s%s%s\n", head,
-                            event.xconfigure.width, event.xconfigure.height,
-                            event.xconfigure.x, event.xconfigure.y,
-                            event.xconfigure.send_event ? " Send" : "",
-                            event.xconfigure.override_redirect ? " Override" : "",
-                            event.xconfigure.above ? " Above" : ""
-                            );
-                    break;
-                case CirculateNotify:
-                    printf("%sCirculate %s\n", head,
-                            event.xcirculate.place == PlaceOnTop
-                                ? "PlaceOnTop" :
-                            event.xcirculate.place == PlaceOnBottom
-                                ? "PlaceOnBottom" : "Bogus");
-                    break;
-                case ReparentNotify:
-                case GravityNotify:
-                case ClientMessage:
-                    break;
-                default:
-                    printf("%sUnknown event type %d\n", head, event.type);
-                    break;
-            }
+            spyEvent(event);
         }
+    }
+}
+
+void IceSh::spyEvent(const XEvent& event)
+{
+    Window window = event.xany.window;
+    timeval now(walltime());
+    struct tm* local = localtime(&now.tv_sec);
+    int secs = local->tm_sec;
+    int mins = local->tm_min;
+    int mils = int(now.tv_usec / 1000L);
+    char head[80], xarg[80];
+    snprintf(head, sizeof head,
+            "%02d:%02d.%03d: 0x%07x: %s",
+            mins, secs, mils, int(window),
+            (event.xany.send_event && event.type != ConfigureNotify)
+                ? "Send " : "");
+    switch (event.type) {
+    case EnterNotify:
+    case LeaveNotify:
+        printf("%s%s%s%s%s\n", head,
+            event.type == EnterNotify ? "Enter" : "Leave",
+            event.xcrossing.mode == NotifyNormal
+                ? " Normal" :
+            event.xcrossing.mode == NotifyGrab
+                ? " Grab" :
+            event.xcrossing.mode == NotifyUngrab
+                ? " Ungrab" :
+            event.xcrossing.mode == NotifyWhileGrabbed
+                ? " Grabbed" : " Unknown",
+            event.xcrossing.detail == NotifyAncestor
+                ? " Ancestor" :
+            event.xcrossing.detail == NotifyVirtual
+                ? " Virtual" :
+            event.xcrossing.detail == NotifyInferior
+                ? " Inferior" :
+            event.xcrossing.detail == NotifyNonlinear
+                ? " Nonlinear" :
+            event.xcrossing.detail == NotifyNonlinearVirtual
+                ? " NonlinearVirtual" :
+            event.xcrossing.detail == NotifyPointer
+                ? " Pointer" :
+            event.xcrossing.detail == NotifyPointerRoot
+                ? " PointerRoot" :
+            event.xcrossing.detail == NotifyDetailNone
+                ? "" : " ???",
+            event.xcrossing.focus
+                ? " Focus" : " Nofocus");
+        break;
+    case FocusIn:
+    case FocusOut:
+        printf("%s%s%s%s\n",
+            head,
+            event.type == FocusIn
+                ? "Focus" : "Defocus",
+            event.xfocus.mode == NotifyNormal
+                ? " Normal" :
+            event.xfocus.mode == NotifyWhileGrabbed
+                ? " WhileGrabbed" :
+            event.xfocus.mode == NotifyGrab
+                ? " Grab" :
+            event.xfocus.mode == NotifyUngrab
+                ? " Ungrab" : " ???",
+            event.xfocus.detail == NotifyAncestor
+                ? " Ancestor" :
+            event.xfocus.detail == NotifyVirtual
+                ? " Virtual" :
+            event.xfocus.detail == NotifyInferior
+                ? " Inferior" :
+            event.xfocus.detail == NotifyNonlinear
+                ? " Nonlinear" :
+            event.xfocus.detail == NotifyNonlinearVirtual
+                ? " NonlinearVirtual" :
+            event.xfocus.detail == NotifyPointer
+                ? " Pointer" :
+            event.xfocus.detail == NotifyPointerRoot
+                ? " PointerRoot" :
+            event.xfocus.detail == NotifyDetailNone
+                ? "" : " ???");
+        break;
+    case UnmapNotify:
+        printf("%sUnmap 0x%lx%s%s\n", head,
+                event.xunmap.window,
+                event.xunmap.from_configure ? " Configure" : "",
+                event.xunmap.send_event ? " Send" : "");
+        break;
+    case VisibilityNotify:
+        printf("%sVisibility %s\n", head,
+            event.xvisibility.state == VisibilityPartiallyObscured
+                ? "PartiallyObscured " :
+            event.xvisibility.state == VisibilityFullyObscured
+                ? "FullyObscured " :
+            event.xvisibility.state == VisibilityUnobscured
+                ? "Unobscured " : "Bogus "
+            );
+        break;
+    case CreateNotify:
+        printf("%sCreate 0x%lx %dx%d%+d%+d%s\n", head,
+                event.xcreatewindow.window,
+                event.xcreatewindow.width, event.xcreatewindow.height,
+                event.xcreatewindow.x, event.xcreatewindow.y,
+                event.xcreatewindow.override_redirect ? " Override" : "");
+        break;
+    case DestroyNotify:
+        printf("%sDestroyed 0x%lx\n", head, event.xdestroywindow.window);
+        windowList.remove(event.xdestroywindow.window);
+        break;
+    case MapNotify:
+        printf("%sMapped 0x%lx%s\n", head, event.xmap.window,
+                event.xmap.override_redirect ? " Override" : "");
+        break;
+    case ReparentNotify:
+        break;
+    case ConfigureNotify:
+        if (event.xconfigure.above)
+            snprintf(xarg, sizeof xarg, " Above=0x%lx", event.xconfigure.above);
+        else
+            xarg[0] = '\0';
+        printf("%sConfigure 0x%lx %dx%d+%d+%d%s%s%s\n", head,
+                event.xconfigure.window,
+                event.xconfigure.width, event.xconfigure.height,
+                event.xconfigure.x, event.xconfigure.y,
+                event.xconfigure.send_event ? " Send" : "",
+                event.xconfigure.override_redirect ? " Override" : "",
+                xarg);
+        break;
+    case GravityNotify:
+        break;
+    case CirculateNotify:
+        printf("%sCirculate 0x%lx %s\n", head,
+                event.xcirculate.window,
+                event.xcirculate.place == PlaceOnTop
+                    ? "PlaceOnTop" :
+                event.xcirculate.place == PlaceOnBottom
+                    ? "PlaceOnBottom" : "Bogus");
+        break;
+    case PropertyNotify:
+        if (event.xproperty.state == PropertyNewValue) {
+            showProperty(window, event.xproperty.atom, head);
+        } else {
+            const char* name(atomName(event.xproperty.atom));
+            printf("%sDelete %s\n", head, (char *) name);
+        }
+        break;
+    case ClientMessage:
+        spyClient(event.xclient, head);
+        break;
+    default:
+        printf("%sUnknown event type %d\n", head, event.type);
+        break;
+    }
+}
+
+void IceSh::spyClient(const XClientMessageEvent& event, const char* head) {
+    const char* name = atomName(event.message_type);
+    const long* data = event.data.l;
+    if (event.message_type == ATOM_NET_WM_STATE) {
+        const char* op =
+            data[0] == 0 ? "REMOVE" :
+            data[0] == 1 ? "ADD" :
+            data[0] == 2 ? "TOGGLE" : "?";
+        const char* p1 = data[1] ? atomName(data[1]) : "";
+        const char* p2 = data[2] ? atomName(data[2]) : "";
+        printf("%sClientMessage %s %d data=%s,%s,%s\n",
+                head, name, event.format, op, p1, p2);
+    }
+    else if (event.message_type == ATOM_WM_CHANGE_STATE) {
+        const char* op =
+            data[0] == 0 ? "WithdrawnState" :
+            data[0] == 1 ? "NormalState" :
+            data[0] == 3 ? "IconicState" : "?";
+        printf("%sClientMessage %s %s\n", head, name, op);
+    }
+    else {
+        printf("%sClientMessage %s %d data=%ld,0x%lx,0x%lx\n",
+                head, name, event.format, data[0], data[1], data[2]);
     }
 }
 
@@ -4137,8 +4219,6 @@ void IceSh::parseAction()
                 mask |= WinStateMinimized;
                 mask |= WinStateHidden;
                 mask |= WinStateRollup;
-                mask |= WinStateAbove;
-                mask |= WinStateBelow;
                 setState(window, mask, 0L);
             }
         }
@@ -4192,7 +4272,13 @@ void IceSh::parseAction()
             click();
         }
         else if (isAction("changeState", 1)) {
-            changeState();
+            changeState(getArg());
+        }
+        else if (isAction("iconic", 0)) {
+            changeState("IconicState");
+        }
+        else if (isAction("normal", 0)) {
+            changeState("NormalState");
         }
         else {
             msg(_("Unknown action: `%s'"), *argp);

@@ -7,9 +7,10 @@ public:
     YIcon(ref<YImage> small, ref<YImage> large, ref<YImage> huge);
     ~YIcon();
 
-    ref<YImage> huge();
-    ref<YImage> large();
-    ref<YImage> small();
+    ref<YImage> huge() { return bestLoad(hugeSize(), fHuge, loadedH); }
+    ref<YImage> large() { return bestLoad(largeSize(), fLarge, loadedL); }
+    ref<YImage> small() { return bestLoad(smallSize(), fSmall, loadedS); }
+
 
     ref<YImage> getScaledIcon(unsigned size);
 
@@ -28,6 +29,7 @@ public:
     bool draw(Graphics &g, int x, int y, int size);
     upath findIcon(unsigned size);
 
+#ifdef SUPPORT_XDG_ICON_TYPE_CATEGORIES
     enum /* class... or better not, simplify! */ TypeFilter {
         NONE = 0,
         /** Suitable for programs */
@@ -40,6 +42,7 @@ public:
         FOR_ANY_PURPOSE = FOR_APPS | FOR_DEVICES | FOR_MENUCATS | FOR_APPS,
         ALL = FOR_ANY_PURPOSE // | FROM_ANY_SOURCE
     };
+#endif
 
 private:
     ref<YImage> fSmall;
@@ -52,6 +55,8 @@ private:
     bool fCached;
 
     upath fPath;
+
+    ref<YImage> bestLoad(int size, ref<YImage>& img, bool& flag);
 
     void removeFromCache();
     static int cacheFind(upath name);

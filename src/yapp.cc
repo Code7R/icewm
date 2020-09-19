@@ -16,8 +16,7 @@
 #ifdef USE_SIGNALFD
 #include <sys/signalfd.h>
 #endif
-#include <wordexp.h>
-#include <pwd.h>
+#include "ywordexp.h"
 
 IMainLoop *mainLoop;
 static int signalPipe[2];
@@ -509,12 +508,12 @@ const upath& YApplication::getPrivConfDir() {
 
 upath YApplication::getHomeDir() {
     char *env = getenv("HOME");
-    if (env) {
+    if (nonempty(env)) {
         return upath(env);
     } else {
-        passwd *pw = getpwuid(getuid());
-        if (pw) {
-            return upath(pw->pw_dir);
+        csmart home(userhome(nullptr));
+        if (home) {
+            return upath(home);
         }
     }
     return upath(null);

@@ -1,8 +1,14 @@
-icewm (1.7.0+git20200725-1) UNRELEASED; urgency=low
+icewm (1.8.3-1) experimental; urgency=low
+
+  * New upstream release
+
+ -- Eduard Bloch <blade@debian.org>  Sat, 19 Sep 2020 10:59:51 +0200
+
+icewm (1.8.1+git20200906-1) experimental; urgency=low
 
   * New upstream release (plus a few fixes from HEAD)
 
- -- Eduard Bloch <blade@debian.org>  Sun, 26 Jul 2020 10:53:44 +0200
+ -- Eduard Bloch <blade@debian.org>  Sun, 06 Sep 2020 12:11:15 +0200
 
 icewm (1.6.6-1) unstable; urgency=low
 

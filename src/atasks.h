@@ -40,6 +40,7 @@ public:
     void switchToNext();
 
     static unsigned maxHeight();
+    static void freeFonts() { normalTaskBarFont = null; activeTaskBarFont = null; }
 
 private:
     ClientData *fFrame;
@@ -74,7 +75,6 @@ public:
     TaskBarApp *getActive();
     TaskBarApp *predecessor(TaskBarApp *tapp);
     TaskBarApp *successor(TaskBarApp *tapp);
-    void removeApp(YFrameWindow *frame);
 
     static unsigned maxHeight();
     void relayout(bool force = false);

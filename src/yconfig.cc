@@ -259,12 +259,10 @@ void YConfig::parseConfiguration(cfoption *options, char *data) {
 
 bool YConfig::loadConfigFile(cfoption *options, upath fileName) {
     YTraceConfig trace(fileName.string());
-    char* buf = fileName.loadText();
-    if (buf) {
+    auto buf = fileName.loadText();
+    if (buf)
         parseConfiguration(options, buf);
-        delete[] buf;
-    }
-    return buf != nullptr;
+    return buf;
 }
 
 void YConfig::freeConfig(cfoption *options) {
@@ -287,7 +285,7 @@ bool YConfig::findLoadConfigFile(IApp *app, cfoption *options, upath name) {
 bool YConfig::findLoadThemeFile(IApp *app, cfoption *options, upath name) {
     upath conf = app->findConfigFile(name);
     if (conf.isEmpty() || false == conf.fileExists()) {
-        if (name.getExtension().isEmpty())
+        if (name.getExtension() != ".theme")
             conf = app->findConfigFile(name + "default.theme");
     }
     return conf.nonempty() && YConfig::loadConfigFile(options, conf);

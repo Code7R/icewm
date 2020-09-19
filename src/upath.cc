@@ -14,7 +14,6 @@
 #include <fnmatch.h>
 #include "base.h"
 #include "yapp.h"
-#include "ypointer.h"
 
 const mstring upath::slash("/");
 const upath upath::rootPath(slash);
@@ -89,7 +88,7 @@ mstring upath::expand() const {
     if (c == '~') {
         int k = fPath[1];
         if (k == -1 || isSeparator(k))
-            return (YApplication::getHomeDir() +
+            return (upath(userhome(nullptr)) +
                     fPath.substring(size_t(min(2, length())))).fPath;
     }
     else if (c == '$') {
@@ -179,12 +178,12 @@ int upath::fnMatch(const char* pattern, int flags) {
     return fnmatch(pattern, string(), flags);
 }
 
-char* upath::loadText() {
-    return ::load_text_file(expand());
+fcsmart upath::loadText() {
+    return filereader(expand()).read_all();
 }
 
 bool upath::copyFrom(upath from, int mode) {
-    csmart text(from.loadText());
+    auto text = from.loadText();
     if (text == nullptr)
         return false;
     int fd = open(O_WRONLY | O_CREAT | O_TRUNC, mode);

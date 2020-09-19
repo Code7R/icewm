@@ -8,7 +8,7 @@
 #include "ypointer.h"
 #include "ascii.h"
 using namespace ASCII;
-#include <wordexp.h>
+#include "ywordexp.h"
 #include <X11/Xlib.h>
 
 #ifdef CONFIG_EXTERNAL_TRAY
@@ -36,7 +36,7 @@ private:
         if (wordexp(trim(buf), &w, 0) != 0 || w.we_wordc == 0)
             return false;
         size_t len = strlcpy(buf, trim(w.we_wordv[0]), bufsiz);
-        for (size_t k = 1; k < w.we_wordc && len < bufsiz; ++k) {
+        for (size_t k = 1; k < size_t(w.we_wordc) && len < bufsiz; ++k) {
             strlcat(buf, " ", bufsiz);
             len = strlcat(buf, trim(w.we_wordv[k]), bufsiz);
         }
@@ -46,6 +46,22 @@ private:
         if (buf[0] == '#' || buf[0] == '=')
             buf[0] = 0;
         return buf[0] != 0;
+    }
+
+    void setup() {
+        char buf[PATH_MAX];
+        char* pwd = getcwd(buf, sizeof buf);
+        if (pwd && !strcmp(pwd, "/") && access(pwd, W_OK)) {
+            char* home = getenv("HOME");
+            if (nonempty(home) && !access(home, W_OK)) {
+                (void) chdir(home);
+            } else {
+                csmart user(userhome(nullptr));
+                if (user && chdir(user) == 0) {
+                    setenv("HOME", user, true);
+                }
+            }
+        }
     }
 
     const char *get_help_text() {
@@ -172,6 +188,7 @@ private:
 
 public:
     SessionManager(int *argc, char ***argv): YApplication(argc, argv) {
+        setup();
         options(argc, argv);
         startup_phase = 0;
         bg_pid = -1;
@@ -644,7 +661,6 @@ void SessionManager::rescueFocus() {
             XNextEvent(display, &e);
             if (e.type == PropertyNotify) {
                 if (e.xproperty.state == PropertyNewValue) {
-                    logProperty(e);
                     for (int i = 0; i < atomCount; ++i) {
                         if (e.xproperty.atom == atoms[i]) {
                             loop = false;

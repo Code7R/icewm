@@ -83,7 +83,7 @@ YFrameButton *YFrameTitleBar::getButton(char c) {
     }
     if (index) {
         if (hasbit(decors(), flag)) {
-            if (fButtons[index] == nullptr) {
+            if (fButtons[index] == nullptr && supported(c)) {
                 fButtons[index] = new YFrameButton(this, c);
             }
         } else if (fButtons[index]) {
@@ -92,13 +92,6 @@ YFrameButton *YFrameTitleBar::getButton(char c) {
         }
     }
     return fButtons[index];
-}
-
-void YFrameTitleBar::raiseButtons() {
-    raise();
-    for (auto b : fButtons)
-        if (b)
-            b->raise();
 }
 
 void YFrameTitleBar::handleButton(const XButtonEvent &button) {
@@ -112,8 +105,8 @@ void YFrameTitleBar::handleButton(const XButtonEvent &button) {
         }
     }
     else if (button.type == ButtonRelease) {
-        if (button.button == Button1 &&
-            IS_BUTTON(BUTTON_MODMASK(button.state), Button1Mask + Button3Mask))
+        if ((button.button == Button1 || button.button == Button3) &&
+            IS_BUTTON(button.state, Button1Mask + Button3Mask))
         {
             windowList->showFocused(button.x_root, button.y_root);
         }
@@ -122,53 +115,58 @@ void YFrameTitleBar::handleButton(const XButtonEvent &button) {
 }
 
 void YFrameTitleBar::handleClick(const XButtonEvent &up, int count) {
+    YAction action(actionNull);
     if (count >= 2 && (count % 2 == 0)) {
         if (up.button == (unsigned) titleMaximizeButton &&
             ISMASK(KEY_MODMASK(up.state), 0, ControlMask))
         {
-            if (getFrame()->canMaximize())
-                getFrame()->wmMaximize();
-        } else if (up.button == (unsigned) titleMaximizeButton &&
-                   ISMASK(KEY_MODMASK(up.state), ShiftMask, ControlMask))
-        {
-            if (getFrame()->canMaximize())
-                getFrame()->wmMaximizeVert();
-        } else if (up.button == (unsigned) titleMaximizeButton && xapp->AltMask &&
-                   ISMASK(KEY_MODMASK(up.state), xapp->AltMask + ShiftMask, ControlMask))
-        {
-            if (getFrame()->canMaximize())
-                getFrame()->wmMaximizeHorz();
-        } else if (up.button == (unsigned) titleRollupButton &&
-                 ISMASK(KEY_MODMASK(up.state), 0, ControlMask))
-        {
-            if (getFrame()->canRollup())
-                getFrame()->wmRollup();
-        } else if (up.button == (unsigned) titleRollupButton &&
-                   ISMASK(KEY_MODMASK(up.state), ShiftMask, ControlMask))
-        {
-            if (getFrame()->canMaximize())
-                getFrame()->wmMaximizeHorz();
+            action = actionMaximize;
         }
-    } else if (count == 1) {
+        else if (up.button == (unsigned) titleMaximizeButton &&
+             ISMASK(KEY_MODMASK(up.state), ShiftMask, ControlMask))
+        {
+            action = actionMaximizeVert;
+        }
+        else if (up.button == (unsigned) titleMaximizeButton && xapp->AltMask &&
+             ISMASK(KEY_MODMASK(up.state), xapp->AltMask + ShiftMask, ControlMask))
+        {
+            action = actionMaximizeHoriz;
+        }
+        else if (up.button == (unsigned) titleRollupButton &&
+             ISMASK(KEY_MODMASK(up.state), 0, ControlMask))
+        {
+            action = actionRollup;
+        }
+        else if (up.button == (unsigned) titleRollupButton &&
+             ISMASK(KEY_MODMASK(up.state), ShiftMask, ControlMask))
+        {
+            action = actionMaximizeHoriz;
+        }
+    }
+    else if (count == 1) {
         if (up.button == Button3 && notbit(KEY_MODMASK(up.state), xapp->AltMask)) {
             getFrame()->popupSystemMenu(this, up.x_root, up.y_root,
                                         YPopupWindow::pfCanFlipVertical |
                                         YPopupWindow::pfCanFlipHorizontal);
-        } else if (up.button == Button1) {
+        }
+        else if (up.button == Button1) {
             if (KEY_MODMASK(up.state) == xapp->AltMask) {
-                if (getFrame()->canLower()) getFrame()->wmLower();
-            } else if (lowerOnClickWhenRaised &&
-                       (buttonRaiseMask & (1 << (up.button - Button1))) &&
-                       ((up.state & (ControlMask | xapp->ButtonMask)) ==
-                        Button1Mask))
+                action = actionLower;
+            }
+            else if (lowerOnClickWhenRaised &&
+                   (buttonRaiseMask & (1 << (up.button - Button1))) &&
+                   ((up.state & (ControlMask | xapp->ButtonMask)) ==
+                    Button1Mask))
             {
                 if (!wasCanRaise) {
-                    if (getFrame()->canLower())
-                        getFrame()->wmLower();
+                    action = actionLower;
                     wasCanRaise = true;
                 }
             }
         }
+    }
+    if (action != actionNull) {
+        getFrame()->actionPerformed(action, up.state);
     }
 }
 
@@ -185,10 +183,8 @@ void YFrameTitleBar::handleBeginDrag(
          down.subwindow == getFrame()->topRightIndicator()))
     {
         getFrame()->handleBeginDrag(down, motion);
-        return;
-    } else
-
-    if (getFrame()->canMove()) {
+    }
+    else if (getFrame()->canMove()) {
         getFrame()->startMoveSize(true, true,
                                   0, 0,
                                   down.x + x(), down.y + y());
@@ -205,37 +201,6 @@ void YFrameTitleBar::activate() {
     else if (LOOK(lookWin95)) {
         if (menuButton())
             menuButton()->repaint();
-    }
-}
-
-void YFrameTitleBar::positionButton(YFrameButton *b, int &xPos, bool onRight) {
-    const int titleY = getFrame()->titleY();
-
-    /// !!! clean this up
-    if (b == menuButton()) {
-        const unsigned bw(((LOOK(lookPixmap | lookMetal | lookGtk |
-                                 lookFlat | lookMotif ) && showFrameIcon) ||
-                            b->getPixmap(0) == null) ?
-                            titleY : b->getPixmap(0)->width());
-
-        if (onRight) xPos -= bw;
-        b->setGeometry(YRect(xPos, 0, bw, titleY));
-        if (!onRight) xPos += bw;
-    } else if (LOOK(lookPixmap | lookMetal | lookGtk | lookFlat)) {
-        const unsigned bw(b->getPixmap(0) != null
-                ? b->getPixmap(0)->width() : titleY);
-
-        if (onRight) xPos -= bw;
-        b->setGeometry(YRect(xPos, 0, bw, titleY));
-        if (!onRight) xPos += bw;
-    } else if (wmLook == lookWin95) {
-        if (onRight) xPos -= titleY;
-        b->setGeometry(YRect(xPos, 2, titleY, titleY - 3));
-        if (!onRight) xPos += titleY;
-    } else {
-        if (onRight) xPos -= titleY;
-        b->setGeometry(YRect(xPos, 0, titleY, titleY));
-        if (!onRight) xPos += titleY;
     }
 }
 
@@ -258,8 +223,9 @@ void YFrameTitleBar::layoutButtons() {
                     if (left + int(b->width()) >= right) {
                         b->hide();
                     } else {
+                        b->setPosition(left, 0);
+                        left += b->width();
                         b->show();
-                        positionButton(b, left, false);
                     }
                 }
             }
@@ -276,8 +242,9 @@ void YFrameTitleBar::layoutButtons() {
                     if (right - int(b->width()) <= left) {
                         b->hide();
                     } else {
+                        right -= b->width();
+                        b->setPosition(right, 0);
                         b->show();
-                        positionButton(b, right, true);
                     }
                 }
             }
@@ -483,6 +450,11 @@ void YFrameTitleBar::paint(Graphics &g, const YRect &/*r*/) {
         if (titleQ[pi] != null)
             g.drawPixmap(titleQ[pi], int(width() - titleQ[pi]->width()), 0);
 
+        if (rgbTitleB[pi] != null || rgbTitleS[pi] != null ||
+            rgbTitleT[pi] != null)
+        {
+            g.maxOpacity();
+        }
         break;
     }
     }

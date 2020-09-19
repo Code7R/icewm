@@ -1,11 +1,12 @@
-#ifndef __YWINDOW_H
-#define __YWINDOW_H
+#ifndef YWINDOW_H
+#define YWINDOW_H
 
 #include "ypaint.h"
 #include "ycursor.h"
 #include "yarray.h"
 #include "ylist.h"
 #include "yrect.h"
+#include "logevent.h"
 
 class YPopupWindow;
 class YToolTip;
@@ -58,12 +59,12 @@ public:
 
     virtual void repaint();
     virtual void repaintFocus();
-    virtual void repaintSync();
 
     void readAttributes();
     void reparent(YWindow *parent, int x, int y);
     bool getWindowAttributes(XWindowAttributes* attr);
-
+    void beneath(YWindow* superior);
+    void raiseTo(YWindow* inferior);
     void setWindowFocus();
 
     bool fetchTitle(char** title);
@@ -129,7 +130,6 @@ public:
     void beginAutoScroll(bool autoScroll, const XMotionEvent *motion);
 
     void setPointer(const YCursor& pointer);
-    void setGrabPointer(const YCursor& pointer);
     void grabKeyM(int key, unsigned modifiers);
     void grabKey(int key, unsigned modifiers);
     void grabVKey(int key, unsigned vmodifiers);
@@ -145,13 +145,10 @@ public:
     YWindow *parent() const { return fParentWindow; }
     YWindow *window() { return this; }
 
-    ref<YPixmap> beginPaint(YRect &r);
-    void endPaint(Graphics &g, ref<YPixmap> pixmap, YRect &r);
     void paintExpose(int ex, int ey, int ew, int eh);
 
-    Graphics & getGraphics();
-
-    virtual ref<YImage> getGradient() const {
+    Graphics& getGraphics();
+    virtual ref<YImage> getGradient() {
         return (parent() ? parent()->getGradient() : null); }
 
     int x() const { return fX; }
@@ -183,12 +180,11 @@ public:
         wsPointerMotion    = 1 << 5,
         wsDesktopAware     = 1 << 6,
         wsToolTip          = 1 << 7,
+        wsBackingMapped    = 1 << 8,
     };
 
     virtual bool isFocusTraversable();
     bool isFocused();
-    bool isEnabled() const { return fEnabled; }
-    void setEnabled(bool enable);
     void nextFocus();
     void prevFocus();
     bool changeFocus(bool next);
@@ -198,8 +194,9 @@ public:
     virtual void gotFocus();
     virtual void lostFocus();
 
-    bool isToplevel() const { return fToplevel; }
-    void setToplevel(bool toplevel) { fToplevel = toplevel; }
+    bool isDragDrop() const { return hasbit(flags, wfDragDrop); }
+    bool isToplevel() const { return hasbit(flags, wfToplevel); }
+    void setToplevel(bool toplevel);
 
     YWindow *toplevel();
 
@@ -229,6 +226,7 @@ public:
     virtual void handleDNDPosition(int x, int y);
 
     bool getCharFromEvent(const XKeyEvent &key, char *s, int maxLen);
+    bool dragging() const { return fClickDrag && fClickWindow == this; }
     int getClickCount() { return fClickCount; }
     int getScreen();
 
@@ -247,7 +245,6 @@ public:
     void requestSelection(bool selection);
 
     bool hasPopup();
-    void setDoubleBuffer(bool doubleBuffer);
 
     KeySym keyCodeToKeySym(unsigned int keycode, int index = 0);
     static unsigned long getLastEnterNotifySerial();
@@ -260,8 +257,10 @@ private:
         wfCreated   = 1 << 1,
         wfAdopted   = 1 << 2,
         wfDestroyed = 1 << 3,
+        wfToplevel  = 1 << 4,
         wfNullSize  = 1 << 5,
-        wfFocused   = 1 << 6
+        wfFocused   = 1 << 6,
+        wfDragDrop  = 1 << 7,
     };
 
     Window create();
@@ -291,10 +290,6 @@ private:
     long fEventMask;
     int fWinGravity, fBitGravity;
 
-    bool fEnabled;
-    bool fToplevel;
-    bool fDoubleBuffer;
-
     struct YAccelerator {
         unsigned key;
         unsigned mod;
@@ -309,13 +304,12 @@ private:
     static YWindow *fClickWindow;
     static Time fClickTime;
     static int fClickCount;
-    static int fClickDrag;
+    static bool fClickDrag;
     static unsigned fClickButton;
     static unsigned fClickButtonDown;
     static unsigned long lastEnterNotifySerial;
     static void updateEnterNotifySerial(const XEvent& event);
 
-    bool fDND;
     Window XdndDragSource;
     Window XdndDropTarget;
 
