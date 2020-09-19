@@ -55,6 +55,9 @@ PAROPT=$(shell echo $$DEB_BUILD_OPTIONS | sed -e 's,.*parallel=\([0-9]\).*,-j\1,
 override_dh_auto_configure:
 	dh_auto_configure -- $(cmakeargs)
 
+override_dh_autoreconf:
+	true
+
 #override_dh_auto_configure:
 #	$(MAKE) -f debian/rules -j2 config_normal config_lite
 
