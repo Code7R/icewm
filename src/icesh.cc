@@ -59,8 +59,8 @@
 typedef void (*sighandler_t)(int);
 #endif
 
+#include <unordered_map>
 using std::vector;
-using std::find;
 
 /******************************************************************************/
 
@@ -90,38 +90,16 @@ class NAtom {
     Atom fAtom;
     bool fExists;
     bool fDynamic;
-    static vector<NAtom*> fAtoms;
-    static bool lookup(Atom atom, int* pos) {
-        int lo = 0, hi = int(fAtoms.size());
-        while (lo < hi) {
-            const int pv = (lo + hi) / 2;
-            NAtom* pivot = fAtoms[pv];
-            if (atom > pivot->fAtom)
-                lo = pv + 1;
-            else if (atom < pivot->fAtom)
-                hi = pv;
-            else {
-                *pos = pv;
-                return true;
-            }
-        }
-        *pos = lo;
-        return false;
-    }
+    static std::unordered_map<Atom, NAtom*> fAtoms;
     void insert() {
-        if (fAtom) {
-            int pos;
-            if (lookup(fAtom, &pos)) {
-                NAtom* old = this;
-                std::swap(old, fAtoms[pos]);
-                if (old->fDynamic) {
-                    XFree(const_cast<char *>(old->fName));
-                    delete old;
-                }
-            } else {
-                fAtoms.insert(fAtoms.begin() + pos, this);
-            }
+        if (!fAtom)
+            return;
+        auto& tgt = fAtoms[fAtom];
+        if (tgt && tgt->fDynamic) {
+            XFree(const_cast<char *>(tgt->fName));
+            delete tgt;
         }
+        tgt = this;
     }
 public:
     explicit NAtom(const char* name, bool exists = false) :
@@ -138,20 +116,18 @@ public:
         return fAtom;
     }
     static const char* lookup(Atom atom) {
-        int pos;
-        if (lookup(atom, &pos)) {
-            return fAtoms[pos]->fName;
-        } else {
-            char* name = XGetAtomName(display, atom);
-            NAtom* ptr = new NAtom(name);
+        auto& ptr = fAtoms[atom];
+        if (! ptr) {
+            auto* name = XGetAtomName(display, atom);
+            ptr = new NAtom(name);
             ptr->fAtom = atom;
             ptr->fDynamic = true;
-            fAtoms.insert(fAtoms.begin() + pos, ptr);
-            return name;
         }
+        return ptr->fName;
     }
     static void free() {
-        for (auto ptr : fAtoms) {
+        for (auto kv : fAtoms) {
+            auto ptr = kv.second;
             if (ptr && ptr->fDynamic) {
                 XFree(const_cast<char *>(ptr->fName));
                 delete ptr;
@@ -161,7 +137,7 @@ public:
     }
 };
 
-vector<NAtom*> NAtom::fAtoms;
+decltype(NAtom::fAtoms) NAtom::fAtoms;
 
 static NAtom ATOM_WM_STATE("WM_STATE");
 static NAtom ATOM_WM_CHANGE_STATE("WM_CHANGE_STATE");
