@@ -15,10 +15,10 @@ bool loggingEvents;
 bool loggedEventsInited;
 
 static const char* emptyAtom(Atom atom) { return ""; }
-static AtomNameFunc atomName = emptyAtom;
-void setAtomName(AtomNameFunc func) { atomName = func; }
+static AtomNameFunc atomNameProvider = emptyAtom;
+void setAtomNameProvider(AtomNameFunc func) { atomNameProvider = func; }
 const char* getAtomName(unsigned long atom) {
-    return atomName ? atomName(atom) : "";
+    return atomNameProvider ? atomNameProvider(atom) : "";
 }
 
 #if LOGEVENTS
@@ -282,7 +282,7 @@ void logMotion(const XMotionEvent& xev) {
 void logProperty(const XPropertyEvent& xev) {
     tlog("window=0x%lX: propertyNotify %s time=%ld state=%s",
         xev.window,
-        atomName(xev.atom),
+        atomNameProvider(xev.atom),
         xev.time,
         xev.state == PropertyNewValue ? "NewValue" :
         xev.state == PropertyDelete ? "Delete" : "?");
@@ -518,7 +518,7 @@ bool toggleLogEvents() {
 }
 
 void logClientMessage(const XClientMessageEvent& event) {
-    const char* name = atomName(event.message_type);
+    const char* name = atomNameProvider(event.message_type);
     const long* data = event.data.l;
     char head[64];
     snprintf(head, sizeof head, "window=0x%lx: ", event.window);
@@ -527,8 +527,8 @@ void logClientMessage(const XClientMessageEvent& event) {
             data[0] == 0 ? "REMOVE" :
             data[0] == 1 ? "ADD" :
             data[0] == 2 ? "TOGGLE" : "?";
-        const char* p1 = data[1] ? atomName(data[1]) : "";
-        const char* p2 = data[2] ? atomName(data[2]) : "";
+        const char* p1 = data[1] ? atomNameProvider(data[1]) : "";
+        const char* p2 = data[2] ? atomNameProvider(data[2]) : "";
         tlog("%sClientMessage %s %d data=%s,%s,%s\n",
                 head, name, event.format, op, p1, p2);
     }

@@ -478,7 +478,7 @@ void YXApplication::initAtoms() {
 #endif
 
     qsort(atom_info, ACOUNT(atom_info), sizeof(atom_info[0]), sortAtoms);
-    setAtomName(atomName);
+    setAtomNameProvider(atomName);
 }
 
 int YXApplication::sortAtoms(const void* p1, const void* p2) {

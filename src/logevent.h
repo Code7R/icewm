@@ -44,7 +44,7 @@ void logRandrNotify(const XEvent& xev);
 #endif
 
 typedef const char* (*AtomNameFunc)(unsigned long atom);
-void setAtomName(AtomNameFunc atomNameFunc);
+void setAtomNameProvider(AtomNameFunc atomNameFunc);
 void logClientMessage(const XClientMessageEvent& xev);
 bool toggleLogEvents();
 bool initLogEvents();

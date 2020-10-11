@@ -115,7 +115,7 @@ public:
         }
         return fAtom;
     }
-    static const char* lookup(Atom atom) {
+    static const char* lookupName(Atom atom) {
         auto& ptr = fAtoms[atom];
         if (! ptr) {
             auto* name = XGetAtomName(display, atom);
@@ -1331,7 +1331,7 @@ private:
     void xerror(XErrorEvent* evt);
 
     const char* atomName(Atom atom) {
-        return NAtom::lookup(atom);
+        return NAtom::lookupName(atom);
     }
     static int xerrors(Display* dpy, XErrorEvent* evt);
     static void catcher(int);
@@ -2110,7 +2110,7 @@ void IceSh::listWindowType()
     FOREACH_WINDOW(window) {
         YProperty prop(window, ATOM_NET_WM_WINDOW_TYPE, XA_ATOM);
         if (prop) {
-            const char* name = NAtom::lookup(*prop);
+            const char* name = NAtom::lookupName(*prop);
             if (name) {
                 if (strncasecmp(name, prefix, strlen(prefix)) == 0) {
                     name += strlen(prefix);
@@ -3317,7 +3317,7 @@ IceSh::IceSh(int ac, char **av) :
     filtering(false)
 {
     singleton = this;
-    setAtomName(NAtom::lookup);
+    setAtomNameProvider(NAtom::lookupName);
     if (setjmp(jmpbuf) == 0) {
         xinit();
         flags();
