@@ -2048,8 +2048,8 @@ void YFrameWindow::getWindowOptions(WindowOptions *list, WindowOption &opt,
     mstring name = h ? h->res_name : nullptr;
     mstring role = client()->windowRole();
 
-    if (klass != null) {
-        if (name != null) {
+    if (klass.nonempty()) {
+        if (name.nonempty()) {
             mstring klass_instance(h->res_class, ".", h->res_name);
             list->mergeWindowOption(opt, klass_instance, remove);
 
@@ -2058,15 +2058,15 @@ void YFrameWindow::getWindowOptions(WindowOptions *list, WindowOption &opt,
         }
         list->mergeWindowOption(opt, klass, remove);
     }
-    if (name != null) {
-        if (role != null) {
+    if (name.nonempty()) {
+        if (role.nonempty()) {
             list->mergeWindowOption(opt, mstring(name, ".", role), remove);
         }
         list->mergeWindowOption(opt, name, remove);
     }
-    if (role != null)
+    if (role.nonempty())
         list->mergeWindowOption(opt, role, remove);
-    list->mergeWindowOption(opt, null, remove);
+    list->mergeWindowOption(opt, mstring(), remove);
 }
 
 void YFrameWindow::getDefaultOptions(bool &requestFocus) {

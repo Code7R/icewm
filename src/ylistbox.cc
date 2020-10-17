@@ -43,7 +43,7 @@ int YListItem::getWidth() {
     if (getIcon() != null) {
         width += getIconSize();
     }
-    if (getText() != null) {
+    if (getText().nonempty()) {
         width += getListBoxFont()->textWidth(getText()) + 3;
     }
     return width;
@@ -541,8 +541,8 @@ void YListBox::paintItem(Graphics &g, int n) {
         g.setPenStyle(true);
         int cw = 3 + 20 + a->getOffset();
         if (listBoxFont != null) {
-            mstring t = a->getText();
-            if (t != null)
+            auto t = a->getText();
+            if (t.nonempty())
                 cw += listBoxFont->textWidth(t) + 3;
         }
         g.drawRect(0 - fOffsetX, y - fOffsetY, cw - 1, lh - 1);
@@ -559,9 +559,9 @@ void YListBox::paintItem(Graphics &g, int n) {
         }
     }
 
-    mstring title = a->getText();
+    auto title = a->getText();
 
-    if (title != null) {
+    if (title.nonempty()) {
         g.setColor(s ? listBoxSelFg : listBoxFg);
         g.setFont(listBoxFont);
 

@@ -349,7 +349,7 @@ char* MenuLoader::parseIncludeStatement(char *p, ObjectContainer *container)
     }
 
     upath path(app->findConfigFile(filename.cstr()));
-    if (path != null)
+    if (path.nonempty())
         loadMenus(path, container);
 
     return p;

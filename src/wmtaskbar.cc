@@ -249,7 +249,7 @@ public:
         addItem(_("_Windows"), -2, actionWindowList, windowListMenu);
         addSeparator();
         // TRANSLATORS: This appears in a group with others items, so please make the hotkeys unique in the set: # T_ile Horizontally, Ca_scade, _Arrange, _Minimize All, _Hide All, _Undo, Arrange _Icons, _Windows, _Refresh, _About, _Logout
-        addItem(_("_Refresh"), -2, null, actionRefresh);
+        addItem(_("_Refresh"), -2, mslice(), actionRefresh);
         // TRANSLATORS: This appears in a group with others items, so please make the hotkeys unique in the set: # T_ile Horizontally, Ca_scade, _Arrange, _Minimize All, _Hide All, _Undo, Arrange _Icons, _Windows, _Refresh, _About, _Logout
         addItem(_("_About"), -2, actionAbout, nullptr);
         if (showLogoutMenu) {
@@ -258,7 +258,7 @@ public:
         // TRANSLATORS: This appears in a group with others items, so please make the hotkeys unique in the set: # T_ile Horizontally, Ca_scade, _Arrange, _Minimize All, _Hide All, _Undo, Arrange _Icons, _Windows, _Refresh, _About, _Logout
                 addItem(_("_Logout..."), -2, actionLogout, logoutMenu);
             else
-                addItem(_("_Logout..."), -2, null, actionLogout);
+                addItem(_("_Logout..."), -2, mslice(), actionLogout);
         }
 
         setTitle("IceMenu");
@@ -353,7 +353,7 @@ void TaskBar::initApplets() {
     fObjectBar = new ObjectBar(this);
     if (fObjectBar) {
         upath t = app->findConfigFile("toolbar");
-        if (t != null) {
+        if (t.nonempty()) {
             MenuLoader(app, smActionListener, wmActionListener)
             .loadMenus(t, fObjectBar);
         }

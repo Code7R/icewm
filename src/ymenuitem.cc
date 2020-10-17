@@ -25,7 +25,7 @@ YMenuItem::YMenuItem(const mstring &name, int aHotCharPos, const mstring &param,
     fHotCharPos(aHotCharPos), fSubmenu(submenu), fIcon(null),
     fChecked(false), fEnabled(true) {
 
-    if (fName != null && (fHotCharPos == -2 || fHotCharPos == -3)) {
+    if (fName.nonempty() && (fHotCharPos == -2 || fHotCharPos == -3)) {
         int i = fName.indexOf('_');
         if (i >= 0) {
             fHotCharPos = i;
@@ -43,12 +43,12 @@ YMenuItem::YMenuItem(const mstring &name, int aHotCharPos, const mstring &param,
 }
 
 YMenuItem::YMenuItem(const mstring &name) :
-    fName(name), fParam(null), fAction(actionNull), fHotCharPos(-1),
+    fName(name), fAction(actionNull), fHotCharPos(-1),
     fSubmenu(nullptr), fIcon(null), fChecked(false), fEnabled(true) {
 }
 
 YMenuItem::YMenuItem():
-    fName(null), fParam(null), fAction(actionNull), fHotCharPos(-1),
+    fAction(actionNull), fHotCharPos(-1),
     fSubmenu(nullptr), fIcon(null), fChecked(false), fEnabled(false) {
 }
 
@@ -74,7 +74,7 @@ void YMenuItem::actionPerformed(YActionListener *listener, YAction action, unsig
 int YMenuItem::queryHeight(int &top, int &bottom, int &pad) const {
     top = bottom = pad = 0;
 
-    if (getName() != null || getSubmenu()) {
+    if (getName().nonempty() || getSubmenu()) {
         int fontHeight = max(16, int(menuFont->height()) + 1);
         int ih = max(fontHeight, int(YIcon::menuSize()));
         if (LOOK(lookWarp4 | lookWin95)) {
@@ -111,13 +111,13 @@ int YMenuItem::getIconWidth() const {
 }
 
 int YMenuItem::getNameWidth() const {
-    mstring name = getName();
-    return name != null ? menuFont->textWidth(name) : 0;
+    const auto& name = getName();
+    return name.nonempty() ? menuFont->textWidth(name) : 0;
 }
 
 int YMenuItem::getParamWidth() const {
-    mstring param = getParam();
-    return  param != null ? menuFont->textWidth(param) : 0;
+    const auto& param = getParam();
+    return  param.nonempty() ? menuFont->textWidth(param) : 0;
 }
 
 // vim: set sw=4 ts=4 et:

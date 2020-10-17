@@ -37,8 +37,7 @@ YIcon::YIcon(upath filename) :
 
 YIcon::YIcon(ref<YImage> small, ref<YImage> large, ref<YImage> huge) :
         fSmall(small), fLarge(large), fHuge(huge), loadedS(small != null),
-        loadedL(large != null), loadedH(huge != null), fCached(false),
-        fPath(null) {
+        loadedL(large != null), loadedH(huge != null), fCached(false) {
 }
 
 YIcon::~YIcon() {
@@ -347,7 +346,7 @@ public:
                 iterUniqueSizeRev([&](unsigned is) {
                     return ! checkFilesInFolder(folder, is, addSizeSfx);
                 }, probeAllButThis);
-                return res != null;
+                return res.nonempty();
             }
             return checkFilesInFolder(folder, size, addSizeSfx);
         };
@@ -371,7 +370,7 @@ public:
             return (smartScanFolder(what, false, false)
                     || hasSuffix
                     || smartScanFolder(what, true, 0)
-                    || smartScanFolder(what, true, size)) ? res : null;
+                    || smartScanFolder(what, true, size)) ? res : mslice();
         }
 
         // Order of preferences:
@@ -380,19 +379,19 @@ public:
         // in all-sizes-excl.ours-excl.0, without suffix
         // in 0 with size-suffix like all-sizes-excl.ours-excl.0
 
-        if (res == null)
+        if (res.isEmpty())
             scanList(pool.getCat(size), false);
         // plain check in IconPath folders
-        if (res == null && !hasSuffix)
+        if (res.isEmpty() && !hasSuffix)
             scanList(pool.anyCategory, true);
-        if (res == null)
+        if (res.isEmpty())
             scanList(pool.anyCategory, false);
-        if (res == null) {
+        if (res.isEmpty()) {
             iterUniqueSizeRev([&](unsigned is) {
                 return !scanList(pool.getCat(is), false);
             }, size);
         }
-        if (res == null && !hasSuffix)
+        if (res.isEmpty() && !hasSuffix)
             scanList(pool.anyCategory, true, size);
         return res;
     }
@@ -404,7 +403,7 @@ upath YIcon::findIcon(unsigned size) {
 
     // search in our resource paths, fallback to IconPath
     auto ret = iconIndex->locateIcon(size, fPath, true);
-    if (ret == null) {
+    if (ret.isEmpty()) {
         ret = iconIndex->locateIcon(size, fPath, false);
     }
     return ret;
@@ -413,7 +412,7 @@ upath YIcon::findIcon(unsigned size) {
 ref<YImage> YIcon::loadIcon(unsigned size) {
     ref<YImage> icon;
 
-    if (fPath != null) {
+    if (fPath.nonempty()) {
         upath loadPath;
 
         if (fPath.isAbsolute() && fPath.fileExists()) {
@@ -421,7 +420,7 @@ ref<YImage> YIcon::loadIcon(unsigned size) {
         } else {
             loadPath = findIcon(size);
         }
-        if (loadPath != null) {
+        if (loadPath.nonempty()) {
             auto cs(loadPath.path());
             YTraceIcon trace(cs);
             icon = YImage::load(cs);

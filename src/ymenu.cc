@@ -637,11 +637,11 @@ YMenuItem *YMenu::addItem(const mstring &name, int hotCharPos, const mstring &pa
 }
 
 YMenuItem *YMenu::addItem(const mstring &name, int hotCharPos, YAction action, YMenu *submenu, const char *icons) {
-    return add(new YMenuItem(name, hotCharPos, null, action, submenu), icons);
+    return add(new YMenuItem(name, hotCharPos, mslice(), action, submenu), icons);
 }
 
 YMenuItem *YMenu::addSubmenu(const mstring &name, int hotCharPos, YMenu *submenu, const char *icons) {
-    return add(new YMenuItem(name, hotCharPos, null, actionNull, submenu), icons);
+    return add(new YMenuItem(name, hotCharPos, mslice(), actionNull, submenu), icons);
 }
 
 YMenuItem *YMenu::addItem(const mstring &name, int hotCharPos, const mstring &param, YAction action) {
@@ -649,11 +649,11 @@ YMenuItem *YMenu::addItem(const mstring &name, int hotCharPos, const mstring &pa
 }
 
 YMenuItem *YMenu::addItem(const mstring &name, int hotCharPos, YAction action, YMenu *submenu) {
-    return add(new YMenuItem(name, hotCharPos, null, action, submenu));
+    return add(new YMenuItem(name, hotCharPos, mslice(), action, submenu));
 }
 
 YMenuItem *YMenu::addSubmenu(const mstring &name, int hotCharPos, YMenu *submenu) {
-    return add(new YMenuItem(name, hotCharPos, null, actionNull, submenu));
+    return add(new YMenuItem(name, hotCharPos, mslice(), actionNull, submenu));
 }
 
 YMenuItem * YMenu::addSeparator() {
@@ -695,7 +695,7 @@ YMenuItem * YMenu::add(YMenuItem *item, const char *icons) {
 
 YMenuItem * YMenu::addSorted(YMenuItem *item, bool duplicates, bool ignoreCase) {
     for (int i = 0; i < itemCount(); i++) {
-        if (item->getName() == null || fItems[i]->getName() == null)
+        if (item->getName().isEmpty() || fItems[i]->getName().isEmpty())
             continue;
 
         int cmp = item->getName().collate(fItems[i]->getName(), ignoreCase);
@@ -725,13 +725,13 @@ YMenuItem *YMenu::findSubmenu(const YMenu *sub) {
 }
 
 YMenuItem *YMenu::findName(const mstring &name, const int first) {
-    if (name != null)
-        for (int i = first; i < itemCount(); i++) {
-            mstring iname = getItem(i)->getName();
-            if (iname != null && iname.equals(name))
-                return getItem(i);
-    }
+    if (name.isEmpty())
+        return nullptr;
 
+    for (int i = first; i < itemCount(); i++) {
+        if (name == getItem(i)->getName())
+            return getItem(i);
+    }
     return nullptr;
 }
 
@@ -741,7 +741,7 @@ int YMenu::findFirstLetRef(char firstLet, const int first, const int ignCase) {
     for (int i = first; i < itemCount(); i++) {
         YMenuItem *temp = getItem(i);
         mstring iLetterRef = temp->getName();
-        if (iLetterRef != null) {
+        if (iLetterRef.nonempty()) {
             int iLetter = iLetterRef.charAt(0);
             if (ignCase)
                 iLetter = ASCII::toUpper(iLetter);
@@ -997,7 +997,7 @@ void YMenu::paintItem(Graphics &g, const int i, const int l, const int t, const 
     mstring name = mitem->getName();
     mstring param = mitem->getParam();
 
-    if (mitem->getName() == null && mitem->getSubmenu() == nullptr) {
+    if (mitem->getName().isEmpty() && mitem->getSubmenu() == nullptr) {
         if (draw && t + 4 >= minY && t <= maxY)
             drawSeparator(g, 1, t, width() - 2);
     } else {
@@ -1107,9 +1107,9 @@ void YMenu::paintItem(Graphics &g, const int i, const int l, const int t, const 
                     mitem->getIcon()->draw(g, dx, dy, size);
                 }
 
-                if (name != null) {
+                if (name.nonempty()) {
                     int const maxWidth =
-                        (param != null ? paramPos - delta
+                        (param.nonempty() ? paramPos - delta
                          : mitem->getSubmenu() ? cascadePos : width()) -
                         namePos;
 
@@ -1131,7 +1131,7 @@ void YMenu::paintItem(Graphics &g, const int i, const int l, const int t, const 
                                             name, mitem->getHotCharPos());
                 }
 
-                if (param != null) {
+                if (param.nonempty()) {
                     if (!mitem->isEnabled()) {
                         g.setColor(disabledMenuItemSt ? disabledMenuItemSt :
                                    menuBg->brighter());

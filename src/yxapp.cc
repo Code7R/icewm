@@ -220,7 +220,7 @@ public:
     }
     void handleSelectionClear(const XSelectionClearEvent &clear) {
         if (clear.selection == _XA_CLIPBOARD) {
-            fData = null;
+            fData.clear();
         }
     }
     void handleSelectionRequest(const XSelectionRequestEvent &request) {

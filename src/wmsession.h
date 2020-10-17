@@ -7,7 +7,6 @@ class YFrameWindow;
 
 class SMWindowKey {
 public:
-    SMWindowKey(YFrameWindow *f);
     SMWindowKey(mstring id, mstring role);
     SMWindowKey(mstring id, mstring klass, mstring instance);
     ~SMWindowKey();
@@ -22,7 +21,6 @@ private:
 
 class SMWindowInfo {
 public:
-    SMWindowInfo(YFrameWindow *f);
     SMWindowInfo(mstring id, mstring role,
                  int x, int y, int w, int h,
                  unsigned long state, int layer, int workspace);

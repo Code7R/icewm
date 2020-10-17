@@ -65,18 +65,19 @@ void YLabel::paint(Graphics &g, const YRect &/*r*/) {
         g.fillRect(0, 0, width(), height());
     }
 
-    if (fLabel != null) {
-        int y = 1 + labelFont->ascent();
-        int x = 1;
-        int h = labelFont->height();
+    if (fLabel.isEmpty())
+        return;
 
-        g.setColor(labelFg);
-        g.setFont(labelFont);
+    int y = 1 + labelFont->ascent();
+    int x = 1;
+    int h = labelFont->height();
 
-        for (mslice it, s(fLabel); s.splitall('\n', it, s);) {
-            g.drawChars(it, x, y);
-            y += h;
-        }
+    g.setColor(labelFg);
+    g.setFont(labelFont);
+
+    for (mslice it, s(fLabel); s.splitall('\n', it, s);) {
+        g.drawChars(it, x, y);
+        y += h;
     }
 }
 
@@ -88,7 +89,7 @@ void YLabel::setText(const mstring &label) {
 void YLabel::autoSize() {
     int h = labelFont->height();
     int w = 0;
-    if (fLabel != null) {
+    if (fLabel.nonempty()) {
         int n = 0;
         for (mslice it, s(fLabel); s.splitall('\n', it, s);) {
             auto w1 = labelFont->textWidth(it);

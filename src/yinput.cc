@@ -26,7 +26,6 @@ public:
 
 YInputLine::YInputLine(YWindow *parent, YInputListener *listener):
     YWindow(parent),
-    fText(null),
     markPos(0),
     curPos(0),
     leftOfs(0),
@@ -89,7 +88,7 @@ void YInputLine::paint(Graphics &g, const YRect &/*r*/) {
         max = markPos;
     }
 
-    if (curPos == markPos || fText == null || font == null || !fHasFocus) {
+    if (curPos == markPos || fText.isEmpty() || font == null || !fHasFocus) {
         g.setColor(inputBg);
         g.fillRect(0, 0, width(), height());
     } else {
@@ -118,9 +117,9 @@ void YInputLine::paint(Graphics &g, const YRect &/*r*/) {
 
         g.setFont(font);
 
-        if (curPos == markPos || !fHasFocus || fText == null) {
+        if (curPos == markPos || !fHasFocus || fText.isEmpty()) {
             g.setColor(inputFg);
-            if (fText != null)
+            if (fText.nonempty())
                 g.drawChars(fText.substring(0, textLen), -leftOfs, yp);
             if (fHasFocus && fCursorVisible)
                 g.drawLine(cx, 0, cx, font->height() + 2);
@@ -541,7 +540,7 @@ void YInputLine::replaceSelection(const mstring &str) {
 
 bool YInputLine::deleteSelection() {
     if (hasSelection()) {
-        replaceSelection(null);
+        replaceSelection("");
         return true;
     }
     return false;

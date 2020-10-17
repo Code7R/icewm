@@ -14,13 +14,14 @@ public:
     YMenuItem();
     virtual ~YMenuItem();
 
-    mstring getName() const { return fName; }
+    const mstring& getName() const { return fName; }
     mstring getParam() const { return fParam; }
     YAction getAction() const { return fAction; }
     YMenu *getSubmenu() const { return fSubmenu; }
 
     int getHotChar() const {
-        return (fName != null && fHotCharPos >= 0) ? fName.charAt(fHotCharPos) : -1;
+        return (fName.nonempty() && fHotCharPos >= 0)
+                ? fName.charAt(fHotCharPos) : -1;
     }
 
     int getHotCharPos() const {
@@ -42,7 +43,7 @@ public:
     int getNameWidth() const;
     int getParamWidth() const;
 
-    bool isSeparator() { return getName() == null && getSubmenu() == nullptr; }
+    bool isSeparator() { return getName().nonempty() && getSubmenu() == nullptr; }
 
     void setIcon(ref<YIcon> icon);
 private:

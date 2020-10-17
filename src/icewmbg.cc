@@ -32,10 +32,7 @@ public:
         : name(file), pix(pixmap), last(0L), check(0L)
     {
     }
-    ~PixFile() {
-        name = null;
-        pix = null;
-    }
+    ~PixFile() =default;
     mstring file() const { return name; }
     Pixmap pixmap(Paths paths) {
         time_t now = time(nullptr);
@@ -65,7 +62,7 @@ public:
         Pixmap image;
         upath path(name);
         if (false == path.isAbsolute()) {
-            image = paths->loadPixmap(null, path);
+            image = paths->loadPixmap("", path);
         }
         if (image == null) {
             image = YPixmap::load(path);
@@ -98,7 +95,7 @@ private:
     }
     Paths getPaths() {
         if (paths == null) {
-            paths = YResourcePaths::subdirs(null);
+            paths = YResourcePaths::subdirs(mstring());
         }
         return paths;
     }
@@ -269,7 +266,7 @@ Background::Background(int *argc, char ***argv, bool verb):
 }
 
 upath Background::getThemeDir() {
-    if (themeDir == null && nonempty(themeName)) {
+    if (themeDir.isEmpty() && nonempty(themeName)) {
         upath path(themeName);
         if (path.isAbsolute() == false) {
             if (strchr(themeName, '/') == nullptr) {
@@ -286,7 +283,7 @@ upath Background::getThemeDir() {
         else if (path.dirExists()) {
             themeDir = path;
         }
-        if (themeDir == null) {
+        if (themeDir.isEmpty()) {
             tlog("Could not find theme dir");
             themeDir = "";
         }
@@ -401,9 +398,10 @@ void Background::addImage(Strings& images, const char* name, bool append) {
 }
 
 void Background::add(const char* name, const mstring& value, bool append) {
-    if (value == nullptr || value == null) {
-    }
-    else if (0 == strcmp(name, "DesktopBackgroundImage")) {
+    if (value.isEmpty())
+        return;
+
+    if (0 == strcmp(name, "DesktopBackgroundImage")) {
         addImage(backgroundImages, value, append);
     }
     else if (0 == strcmp(name, "DesktopBackgroundColor")) {

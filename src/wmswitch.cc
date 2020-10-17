@@ -169,9 +169,8 @@ public:
 
     virtual mstring getTitle(int idx) override
     {
-        if (inrange(idx, 0, getCount() - 1))
-            return zList[idx]->client()->windowTitle();
-        return null;
+        return inrange(idx, 0, getCount() - 1) ?
+                zList[idx]->client()->windowTitle() : "";
     }
 
     virtual void setWMClass(char* wmclass) override {
@@ -328,12 +327,13 @@ void SwitchWindow::resize(int xiscreen) {
         int zCount = zItems->getCount();
         for (int i = 0; i < zCount; i++) {
             mstring title = zItems->getTitle(i);
-            int oWidth = title != null ? (int) switchFont->textWidth(title) + space : 0;
+            int oWidth = title.nonempty()
+                    ? (int) switchFont->textWidth(title) + space : 0;
             if (oWidth > tWidth)
                 tWidth = oWidth;
         }
     } else {
-        tWidth = cTitle != null ? switchFont->textWidth(cTitle) : 0;
+        tWidth = cTitle.nonempty() ? switchFont->textWidth(cTitle) : 0;
     }
 
     if (quickSwitchVertical || !quickSwitchAllIcons)
@@ -466,8 +466,8 @@ void SwitchWindow::paintHorizontal(Graphics &g) {
         g.setColor(switchFg);
         g.setFont(switchFont);
 
-        mstring cTitle = zItems->getTitle(zItems->getActiveItem());
-        if (cTitle != null) {
+        auto cTitle = zItems->getTitle(zItems->getActiveItem());
+        if (cTitle.nonempty()) {
             const int x = max((width() - tOfs -
                                switchFont->textWidth(cTitle)) >> 1, 0U) + tOfs;
             const int y(quickSwitchAllIcons
@@ -611,7 +611,7 @@ void SwitchWindow::paintVertical(Graphics &g) {
 
             mstring cTitle = zItems->getTitle(i);
 
-            if (cTitle != null) {
+            if (cTitle.nonempty()) {
                 const int titleY = contentY + (iconSize + g.font()->ascent())/2;
                 g.drawStringEllipsis(titleX, titleY, cTitle.c_str(), strWid);
             }

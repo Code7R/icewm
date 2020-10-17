@@ -768,8 +768,10 @@ void IceSound::initSignals() {
 char* IceSound::findSample(int sound) const {
     if (inrange(sound, 0, NUM_GUI_EVENTS - 1)) {
         upath base(mstring(name(sound), ".wav"));
-        for (int k = 0; paths[k] != null; ++k) {
-            upath file(paths[k] + base);
+        for (auto p: paths) {
+            if (p.isEmpty()) break;
+
+            upath file(p + base);
             if (file.isReadable()) {
                 return newstr(file.string());
             }

@@ -14,7 +14,7 @@ lazy<WindowOptions> defOptions;
 lazy<WindowOptions> hintOptions;
 
 WindowOption::WindowOption(mstring n_class_instance):
-    w_class_instance(n_class_instance),
+    w_class_instance(std::move(n_class_instance)),
     functions(0), function_mask(0),
     decors(0), decor_mask(0),
     options(0), option_mask(0),
@@ -79,7 +79,7 @@ void WindowOption::combine(const WindowOption& n) {
     }
 }
 
-bool WindowOptions::findOption(mstring a_class_instance, int *index) {
+bool WindowOptions::findOption(const mstring& a_class_instance, int *index) {
     int lo = 0, hi = fWinOptions.getCount();
 
     while (lo < hi) {
@@ -282,7 +282,7 @@ void WindowOptions::setWinOption(mstring n_class_instance,
 }
 
 void WindowOptions::mergeWindowOption(WindowOption &cm,
-                                      mstring a_class_instance,
+                                      const mstring& a_class_instance,
                                       bool remove)
 {
     int lo;

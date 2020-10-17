@@ -17,7 +17,7 @@ public:
 
     virtual int getOffset() { return 0; }
     virtual int getWidth();
-    virtual mstring getText() { return null; }
+    virtual mstring getText() { return mslice(); }
     virtual ref<YIcon> getIcon() { return null; }
 private:
     bool fSelected;

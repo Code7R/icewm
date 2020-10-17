@@ -60,7 +60,7 @@ private:
 // upath directory returns mstrings.
 class udir {
 public:
-    explicit udir(const upath& path = null);
+    explicit udir(const upath& path = mstring());
     ~udir() { close(); }
     void close();
     const upath& path() const { return fPath; }
@@ -85,7 +85,7 @@ private:
 // sorted directory for mstrings.
 class sdir {
 public:
-    explicit sdir(const upath& path = null);
+    explicit sdir(const upath& path);
     ~sdir() { close(); }
     void close();
     const upath& path() const { return fPath; }

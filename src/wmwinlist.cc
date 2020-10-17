@@ -41,12 +41,11 @@ int WindowListItem::getOffset() {
 mstring WindowListItem::getText() {
     if (fFrame)
         return getFrame()->getTitle();
-    else if (fWorkspace < 0)
+    if (fWorkspace < 0)
         return _("All Workspaces");
-    else if (fWorkspace < workspaceCount)
+    if (fWorkspace < workspaceCount)
         return workspaceNames[fWorkspace];
-    else
-        return null;
+    return mstring();
 }
 
 ref<YIcon> WindowListItem::getIcon() {
@@ -364,7 +363,7 @@ WindowListPopup::WindowListPopup() {
     addItem(_("Maximize_Vert"), -2, KEY_NAME(gKeyWinMaximizeVert), actionMaximizeVert);
     addItem(_("MaximizeHori_z"), -2, KEY_NAME(gKeyWinMaximizeHoriz), actionMaximizeHoriz);
     addItem(_("_Fullscreen"), -2, KEY_NAME(gKeyWinFullscreen), actionFullscreen);
-    addItem(_("_Show"), -2, null, actionShow);
+    addItem(_("_Show"), -2, mslice(), actionShow);
     addItem(_("_Hide"), -2, KEY_NAME(gKeyWinHide), actionHide);
     addItem(_("Roll_up"), -2, KEY_NAME(gKeyWinRollup), actionRollup);
     addItem(_("_Raise"), -2, KEY_NAME(gKeyWinRaise), actionRaise);
@@ -373,7 +372,7 @@ WindowListPopup::WindowListPopup() {
     addSeparator();
     addSubmenu(_("Move _To"), -2, moveMenu);
     addItem(_("Occupy _All"), -2, KEY_NAME(gKeyWinOccupyAll), actionOccupyAllOrCurrent);
-    addItem(_("Tray _icon"), -2, null, actionToggleTray);
+    addItem(_("Tray _icon"), -2, mslice(), actionToggleTray);
     addSeparator();
     addItem(_("Tile _Vertically"), -2, KEY_NAME(gKeySysTileVertical), actionTileVertical);
     addItem(_("T_ile Horizontally"), -2, KEY_NAME(gKeySysTileHorizontal), actionTileHorizontal);
@@ -390,7 +389,7 @@ WindowListPopup::WindowListPopup() {
 
     closeSubmenu->addItem(_("_Close"), -2, _("Del"), actionClose);
     closeSubmenu->addSeparator();
-    closeSubmenu->addItem(_("_Kill Client"), -2, null, actionKill);
+    closeSubmenu->addItem(_("_Kill Client"), -2, mslice(), actionKill);
 #if 0
     closeSubmenu->addItem(_("_Terminate Process"), -2, 0, actionTermProcess)->setEnabled(false);
     closeSubmenu->addItem(_("Kill _Process"), -2, 0, actionKillProcess)->setEnabled(false);

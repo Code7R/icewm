@@ -220,7 +220,7 @@ public:
     } atype;
     mstring value;
     attr *next;
-    attr() : atype(noattr), value(null), next(nullptr) {}
+    attr() : atype(noattr), next(nullptr) {}
     attr(attr_type t, const mstring& s) : atype(t), value(s), next(nullptr) {}
     attr(const attr& a) : atype(a.atype), value(a.value), next(nullptr) {}
     attr& operator=(const attr& a) {
@@ -839,7 +839,7 @@ public:
         }
     }
     mstring& current() {
-        if (empty()) array.insert(++where, null);
+        if (empty()) array.insert(++where, mslice());
         return array[where];
     }
     bool hasLeft() const { return where > 0; }
@@ -935,7 +935,7 @@ FontRef FontTable::get(int size, int flags) {
         }
     }
     if (table[best].font == noFont) {
-        table[best].font = YFont::getFont(table[best].core, null, true);
+        table[best].font = YFont::getFont(table[best].core, mslice(), true);
     }
     return table[best].font;
 }
@@ -979,12 +979,12 @@ public:
         actionNext->setEnabled(false);
         actionContents->setEnabled(false);
 
-        nextURL = null;
-        prevURL = null;
-        contentsURL = null;
+        nextURL.clear();
+        prevURL.clear();
+        contentsURL.clear();
 
         find_link(fRoot);
-        if (contentsURL == null) {
+        if (contentsURL.nonempty()) {
             node *n = fRoot->find_attr(attr::id | attr::name, "toc");
             if (n) {
                 contentsURL = "#toc";
@@ -1221,11 +1221,11 @@ HTextView::HTextView(HTListener *fL, YScrollView *v, YWindow *parent):
     actionRight = menu->addItem(_("Forward"), 0, _("Alt+Right"), actionRight);
     actionRight->setEnabled(false);
     menu->addSeparator();
-    actionPrev = menu->addItem(_("Previous"), 0, null, actionPrev);
-    actionNext = menu->addItem(_("Next"), 0, null, actionNext);
+    actionPrev = menu->addItem(_("Previous"), 0, mslice(), actionPrev);
+    actionNext = menu->addItem(_("Next"), 0, mslice(), actionNext);
     menu->addSeparator();
-    actionContents = menu->addItem(_("Contents"), 0, null, actionContents);
-    actionIndex = menu->addItem(_("Index"), 0, null, actionIndex);
+    actionContents = menu->addItem(_("Contents"), 0, mslice(), actionContents);
+    actionIndex = menu->addItem(_("Index"), 0, mslice(), actionIndex);
     actionIndex->setEnabled(false);
     menu->addSeparator();
     actionClose = menu->addItem(_("Close"), 0, _("Ctrl+Q"), actionClose);
@@ -1233,23 +1233,23 @@ HTextView::HTextView(HTListener *fL, YScrollView *v, YWindow *parent):
 
     int k = -1;
     k++;
-    actionLink[k] = menu->addItem(_("Icewm(1)"), 2, null, actionLink[k]);
+    actionLink[k] = menu->addItem(_("Icewm(1)"), 2, mslice(), actionLink[k]);
     k++;
-    actionLink[k] = menu->addItem(_("Icewmbg(1)"), 5, null, actionLink[k]);
+    actionLink[k] = menu->addItem(_("Icewmbg(1)"), 5, mslice(), actionLink[k]);
     k++;
-    actionLink[k] = menu->addItem(_("Icesound(1)"), 3, null, actionLink[k]);
+    actionLink[k] = menu->addItem(_("Icesound(1)"), 3, mslice(), actionLink[k]);
     k++;
-    actionLink[k] = menu->addItem(_("FAQ"), 0, null, actionLink[k]);
+    actionLink[k] = menu->addItem(_("FAQ"), 0, mslice(), actionLink[k]);
     k++;
-    actionLink[k] = menu->addItem(_("Manual"), 0, null, actionLink[k]);
+    actionLink[k] = menu->addItem(_("Manual"), 0, mslice(), actionLink[k]);
     k++;
-    actionLink[k] = menu->addItem(_("Support"), 0, null, actionLink[k]);
+    actionLink[k] = menu->addItem(_("Support"), 0, mslice(), actionLink[k]);
     k++;
-    actionLink[k] = menu->addItem(_("Theme Howto"), 0, null, actionLink[k]);
+    actionLink[k] = menu->addItem(_("Theme Howto"), 0, mslice(), actionLink[k]);
     k++;
-    actionLink[k] = menu->addItem(_("Website"), 0, null, actionLink[k]);
+    actionLink[k] = menu->addItem(_("Website"), 0, mslice(), actionLink[k]);
     k++;
-    actionLink[k] = menu->addItem(_("Github"), 0, null, actionLink[k]);
+    actionLink[k] = menu->addItem(_("Github"), 0, mslice(), actionLink[k]);
 }
 
 HTextView::~HTextView() {

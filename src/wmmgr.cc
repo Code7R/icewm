@@ -960,7 +960,7 @@ void YWindowManager::setFocus(YFrameWindow *f, bool canWarp) {
 
     if (f) {
         WindowOption wo(f->getWindowOption());
-        if (wo.keyboard != null) {
+        if (wo.keyboard.nonempty()) {
             setKeyboard(wo.keyboard);
         } else {
             setKeyboard(fDefaultKeyboard);
@@ -3256,7 +3256,8 @@ void YWindowManager::setKeyboard(int configIndex) {
 
 void YWindowManager::setKeyboard(const mstring& keyboard) {
 
-    if (keyboard == null || keyboard == fCurrentKeyboard) return;
+    if (keyboard == fCurrentKeyboard)
+        return;
 
     fCurrentKeyboard = keyboard;
     auto program = "setxkbmap";

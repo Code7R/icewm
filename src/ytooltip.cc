@@ -43,12 +43,12 @@ void YToolTipWindow::paint(Graphics& g, const YRect& /*r*/) {
     g.fillRect(0, 0, width(), height());
     g.setColor(YColor::black);
     g.drawRect(0, 0, width() - 1, height() - 1);
-    if (fText != null) {
-        int y = toolTipFont->ascent() + TTYMargin;
-        g.setFont(toolTipFont);
-        g.setColor(toolTipFg);
-        g.drawStringMultiline(TTXMargin, y, fText);
-    }
+    if (fText.isEmpty())
+        return;
+    int y = toolTipFont->ascent() + TTYMargin;
+    g.setFont(toolTipFont);
+    g.setColor(toolTipFg);
+    g.drawStringMultiline(TTXMargin, y, fText);
 }
 
 void YToolTipWindow::setText(mstring tip) {

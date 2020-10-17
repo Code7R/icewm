@@ -63,14 +63,15 @@ public:
     virtual int height() const { return ascent() + descent(); }
     virtual int descent() const = 0;
     virtual int ascent() const = 0;
-    virtual int textWidth(mstring s) const = 0;
-    virtual int textWidth(char const * str, int len) const = 0;
+    virtual int textWidth(mslice s) const = 0;
+    inline int textWidth(char const * str, int len) const {
+        return textWidth(mslice(str, len));
+    }
 
     virtual void drawGlyphs(class Graphics & graphics, int x, int y,
                             char const * str, int len) = 0;
     virtual bool supports(unsigned ucs4char) { return ucs4char <= 255; }
 
-    int textWidth(char const * str) const;
     int multilineTabPos(char const * str) const;
     YDimension multilineAlloc(char const * str) const;
 };
@@ -117,7 +118,7 @@ public:
     void drawArc(int x, int y, unsigned width, unsigned height, int a1, int a2);
     void drawArrow(YDirection direction, int x, int y, unsigned size, bool pressed = false);
 
-    void drawChars(mstring s, int x, int y);
+    void drawChars(mslice s, int x, int y);
     void drawChars(char const * data, int offset, int len, int x, int y);
     void drawCharUnderline(int x, int y, char const * str, int charPos);
 

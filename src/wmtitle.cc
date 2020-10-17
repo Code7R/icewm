@@ -334,7 +334,7 @@ void YFrameTitleBar::paint(Graphics &g, const YRect &/*r*/) {
     mstring title = getFrame()->getTitle();
     int const yPos(int(height() - titleFont->height()) / 2 +
                    titleFont->ascent() + titleBarVertOffset);
-    int tlen = title != null ? titleFont->textWidth(title) : 0;
+    int tlen = title.nonempty() ? titleFont->textWidth(title) : 0;
 
     int stringOffset(onLeft + (onRight - onLeft - tlen)
                      * (int) titleBarJustify / 100);
@@ -469,7 +469,7 @@ void YFrameTitleBar::paint(Graphics &g, const YRect &/*r*/) {
     }
     }
 
-    if (title != null && tlen && onLeft + 16 < onRight) {
+    if (title.nonempty() && tlen && onLeft + 16 < onRight) {
         stringOffset += titleBarHorzOffset;
 
         if (titleBarShadowText[focused()]) {
@@ -538,7 +538,7 @@ void YFrameTitleBar::renderShape(Graphics& g) {
         onRight += x();
 
         mstring title = getFrame()->getTitle();
-        int tlen = title != null ? titleFont->textWidth(title) : 0;
+        int tlen = title.nonempty() ? titleFont->textWidth(title) : 0;
         bool const pi(focused());
 
         if (titleL[pi] != null) {

@@ -936,11 +936,10 @@ void YWindow::handleMotion(const XMotionEvent &motion) {
 }
 
 void YWindow::setToolTip(mstring tip) {
-    if (tip == null) {
-        fToolTip = null;
-    } else {
+    if (tip.nonempty() && fToolTip)
         fToolTip->setText(std::move(tip));
-    }
+    else
+        fToolTip = null;
 }
 
 bool YWindow::toolTipVisible() {

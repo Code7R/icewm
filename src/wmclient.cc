@@ -1456,7 +1456,7 @@ void YFrameClient::getWindowRole() {
 mstring YFrameClient::getClientId(Window leader) { /// !!! fix
 
     if (!prop.sm_client_id)
-        return null;
+        return mstring();
 
     return YProperty(leader, _XA_SM_CLIENT_ID, F8, 256, XA_STRING).data<char>();
 }

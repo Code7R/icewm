@@ -261,7 +261,7 @@ public:
     void getWindowRole();
 
     Window clientLeader() const { return fClientLeader; }
-    mstring windowRole() const { return fWindowRole; }
+    const mstring& windowRole() const { return fWindowRole; }
 
     mstring getClientId(Window leader);
     void getPropertiesList();

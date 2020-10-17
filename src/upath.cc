@@ -70,7 +70,7 @@ mstring upath::getExtension() const {
     int sep = path().lastIndexOf('/');
     if (dot > sep + 1 && dot + 1 < length())
         return path().substring(size_t(dot));
-    return null;
+    return mstring();
 }
 
 upath upath::removeExtension() const {
@@ -211,10 +211,10 @@ bool upath::isHttp() const {
 }
 
 bool upath::equals(const upath &s) const {
-    if (path() != null && s.path() != null)
+    if (path().nonempty() && s.path().nonempty())
         return path().equals(s.path());
-    else
-        return path() == null && s.path() == null;
+
+    return path().isEmpty() && s.path().isEmpty();
 }
 
 #include <glob.h>

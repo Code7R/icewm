@@ -45,10 +45,6 @@ ref<YFont> YFont::getFont(mslice name,
     return ret;
 }
 
-int YFont::textWidth(char const * str) const {
-    return textWidth(str, strlen(str));
-}
-
 int YFont::multilineTabPos(const char *str) const {
     int tabPos(0);
 

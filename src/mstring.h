@@ -19,7 +19,6 @@
  */
 
 class mstring;
-class null_ref;
 
 /**
  * String memory slice, defined by pointer and size.
@@ -33,7 +32,6 @@ class mslice {
 public:
     mslice(const char *s, size_t len) : m_data(s), m_size(len) {}
     mslice(const char *s) : mslice(s, s ? strlen(s) : 0) {}
-    mslice(null_ref &) : mslice() {}
     mslice() : mslice(nullptr, 0) {}
     mslice(const mstring& s);
     size_t length() const { return m_size; }
@@ -126,7 +124,6 @@ public:
     mstring(const char *s) : mstring(mslice(s)) {}
     mstring(mstring&& other);
     explicit mstring(long val) : mstring() { appendFormat("%ld", val); }
-    mstring(null_ref &) : mstring() {}
 
     // shortcuts for faster in-place concatenation for often uses
     mstring(mslice a, mslice b);
@@ -160,10 +157,7 @@ public:
     bool operator!=(mslice rv) const { return !equals(rv); }
     bool operator==(const mstring &rv) const { return equals(rv); }
     bool operator!=(const mstring &rv) const { return !equals(rv); }
-    bool operator==(null_ref &) const { return isEmpty(); }
-    bool operator!=(null_ref &) const { return nonempty(); }
 
-    mstring& operator=(null_ref &) { clear(); return *this; }
     mslice substring(size_type pos) const;
     mslice substring(size_type pos, size_type len) const {
         return mslice(*this).substring(pos, len);

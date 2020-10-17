@@ -137,19 +137,19 @@ DProgram *DProgram::newProgram(
     upath exe,
     YStringArray &args)
 {
-    DProgram* program = nullptr;
-    if (exe != null) {
-        const char* exestr = exe.string();
-        MSG(("LOOKING FOR: %s\n", exestr));
-        csmart path(path_lookup(exestr));
-        if (path) {
-            program = new DProgram(app, smActionListener, name, icon,
-                                   restart, wmclass, upath(path), args);
-        } else {
-            MSG(("Program %s (%s) not found.", name, exestr));
-        }
+    if (exe.isEmpty())
+        return nullptr;
+
+    const char *exestr = exe.string();
+    MSG(("LOOKING FOR: %s\n", exestr));
+    csmart path(path_lookup(exestr));
+    if (path) {
+        return new DProgram(app, smActionListener, name, icon, restart, wmclass,
+                upath(path), args);
+    } else {
+        MSG(("Program %s (%s) not found.", name, exestr));
     }
-    return program;
+    return nullptr;
 }
 
 KProgramArrayType keyProgs;

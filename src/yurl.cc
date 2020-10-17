@@ -31,7 +31,7 @@ public:
     int len(int i) const { return end(i) - beg(i); }
     bool has(int i) const { return 0 <= beg(i) && beg(i) <= end(i); }
     mstring get(int i) const { return str.substring(beg(i), len(i)); }
-    mstring operator[](int i) const { return has(i) ? get(i) : null; }
+    mstring operator[](int i) const { return has(i) ? get(i) : ""; }
     regmatch_t* ptr() const { return match; }
 };
 
@@ -75,12 +75,7 @@ YURL::YURL(mstring url) {
 }
 
 void YURL::operator=(mstring url) {
-    scheme = null;
-    user = null;
-    pass = null;
-    host = null;
-    port = null;
-    path = null;
+    scheme = user = pass = host = port = path = "";
 
     // parse scheme://[user[:password]@]server[:port][/path]
 
@@ -151,7 +146,7 @@ mstring YURL::unescape(mstring str) {
     if (0 <= str.indexOf('%')) {
         csmart nstr(new char[str.length()]);
         if (nstr == nullptr)
-            return null;
+            return "";
         char *d = nstr;
 
         for (unsigned i = 0; i < str.length(); i++) {
@@ -160,13 +155,13 @@ mstring YURL::unescape(mstring str) {
             if (c == '%') {
                 if (i + 3 > str.length()) {
                     warn(_("Incomplete hex escape in URL around position %d."), int(i));
-                    return null;
+                    return "";
                 }
                 int a = BinAscii::unhex(str.charAt(i + 1));
                 int b = BinAscii::unhex(str.charAt(i + 2));
                 if (a == -1 || b == -1) {
                     warn(_("Invalid hex escape in URL around position %d."), int(i));
-                    return null;
+                    return "";
                 }
                 i += 2;
                 c = (char)((a << 4) + b);

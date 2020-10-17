@@ -402,7 +402,7 @@ void PixmapsDescription::scan(const upath& path) {
 static void loadPixmapResources() {
     bool themeOnly = true;
     for (int k = 0; k < 2; ++k, themeOnly = !themeOnly) {
-        ref<YResourcePaths> paths = YResourcePaths::subdirs(null, themeOnly);
+        auto paths = YResourcePaths::subdirs("", themeOnly);
         for (int i = 0; i < (int) ACOUNT(pixdes); ++i) {
             if (themeOnly == pixdes[i].themeOnly) {
                 for (int p = 0; p < paths->getCount(); ++p) {

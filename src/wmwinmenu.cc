@@ -24,7 +24,7 @@
 class ActivateWindowMenuItem: public YMenuItem {
 public:
     ActivateWindowMenuItem(YFrameWindow *frame):
-        YMenuItem(frame->getTitle(), -1, null, YAction(), nullptr),
+        YMenuItem(frame->getTitle(), -1, mstring(), YAction(), nullptr),
         fFrame(frame)
     {
         if (fFrame->clientIcon() != null)

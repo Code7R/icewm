@@ -40,8 +40,7 @@ public:
     virtual bool valid() const override { return fFonts.getCount() > 0; }
     int descent() const override { return fDescent; }
     int ascent() const override { return fAscent; }
-    int textWidth(mstring s) const override;
-    int textWidth(char const * str, int len) const override;
+    int textWidth(mslice s) const override;
 
     int textWidth(string_t const & str) const;
     void drawGlyphs(class Graphics & graphics, int x, int y,
@@ -165,8 +164,8 @@ YXftFont::~YXftFont() {
     }
 }
 
-int YXftFont::textWidth(mstring s) const {
-    return textWidth(s.c_str(), s.length());
+int YXftFont::textWidth(mslice s) const {
+    return textWidth(string_t(s.data(), s.length()));
 }
 
 int YXftFont::textWidth(string_t const & text) const {
@@ -180,10 +179,6 @@ int YXftFont::textWidth(string_t const & text) const {
 
     delete[] parts;
     return width;
-}
-
-int YXftFont::textWidth(char const * str, int len) const {
-    return textWidth(string_t(str, len));
 }
 
 void YXftFont::drawGlyphs(Graphics & graphics, int x, int y,

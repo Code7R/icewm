@@ -58,7 +58,7 @@ MailCheck::MailCheck(const mstring& url, MailBoxStatus *mbx):
         protocol = POP3;
     else if (fURL.scheme == "imap" || fURL.scheme == "imaps")
         protocol = IMAP;
-    else if (fURL.scheme != null)
+    else if (fURL.scheme.nonempty())
         warn(_("Invalid mailbox protocol: \"%s\""), fURL.scheme.c_str());
     else
         warn(_("Invalid mailbox path: \"%s\""), url.c_str());
@@ -232,7 +232,7 @@ void MailCheck::startCheck() {
     if (protocol == LOCALFILE) {
         struct stat st;
 
-        if (fURL.path == null)
+        if (fURL.path.isEmpty())
             return;
 
         if (!countMailMessages) {
@@ -398,7 +398,7 @@ void MailCheck::error(mstring str) {
 }
 
 mstring MailCheck::inbox() {
-   return fURL.path == null || fURL.path == "/" ? "INBOX" : fURL.path + 1;
+   return fURL.path.isEmpty() || fURL.path == "/" ? "INBOX" : fURL.path + 1;
 }
 
 void MailCheck::escape(const char* buf, int len, char* tmp, int siz) {
@@ -670,7 +670,7 @@ MailBoxStatus::MailBoxStatus(MailHandler* handler,
 {
     setSize(16, 16);
     setTitle("MailBox");
-    if (mailbox != null) {
+    if (mailbox.nonempty()) {
         MSG((_("Using MailBox \"%s\"\n"), mailbox.c_str()));
     }
 }

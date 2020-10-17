@@ -12,7 +12,6 @@ class YStringArray;
 
 class upath {
 public:
-    upath(const class null_ref &): fPath(null) {}
     upath(const mstring& path): fPath(path) {}
     upath(mslice path): fPath(path) {}
     upath(mstring&& path): fPath(std::move(path)) {}
@@ -20,7 +19,7 @@ public:
     upath(const char *path, size_t len): fPath(path, len) {}
     upath(const upath& path): fPath(path.fPath) {}
     upath(upath&& path): fPath(std::move(path.fPath)) {}
-    upath(): fPath(null) {}
+    upath() =default;
 
     int length() const { return int(fPath.length()); }
     bool isEmpty() const { return fPath.isEmpty(); }
@@ -69,18 +68,11 @@ public:
         return *this;
     }
 
-    upath& operator=(const class null_ref &) {
-        fPath = null;
-        return *this;
-    }
-
     upath& operator+=(const upath& rv) { return *this = *this + rv; }
     upath operator+(const upath& rv) const { return relative(rv); }
     upath operator+(upath&& rv) const { return relative(std::move(rv)); }
     bool operator==(const upath& rv) const { return equals(rv); }
     bool operator!=(const upath& rv) const { return !equals(rv); }
-    bool operator==(const class null_ref &) const { return fPath == null; }
-    bool operator!=(const class null_ref &) const { return fPath != null; }
 
     bool equals(const upath &s) const;
 

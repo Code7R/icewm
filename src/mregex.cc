@@ -12,7 +12,7 @@ enum STATE_FLAGS {
 mslice mregex::match(const char *s) const {
     if (stateFlags == STATE_ERROR) {
         warn("match regcomp: %s", mCompError);
-        return null;
+        return mslice();
     }
     regmatch_t pos;
     return regexec(&preg, s, 1, &pos, execFlags) != 0 ?

@@ -265,9 +265,9 @@ void Graphics::drawArc(int x, int y, unsigned width, unsigned height, int a1, in
 
 /******************************************************************************/
 
-void Graphics::drawChars(mstring s, int x, int y) {
-    if (fFont != null && s != null) {
-        fFont->drawGlyphs(*this, x, y, s.c_str(), s.length());
+void Graphics::drawChars(mslice s, int x, int y) {
+    if (fFont != null && s.nonempty()) {
+        fFont->drawGlyphs(*this, x, y, s.data(), s.length());
     }
 }
 

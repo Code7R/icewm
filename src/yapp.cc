@@ -521,7 +521,7 @@ upath YApplication::getHomeDir() {
         return upath(env);
     }	
     csmart home(userhome(nullptr));
-    return home ? upath(home) : null;
+    return home ? home : "";
 }
 
 upath YApplication::findConfigFile(upath name) {
@@ -545,7 +545,7 @@ upath YApplication::locateConfigFile(upath name) {
     if (p.fileExists())
         return p;
 
-    return null;
+    return mslice();
 }
 
 // vim: set sw=4 ts=4 et:

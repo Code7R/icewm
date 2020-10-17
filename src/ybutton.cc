@@ -38,7 +38,6 @@ YButton::YButton(YWindow *parent, YAction action, YMenu *popup) :
     fIcon(null),
     fIconSize(0),
     fImage(null),
-    fText(null),
     fPressed(false),
     fEnabled(true),
     fHotCharPos(-1), hotKey(-1),
@@ -82,7 +81,7 @@ void YButton::paint(Graphics &g, int const d, const YRect &r) {
                     x + (w - fImage->width()) / 2,
                     y + (h - fImage->height()) / 2);
     }
-    else if (fText != null) {
+    else if (fText.nonempty()) {
         ref<YFont> font(getFont());
 
         int const w(font->textWidth(fText));
@@ -339,12 +338,10 @@ ref<YFont> YButton::getNormalFont() {
 }
 
 YDimension YButton::getTextSize() {
-    if (fText != null) {
-        ref<YFont> font(getActiveFont());
-        return YDimension(font->textWidth(fText), font->height());
-    } else {
+    if (fText.isEmpty())
         return YDimension(1, 1);
-    }
+    ref<YFont> font(getActiveFont());
+    return YDimension(font->textWidth(fText), font->height());
 }
 
 void YButton::updateSize() {
@@ -357,7 +354,7 @@ void YButton::updateSize() {
         w = fImage->width();
         h = fImage->height();
     }
-    else if (fText != null) {
+    else if (fText.nonempty()) {
         YDimension d(getTextSize());
         w = d.w;
         h = d.h;
@@ -390,7 +387,7 @@ void YButton::setText(const mstring &str, int hotChar) {
         hotKey = -1;
     }
     fText = str;
-    if (fText != null) {
+    if (fText.nonempty()) {
         fHotCharPos = hotChar;
 
         if (fHotCharPos == -2) {

@@ -201,12 +201,12 @@ char* mstring::data() {
 
 mslice mstring::substring(size_type pos) const {
     auto l = length();
-    return pos <= l ? mslice(data() + pos, l - pos) : null;
+    return pos <= l ? mslice(data() + pos, l - pos) : mslice();
 }
 
 mslice mslice::substring(size_t pos, size_t len) const {
     if (pos > length())
-        return null;
+        return mslice();
     return mslice(data() + pos, min(len, length() - pos));
 }
 
@@ -229,7 +229,7 @@ bool mslice::splitall(unsigned char token, mslice& left, mslice& remain) const {
     if (isEmpty())
         return false;
     left = *this;
-    remain = null;
+    remain = mslice();
     return true;
 }
 

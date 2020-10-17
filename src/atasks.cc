@@ -289,7 +289,7 @@ void TaskBarApp::paint(Graphics &g, const YRect& r) {
     mstring str = getFrame()->getIconTitle();
     if (str.isEmpty())
         str = getFrame()->getTitle();
-    if (str != null) {
+    if (str.nonempty()) {
         ref<YFont> font = getFont();
         if (font != null) {
             g.setColor(fg);

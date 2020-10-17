@@ -260,10 +260,10 @@ void YColor::alloc(const char* name) {
         if (reHashFiveHex.matchIn(name))
             return alloc(mstring(name, &name[5]));
         auto rgb = reRgb.match(name);
-        if (rgb != null)
+        if (rgb.nonempty())
             return alloc(rgb.toMstring());
         rgb = reRgbNoSfx.match(name);
-        if (rgb != null)
+        if (rgb.nonempty())
             return alloc(mstring("rgb:", rgb));
     }
     fPixel = cache.black();

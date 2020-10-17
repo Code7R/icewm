@@ -6,7 +6,7 @@
 #include "ypointer.h"
 
 struct WindowOption {
-    WindowOption(mstring n_class_instance = null);
+    WindowOption(mstring n_class_instance = mstring());
     void combine(const WindowOption& n);
 
     mstring w_class_instance;
@@ -31,7 +31,7 @@ public:
                       const char *opt, const char *arg);
 
     void mergeWindowOption(WindowOption &cm,
-                           mstring a_class_instance,
+                           const mstring& a_class_instance,
                            bool remove);
 
     int getCount() const { return fWinOptions.getCount(); }

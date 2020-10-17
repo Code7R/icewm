@@ -123,17 +123,14 @@ static bool ensureDirectory(upath path) {
 
 static upath getDefaultsFilePath(const mstring& basename) {
     upath prv(YApplication::getPrivConfDir());
-    if (ensureDirectory(prv)) {
-        return prv + basename;
-    }
-    return null;
+    return ensureDirectory(prv) ? prv + basename : "";
 }
 
 void WMConfig::setDefault(const char *basename, mstring content) {
     upath confOld(getDefaultsFilePath(basename));
-    if (confOld == null) {
+    if (confOld.isEmpty())
         return; // no directory
-    }
+
     upath confNew(confOld.path() + ".new.tmp");
 
     FILE *fpNew = confNew.fopen("w");

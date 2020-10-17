@@ -34,7 +34,7 @@ DTheme::DTheme(IApp *app, YSMListener *smActionListener, const mstring &label, c
 }
 
 void DTheme::open() {
-    if (fTheme == null)
+    if (fTheme.isEmpty())
         return;
 
     WMConfig::setDefaultTheme(fTheme);
