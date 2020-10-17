@@ -632,6 +632,10 @@ void YMenu::autoScroll(int deltaX, int deltaY, int mx, int my, const XMotionEven
     beginAutoScroll(deltaX || deltaY, motion);
 }
 
+YMenuItem *YMenu::addItem(const mstring &name, int hotCharPos, YAction action, const char *icons) {
+    return add(new YMenuItem(name, hotCharPos, mslice(), action, nullptr), icons);
+}
+
 YMenuItem *YMenu::addItem(const mstring &name, int hotCharPos, const mstring &param, YAction action, const char *icons) {
     return add(new YMenuItem(name, hotCharPos, param, action, nullptr), icons);
 }
@@ -646,6 +650,10 @@ YMenuItem *YMenu::addSubmenu(const mstring &name, int hotCharPos, YMenu *submenu
 
 YMenuItem *YMenu::addItem(const mstring &name, int hotCharPos, const mstring &param, YAction action) {
     return add(new YMenuItem(name, hotCharPos, param, action, nullptr));
+}
+
+YMenuItem *YMenu::addItem(const mstring &name, int hotCharPos, YAction action) {
+    return add(new YMenuItem(name, hotCharPos, mslice(), action, nullptr));
 }
 
 YMenuItem *YMenu::addItem(const mstring &name, int hotCharPos, YAction action, YMenu *submenu) {

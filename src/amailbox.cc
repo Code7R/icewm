@@ -955,11 +955,11 @@ void MailBoxControl::handleClick(const XButtonEvent &up, MailBoxStatus *client)
     if (up.button == Button3) {
         fMenu = new YMenu;
         fMenu->setActionListener(this);
-        fMenu->addItem(_("MAIL"), -2, null, actionNull)->setEnabled(false);
+        fMenu->addItem(_("MAIL"), -2, actionNull)->setEnabled(false);
         fMenu->addSeparator();
-        fMenu->addItem(_("_Check"), -2, null, actionRun);
-        fMenu->addItem(_("_Disable"), -2, null, actionClose);
-        fMenu->addItem(_("_Suspend"), -2, null, actionSuspend)
+        fMenu->addItem(_("_Check"), -2, actionRun);
+        fMenu->addItem(_("_Disable"), -2, actionClose);
+        fMenu->addItem(_("_Suspend"), -2, actionSuspend)
              ->setChecked(client->suspended());
         fMenuClient = client;
         fMenu->popup(nullptr, nullptr, nullptr, up.x_root, up.y_root,

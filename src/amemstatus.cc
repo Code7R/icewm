@@ -257,9 +257,9 @@ void MEMStatus::handleClick(const XButtonEvent &up, int count) {
     if (up.button == Button3) {
         fMenu = new YMenu();
         fMenu->setActionListener(this);
-        fMenu->addItem(_("MEM"), -2, null, actionNull)->setEnabled(false);
+        fMenu->addItem(_("MEM"), -2, actionNull)->setEnabled(false);
         fMenu->addSeparator();
-        fMenu->addItem(_("_Disable"), -2, null, actionClose);
+        fMenu->addItem(_("_Disable"), -2, actionClose);
         fMenu->popup(nullptr, nullptr, nullptr, up.x_root, up.y_root,
                      YPopupWindow::pfCanFlipVertical |
                      YPopupWindow::pfCanFlipHorizontal |

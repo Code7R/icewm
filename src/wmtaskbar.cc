@@ -251,7 +251,7 @@ public:
         // TRANSLATORS: This appears in a group with others items, so please make the hotkeys unique in the set: # T_ile Horizontally, Ca_scade, _Arrange, _Minimize All, _Hide All, _Undo, Arrange _Icons, _Windows, _Refresh, _About, _Logout
         addItem(_("_Refresh"), -2, mslice(), actionRefresh);
         // TRANSLATORS: This appears in a group with others items, so please make the hotkeys unique in the set: # T_ile Horizontally, Ca_scade, _Arrange, _Minimize All, _Hide All, _Undo, Arrange _Icons, _Windows, _Refresh, _About, _Logout
-        addItem(_("_About"), -2, actionAbout, nullptr);
+        addItem(_("_About"), -2, actionAbout, (YMenu*)nullptr);
         if (showLogoutMenu) {
             addSeparator();
             if (showLogoutSubMenu)

@@ -167,15 +167,15 @@ void YClock::handleClick(const XButtonEvent &up, int count) {
     else if (up.button == Button3) {
         fMenu = new YMenu();
         fMenu->setActionListener(this);
-        fMenu->addItem(_("CLOCK"), -2, null, actionNull)->setEnabled(false);
+        fMenu->addItem(_("CLOCK"), -2, actionNull)->setEnabled(false);
         fMenu->addSeparator();
-        fMenu->addItem("%H:%M:%S", -2, null, actionHide);
-        fMenu->addItem("%d %H:%M", -2, null, actionShow);
+        fMenu->addItem("%H:%M:%S", -2, actionHide);
+        fMenu->addItem("%d %H:%M", -2, actionShow);
         if (!prettyClock)
-            fMenu->addItem(_("Date"), -2, null, actionRaise);
-        fMenu->addItem(_("Default"), -2, null, actionLower);
-        fMenu->addItem(_("_Disable"), -2, null, actionClose);
-        fMenu->addItem(_("_UTC"), -2, null, actionDepth)->setChecked(clockUTC);
+            fMenu->addItem(_("Date"), -2, actionRaise);
+        fMenu->addItem(_("Default"), -2, actionLower);
+        fMenu->addItem(_("_Disable"), -2, actionClose);
+        fMenu->addItem(_("_UTC"), -2, actionDepth)->setChecked(clockUTC);
         fMenu->popup(nullptr, nullptr, nullptr, up.x_root, up.y_root,
                      YPopupWindow::pfCanFlipVertical |
                      YPopupWindow::pfCanFlipHorizontal |

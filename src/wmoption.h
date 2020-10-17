@@ -27,7 +27,7 @@ struct WindowOption {
 
 class WindowOptions {
 public:
-    void setWinOption(mstring n_class_instance,
+    void setWinOption(const mstring& n_class_instance,
                       const char *opt, const char *arg);
 
     void mergeWindowOption(WindowOption &cm,
@@ -41,9 +41,9 @@ public:
 private:
     YObjectArray<WindowOption> fWinOptions;
 
-    bool findOption(mstring a_class_instance, int *index);
+    bool findOption(const mstring& a_class_instance, int *index);
 
-    WindowOption *getOption(mstring a_class_instance);
+    WindowOption *getOption(const mstring& a_class_instance);
 };
 
 extern lazy<WindowOptions> defOptions;

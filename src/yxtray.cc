@@ -220,9 +220,9 @@ void YXTrayProxy::updateToolTip() {
         }
     }
     if (size == 0) {
-        if (toolTip != null) {
-            toolTip = null;
-            setToolTip(null);
+        if (toolTip.nonempty()) {
+            toolTip.clear();
+            setToolTip(toolTip);
         }
         if (fUpdateTimer)
             fUpdateTimer = null;
@@ -291,7 +291,7 @@ bool YXTrayProxy::requestDock(Window win) {
     mstring title(fetchTitle(win));
     MSG(("systemTrayRequestDock 0x%lX, title \"%s\"", win, title.c_str()));
 
-    if (title == null && (error_code == BadWindow || windowDestroyed(win))) {
+    if (title.isEmpty() && (error_code == BadWindow || windowDestroyed(win))) {
         MSG(("Ignoring tray request for unknown window 0x%08lX", win));
         return false;
     }
@@ -323,7 +323,7 @@ mstring YXTrayProxy::fetchTitle(Window win) {
         title = (char *) name;
     }
     else if (error_code == BadWindow) {
-        return null;
+        return "";
     }
     if (title.isEmpty()) {
         XTextProperty text = {};
@@ -332,7 +332,7 @@ mstring YXTrayProxy::fetchTitle(Window win) {
             XFree(text.value);
         }
         else if (error_code == BadWindow) {
-            return null;
+            return "";
         }
     }
     if (title.isEmpty()) {
@@ -343,7 +343,7 @@ mstring YXTrayProxy::fetchTitle(Window win) {
             XFree(hint.res_class);
         }
         else if (error_code == BadWindow) {
-            return null;
+            return "";
         }
     }
     return title;

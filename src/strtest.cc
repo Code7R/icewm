@@ -435,13 +435,13 @@ static void test_upath()
     upath a("abc.def");
     expect(a.getExtension(), ".def");
     a = "efg.";
-    expect(a.getExtension(), null);
+    expect(a.getExtension(), mslice());
     a = "/hij.klm/nop";
-    expect(a.getExtension(), null);
+    expect(a.getExtension(), "");
     a = a.path() + ".q";
     expect(a.getExtension(), ".q");
     a = "/stu/.vw";
-    expect(a.getExtension(), null);
+    expect(a.getExtension(), mstring());
     if (!isFakerootActive()) {
         upath hm("~");
         expect(hm.expand(), getenv("HOME"));

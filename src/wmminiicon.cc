@@ -125,7 +125,7 @@ void MiniIcon::handleCrossing(const XCrossingEvent &crossing) {
 }
 
 void MiniIcon::handleBeginDrag(const XButtonEvent& d, const XMotionEvent& m) {
-    setToolTip(null);
+    setToolTip(mslice());
     raise();
 }
 

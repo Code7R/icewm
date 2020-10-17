@@ -414,26 +414,26 @@ void LogoutMenu::updatePopup() {
     if (showLogoutMenu) {
         setShared(true); /// !!! get rid of this (refcount objects)
         if (showLogoutSubMenu) {
-            addItem(_("_Logout"), -2, null, actionLogout);
-            addItem(_("_Cancel logout"), -2, null, actionCancelLogout)->setEnabled(false);
+            addItem(_("_Logout"), -2, mslice(), actionLogout);
+            addItem(_("_Cancel logout"), -2, mslice(), actionCancelLogout)->setEnabled(false);
             addSeparator();
 
             int const oldItemCount = itemCount();
             if (canLock())
-                addItem(_("Lock _Workstation"), -2, null, actionLock, "lock");
+                addItem(_("Lock _Workstation"), -2, actionLock, "lock");
             if (canShutdown(Reboot))
-                addItem(_("Re_boot"), -2, null, actionReboot, "reboot");
+                addItem(_("Re_boot"), -2, actionReboot, "reboot");
             if (canShutdown(Shutdown))
-                addItem(_("Shut_down"), -2, null, actionShutdown, "shutdown");
+                addItem(_("Shut_down"), -2, actionShutdown, "shutdown");
             if (couldRunCommand(suspendCommand))
-                addItem(_("_Sleep mode"), -2, null, actionSuspend, "suspend");
+                addItem(_("_Sleep mode"), -2, actionSuspend, "suspend");
 
             if (itemCount() != oldItemCount)
                 addSeparator();
 
-            addItem(_("Restart _Icewm"), -2, null, actionRestart, "restart");
+            addItem(_("Restart _Icewm"), -2, actionRestart, "restart");
 
-            addItem(_("Restart _Xterm"), -2, null, actionRestartXterm, TERM);
+            addItem(_("Restart _Xterm"), -2, actionRestartXterm, TERM);
 
         }
     }
@@ -443,13 +443,13 @@ void LayerMenu::updatePopup() {
     if (itemCount())
         return;
 
-    addItem(_("_Menu"),       -2, null, layerActionSet[WinLayerMenu]);
-    addItem(_("_Above Dock"), -2, null, layerActionSet[WinLayerAboveDock]);
-    addItem(_("_Dock"),       -2, null, layerActionSet[WinLayerDock]);
-    addItem(_("_OnTop"),      -2, null, layerActionSet[WinLayerOnTop]);
-    addItem(_("_Normal"),     -2, null, layerActionSet[WinLayerNormal]);
-    addItem(_("_Below"),      -2, null, layerActionSet[WinLayerBelow]);
-    addItem(_("D_esktop"),    -2, null, layerActionSet[WinLayerDesktop]);
+    addItem(_("_Menu"),       -2, layerActionSet[WinLayerMenu]);
+    addItem(_("_Above Dock"), -2, layerActionSet[WinLayerAboveDock]);
+    addItem(_("_Dock"),       -2, layerActionSet[WinLayerDock]);
+    addItem(_("_OnTop"),      -2, layerActionSet[WinLayerOnTop]);
+    addItem(_("_Normal"),     -2, layerActionSet[WinLayerNormal]);
+    addItem(_("_Below"),      -2, layerActionSet[WinLayerBelow]);
+    addItem(_("D_esktop"),    -2, layerActionSet[WinLayerDesktop]);
 }
 
 void MoveMenu::updatePopup() {
@@ -528,14 +528,14 @@ YMenu* YWMApp::getWindowMenu() {
 #endif
 
     if (strchr(winMenuItems, 'i') && taskBarShowTray)
-        windowMenu->addItem(_("Tray _icon"), -2, null, actionToggleTray);
+        windowMenu->addItem(_("Tray _icon"), -2, actionToggleTray);
 
     if (strchr(winMenuItems, 'c') || strchr(winMenuItems, 'k'))
         windowMenu->addSeparator();
     if (strchr(winMenuItems, 'c'))
         windowMenu->addItem(_("_Close"), -2, KEY_NAME(gKeyWinClose), actionClose);
     if (strchr(winMenuItems, 'k'))
-        windowMenu->addItem(_("_Kill Client"), -2, null, actionKill);
+        windowMenu->addItem(_("_Kill Client"), -2, actionKill);
     if (strchr(winMenuItems, 'w')) {
         windowMenu->addSeparator();
         windowMenu->addItem(_("_Window list"), -2, KEY_NAME(gKeySysWindowList), actionWindowList);
@@ -1497,7 +1497,7 @@ static void print_usage(const char *argv0) {
 
 static void print_themes_list() {
     themeName = nullptr;
-    ref<YResourcePaths> res(YResourcePaths::subdirs(null, true));
+    ref<YResourcePaths> res(YResourcePaths::subdirs(mslice(), true));
     for (int i = 0; i < res->getCount(); ++i) {
         for (sdir dir(res->getPath(i)); dir.next(); ) {
             upath thmp(dir.path() + dir.entry());

@@ -25,7 +25,7 @@ KeyboardStatus::KeyboardStatus(IAppletContainer* taskBar, YWindow *aParent):
     }
     setTitle("Keyboard");
     updateToolTip();
-    if (fKeyboard != null) {
+    if (fKeyboard.nonempty()) {
         fIcon = YIcon::getIcon(fKeyboard.substring(0, 2).toMstring());
     }
 }
@@ -33,7 +33,7 @@ KeyboardStatus::KeyboardStatus(IAppletContainer* taskBar, YWindow *aParent):
 void KeyboardStatus::updateKeyboard(const mstring& keyboard) {
     if (fKeyboard != keyboard) {
         fKeyboard = keyboard;
-        if (fKeyboard != null) {
+        if (fKeyboard.nonempty()) {
             fIcon = YIcon::getIcon(fKeyboard.substring(0, 2).toMstring());
         } else {
             fIcon = null;
@@ -44,7 +44,7 @@ void KeyboardStatus::updateKeyboard(const mstring& keyboard) {
 }
 
 void KeyboardStatus::updateToolTip() {
-    if (fKeyboard != null) {
+    if (fKeyboard.nonempty()) {
         setToolTip(fKeyboard);
     }
 }
@@ -72,12 +72,11 @@ void KeyboardStatus::handleClick(const XButtonEvent& up, int count) {
     else if (up.button == Button3 && up.type == ButtonRelease) {
         fMenu = new YMenu();
         fMenu->setActionListener(this);
-        fMenu->addItem(_("Keyboard"), -2, null, actionNull)->setEnabled(false);
+        fMenu->addItem(_("Keyboard"), -2, actionNull)->setEnabled(false);
         fMenu->addSeparator();
         for (int i = 0; i < configKeyboards.getCount(); ++i) {
-            fMenu->addItem(configKeyboards[i], -2, null,
-                           EAction(actionShow + 2 * i))
-                            ->setChecked(i == fIndex);
+            fMenu->addItem(configKeyboards[i], -2,
+                    EAction(actionShow + 2 * i))->setChecked(i == fIndex);
         }
         fMenu->popup(nullptr, nullptr, nullptr, up.x_root, up.y_root,
                      YPopupWindow::pfCanFlipVertical |
@@ -114,31 +113,33 @@ void KeyboardStatus::fill(Graphics& g) {
 }
 
 void KeyboardStatus::draw(Graphics& g) {
-    if (fFont != null && fKeyboard != null) {
-        ref<YImage> icon;
-        if (fIcon != null) {
-            upath path(fIcon->findIcon(YIcon::smallSize()));
-            if (path.nonempty()) {
-                YTraceIcon trace(path.string());
-                icon = YImage::load(path);
-            }
-        }
-        g.setColor(fColor);
-        if (icon != null) {
-            unsigned wid = min(width(), icon->width());
-            unsigned hei = min(height(), icon->height());
-            int dx = int((width() - wid) / 2);
-            int dy = int((height() - hei) / 2);
-            g.drawImage(icon, 0, 0, wid, hei, dx, dy);
-        } else {
-            g.setFont(fFont);
-            mstring text(fKeyboard.substring(0, 2));
-            int y = (height() - 1 - fFont->height()) / 2 + fFont->ascent();
-            int w = fFont->textWidth(text);
-            int x = max(1, (int(g.rwidth()) - w) / 2);
-            g.drawChars(text, x, y);
+    if (fFont == null && fKeyboard.isEmpty())
+        return;
+
+    ref<YImage> icon;
+    if (fIcon != null) {
+        upath path(fIcon->findIcon(YIcon::smallSize()));
+        if (path.nonempty()) {
+            YTraceIcon trace(path.string());
+            icon = YImage::load(path);
         }
     }
+    g.setColor(fColor);
+    if (icon != null) {
+        unsigned wid = min(width(), icon->width());
+        unsigned hei = min(height(), icon->height());
+        int dx = int((width() - wid) / 2);
+        int dy = int((height() - hei) / 2);
+        g.drawImage(icon, 0, 0, wid, hei, dx, dy);
+    } else {
+        g.setFont(fFont);
+        mstring text(fKeyboard.substring(0, 2));
+        int y = (height() - 1 - fFont->height()) / 2 + fFont->ascent();
+        int w = fFont->textWidth(text);
+        int x = max(1, (int(g.rwidth()) - w) / 2);
+        g.drawChars(text, x, y);
+    }
 }
+
 
 // vim: set sw=4 ts=4 et:

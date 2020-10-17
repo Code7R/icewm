@@ -97,7 +97,7 @@ void AddressBar::changeLocation(int newLocation) {
     if (! inrange(newLocation, 0, history.getCount()))
         return;
     location = newLocation;
-    setText(location == history.getCount() ? null : history[location], true);
+    setText(location == history.getCount() ? "" : history[location], true);
 }
 
 void AddressBar::showNow() {

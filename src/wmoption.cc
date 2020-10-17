@@ -101,7 +101,7 @@ bool WindowOptions::findOption(const mstring& a_class_instance, int *index) {
     return false;
 }
 
-WindowOption* WindowOptions::getOption(mstring a_class_instance) {
+WindowOption* WindowOptions::getOption(const mstring& a_class_instance) {
     int where;
     if (findOption(a_class_instance, &where) == false) {
         fWinOptions.insert(where, new WindowOption(a_class_instance));
@@ -109,7 +109,7 @@ WindowOption* WindowOptions::getOption(mstring a_class_instance) {
     return fWinOptions[where];
 }
 
-void WindowOptions::setWinOption(mstring n_class_instance,
+void WindowOptions::setWinOption(const mstring& n_class_instance,
                                  const char *opt, const char *arg)
 {
     WindowOption *op = getOption(n_class_instance);

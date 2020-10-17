@@ -652,14 +652,14 @@ void CPUStatusControl::handleClick(const XButtonEvent &up, int cpuid) {
         char title[24];
         if (cpuid < 0) strlcpy(title, _("CPU"), sizeof title);
         else snprintf(title, sizeof title, _("CPU%d"), cpuid);
-        fMenu->addItem(title, -2, null, actionNull)->setEnabled(false);
+        fMenu->addItem(title, -2, actionNull)->setEnabled(false);
         fMenu->addSeparator();
 
-        fMenu->addItem(_("_Disable"), -2, null, actionClose);
+        fMenu->addItem(_("_Disable"), -2, actionClose);
         if (cpuid >= 0) {
-            fMenu->addItem(_("_Combine"), -2, null, actionArrange);
+            fMenu->addItem(_("_Combine"), -2, actionArrange);
         } else {
-            fMenu->addItem(_("_Separate"), -2, null, actionCascade);
+            fMenu->addItem(_("_Separate"), -2, actionCascade);
         }
         fMenuCPU = cpuid;
         fMenu->popup(nullptr, nullptr, nullptr, up.x_root, up.y_root,

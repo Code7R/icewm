@@ -19,7 +19,7 @@
 
 extern ref<YFont> menuFont;
 
-YMenuItem::YMenuItem(const mstring &name, int aHotCharPos, const mstring &param,
+YMenuItem::YMenuItem(const mstring &name, int aHotCharPos, mslice param,
                      YAction action, YMenu *submenu) :
     fName(name), fParam(param), fAction(action),
     fHotCharPos(aHotCharPos), fSubmenu(submenu), fIcon(null),

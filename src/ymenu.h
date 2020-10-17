@@ -33,12 +33,14 @@ public:
 
     YMenuItem *add(YMenuItem *item, const char *icons);
     YMenuItem *addItem(const mstring &name, int hotCharPos, const mstring &param, YAction action, const char *icons);
+    YMenuItem *addItem(const mstring &name, int hotCharPos, YAction action, const char *icons);
     YMenuItem *addItem(const mstring &name, int hotCharPos, YAction action, YMenu *submenu, const char *icons);
     YMenuItem *addSubmenu(const mstring &name, int hotCharPos, YMenu *submenu, const char *icons);
 
     YMenuItem *add(YMenuItem *item);
     YMenuItem *addSorted(YMenuItem *item, bool duplicates, bool ignoreCase = false);
     YMenuItem *addItem(const mstring &name, int hotCharPos, const mstring &param, YAction action);
+    YMenuItem *addItem(const mstring &name, int hotCharPos, YAction action);
     YMenuItem *addItem(const mstring &name, int hotCharPos, YAction action, YMenu *submenu);
     YMenuItem *addSubmenu(const mstring &name, int hotCharPos, YMenu *submenu);
     YMenuItem *addSeparator();

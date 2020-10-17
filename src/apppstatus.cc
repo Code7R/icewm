@@ -651,7 +651,7 @@ void NetStatusControl::handleClick(const XButtonEvent &up, mstring netdev)
 
         fMenu = new YMenu();
         fMenu->setActionListener(this);
-        fMenu->addItem(_("NET"), -2, null, actionNull)->setEnabled(false);
+        fMenu->addItem(_("NET"), -2, actionNull)->setEnabled(false);
         fMenu->addSeparator();
         YStringArray::IterType iter = interfaces.iterator();
         while (++iter) {
@@ -665,8 +665,8 @@ void NetStatusControl::handleClick(const XButtonEvent &up, mstring netdev)
                 enable = true;  // fNetStatus[*iter]->isUp();
             }
             YAction act(EAction(visible + 2 * (300 + iter.where())));
-            YMenuItem* item = fMenu->addItem(*iter, -2, null,
-                                             enable ? act : actionNull);
+            YMenuItem* item = fMenu->addItem(*iter, -2,
+                    enable ? act : actionNull);
             item->setChecked(visible);
             item->setEnabled(enable);
         }

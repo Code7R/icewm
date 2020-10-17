@@ -26,7 +26,7 @@ const unsigned utf32ellipsis = 0x2026;
 extern ref<YFont> menuFont;
 
 DObjectMenuItem::DObjectMenuItem(DObject *object):
-    YMenuItem(object->getName(), -3, null, YAction(), nullptr)
+    YMenuItem(object->getName(), -3, mslice(), YAction(), nullptr)
 {
     fObject = object;
     if (object->getIcon() != null)
@@ -229,8 +229,8 @@ public:
         return zTarget;
     }
     virtual mstring getTitle(int idx) override {
-        if (idx<0 || idx>=this->getCount())
-            return null;
+        if (idx < 0 || idx >= this->getCount())
+            return mslice();
         return menu->getItem(idx)->getName();
     }
     virtual ref<YIcon> getIcon(int idx) override {
@@ -277,30 +277,30 @@ MenuFileMenu::~MenuFileMenu() {
 }
 
 void MenuFileMenu::updatePopup() {
-    if (!autoReloadMenus && fPath != null)
+    if (!autoReloadMenus && fPath.nonempty())
         return;
 
     upath np = app->findConfigFile(upath(fName));
     bool rel = false;
 
 
-    if (fPath == null) {
+    if (fPath.nonempty()) {
         fPath = np;
         rel = true;
     } else {
-        if (np == null || np.equals(fPath)) {
+        if (np.isEmpty() || np.equals(fPath)) {
             fPath = np;
             rel = true;
         } else
-            np = null;
+            np = "";
     }
 
-    if (fPath == null) {
+    if (fPath.nonempty()) {
         refresh();
     } else {
         struct stat sb;
         if (stat(fPath.string(), &sb) != 0) {
-            fPath = null;
+            fPath = "";
             refresh();
         } else if (sb.st_mtime > fModTime || rel) {
             fModTime = sb.st_mtime;
@@ -311,7 +311,7 @@ void MenuFileMenu::updatePopup() {
 
 void MenuFileMenu::refresh() {
     removeAll();
-    if (fPath != null)
+    if (fPath.nonempty())
         loadMenus(fPath, this);
 }
 
@@ -349,7 +349,7 @@ void MenuProgMenu::updatePopup() {
 void MenuProgMenu::refresh()
 {
     removeAll();
-    if (fCommand != null)
+    if (fCommand.nonempty())
         progMenus(fCommand.string(), fArgs.getCArray(), this);
 }
 
@@ -400,7 +400,7 @@ FocusMenu::FocusMenu() {
         { FocusCustom, _("Custo_m"), actionFocusCustom },
     };
     for (size_t k = 0; k < ACOUNT(foci); ++k) {
-        YMenuItem *item = addItem(foci[k].name, -2, null, foci[k].action);
+        auto* item = addItem(foci[k].name, -2, foci[k].action);
         if (wmapp->getFocusMode() == foci[k].mode) {
             item->setEnabled(false);
             item->setChecked(true);
@@ -457,7 +457,7 @@ public:
                            0 == strncmp(o->name, "Page", 4) ? sh :
                            nullptr != strstr(o->name, "Focus") ? fo :
                            o->name[0] <= 'L' ? al : mz;
-                item = m->addItem(o->name, -2, null, EAction(index[k] + 1));
+                item = m->addItem(o->name, -2, EAction(index[k] + 1));
                 if (o->boolval()) {
                     item->setChecked(true);
                 }
@@ -491,7 +491,7 @@ public:
         }
 
         addSeparator();
-        addItem(_("Save Modifications"), -2, null, actionSaveMod, "save");
+        addItem(_("Save Modifications"), -2, actionSaveMod, "save");
         setActionListener(this);
     }
 
@@ -561,7 +561,7 @@ public:
         if (!priv.fileExists() && priv.testWritable(perm))
             return defaultPrefs(priv);
 
-        return null;
+        return upath();
     }
 
     static void saveModified() {
@@ -571,7 +571,7 @@ public:
         qsort(&*mods, n, sizeof(int), sortPrefs);
 
         upath path(preferencesPath());
-        if (path == null)
+        if (path.isEmpty())
             return fail(_("Unable to write to %s"), "preferences");
 
         auto text(path.loadText());
@@ -795,7 +795,7 @@ void StartMenu::refresh() {
 
     if (showRun) {
         if (runDlgCommand && runDlgCommand[0])
-            addItem(_("_Run..."), -2, null, actionRun, "run");
+            addItem(_("_Run..."), -2, actionRun, "run");
     }
 
     if (itemCount() != oldItemCount) addSeparator();
@@ -854,7 +854,7 @@ void StartMenu::refresh() {
         if (showLogoutSubMenu)
             addItem(_("_Logout..."), -2, actionLogout, logoutMenu, "logout");
         else
-            addItem(_("_Logout..."), -2, null, actionLogout, "logout");
+            addItem(_("_Logout..."), -2, actionLogout, "logout");
     }
 }
 

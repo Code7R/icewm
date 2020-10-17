@@ -9,7 +9,7 @@ class YMenu;
 
 class YMenuItem {
 public:
-    YMenuItem(const mstring &name, int hotCharPos, const mstring &param, YAction action, YMenu *submenu);
+    YMenuItem(const mstring &name, int hotCharPos, mslice param, YAction action, YMenu *submenu);
     YMenuItem(const mstring &name);
     YMenuItem();
     virtual ~YMenuItem();
