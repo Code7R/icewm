@@ -9,7 +9,6 @@
 #include "yfull.h"
 #include "wmprog.h"
 #include "wmwinmenu.h"
-#include "workspaces.h"
 #include "wmapp.h"
 #include "wmframe.h"
 #include "wmswitch.h"
@@ -654,7 +653,7 @@ void YWMApp::restartClient(const char *cpath, char *const *cargs) {
     YStringArray sargs((const char**) cargs);
     char *const *args = (cargs == nullptr) ? nullptr : sargs.getCArray();
 
-    wmapp->signalGuiEvent(geRestart);
+    signalGuiEvent(geRestart);
     manager->unmanageClients();
     unregisterProtocols();
 
@@ -774,7 +773,7 @@ bool YWMApp::mapClientByResource(const char* resource, long *pid) {
     return false;
 }
 
-void YWMApp::setFocusMode(FocusModels mode) {
+void YWMApp::setFocusMode(FocusModel mode) {
     focusMode = mode;
     initFocusMode();
     WMConfig::setDefaultFocus(mode);
@@ -788,11 +787,11 @@ void YWMApp::actionPerformed(YAction action, unsigned int /*modifiers*/) {
     } else if (action == actionLock) {
         runCommand(lockCommand);
     } else if (action == actionShutdown) {
-        handleSMAction(ICEWM_ACTION_SHUTDOWN);
+        doLogout(Shutdown);
     } else if (action == actionSuspend) {
-        handleSMAction(ICEWM_ACTION_SUSPEND);
+        runCommand(suspendCommand);
     } else if (action == actionReboot) {
-        handleSMAction(ICEWM_ACTION_REBOOT);
+        doLogout(Reboot);
     } else if (action == actionRestart) {
 #if defined(DEBUG) || defined(PRECON)
         // Prefer a return from main for cleanup checking; icesm restarts.
@@ -943,9 +942,7 @@ void YWMApp::initFocusCustom() {
         OBV("FocusOnMapTransientActive", &focusOnMapTransientActive, ""),
         OK0()
     };
-
-    YConfig::findLoadConfigFile(this, focus_prefs, configFile);
-    YConfig::findLoadConfigFile(this, focus_prefs, "prefoverride");
+    YConfig(focus_prefs).load(configFile).loadOverride();
 }
 
 void YWMApp::initFocusMode() {
@@ -1025,7 +1022,7 @@ void YWMApp::initFocusMode() {
     }
 }
 
-void YWMApp::loadFocusMode() {
+FocusModel YWMApp::loadFocusMode() {
     const char* focusMode = nullptr;
     cfoption focus_prefs[] = {
         OSV("FocusMode", &focusMode,
@@ -1033,13 +1030,10 @@ void YWMApp::loadFocusMode() {
             ", 3=explicit, 4=strict, 5=quiet)"),
         OK0()
     };
-
-    YConfig::findLoadConfigFile(this, focus_prefs, "focus_mode");
+    YConfig(focus_prefs).load("focus_mode");
+    FocusModel result = FocusClick;
     if (focusMode) {
-        static const struct {
-            FocusModels num;
-            const char* str;
-        } models[] = {
+        static const pair<FocusModel, const char*> models[] = {
             { FocusCustom,   "custom"   },
             { FocusClick,    "click"    },
             { FocusSloppy,   "sloppy"   },
@@ -1049,31 +1043,29 @@ void YWMApp::loadFocusMode() {
         };
         if (ASCII::isDigit(*focusMode)) {
             int mode = atoi(focusMode);
-            for (int i = 0; i < int ACOUNT(models); ++i) {
-                if (mode == models[i].num) {
-                    this->focusMode = models[i].num;
+            for (auto model : models) {
+                if (mode == model.left) {
+                    result = model.left;
                     break;
                 }
             }
         }
         else {
             mstring mode(mstring(focusMode).lower());
-            for (int i = 0; i < int ACOUNT(models); ++i) {
-                if (mode == models[i].str) {
-                    this->focusMode = models[i].num;
+            for (auto model : models) {
+                if (mode == model.right) {
+                    result = model.left;
                     break;
                 }
             }
         }
         delete[] const_cast<char *>(focusMode);
     }
+    return result;
 }
 
 static void showExtensions() {
-    struct {
-        const char* str;
-        YExtension* ext;
-    } xs[] = {
+    pair<const char*, YExtension*> pairs[] = {
         { "composite", &composite },
         { "damage",    &damage    },
         { "fixes",     &fixes     },
@@ -1083,9 +1075,9 @@ static void showExtensions() {
         { "xinerama",  &xinerama  },
     };
     printf("[name]   [ver] [ev][err]\n");
-    for (int i = 0; i < int ACOUNT(xs); ++i) {
-        const char* s = xs[i].str;
-        YExtension* x = xs[i].ext;
+    for (auto ext : pairs) {
+        const char* s = ext.left;
+        YExtension* x = ext.right;
         if (x->versionMajor | x->versionMinor) {
             printf("%-9s %d.%-2d (%2d, %3d)\n", s,
                     x->versionMajor, x->versionMinor,
@@ -1139,7 +1131,7 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName,
     errorRequestCode(0),
     errorFrame(nullptr),
     splashWindow(splash(splashFile)),
-    focusMode(FocusClick),
+    focusMode(loadFocusMode()),
     managerWindow(None)
 {
     if(argc && *argc>0 && argv && *argv && **argv && mstring(**argv).endsWith("-lite"))
@@ -1147,22 +1139,9 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName,
 
     wmapp = this;
 
-    WMConfig::loadConfiguration(this, configFile);
-    if (themeName != nullptr) {
-        MSG(("themeName=%s", themeName));
-
-        bool ok = WMConfig::loadThemeConfiguration(this, themeName);
-        if (ok == false && strcmp(themeName, CONFIG_DEFAULT_THEME)) {
-            themeName = CONFIG_DEFAULT_THEME;
-            ok = WMConfig::loadThemeConfiguration(this, themeName);
-        }
-        if (ok == false && strpcmp(themeName, "default", "/")) {
-            themeName = "default/default.theme";
-            ok = WMConfig::loadThemeConfiguration(this, themeName);
-        }
-    }
-    loadFocusMode();
-    WMConfig::loadConfiguration(this, "prefoverride");
+    WMConfig::loadConfiguration(configFile);
+    WMConfig::loadThemeConfiguration();
+    WMConfig::loadConfiguration("prefoverride");
     if (focusMode != FocusCustom)
         initFocusMode();
 
@@ -1200,8 +1179,7 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName,
 
     managerWindow = registerProtocols1(*argv, *argc);
 
-    manager = new YWindowManager(
-        this, this, this, nullptr, root());
+    manager = new YWindowManager(this, this, this, nullptr, root());
     PRECONDITION(desktop != nullptr);
 
     registerProtocols2(managerWindow);
@@ -1630,10 +1608,7 @@ static void print_configured(const char *argv0) {
 
 static void loadStartup(const char* configFile)
 {
-    upath prefs(YApplication::locateConfigFile(configFile));
-    if (prefs.nonempty()) {
-        YConfig::loadConfigFile(wmapp_preferences, prefs);
-    }
+    YConfig(wmapp_preferences).load(configFile);
 
     YXApplication::alphaBlending |= alphaBlending;
     YXApplication::synchronizeX11 |= synchronizeX11;
@@ -1641,11 +1616,8 @@ static void loadStartup(const char* configFile)
         YTrace::tracing(tracingModules);
     }
 
-    upath theme(YApplication::locateConfigFile("theme"));
-    if (theme.nonempty()) {
-        unsigned last = ACOUNT(wmapp_preferences) - 2;
-        YConfig::loadConfigFile(wmapp_preferences + last, theme);
-    }
+    unsigned last = ACOUNT(wmapp_preferences) - 2;
+    YConfig(wmapp_preferences + last).load("theme");
 }
 
 int main(int argc, char **argv) {
@@ -1819,38 +1791,21 @@ void YWMApp::handleMsgBox(YMsgBox *msgbox, int operation) {
 }
 
 void YWMApp::handleSMAction(WMAction message) {
-    switch (message) {
-    case ICEWM_ACTION_LOGOUT:
-        wmapp->doLogout(Logout);
-        break;
-    case ICEWM_ACTION_CANCEL_LOGOUT:
-        wmapp->actionPerformed(actionCancelLogout, 0);
-        break;
-    case ICEWM_ACTION_SHUTDOWN:
-        wmapp->doLogout(Shutdown);
-        break;
-    case ICEWM_ACTION_REBOOT:
-        wmapp->doLogout(Reboot);
-        break;
-    case ICEWM_ACTION_RESTARTWM:
-        wmapp->actionPerformed(actionRestart, 0);
-        break;
-    case ICEWM_ACTION_WINDOWLIST:
-        wmapp->actionPerformed(actionWindowList, 0);
-        break;
-    case ICEWM_ACTION_ABOUT:
-        wmapp->actionPerformed(actionAbout, 0);
-        break;
-    case ICEWM_ACTION_SUSPEND:
-        wmapp->runCommand(suspendCommand);
-        break;
-    case ICEWM_ACTION_WINOPTIONS:
-        wmapp->actionPerformed(actionWinOptions, 0);
-        break;
-    case ICEWM_ACTION_RELOADKEYS:
-        wmapp->actionPerformed(actionReloadKeys, 0);
-        break;
-    }
+    static const pair<WMAction, EAction> pairs[] = {
+        { ICEWM_ACTION_LOGOUT,        actionLogout },
+        { ICEWM_ACTION_CANCEL_LOGOUT, actionCancelLogout },
+        { ICEWM_ACTION_REBOOT,        actionReboot },
+        { ICEWM_ACTION_SHUTDOWN,      actionShutdown },
+        { ICEWM_ACTION_ABOUT,         actionAbout },
+        { ICEWM_ACTION_WINDOWLIST,    actionWindowList },
+        { ICEWM_ACTION_RESTARTWM,     actionRestart },
+        { ICEWM_ACTION_SUSPEND,       actionSuspend },
+        { ICEWM_ACTION_WINOPTIONS,    actionWinOptions },
+        { ICEWM_ACTION_RELOADKEYS,    actionReloadKeys },
+    };
+    for (auto p : pairs)
+        if (message == p.left)
+            return actionPerformed(p.right);
 }
 
 class SplashWindow : public YWindow {
@@ -1907,7 +1862,7 @@ void SetLiteDefaults()
 }
 YWindow* YWMApp::splash(const char* splashFile) {
     YWindow* window(nullptr);
-    if (splashFile && 4 < strlen(splashFile)) {
+    if (splashFile && 4 < strlen(splashFile) && !post_preferences) {
         upath path(findConfigFile(splashFile));
         if (path.nonempty()) {
             ref<YImage> imag(YImage::load(path));

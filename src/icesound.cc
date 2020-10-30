@@ -60,10 +60,8 @@
 #define GUI_EVENT_NAMES
 #include "guievent.h"
 
-#ifdef HAVE_SYS_IOCTL_H
 #include <unistd.h>
 #include <sys/ioctl.h>
-#endif
 
 #ifdef HAVE_SYS_SOUNDCARD_H
 #include <sys/soundcard.h>
@@ -75,12 +73,10 @@
 #include <sndfile.h>
 #endif
 
-#ifdef HAVE_FCNTL_H
 #include <fcntl.h>
 // that's precise enough to detect a modern system
 #include <sys/types.h>
 #include <sys/stat.h>
-#endif
 
 /******************************************************************************/
 
