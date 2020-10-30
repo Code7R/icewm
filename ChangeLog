@@ -1,19 +1,44 @@
 # created with git log --stat=76 -M -C -500|fmt -sct -w80
 
-commit 4ea1941841189fc119e6640f50516c8267c0c895
-Merge: 6554e52f 813dd473
+commit 560cbbd246a67330147d3917183a521374f9ffd2
 Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Thu Oct 29 20:21:16 2020 +0100
+Date:   Fri Oct 30 19:24:57 2020 +0100
 
-    Merge branch 'icewm-1-4-BRANCH'
+    Only direct focus if frame is mapped.
 
-commit 813dd4736a185b740a0e0db134ead9fada9c0412
-Merge: 31304553 d1e7a8f8
+ src/wmwinlist.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 5fc5f5599c399716be4c6454516e96e628030ceb
 Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Thu Oct 29 20:16:25 2020 +0100
+Date:   Fri Oct 30 19:24:52 2020 +0100
 
-    Merge remote-tracking branch 'upstream/icewm-1-4-BRANCH' into
-    icewm-1-4-BRANCH
+    Catch changes in width_inc and height_inc for #510.
+
+ src/wmframe.cc | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+commit e14aaa8d5a8c8126698e3752bd2d30d3696a735f
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Oct 30 19:23:53 2020 +0100
+
+    Define colors at top and lighten up the grey a bit.
+
+ src/icehelp.cc | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
+
+commit 70fc4111234c051433b5e110ba34636dafe39fbe
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Oct 30 19:22:32 2020 +0100
+
+    Update to 1.9.0.
+
+ AUTHORS      |   22 +-
+ ChangeLog    | 8529 ++++++++++++++++++++++++++++--------------------------
+ NEWS         |  362 ++-
+ VERSION      |    2 +-
+ configure.ac |   10 +-
+ 5 files changed, 4597 insertions(+), 4328 deletions(-)
 
 commit d1e7a8f863e61ac2444e5e1e2e22ccf7ae20ac94
 Author: Bert Gijsbers <gijsbers@science.uva.nl>
@@ -918,34 +943,6 @@ Date:   Thu Sep 17 21:30:28 2020 +0200
  configure.ac |   10 +-
  7 files changed, 4262 insertions(+), 4335 deletions(-)
 
-commit 6554e52fb991ffa5a4f9bcc0d3a1bd219b310e63
-Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Thu Sep 17 02:08:26 2020 +0200
-
-    Prepare 1.8.3 release bis
-
- AUTHORS      |   2 +-
- ChangeLog    | 122 +++++++++++++++++++++++++++++++++++--------------------
- NEWS         |  11 +++--
- README.md    |   2 +-
- configure.ac |   4 +-
- 5 files changed, 90 insertions(+), 51 deletions(-)
-
-commit 6bc8d04acb290f764994ad56709aa59becccc7b9
-Merge: 57a0569a 31304553
-Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Thu Sep 17 02:03:11 2020 +0200
-
-    Merge branch 'icewm-1-4-BRANCH'
-
-commit 31304553f5870c6d50b6941347efc23acb1876e1
-Merge: 0bb305af 5cceaaaa
-Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Thu Sep 17 01:59:18 2020 +0200
-
-    Merge remote-tracking branch 'upstream/icewm-1-4-BRANCH' into
-    icewm-1-4-BRANCH
-
 commit 5cceaaaafb5d3cf09cfae996f0eb43088a0aef9b
 Author: Bert Gijsbers <gijsbers@science.uva.nl>
 Date:   Thu Sep 17 01:40:49 2020 +0200
@@ -954,75 +951,6 @@ Date:   Thu Sep 17 01:40:49 2020 +0200
 
  src/yfileio.cc | 18 ++++++++++--------
  1 file changed, 10 insertions(+), 8 deletions(-)
-
-commit 57a0569ae62df90f6ff2569c735f54a6601966a2
-Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Wed Sep 16 23:36:14 2020 +0200
-
-    Prepare 1.8.3 release
-
- AUTHORS      |  19 +-
- ChangeLog    | 919 +++++++++++++++++++++++++++++--------------------------
- NEWS         | 201 +++++-------
- README.md    |  36 +--
- RELEASE.md   |   2 +-
- VERSION      |   2 +-
- configure.ac |  10 +-
- po/ar.po     |  14 +-
- po/be.po     |  14 +-
- po/bg.po     |  14 +-
- po/ca.po     |  14 +-
- po/cs.po     |  14 +-
- po/da.po     |  14 +-
- po/de.po     |  14 +-
- po/el.po     |  14 +-
- po/en.po     |  14 +-
- po/es.po     |  14 +-
- po/fi.po     |  14 +-
- po/fr.po     |  14 +-
- po/he.po     |  14 +-
- po/hr.po     |  14 +-
- po/hu.po     |  14 +-
- po/icewm.pot |  16 +-
- po/id.po     |  14 +-
- po/it.po     |  14 +-
- po/ja.po     |  14 +-
- po/ko.po     |  14 +-
- po/lt.po     |  14 +-
- po/lv.po     |  14 +-
- po/mk.po     |  14 +-
- po/nb.po     |  14 +-
- po/nl.po     |  14 +-
- po/no.po     |  14 +-
- po/pl.po     |  14 +-
- po/pt.po     |  14 +-
- po/pt_BR.po  |  14 +-
- po/ro.po     |  14 +-
- po/ru.po     |  14 +-
- po/sk.po     |  14 +-
- po/sl.po     |  14 +-
- po/sv.po     |  14 +-
- po/tr.po     |  14 +-
- po/uk.po     |  14 +-
- po/vi.po     |  14 +-
- po/zh_CN.po  |  14 +-
- po/zh_TW.po  |  14 +-
- 46 files changed, 884 insertions(+), 853 deletions(-)
-
-commit 1d8e030b12a35676308e1e57e2ae1acf3dd41231
-Merge: 4f3c2fc9 0bb305af
-Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Wed Sep 16 23:25:20 2020 +0200
-
-    Merge branch 'icewm-1-4-BRANCH'
-
-commit 0bb305afe4be0506fdc2c725abf8f0ef0c6c1c48
-Merge: d8b6c997 8cdd5da5
-Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Wed Sep 16 19:32:01 2020 +0200
-
-    Merge remote-tracking branch 'upstream/icewm-1-4-BRANCH' into
-    icewm-1-4-BRANCH
 
 commit 8cdd5da58df9dfa4224e433ee14ed6184c5c84d2
 Author: Bert Gijsbers <gijsbers@science.uva.nl>
@@ -1371,75 +1299,6 @@ Date:   Tue Sep 8 21:44:21 2020 +0200
  src/movesize.cc | 4 ++++
  src/wmframe.h   | 2 +-
  2 files changed, 5 insertions(+), 1 deletion(-)
-
-commit 4f3c2fc9b5df9aa2b9e5c9726a0a7e9a15bfe317
-Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Tue Sep 8 00:55:57 2020 +0200
-
-    Prepare 1.8.2 release
-
- AUTHORS      |    3 +-
- ChangeLog    | 1017 ++++++++++++++++++++++++++----------------------------
- NEWS         |  128 +++----
- README.md    |   38 +-
- RELEASE.md   |    2 +-
- VERSION      |    2 +-
- configure.ac |   10 +-
- po/ar.po     |  118 +++----
- po/be.po     |  118 +++----
- po/bg.po     |  118 +++----
- po/ca.po     |  118 +++----
- po/cs.po     |  118 +++----
- po/da.po     |  118 +++----
- po/de.po     |  118 +++----
- po/el.po     |  118 +++----
- po/en.po     |  118 +++----
- po/es.po     |  118 +++----
- po/fi.po     |  118 +++----
- po/fr.po     |  118 +++----
- po/he.po     |  118 +++----
- po/hr.po     |  118 +++----
- po/hu.po     |  118 +++----
- po/icewm.pot |  120 +++----
- po/id.po     |  118 +++----
- po/it.po     |  118 +++----
- po/ja.po     |  118 +++----
- po/ko.po     |  118 +++----
- po/lt.po     |  118 +++----
- po/lv.po     |  118 +++----
- po/mk.po     |  118 +++----
- po/nb.po     |  118 +++----
- po/nl.po     |  118 +++----
- po/no.po     |  118 +++----
- po/pl.po     |  118 +++----
- po/pt.po     |  432 +++++++++++------------
- po/pt_BR.po  |  118 +++----
- po/ro.po     |  118 +++----
- po/ru.po     |  118 +++----
- po/sk.po     |  118 +++----
- po/sl.po     |  118 +++----
- po/sv.po     |  118 +++----
- po/tr.po     |  118 +++----
- po/uk.po     |  118 +++----
- po/vi.po     |  118 +++----
- po/zh_CN.po  |  118 +++----
- po/zh_TW.po  |  118 +++----
- 46 files changed, 3048 insertions(+), 3070 deletions(-)
-
-commit e277ad96bcdf70b8473e9daee1e337876660bc71
-Merge: cd96c1d5 d8b6c997
-Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Tue Sep 8 00:22:21 2020 +0200
-
-    Merge branch 'icewm-1-4-BRANCH'
-
-commit d8b6c99794a78d3c26466fbdf5ae76dd9a9bdabb
-Merge: b0bf123a 3749a355
-Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Tue Sep 8 00:19:45 2020 +0200
-
-    Merge remote-tracking branch 'upstream/icewm-1-4-BRANCH' into
-    icewm-1-4-BRANCH
 
 commit 3749a3557cf86457fc7c38df551fc709c1b45597
 Author: Bert Gijsbers <gijsbers@science.uva.nl>
@@ -1878,74 +1737,6 @@ Date:   Mon Aug 31 18:59:15 2020 +0200
  src/wmabout.cc | 2 +-
  2 files changed, 2 insertions(+), 2 deletions(-)
 
-commit cd96c1d58f1ce67b11279126f639fbe93da5268b
-Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Mon Aug 31 00:17:56 2020 +0200
-
-    Prepare 1.8.1 release
-
- AUTHORS      |   6 +-
- ChangeLog    | 798 ++++++++++++++++++++++++++++++-------------------------
- NEWS         | 122 ++++-----
- README.md    |  36 +--
- RELEASE.md   |   2 +-
- VERSION      |   2 +-
- configure.ac |  10 +-
- po/ar.po     |  28 +-
- po/be.po     |  28 +-
- po/bg.po     |  28 +-
- po/ca.po     |  28 +-
- po/cs.po     |  28 +-
- po/da.po     |  28 +-
- po/de.po     |  28 +-
- po/el.po     |  28 +-
- po/en.po     |  28 +-
- po/es.po     |  28 +-
- po/fi.po     |  28 +-
- po/fr.po     |  28 +-
- po/he.po     |  28 +-
- po/hr.po     |  28 +-
- po/hu.po     |  28 +-
- po/icewm.pot |  30 +--
- po/id.po     |  28 +-
- po/it.po     |  28 +-
- po/ja.po     |  28 +-
- po/ko.po     |  28 +-
- po/lt.po     |  28 +-
- po/lv.po     |  28 +-
- po/mk.po     |  28 +-
- po/nb.po     |  28 +-
- po/nl.po     |  28 +-
- po/no.po     |  28 +-
- po/pl.po     |  28 +-
- po/pt_BR.po  |  28 +-
- po/ro.po     |  28 +-
- po/ru.po     |  28 +-
- po/sk.po     |  28 +-
- po/sl.po     |  28 +-
- po/sv.po     |  28 +-
- po/tr.po     |  28 +-
- po/uk.po     |  28 +-
- po/vi.po     |  28 +-
- po/zh_CN.po  |  28 +-
- po/zh_TW.po  |  28 +-
- 45 files changed, 1041 insertions(+), 1001 deletions(-)
-
-commit d647b3e3977506d9488a7cce22567939df396aa4
-Merge: b8790433 b0bf123a
-Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Mon Aug 31 00:06:13 2020 +0200
-
-    Merge branch 'icewm-1-4-BRANCH'
-
-commit b0bf123a680cca69aa3827f6bfb77f9ee7ff1dbb
-Merge: 75fc965b 7e8c5927
-Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Mon Aug 31 00:04:05 2020 +0200
-
-    Merge remote-tracking branch 'upstream/icewm-1-4-BRANCH' into
-    icewm-1-4-BRANCH
-
 commit 7e8c59274e90905c1cd6cabe098838ad728dbb03
 Author: Bert Gijsbers <gijsbers@science.uva.nl>
 Date:   Sun Aug 30 23:19:44 2020 +0200
@@ -2317,74 +2108,6 @@ Date:   Tue Aug 25 11:02:29 2020 +0000
 
  po/pt.po | 2377 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  1 file changed, 2377 insertions(+)
-
-commit b87904338757f3c46e5b88552291cf2bd353f38d
-Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Tue Aug 25 02:18:03 2020 +0200
-
-    Prepare 1.8.0 release
-
- AUTHORS      |   26 +-
- ChangeLog    | 8531 +++++++++++++++++++++++++++---------------------------
- NEWS         |  Bin 26387 -> 37084 bytes
- README.md    |   36 +-
- RELEASE.md   |    2 +-
- VERSION      |    2 +-
- configure.ac |   10 +-
- po/ar.po     |    2 +-
- po/be.po     |    2 +-
- po/bg.po     |    2 +-
- po/ca.po     |    2 +-
- po/cs.po     |    2 +-
- po/da.po     |    2 +-
- po/de.po     |    2 +-
- po/el.po     |    2 +-
- po/en.po     |    2 +-
- po/es.po     |    2 +-
- po/fi.po     |    2 +-
- po/fr.po     |    2 +-
- po/he.po     |    2 +-
- po/hr.po     |    2 +-
- po/hu.po     |    2 +-
- po/icewm.pot |    4 +-
- po/id.po     |    2 +-
- po/it.po     |    2 +-
- po/ja.po     |    2 +-
- po/ko.po     |    2 +-
- po/lt.po     |    2 +-
- po/lv.po     |    2 +-
- po/mk.po     |    2 +-
- po/nb.po     |    2 +-
- po/nl.po     |    2 +-
- po/no.po     |    2 +-
- po/pl.po     |    2 +-
- po/pt_BR.po  |    2 +-
- po/ro.po     |    2 +-
- po/ru.po     |    2 +-
- po/sk.po     |    2 +-
- po/sl.po     |    2 +-
- po/sv.po     |    2 +-
- po/tr.po     |    2 +-
- po/uk.po     |    2 +-
- po/vi.po     |    2 +-
- po/zh_CN.po  |    2 +-
- po/zh_TW.po  |    2 +-
- 45 files changed, 4348 insertions(+), 4337 deletions(-)
-
-commit 22988880bcb0ca363a84a5decacac93602242d75
-Merge: 75ba6095 75fc965b
-Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Tue Aug 25 02:09:18 2020 +0200
-
-    Merge branch 'icewm-1-4-BRANCH'
-
-commit 75fc965b05864d70ccd8469ba03ef5f57ab8ad93
-Merge: 1a8f4336 0ecbfa3c
-Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Tue Aug 25 02:04:19 2020 +0200
-
-    Merge remote-tracking branch 'upstream/icewm-1-4-BRANCH' into
-    icewm-1-4-BRANCH
 
 commit 0ecbfa3ca99a9b197dbf6db811931b87d442133e
 Author: Bert Gijsbers <gijsbers@science.uva.nl>
@@ -4181,74 +3904,6 @@ Date:   Sat Jul 4 18:46:25 2020 +0000
  po/de.po | 22 +++++-----------------
  1 file changed, 5 insertions(+), 17 deletions(-)
 
-commit 75ba6095192ba54bdd5fba8ca19a4bf9ba1bcd18
-Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Sun Jul 12 20:03:50 2020 +0200
-
-    Prepare 1.7.0 release
-
- AUTHORS      |   12 +-
- ChangeLog    | 8171 ++++++++++++++++++++++++++++--------------------------
- NEWS         |  Bin 29248 -> 26387 bytes
- README.md    |   36 +-
- RELEASE.md   |    2 +-
- VERSION      |    2 +-
- configure.ac |   10 +-
- po/ar.po     |    2 +-
- po/be.po     |    2 +-
- po/bg.po     |    2 +-
- po/ca.po     |    2 +-
- po/cs.po     |    2 +-
- po/da.po     |    2 +-
- po/de.po     |    2 +-
- po/el.po     |    2 +-
- po/en.po     |    2 +-
- po/es.po     |    2 +-
- po/fi.po     |    2 +-
- po/fr.po     |    2 +-
- po/he.po     |    2 +-
- po/hr.po     |    2 +-
- po/hu.po     |    2 +-
- po/icewm.pot |    4 +-
- po/id.po     |    2 +-
- po/it.po     |    2 +-
- po/ja.po     |    2 +-
- po/ko.po     |    2 +-
- po/lt.po     |    2 +-
- po/lv.po     |    2 +-
- po/mk.po     |    2 +-
- po/nb.po     |    2 +-
- po/nl.po     |    2 +-
- po/no.po     |    2 +-
- po/pl.po     |    2 +-
- po/pt_BR.po  |    2 +-
- po/ro.po     |    2 +-
- po/ru.po     |    2 +-
- po/sk.po     |    2 +-
- po/sl.po     |    2 +-
- po/sv.po     |    2 +-
- po/tr.po     |    2 +-
- po/uk.po     |    2 +-
- po/vi.po     |    2 +-
- po/zh_CN.po  |    2 +-
- po/zh_TW.po  |    2 +-
- 45 files changed, 4326 insertions(+), 3985 deletions(-)
-
-commit da559935c3d27b60ee0e8fed97d27fbc332c0506
-Merge: 70dadbf4 1a8f4336
-Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Sun Jul 12 19:58:41 2020 +0200
-
-    Merge branch 'icewm-1-4-BRANCH'
-
-commit 1a8f433642b62f0c27a52f3e9c1e13a933d4a4a9
-Merge: 6c103076 f5aa6146
-Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Sun Jul 12 19:56:36 2020 +0200
-
-    Merge remote-tracking branch 'upstream/icewm-1-4-BRANCH' into
-    icewm-1-4-BRANCH
-
 commit f5aa6146a5c3a0a26fe037f0a408407fed65e0fa
 Author: Bert Gijsbers <gijsbers@science.uva.nl>
 Date:   Sun Jul 12 19:52:00 2020 +0200
@@ -5648,43 +5303,6 @@ Date:   Wed Jun 3 05:28:09 2020 +0200
  configure.ac |   10 +-
  7 files changed, 3958 insertions(+), 3832 deletions(-)
 
-commit 70dadbf41ac4e4dc8d4bfbea0fc122f9a996795e
-Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Fri May 29 19:13:07 2020 +0200
-
-    Prepare 1.6.6 release
-
- README.md    | 40 ++++++++++++++++++++--------------------
- RELEASE.md   |  2 +-
- VERSION      |  2 +-
- configure.ac | 10 +++++-----
- 4 files changed, 27 insertions(+), 27 deletions(-)
-
-commit d1abd04be4bfb71ff0b7c1e4d7eb4c11d7847f3f
-Merge: 11b8ecfa 6c103076
-Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Fri May 29 18:52:39 2020 +0200
-
-    Merge branch 'icewm-1-4-BRANCH'
-
-commit 6c103076b758f62855157a31e9a620d64c6baab2
-Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Fri May 29 15:43:36 2020 +0200
-
-    fix merge
-
- AUTHORS   |    77 +-
- ChangeLog | 10062 ++++++++++++--------------------------------------------
- NEWS      |  2396 +-------------
- 3 files changed, 2170 insertions(+), 10365 deletions(-)
-
-commit 36ae5a2470df3f5c8ddbed63dfc1613c25f69cd6
-Merge: a0eef122 46638bb1
-Author: Bert Gijsbers <gijsbers@science.uva.nl>
-Date:   Fri May 29 12:22:39 2020 +0200
-
-    merge
-
 commit 46638bb18440758ea2714394f72e54082ade48d0
 Author: Bert Gijsbers <gijsbers@science.uva.nl>
 Date:   Wed May 27 23:00:50 2020 +0200
@@ -6216,3 +5834,227 @@ Date:   Sat Apr 11 12:34:30 2020 +0200
 
  src/CMakeLists.txt | 17 ++++++++---------
  1 file changed, 8 insertions(+), 9 deletions(-)
+
+commit 244ea934ea770d01aab5cc03c46f677355eb915c
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Apr 10 21:38:46 2020 +0200
+
+    Assume C++11.
+
+ src/base.h    | 16 ++--------------
+ src/ref.h     |  9 ++-------
+ src/ystring.h |  9 ++-------
+ 3 files changed, 6 insertions(+), 28 deletions(-)
+
+commit f0d4e5ecfaf05d0181b7569099aa014a79b90805
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Apr 10 21:35:14 2020 +0200
+
+    Use override instead of OVERRIDE.
+
+ src/apppstatus.h | 16 ++++++++--------
+ src/ref.h        |  1 -
+ src/wmprog.cc    | 30 +++++++++++++++---------------
+ src/wmswitch.cc  | 30 +++++++++++++++---------------
+ src/wmswitch.h   | 18 +++++++++---------
+ src/ystring.h    |  1 -
+ 6 files changed, 47 insertions(+), 49 deletions(-)
+
+commit 9bb948a1afabddc6e99c53b2c80874d8fcecf3d6
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Apr 10 21:12:04 2020 +0200
+
+    Enforce C++11.
+
+ configure.ac | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+commit 6bae75103c69d3e76dbad51b7dd6ab18c6f41efa
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Apr 10 20:22:47 2020 +0200
+
+    Remove unused wmActionListener.
+
+ src/wmwinlist.cc | 5 ++---
+ src/wmwinlist.h  | 3 +--
+ 2 files changed, 3 insertions(+), 5 deletions(-)
+
+commit 2d3228ef2e5296ba3686ed97e9a198937f1681cd
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Apr 10 20:20:38 2020 +0200
+
+    Add icewm-session --output=FILE option.
+
+ man/icewm-session.pod | 12 ++++++++----
+ src/icesm.cc          | 16 ++++++++++++++++
+ 2 files changed, 24 insertions(+), 4 deletions(-)
+
+commit 326aca0da80d82526848b4a27a374131376d527e
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Fri Apr 10 19:04:10 2020 +0200
+
+    autoupdate
+
+ configure.ac | 48 +++++++++++++++++++++++-------------------------
+ 1 file changed, 23 insertions(+), 25 deletions(-)
+
+commit fe2670223613617b8078f4606f324b4dff5d37f0
+Author: Eduard Bloch <blade@debian.org>
+Date:   Fri Apr 10 18:59:31 2020 +0200
+
+    Little optimization and cleanup
+
+    For https://github.com/ice-wm/icewm/issues/13
+
+ src/fdomenu.cc | 41 +++++++++++++++++++++--------------------
+ 1 file changed, 21 insertions(+), 20 deletions(-)
+
+commit cd9b37b17da25c9ff660ee6aee63af172178a703
+Author: Eduard Bloch <blade@debian.org>
+Date:   Fri Apr 10 17:27:03 2020 +0200
+
+    Fuzzy matching of desktop categories
+
+    Extra trickery to consider the filename of the menu description file or
+    some equivalent category from KDE which might donate their icon and
+    translation.
+
+    For https://github.com/ice-wm/icewm/issues/13
+
+ contrib/conv_cat.pl |   2 +-
+ src/fdomenu.cc      | 115 +++++++++++++++-----
+ src/fdospecgen.h    | 276 ++++++++++++++++++++++++------------------------
+ 3 files changed, 229 insertions(+), 164 deletions(-)
+
+commit df52bcb3b0eddf3958858e879d08ef2418909226
+Author: Eduard Bloch <blade@debian.org>
+Date:   Fri Apr 10 14:05:13 2020 +0200
+
+    Auto-expand icon paths for all installed icon themes
+
+    With exception of HighContrast because it tends to contain an icon
+    version which is better matched by size but is black-white.
+    This can be overriden by the user, definining HighContrast directly
+    explicitly.
+
+ src/default.h  | 2 +-
+ src/iceicon.cc | 2 ++
+ src/yicon.cc   | 3 +++
+ src/yprefs.h   | 7 ++++---
+ 4 files changed, 10 insertions(+), 4 deletions(-)
+
+commit 2db0be3fce12793d2bc930f4289214631695f8fb
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Apr 5 13:48:40 2020 +0200
+
+    typo
+
+ src/wmtaskbar.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit dab39bece09fea420c383f75e75db770fc17fa6c
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Apr 5 13:48:10 2020 +0200
+
+    showProperty guievent
+
+ src/icesh.cc | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+
+commit f0c72445ea0abf3d8bf8eeddb9adf2b91dd4f91e
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Apr 5 12:04:01 2020 +0200
+
+    fileptr for #418.
+
+ src/upath.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+commit 5f70bfa62f4b3713e6252f781f9475d1d2e22f43
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sat Apr 4 23:46:01 2020 +0200
+
+    simplify
+
+ src/acpustatus.cc | 46 ++++++++++++----------------------------------
+ src/acpustatus.h  |  3 ---
+ 2 files changed, 12 insertions(+), 37 deletions(-)
+
+commit 3230be92b7841189033cb7e71d16ec53a6762789
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Thu Apr 2 19:57:03 2020 +0200
+
+    Repaint frame border immediately for #417.
+
+ src/wmframe.cc | 17 ++---------------
+ src/wmframe.h  |  1 -
+ 2 files changed, 2 insertions(+), 16 deletions(-)
+
+commit dfa9b355b49494aa82ebffb2028b7944e3eb360e
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Mon Mar 30 00:27:57 2020 +0200
+
+    Fix TaskBarAutoHide for TaskBarDoubleHeight for #415.
+
+ src/wmtaskbar.cc | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
+
+commit f22dd30a599d305dba83c7a78bfeaa31c12efce8
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Mar 29 21:25:55 2020 +0200
+
+    Port to solaris.
+
+ autogen.sh        |  4 ++++
+ configure.ac      | 14 ++++++++++++--
+ src/acpustatus.cc |  4 ++--
+ src/apppstatus.cc |  2 +-
+ src/apppstatus.h  |  8 ++++++++
+ src/base.h        |  4 ++++
+ src/icesound.cc   |  1 +
+ src/misc.cc       |  8 ++++++++
+ src/ylocale.cc    |  2 +-
+ 9 files changed, 41 insertions(+), 6 deletions(-)
+
+commit c5f62e7cd7572bf2207c716b3fa3c485f3606f48
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Mar 29 12:51:19 2020 +0200
+
+    Refactor mstring reference counting.
+
+ src/mstring.cc | 203 ++++++++++++++++++++---------------------------------
+ src/mstring.h  |  86 ++++++++++++++---------
+ src/yarray.h   |   1 +
+ 3 files changed, 130 insertions(+), 160 deletions(-)
+
+commit 8adf3c9ec5fb494adaf96a779cc145d92731f012
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Mar 29 12:50:36 2020 +0200
+
+    update string test.
+
+ src/strtest.cc | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+commit cd6df4951fb855945cde1c931384c6a7a4f716ba
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Mar 29 12:49:36 2020 +0200
+
+    Assume net status is always available for Linux+BSDs.
+
+ src/apppstatus.cc |  8 ++------
+ src/apppstatus.h  | 11 -----------
+ 2 files changed, 2 insertions(+), 17 deletions(-)
+
+commit 0c5f1bfb17496d8b78851f7e57e3299cebcf6fbd
+Author: Bert Gijsbers <gijsbers@science.uva.nl>
+Date:   Sun Mar 29 12:46:28 2020 +0200
+
+    Drop outdated dkstat support for old solaris versions.
+
+ configure.ac          |   2 +-
+ src/CMakeLists.txt    |   1 -
+ src/acpustatus.cc     | 180 ----------------------------------------------
+ src/acpustatus.h      |  31 ++++----
+ src/config.cmake.h.in |   3 +-
+ 5 files changed, 17 insertions(+), 200 deletions(-)
