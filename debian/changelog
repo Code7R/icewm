@@ -1,3 +1,10 @@
+icewm (2.0.0-2) unstable; urgency=low
+
+  * Disable direct loaders except for Imlib2 and librsvg
+  * Dropped libgdx-pixbuf-2.0 dependency (its xlib support is deprecated)
+
+ -- Eduard Bloch <blade@debian.org>  Mon, 14 Dec 2020 16:30:03 +0100
+
 icewm (2.0.0-1) unstable; urgency=low
 
   * New upstream release
