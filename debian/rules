@@ -121,11 +121,16 @@ set-orig-snapshot:
 # builds a snapshot of the upstream branch after some plausibility checks
 get-orig-source:
 	! test -e ../icewm_$(ORIGVERSION).orig.tar.xz || (echo Target already exists ; exit 1)
-	lc=`git reflog $(UPSTREAM_BRANCH) | head -n1 | cut -f1 -d" "` && echo "Expected upstream ref: $$lc (on failure run update-debian-mod target)" && grep -m1 ^commit ChangeLog | grep $$lc
+# little canary to prevent forgotten updates - however, not applied for upstream tags
+	if ! test -e .git/refs/tags/$(UPSTREAM_BRANCH) ; then \
+		lc=`git reflog $(UPSTREAM_BRANCH) | head -n1 | cut -f1 -d" "` \
+		&& echo "Expected upstream ref: $$lc (on failure run update-debian-mod target)" \
+		&& grep -m1 ^commit ChangeLog | grep "$$lc" \
+	;fi
 	git tag $(ORIGTAG) $(UPSTREAM_BRANCH)
 	git archive $(ORIGTAG) --prefix icewm-$(ORIGVERSION)/ | xz -9 > ../icewm_$(ORIGVERSION).orig.tar.xz
 	test -d ../tarballs && ln ../icewm_$(ORIGVERSION).orig.tar.xz ../tarballs || true
-	pristine-tar commit ../icewm_$(ORIGVERSION).orig.tar.xz $(UPSTREAM_BRANCH)
+	pristine-tar commit ../icewm_$(ORIGVERSION).orig.tar.xz $(ORIGTAG)
 
 update-debian-mod:
 	grep debian .git/HEAD
