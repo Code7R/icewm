@@ -257,8 +257,7 @@ SwitchWindow::SwitchWindow(YWindow *parent, ISwitchItems *items,
     switchHl(&clrQuickSwitchActive),
     switchMfg(&clrActiveTitleBarText),
     switchFont(YFont::getFont(XFA(switchFontName))),
-    modsDown(0),
-    iconsDrawn(0)
+    modsDown(0)
 {
     zItems = items ? items : new WindowItemsCtrlr;
     m_hlItemFromMotion = -1;

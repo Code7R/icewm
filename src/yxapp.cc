@@ -215,56 +215,58 @@ public:
         }
     }
     void handleSelectionRequest(const XSelectionRequestEvent &request) {
-        if (request.selection == _XA_CLIPBOARD) {
-            XSelectionEvent notify;
+        if (request.selection != _XA_CLIPBOARD)
+            return;
 
-            notify.type = SelectionNotify;
-            notify.requestor = request.requestor;
-            notify.selection = request.selection;
-            notify.target = request.target;
-            notify.time = request.time;
-            notify.property = request.property;
+        XSelectionEvent notify;
 
-            if (request.selection == _XA_CLIPBOARD &&
-                (request.target == XA_STRING ||
-                 request.target == _XA_UTF8_STRING) &&
-                length() > 0)
-            {
-                unsigned char *data =
-                    reinterpret_cast<unsigned char *>(
-                            const_cast<char *>(fData.c_str()));
-                XChangeProperty(xapp->display(),
-                                request.requestor,
-                                request.property,
-                                request.target,
-                                8, PropModeReplace,
-                                data, length());
-            } else if (request.selection == _XA_CLIPBOARD &&
-                       request.target == _XA_TARGETS &&
-                       length() > 0)
-            {
-                Atom targets[] = {
-                    XA_STRING,
-                    _XA_UTF8_STRING,
-                };
-                unsigned char* data =
-                    reinterpret_cast<unsigned char *>(targets);
-                const int count = int ACOUNT(targets);
+        notify.type = SelectionNotify;
+        notify.requestor = request.requestor;
+        notify.selection = request.selection;
+        notify.target = request.target;
+        notify.time = request.time;
+        notify.property = request.property;
 
-                XChangeProperty(xapp->display(),
-                                request.requestor,
-                                request.property,
-                                request.target,
-                                32, PropModeReplace,
-                                data, count);
-            } else {
-                notify.property = None;
-            }
+        if (request.selection == _XA_CLIPBOARD &&
+            (request.target == XA_STRING ||
+             request.target == _XA_UTF8_STRING) &&
+            length() > 0)
+        {
+            unsigned char *data =
+                reinterpret_cast<unsigned char *>(
+                        const_cast<char *>(fData.c_str()));
+            XChangeProperty(xapp->display(),
+                            request.requestor,
+                            request.property,
+                            request.target,
+                            8, PropModeReplace,
+                            data, length());
+        } else if (request.selection == _XA_CLIPBOARD &&
+                   request.target == _XA_TARGETS &&
+                   length() > 0)
+        {
+            Atom targets[] = {
+                XA_STRING,
+                _XA_UTF8_STRING,
+            };
+            unsigned char* data =
+                reinterpret_cast<unsigned char *>(targets);
+            const int count = int ACOUNT(targets);
 
-            XSendEvent(xapp->display(), notify.requestor, False, None,
-                       reinterpret_cast<XEvent *>(&notify));
+            XChangeProperty(xapp->display(),
+                            request.requestor,
+                            request.property,
+                            request.target,
+                            32, PropModeReplace,
+                            data, count);
+        } else {
+            notify.property = None;
         }
+
+        XSendEvent(xapp->display(), notify.requestor, False, None,
+                   reinterpret_cast<XEvent *>(&notify));
     }
+
 
     int length() const {
         return fData.length();

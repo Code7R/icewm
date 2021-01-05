@@ -67,30 +67,31 @@ void YXEmbedClient::handleProperty(const XPropertyEvent &property) {
     if (property.atom != _XA_XEMBED_INFO) return;
 
     YProperty prop(this, _XA_XEMBED_INFO, F32, 2L);
-    if (prop && prop.size() == 2L) {
-        Atom vers = prop[0];
-        Atom flag = prop[1];
-        if (vers == fInfo[0] && flag == fInfo[1]) {
+
+    // logProperty((const XEvent&) property);
+    if (!prop || prop.size() != 2L)
+        return;
+
+    Atom vers = prop[0];
+    Atom flag = prop[1];
+    if (vers == fInfo[0] && flag == fInfo[1]) {
+    }
+    else if (flag & XEMBED_MAPPED) {
+        if (vers > XEMBED_PROTOCOL_VERSION) {
+            if (trace())
+                tlog("xembed invalid version 0x%08lx version=%ld flag=%ld",
+                        property.window, vers, flag);
+            infoMapped(true);
+            sendNotify();
+            sendActivate();
         }
-        else if (flag & XEMBED_MAPPED) {
-            if (vers > XEMBED_PROTOCOL_VERSION) {
-                if (trace())
-                    tlog("xembed invalid version 0x%08lx version=%ld flag=%ld",
-                            property.window, vers, flag);
-                infoMapped(true);
-                sendNotify();
-                sendActivate();
-            }
-            if (notbit(fInfo[1], XEMBED_MAPPED)) {
-                fEmbedder->handleClientMap(handle());
-            }
-        }
-        else if (hasbit(fInfo[1], XEMBED_MAPPED)) {
-            fEmbedder->handleClientUnmap(handle());
+        if (notbit(fInfo[1], XEMBED_MAPPED)) {
+            fEmbedder->handleClientMap(handle());
         }
     }
-
-    // else logProperty((const XEvent&) property);
+    else if (hasbit(fInfo[1], XEMBED_MAPPED)) {
+        fEmbedder->handleClientUnmap(handle());
+    }
 }
 
 void YXEmbedClient::handleUnmap(const XUnmapEvent& unmap) {
