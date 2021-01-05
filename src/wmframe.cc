@@ -2321,6 +2321,9 @@ void YFrameWindow::updateIcon() {
             fFrameIcon = YIcon::getIcon(name);
         }
     }
+    if (fFrameIcon == null && client()->adopted() == false) {
+        fFrameIcon = YIcon::getIcon("icewm");
+    }
 
     if (fFrameIcon != null) {
         if (fFrameIcon->small() == null && fFrameIcon->large() == null) {
