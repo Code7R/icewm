@@ -27,6 +27,8 @@ public:
 
     // move the focused target up or down and return the new focused element
     virtual int moveTarget(bool zdown)=0;
+    // run closing/destruction process for the pointed object
+    virtual void destroyTarget() {}
     // set the target explicitly rather than switching around
     virtual int setTarget(int zPosition)=0;
     /// Show changed focus preview to user
@@ -93,8 +95,6 @@ private:
     ref<YFont> switchFont;
 
     int modsDown;
-    int iconsDrawn;
-
     bool isUp;
 
     bool modDown(int m);

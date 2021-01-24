@@ -224,6 +224,19 @@ public:
         fLastWindow = fActiveWindow = nullptr;
     }
 
+    virtual void destroyTarget() override {
+        auto id = getActiveItem();
+        if (id < 0) return;
+        auto item = zList[id];
+        if (!item) return;
+        auto client = item->client();
+        if (!client) return;
+        auto frame = client->getFrame();
+        if (!frame) return;
+        frame->activateWindow(true, false);
+        manager->getFocus()->wmClose();
+    }
+
     virtual void destroyedItem(void *item) override
     {
         if (getCount() == 0)
@@ -232,11 +245,9 @@ public:
         YFrameWindow* frame = (YFrameWindow*) item;
         if (frame == fLastWindow)
             fLastWindow = nullptr;
+        auto pos = zTarget;
         updateList();
-        if (frame == fActiveWindow || fActiveWindow == nullptr) {
-            zTarget = -1;
-            moveTarget(true);
-        }
+        setTarget( (pos >= 0 && pos < getCount()) ? pos : 0);
         displayFocusChange(fActiveWindow);
     }
 
@@ -415,11 +426,7 @@ void SwitchWindow::paint(Graphics &g, const YRect &/*r*/) {
     else
         g.fillRect(1, 1, width() - 3, height() - 3);
 
-    iconsDrawn = 0;
     m_verticalStyle ? paintVertical(g) : paintHorizontal(g);
-    if (iconsDrawn) {
-        g.maxOpacity();
-    }
 }
 
 void SwitchWindow::paintHorizontal(Graphics &g) {
@@ -447,7 +454,6 @@ void SwitchWindow::paintHorizontal(Graphics &g) {
                     tOfs = iconWidth + quickSwitchIMargin
                         + quickSwitchSepSize;
                 }
-                ++iconsDrawn;
             }
 
             if (quickSwitchSepSize) {
@@ -541,11 +547,9 @@ void SwitchWindow::paintHorizontal(Graphics &g) {
 
                             if (icon != null) {
                                 icon->draw(g, x, y - ds / 2, iconSize);
-                                ++iconsDrawn;
                             }
                         } else {
                             icon->draw(g, x, y, YIcon::largeSize());
-                            ++iconsDrawn;
                         }
                         x += ds;
                     }
@@ -620,7 +624,6 @@ void SwitchWindow::paintVertical(Graphics &g) {
                         ? width() - quickSwitchHMargin - iconSize
                         : contentX;
                 icon->draw(g, iconX, contentY, iconSize);
-                ++iconsDrawn;
             }
 
             if (i == m_hlItemFromMotion && i != zItems->getActiveItem())
@@ -721,6 +724,12 @@ bool SwitchWindow::handleKey(const XKeyEvent &key) {
             cancel();
             return true;
         }
+        else if ((IS_WMKEY(k, vm, gKeyWinClose)))
+        {
+            zItems->destroyTarget();
+            return true;
+        }
+
         if (zItems->isKey(k, vm) && !modDown(m)) {
             accept();
             return true;
@@ -761,12 +770,17 @@ bool SwitchWindow::modDown(int mod) {
 
 void SwitchWindow::handleButton(const XButtonEvent &button) {
     //printf("got click, hot item: %d\n", m_hintedItem);
-    int hintId = calcHintedItem(button.x, button.y);
-    if (button.button == Button1 && button.type == ButtonPress) {
+    if (button.type == ButtonPress) {
+        int hintId = calcHintedItem(button.x, button.y);
         if (hintId >= 0 && hintId < zItems->getCount()) {
-            zItems->reset();
-            zItems->setTarget(hintId);
-            accept();
+            if (button.button == Button1) {
+                zItems->setTarget(hintId);
+                accept();
+            }
+            if (button.button == Button2) {
+                zItems->setTarget(hintId);
+                zItems->destroyTarget();
+            }
         }
     }
     YPopupWindow::handleButton(button);

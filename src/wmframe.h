@@ -401,7 +401,7 @@ public:
     void updateNetWMUserTime();
     void updateNetWMUserTimeWindow();
     void updateNetWMWindowOpacity();
-    void updateNetWMFullscreenMonitors(int, int, int, int);
+    void updateNetWMFullscreenMonitors(int top, int bottom, int left, int right);
 
     int strutLeft() { return fStrutLeft; }
     int strutRight() { return fStrutRight; }
@@ -411,7 +411,7 @@ public:
 
     void updateUrgency();
     void setWmUrgency(bool wmUrgency);
-    bool isUrgent() { return fWmUrgency || fClientUrgency; }
+    virtual bool isUrgent() const { return fWmUrgency || fClientUrgency; }
 
     int getScreen() const;
     void refresh();

@@ -158,6 +158,7 @@ public:
     virtual void updateSubmenus() = 0;
     virtual Time since() const = 0;
     virtual ClassHint* classHint() const = 0;
+    virtual bool isUrgent() const = 0;
 protected:
     virtual ~ClientData() {}
 };
@@ -252,11 +253,8 @@ public:
     void setWinTrayHint(long tray_opt);
     bool getWinTrayHint(long *tray_opt);
 
-    void setStateHint(long mask, long state);
-    bool getStateHint(long *mask, long *state);
-
+    void setStateHint();
     void setWinHintsHint(long hints);
-    bool getWinHintsHint(long *hints);
     long winHints() const { return fWinHints; }
 
     bool getWinIcons(Atom* type, long* count, long** elem);
@@ -314,7 +312,7 @@ private:
     int haveButtonGrab;
     unsigned int fBorder;
     FrameState fSavedFrameState;
-    long fSavedWinState[2];
+    long fWinStateHint;
     XSizeHints *fSizeHints;
     ClassHint fClassHint;
     XWMHints *fHints;
@@ -367,6 +365,7 @@ private:
         bool net_wm_window_opacity : 1;
         bool net_wm_pid : 1;
         bool mwm_hints : 1;
+        bool win_tray : 1; // no property notify
         bool win_layer : 1; // no property notify
         bool win_icons : 1;
         bool xembed_info : 1;
