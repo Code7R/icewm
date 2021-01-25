@@ -1,11 +1,157 @@
-icewm -- history of user-visible changes.  2020-12-14
+icewm -- history of user-visible changes.  2021-01-24
+
+Release icewm-2.1.1 released 2021-01-24
+---------------------------------------
+
+git shortlog -e -n -w80,6,8 2.1.0...2.1.1
+
+Bert Gijsbers <gijsbers@science.uva.nl> (51):
+      Prepare 1.5.3 release
+      1.5.3
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 1.5.4 release
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 1.5.5 release
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 1.6.0 release
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 1.6.1 release
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 1.6.2 release
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 1.6.3 release
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 1.6.4 release
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 1.6.5 release
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 1.6.6 release
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 1.7.0 release
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 1.8.0 release
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 1.8.1 release
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 1.8.2 release
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 1.8.3 release
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 1.8.3 release bis
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 1.9.0 release
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 1.9.1 release
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 1.9.2 release
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 2.0.0 release
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 2.0.1 release
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 2.1.0 release
+      Provide drawable context when creating pixmap cursors with Imlib2 for
+        issue #541.
+      Don't unarm menu popup buttons for issue #527.
+      Fix issue #542 for texturing background of task pane.
+      Improve the isValid test for Imlib2 custom cursors.
+      Detail.
+      Moving towards 2.1.1.
+      Merge remote-tracking branch 'upstream/icewm-1-4-BRANCH' into
+        icewm-1-4-BRANCH
+
+Nathan <ndowens04@gmail.com> (1):
+      Missing ytimer link
+
+gijsbers <gijsbers@users.noreply.github.com> (1):
+      Merge pull request #7 from ndowens/patch-1
+
+
+Release icewm-2.1.0 released 2021-01-23
+---------------------------------------
+
+git shortlog -e -n -w80,6,8 2.0.1...2.1.0
+
+Bert Gijsbers <gijsbers@science.uva.nl> (9):
+      Revert "Clarify startMoveSize." to fix issue #540.
+      Split the TaskBarApp class in a button class and an app class for issue
+        #198.
+      Restore icesh setTrayOption and getTrayOption for issue #537. Make support
+        for "_NET_WM_FULLSCREEN_MONITORS" better conformant to EWMH spec. Add
+        "monitors", "frame", "properties" commands to icesh. Make preference
+        FullscreenUseAllMonitors use just all the monitors.
+      Fix dragging task buttons.
+      Disarm button on release of mouse for issue #527.
+      Remember maximized when fullscreen for issues #538 and #533.
+      Merge remote-tracking branch 'upstream/icewm-1-4-BRANCH' into
+        icewm-1-4-BRANCH
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 2.1.0 release
+
+Eduard Bloch <blade@debian.org> (3):
+      Option for Alt-F4ing windows in quick-switch
+      Restore the old position in quickswitch on window destruction
+      Option to move the ShowDesktop button to the right side
+
+
+Release icewm-2.0.1 released 2021-01-02
+---------------------------------------
+
+git shortlog -e -n -w80,6,8 2.0.0...2.0.1
+
+Bert Gijsbers <gijsbers@science.uva.nl> (16):
+      Handle horizontal scroll keys in window list window.
+      Search for icewm icon for internal windows.
+      Fix setting option values for #535.
+      Allow to set background opacity for QuickSwitch background for #534.
+      Clarify startMoveSize.
+      Communicate the window ID of the icon window in WM_STATE when iconifying
+        to desktop.
+      Make isUrgent a member of ClientData.
+      Reset horizontal scrolling when using the Home and End keys for the window
+        list.
+      Add IceVM explanation to README for ice-wm/icewm#35
+      Update to 2.0.0.
+      Note that support was added for icon_pixmap and icon_window fields of
+        WM_HINTS property in 2.0.0.
+      Improve getting icon window for WM_STATE.
+      Fix spelling of Gerenciador for pt_BR.
+      Merge remote-tracking branch 'upstream/icewm-1-4-BRANCH' into
+        icewm-1-4-BRANCH
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 2.0.1 release
+
+Aleš Kastner <alkas@volny.cz> (1):
+      Translated using Weblate (Czech)
+
+David Medina <medipas@gmail.com> (1):
+      Translated using Weblate (Catalan)
+
+Ferdinand Galko <galko.ferdinand@gmail.com> (1):
+      Translated using Weblate (Slovak)
+
+Freek de Kruijf <freek@opensuse.org> (1):
+      Translated using Weblate (Dutch)
+
+Hugo Carvalho <hugokarvalho@hotmail.com> (1):
+      Translated using Weblate (Portuguese)
+
+Kukuh Syafaat <syafaatkukuh@gmail.com> (1):
+      Translated using Weblate (Indonesian)
+
+Luiz Fernando Ranghetti <elchevive68@gmail.com> (1):
+      Translated using Weblate (Portuguese (Brazil))
+
+Yasuhiko Kamata <belphegor@belbel.or.jp> (1):
+      Translated using Weblate (Japanese)
+
 
 Release icewm-2.0.0 released 2020-12-14
 ---------------------------------------
 
 git shortlog -e -n -w80,6,8 1.9.2...2.0.0
 
-Bert Gijsbers <gijsbers@science.uva.nl> (57):
+Bert Gijsbers <gijsbers@science.uva.nl> (58):
       Fix positioning of window list title for non-standard SmallIconSize
         settings for issue #514.
       Remove wmmgr.h from wmframe.h. Add classHint() to ClientData.
@@ -72,6 +218,7 @@ Bert Gijsbers <gijsbers@science.uva.nl> (57):
       Merge remote-tracking branch 'upstream/icewm-1-4-BRANCH' into
         icewm-1-4-BRANCH
       Merge branch 'icewm-1-4-BRANCH'
+      Prepare 2.0.0 release
 
 Eduard Bloch <blade@debian.org> (5):
       Revert "Revert "Stop overpainting clock every second when not needed""
@@ -257,202 +404,4 @@ Panwar <caspian7pena@gmail.com> (1):
 
 Yasuhiko Kamata <belphegor@belbel.or.jp> (1):
       Translated using Weblate (Japanese)
-
-
-Release icewm-1.8.3 released 2020-09-17
----------------------------------------
-
-git shortlog -e -n -w80,6,8 1.8.2...1.8.3
-
-Bert Gijsbers <gijsbers@science.uva.nl> (32):
-      TaskBar cannot fullscreen.
-      Use wmHide or wmShow to hide or show the taskbar for #489.
-      Restore the translation which was overwritten by Weblate.
-      Support "toggleState Fullscreen". Show state detail for spy ClientMessage.
-         Support "iconic" and "normal" commands for WM_CHANGE_STATE.
-      Show more detail in logConfigureRequest and logClientMessage.
-      More succinct _NET_WM_STATE implementation.
-      Send just one ConfigureNotify message per resize. In setState first
-        compute size and relayout before updating _NET_WM_STATE and _WIN_LAYER
-        for issue #491 and postpone low-priority updates for different timing
-        for GTK-menubar terminals.
-      Only load icon if needed.
-      Fix -list. Add +T. Print CARDINALs as unsigned. Show Above window handle
-        for ConfigureNotify.
-      Merge WM_WINDOW_ROLE and WINDOW_ROLE.
-      Postpone taskbar app status updates until idle.
-      Make switch icons opaque for 32-bit visuals.
-      Check if icon is null.
-      Simplify setState with deltaState.
-      Add WinStateFullscreen to the visible _WIN_STATE bits.
-      make update-po
-      Simplify removing a frame app from the taskbar.
-      Check if a map request is for a mapped window.
-      Send synthetic ConfigureNotify events for resizing only when required by
-        the ICCCM specification. Send synthetic ConfigureNotify events for
-        positioning whenever this is required by the ICCCM specification. Fix
-        for EWMH restack raise requests. Reflect layer changes in the ABOVE and
-        BELOW flags in the EWMH _NET_WM_STATE property. Only update the frame
-        position when it really has changed.
-      Prefer tlog over printf when logging.
-      Fix tooltip positioning.
-      Reduce number of workarea updates for taskbar. Only let taskbar have
-        struts if at top or bottom of screen. Keep global positioning of
-        internal clients local to clients. Fix for autohide taskbar not wanting
-        to hide. Support TaskBarAutoHide for TaskBarKeepBelow.
-      Make it compile on G++ 7.5.0.
-      Use pragmas to prevent compiler complaints if LOGEVENTS.
-      Prevent compiler warning on chdir.
-      Merge remote-tracking branch 'upstream/icewm-1-4-BRANCH' into
-        icewm-1-4-BRANCH
-      Merge branch 'icewm-1-4-BRANCH'
-      Prepare 1.8.3 release
-      Check if filedescriptor is valid and fix off-by-one allocation error.
-      Merge remote-tracking branch 'upstream/icewm-1-4-BRANCH' into
-        icewm-1-4-BRANCH
-      Merge branch 'icewm-1-4-BRANCH'
-      Prepare 1.8.3 release bis
-
-Hugo Carvalho <hugokarvalho@hotmail.com> (4):
-      Added translation using Weblate (Portuguese)
-      Translated using Weblate (Portuguese)
-      Translated using Weblate (Portuguese)
-      Translated using Weblate (Portuguese)
-
-Arif Budiman <arifpedia@gmail.com> (1):
-      Translated using Weblate (Indonesian)
-
-David Medina <medipas@gmail.com> (1):
-      Translated using Weblate (Catalan)
-
-Ferdinand Galko <galko.ferdinand@gmail.com> (1):
-      Translated using Weblate (Slovak)
-
-Freek de Kruijf <freek@opensuse.org> (1):
-      Translated using Weblate (Dutch)
-
-Paolo Za <zapaolo@email.it> (1):
-      Translated using Weblate (Italian)
-
-Rodrigo Macedo <rmsolucoeseminformatic4@gmail.com> (1):
-      Translated using Weblate (Portuguese (Brazil))
-
-Sarah Kriesch <ada.lovelace@gmx.de> (1):
-      Translated using Weblate (German)
-
-Stanislav Brabec <sbrabec@suse.cz> (1):
-      Merge remote-tracking branch 'weblate/icewm-1-4-BRANCH' into
-        icewm-1-4-BRANCH
-
-
-Release icewm-1.8.2 released 2020-09-08
----------------------------------------
-
-git shortlog -e -n -w80,6,8 1.8.1...1.8.2
-
-Bert Gijsbers <gijsbers@science.uva.nl> (32):
-      Update Marko's copy dates for #285.
-      CMake support for LOGEVENTS.
-      Add find for YRefArray.
-      Fix the inappropriate use of globals in the context of a dynamically
-        loaded configuration for #483.
-      Add fsmart resize.
-      Add -C option for copyright.
-      Add -C option for copyright.
-      Add -C option for copyright.
-      More comparison operators.
-      Several fixes for reading from pipes with timeouts for issue #487.
-      Remove unused set_nb.
-      Reduce LOC in read_pipe.
-      Keep value of fTransientFor for later.
-      Add userhome, dollar_expansion and tilde_expansion functions. Let
-        path_lookup also perform dollar_expansion and tilde_expansion. In
-        menuprog and menuprogreload do dollar_expansion and tilde_expansion.
-        Move event logging from misc.cc to its own file logevent.cc.
-      Solaris needs memset from string.h for FD_SET.
-      Improve use of userhome in tilde_expansion.
-      Revert "Extra control flow checking", because the strict exit code
-        checking makes it too brittle. The CI build now also fails.
-      Benefit from userhome when locating home directory.
-      Improve VERSION_RAW.
-      Permit non-gnu date.
-      Update version to 1.8.1.
-      Reduce AC_CHECK_FUNCS and AC_CHECK_HEADERS to essentials.
-      Reduce CHECK_FUNCTION and CHECK_INCLUDE to essentials.
-      Ignore a zero file size for /proc filesystem for issue #488.
-      Enable inclusion of sys/sysctl.h for sysctlbyname for FreeBSD.
-      Add x11_ldflags to cmake genpref build.
-      Make cmake work for BSD+Solaris.
-      Also for strtest.
-      Emulate gmake for Arch.
-      Merge remote-tracking branch 'upstream/icewm-1-4-BRANCH' into
-        icewm-1-4-BRANCH
-      Merge branch 'icewm-1-4-BRANCH'
-      Prepare 1.8.2 release
-
-Eduard Bloch <blade@debian.org> (10):
-      Install dev packages on Ubuntu
-      Cope with shallow clones
-      Basic autoconf CI setup
-      More CI build configs with more and less features
-      Added strtest exection in ctest
-      Rename LOGEVENTS option to follow existing pattern
-      Update apt index before installing dependencies
-      ~ expansion is modified by fakeroot, don't consider it
-      Extra control flow checking
-      Fixed and extended fakeroot detection and exceptions
-
-Code7R <Code7R@users.noreply.github.com> (2):
-      Create cmake.yml
-      Merge pull request #485 from bbidulock/icewm-1-4-BRANCH_CI
-
-Hugo Carvalho <hugokarvalho@hotmail.com> (1):
-      Update Portuguese (pt) translations (#486)
-
-
-Release icewm-1.8.1 released 2020-08-31
----------------------------------------
-
-git shortlog -e -n -w80,6,8 1.8.0...1.8.1
-
-Bert Gijsbers <gijsbers@science.uva.nl> (29):
-      Fix typo for the KeySysArrangeIcons key binding.
-      Fix path_lookup strtok_r for non-Glibc BSD systems for ice-wm/icewm#23.
-      Only define KeySysArrangeIcons if preference MinimizeToDesktop=1.
-      Remove double buffering from YWindow.
-      Prevent premature workarea changes when collapsing taskbar to avoid
-        repositioning MiniIcons.
-      Remove 4 bools from YWindow.
-      Free logoutMenu on exit.
-      Fix topSideVerticalOffset for fully opaque frame borders for #482.
-      Also spy on ClientMessages.
-      Free fonts when done.
-      More spy output details.
-      Remove undocumented KeyWinSnapMove. Add KeyWinSmartPlace to preferences.
-      Prevent cyclic transients. Optimize setCurrentPositionOuter.
-      Update man pages.
-      Workaround for absent wordexp on OpenBSD.
-      Remove comments from include statements.
-      Update dependencies in Makefile.am.
-      make update-po.
-      Cast we_wordc for OpenBSD.
-      Changes for OpenBSD.
-      Fix for --disable-shape.
-      Fix for --disable-gdk-pixbuf.
-      Restrict ICE_COMMON_SRCS to essentials.
-      Fix the FreeBSD case where icewm-session is started in the root directory
-        by the display manager.
-      Fixes for reading from a pipe.
-      Don't show error if timed out.
-      Merge remote-tracking branch 'upstream/icewm-1-4-BRANCH' into
-        icewm-1-4-BRANCH
-      Merge branch 'icewm-1-4-BRANCH'
-      Prepare 1.8.1 release
-
-Eduard Bloch <blade@debian.org> (2):
-      Fix memory leak from path_lookup call
-      Fixup DEBUG build
-
-Code7R <Code7R@users.noreply.github.com> (1):
-      Feature/smart pointer in file reader (#463)
 
