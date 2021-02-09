@@ -1,3 +1,10 @@
+icewm (2.1.2-1) unstable; urgency=medium
+
+  * New upstream release
+    + fixes descovery of desktop files in folders with broken symlinks
+
+ -- Eduard Bloch <blade@debian.org>  Tue, 09 Feb 2021 22:27:54 +0100
+
 icewm (2.1.1-1) unstable; urgency=medium
 
   * New upstream release
