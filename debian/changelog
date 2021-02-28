@@ -1,3 +1,16 @@
+icewm (2.1.2-2) UNRELEASED; urgency=low
+
+  * Cherry-picking isolated fixes from upstream version 2.2:
+    + If an application resizes itself partially outside the work area, then
+      move it back inside the work area, if possible, for issue #550.
+    + Fix ignoreQuickSwitch winoption for focused windows for issue #552.
+    + Only reposition when resizing outside of bottom right corner to permit
+      negative positions in issue #550.
+    + Fix for immediately redrawing after setting default clock format.
+    + [Documentation] Add compositor and replace read by executed.
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 28 Feb 2021 22:27:44 +0100
+
 icewm (2.1.2-1) unstable; urgency=medium
 
   * New upstream release
