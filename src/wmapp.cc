@@ -762,18 +762,14 @@ void YWMApp::actionPerformed(YAction action, unsigned int /*modifiers*/) {
             restartClient(nullptr, nullptr);
     }
     else if (action == actionRestartXterm) {
-        struct t_executor : public YMsgBoxListener {
-            YSMListener *listener;
-            t_executor(YSMListener* x) : listener(x) {}
-            virtual void handleMsgBox(YMsgBox *msgbox, int operation) {
-                if (msgbox)
-                    manager->unmanageClient(msgbox);
-                if (operation == YMsgBox::mbOK)
-                    listener->restartClient(TERM, nullptr);
-            }
-        };
-        static t_executor delegate(this);
-        YFrameWindow::wmConfirmKill(_("Kill IceWM, replace with Xterm"), &delegate);
+        if (fRestartMsgBox) {
+            fRestartMsgBox->unmanage();
+        }
+        fRestartMsgBox = new YMsgBox(YMsgBox::mbBoth,
+                                     _("Confirm Restart as Terminal"),
+                                     _("Unmanage all applications and restart\n"
+                                      "as a terminal. Proceed?"),
+                                     this);
     }
     else if (action == actionRun) {
         runCommand(runDlgCommand);
@@ -1090,6 +1086,7 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName,
     notifyParent(notifyParent),
     notifiedParent(0),
     fLogoutMsgBox(nullptr),
+    fRestartMsgBox(nullptr),
     aboutDlg(nullptr),
     ctrlAltDelete(nullptr),
     switchWindow(nullptr),
@@ -1220,8 +1217,12 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName,
 
 YWMApp::~YWMApp() {
     if (fLogoutMsgBox) {
-        manager->unmanageClient(fLogoutMsgBox);
+        fLogoutMsgBox->unmanage();
         fLogoutMsgBox = nullptr;
+    }
+    if (fRestartMsgBox) {
+        fRestartMsgBox->unmanage();
+        fRestartMsgBox = nullptr;
     }
     if (aboutDlg) {
         manager->unmanageClient(aboutDlg);
@@ -1696,16 +1697,13 @@ void YWMApp::doLogout(RebootShutdown reboot) {
     if (!confirmLogout)
         logout();
     else {
-        if (fLogoutMsgBox == nullptr) {
-            YMsgBox *msgbox = new YMsgBox(YMsgBox::mbOK|YMsgBox::mbCancel);
-            fLogoutMsgBox = msgbox;
-            msgbox->setTitle(_("Confirm Logout"));
-            msgbox->setText(_("Logout will close all active applications.\nProceed?"));
-            msgbox->autoSize();
-            msgbox->setMsgBoxListener(this);
+        if (fLogoutMsgBox) {
+            fLogoutMsgBox->unmanage();
         }
-        if (fLogoutMsgBox)
-            fLogoutMsgBox->showFocused();
+        fLogoutMsgBox = new YMsgBox(YMsgBox::mbBoth,
+                            _("Confirm Logout"),
+                            _("Logout will close all active applications.\n"
+                              "Proceed?"), this);
     }
 }
 
@@ -1748,13 +1746,18 @@ void YWMApp::cancelLogout() {
 }
 
 void YWMApp::handleMsgBox(YMsgBox *msgbox, int operation) {
-    if (msgbox == fLogoutMsgBox && fLogoutMsgBox) {
-        if (fLogoutMsgBox) {
-            manager->unmanageClient(fLogoutMsgBox);
-            fLogoutMsgBox = nullptr;
-        }
+    if (msgbox == fLogoutMsgBox) {
+        msgbox->unmanage();
+        fLogoutMsgBox = nullptr;
         if (operation == YMsgBox::mbOK) {
             logout();
+        }
+    }
+    if (msgbox == fRestartMsgBox) {
+        msgbox->unmanage();
+        fRestartMsgBox = nullptr;
+        if (operation == YMsgBox::mbOK) {
+            restartClient(TERM, nullptr);
         }
     }
 }
