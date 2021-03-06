@@ -1,3 +1,9 @@
+icewm (2.2.1-1) experimental; urgency=low
+
+  * New upstream release
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 28 Feb 2021 22:44:13 +0100
+
 icewm (2.1.2-1) unstable; urgency=medium
 
   * New upstream release
