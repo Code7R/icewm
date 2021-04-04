@@ -1,9 +1,9 @@
-icewm (2.3.0-1) experimental; urgency=low
+icewm (2.3.1-1) experimental; urgency=low
 
   * New upstream release
   * Adding explicit dependency on sensible-utils
 
- -- Eduard Bloch <blade@debian.org>  Thu, 01 Apr 2021 16:41:09 +0200
+ -- Eduard Bloch <blade@debian.org>  Sun, 04 Apr 2021 12:47:13 +0200
 
 icewm (2.2.1-1) experimental; urgency=low
 
