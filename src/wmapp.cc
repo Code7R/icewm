@@ -768,8 +768,6 @@ void YWMApp::actionPerformed(YAction action, unsigned int /*modifiers*/) {
     else if (action == actionRun) {
         runCommand(runDlgCommand);
     } else if (action == actionExit) {
-        manager->unmanageClients();
-        unregisterProtocols();
         exit(0);
     } else if (action == actionFocusClickToFocus) {
         setFocusMode(FocusClick);
@@ -793,11 +791,15 @@ void YWMApp::actionPerformed(YAction action, unsigned int /*modifiers*/) {
         }
     } else if (action == actionAbout) {
         if (aboutDlg == nullptr)
-            aboutDlg = new AboutDlg();
-        else
-            aboutDlg->getFrame()->setWorkspace(manager->activeWorkspace());
+            aboutDlg = new AboutDlg(this);
         if (aboutDlg)
             aboutDlg->showFocused();
+    }
+    else if (action == actionAboutClose) {
+        if (aboutDlg) {
+            manager->unmanageClient(aboutDlg);
+            aboutDlg = nullptr;
+        }
     } else if (action == actionTileVertical ||
                action == actionTileHorizontal)
     {
@@ -1258,6 +1260,9 @@ YWMApp::~YWMApp() {
     //!!!XFreeGC(display(), clipPixmapGC); in ypaint.cc
 
     XFlush(display());
+    unsetenv("DISPLAY");
+    alarm(1);
+    wmapp = nullptr;
 }
 
 int YWMApp::mainLoop() {
@@ -1273,7 +1278,16 @@ int YWMApp::mainLoop() {
         }
     }
 
-    return super::mainLoop();
+    int rc = super::mainLoop();
+    signalGuiEvent(geShutdown);
+    manager->unmanageClients();
+    unregisterProtocols();
+    YIcon::freeIcons();
+    WMConfig::freeConfiguration();
+    defOptions = null;
+    hintOptions = null;
+
+    return rc;
 }
 
 void YWMApp::handleSignal(int sig) {
@@ -1636,15 +1650,7 @@ int main(int argc, char **argv) {
                 notify_parent, splashFile,
                 configFile, overrideTheme);
 
-    int rc = app.mainLoop();
-    app.signalGuiEvent(geShutdown);
-    manager->unmanageClients();
-    app.unregisterProtocols();
-    YIcon::freeIcons();
-    WMConfig::freeConfiguration();
-    defOptions = null;
-    hintOptions = null;
-    return rc;
+    return app.mainLoop();
 }
 
 void YWMApp::createTaskBar() {
