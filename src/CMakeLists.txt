@@ -419,7 +419,7 @@ target_compile_options(ice PUBLIC ${icewm_pc_flags})
 
 SET(ITK_SRCS ymenu.cc ylabel.cc yscrollview.cc ymenuitem.cc
              yscrollbar.cc ybutton.cc ylistbox.cc yinputline.cc
-             globit.cc yicon.cc wmconfig.cc wpixres.cc)
+             globit.cc yicon.cc wmconfig.cc wmsave.cc wpixres.cc)
 
 add_library(itk STATIC ${ITK_SRCS})
 target_compile_options(itk PUBLIC ${icewm_pc_flags})
@@ -515,7 +515,7 @@ if(NOT CMAKE_CROSSCOMPILING)
     ADD_CUSTOM_COMMAND(TARGET genpref${EXEEXT}
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/lib
-        COMMAND genpref${EXEEXT} -o ${CMAKE_BINARY_DIR}/lib/preferences
+        COMMAND genpref${EXEEXT} -o ${CMAKE_BINARY_DIR}/lib/preferences -s
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
     INSTALL(FILES ${CMAKE_BINARY_DIR}/lib/preferences DESTINATION ${LIBDIR})
 endif()

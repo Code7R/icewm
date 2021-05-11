@@ -197,6 +197,8 @@ libitk_la_SOURCES = \
 	wmconfig.h \
 	wmmgr.h \
 	wmoption.h \
+	wmsave.cc \
+	wmsave.h \
 	wmtaskbar.h \
 	workspaces.h \
 	wpixmaps.h \
@@ -654,7 +656,7 @@ nodist_pkgdata_DATA = \
 	preferences
 
 preferences: genpref$(EXEEXT)
-	$(AM_V_GEN)./genpref$(EXEEXT) >$@
+	$(AM_V_GEN)./genpref$(EXEEXT) -o $@ -s
 
 CLEANFILES = preferences
 
