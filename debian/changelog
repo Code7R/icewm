@@ -1,3 +1,9 @@
+icewm (2.4.0+git20210619-1) experimental; urgency=low
+
+  * New upstream release
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 20 Jun 2021 13:19:13 +0200
+
 icewm (2.3.4-1) experimental; urgency=low
 
   * New upstream release
