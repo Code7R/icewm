@@ -433,6 +433,8 @@ void YFrameWindow::manage() {
     }
     if (client()->adopted())
         XAddToSaveSet(xapp->display(), client()->handle());
+    else
+        client()->getPropertiesList();
 
     client()->reparent(container(), 0, 0);
     client()->setFrame(this);
@@ -3168,6 +3170,9 @@ void YFrameWindow::setState(int mask, int state) {
     }
 
     if (deltaState & WinStateUrgent) {
+        if (notbit(fNewState, WinStateUrgent) && client()->urgencyHint()) {
+            client()->hints()->flags &= ~XUrgencyHint;
+        }
         updateTaskBar();
     }
     if (hasbit(deltaState, WinStateMinimized) && minimizeToDesktop) {

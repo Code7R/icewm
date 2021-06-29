@@ -23,6 +23,7 @@
 #include "WinMgr.h"
 #define GUI_EVENT_NAMES
 #include "guievent.h"
+#include "logevent.h"
 
 /// _SET would be nice to have
 #define _NET_WM_STATE_REMOVE 0
@@ -37,8 +38,6 @@
 #define _NET_WM_BOTTOMLEFT  3
 
 #define KEY_MODMASK(x) ((x) & (ControlMask | ShiftMask | Mod1Mask))
-#define BUTTON_MASK(x) ((x) & (Button1Mask | Button2Mask | Button3Mask))
-#define BUTTON_MODMASK(x) ((x) & (ControlMask | ShiftMask | Mod1Mask | Button1Mask | Button2Mask | Button3Mask))
 
 #define COUNT(a)    (int(sizeof a / sizeof(*a)))
 #define CTRL(k)     ((k) & 0x1F)
@@ -52,6 +51,7 @@ static struct Layout {
 } layout = { 0L, 4L, 3L, _NET_WM_TOPLEFT, };
 
 typedef unsigned long Pixel;
+const char* ApplicationName = "testnetwmhints";
 
 static void tell(const char* msg, ...) {
     FILE* output = stdout;
@@ -100,7 +100,9 @@ static long windowWorkspace = 0;
 ///static bool fullscreen = true;
 
 class TAtom {
-    const char* name;
+public:
+    const char* const name;
+private:
     Atom atom;
 public:
     explicit TAtom(const char* name) : name(name), atom(None) { }
@@ -206,10 +208,10 @@ void moveResize(Window w, int x, int y, int what) {
     XSendEvent(display, root, False, SubstructureNotifyMask, (XEvent *) &xev);
 }
 
-void toggleState(Window w, Atom toggle_state) {
+void toggleState(Window w, TAtom& toggle_state) {
     XClientMessageEvent xev = {};
 
-    puts("toggle state");
+    tell("toggle state %s\n", toggle_state.name);
 
     xev.type = ClientMessage;
     xev.window = w;
@@ -221,6 +223,15 @@ void toggleState(Window w, Atom toggle_state) {
     ///xev.data.l[4] = CurrentTime; //xev.data.l[1] = timeStamp;
 
     XSendEvent(display, root, False, SubstructureNotifyMask, (XEvent *) &xev);
+}
+
+void toggleUrgency(Display* d, Window w) {
+    XWMHints* h = XGetWMHints(d, w);
+    if (!h)
+        h = XAllocWMHints();
+    h->flags = XUrgencyHint;
+    XSetWMHints(d, w, h);
+    XFree(h);
 }
 
 void setLayer(Window w, long layer) {
@@ -271,7 +282,7 @@ void requestExtents(Window w) {
     XSendEvent(display, root, False, SubstructureNotifyMask, (XEvent *) &xev);
 }
 
-static void getProperty(Window w, Atom p, Atom t, long* c) {
+static bool getProperty(Window w, Atom p, Atom t, long* c, long limit = 1L) {
     Atom r_type;
     int r_format;
     unsigned long count;
@@ -279,7 +290,7 @@ static void getProperty(Window w, Atom p, Atom t, long* c) {
     unsigned char* prop = nullptr;
 
     if (XGetWindowProperty(display, w, p,
-                           0, 1, False, t,
+                           0L, limit, False, t,
                            &r_type, &r_format,
                            &count, &bytes_remain,
                            &prop) == Success && prop)
@@ -287,6 +298,9 @@ static void getProperty(Window w, Atom p, Atom t, long* c) {
         TEST(r_type == t && r_format == 32 && count == 1);
         *c = ((long *)prop)[0];
         XFree(prop);
+        return true;
+    } else {
+        return false;
     }
 }
 
@@ -324,6 +338,11 @@ static int xfail(Display* display, XErrorEvent* xev) {
 
 static void sigcatch(int signo) {
     tell("Received signal %d: \"%s\".\n", signo, strsignal(signo));
+    if (signo == SIGALRM) {
+        Display* d = XOpenDisplay(nullptr);
+        toggleUrgency(d, window);
+        XCloseDisplay(d);
+    }
 }
 
 static void help(char* name) {
@@ -336,12 +355,31 @@ static void help(char* name) {
     exit(1);
 }
 
+static Pixel getColor(const char* name) {
+    int screen = XDefaultScreen(display);
+    colormap = XDefaultColormap(display, screen);
+    XColor color = {}, exact;
+    Pixel pixel;
+    if (XLookupColor(display, colormap, name, &exact, &color) &&
+        XAllocColor(display, colormap, &color))
+        pixel = color.pixel;
+    else if (XParseColor(display, colormap, name, &color) &&
+        XAllocColor(display, colormap, &color))
+        pixel = color.pixel;
+    else
+        pixel = XWhitePixel(display, screen);
+    tell("color %s = 0x%lX\n", name, pixel);
+    return pixel;
+}
+
 static void test_run(char* progname, bool pinging) {
     int screen = XDefaultScreen(display);
     root = XRootWindow(display, screen);
     colormap = XDefaultColormap(display, screen);
-    Pixel black = XBlackPixel(display, screen);
+    // Pixel black = XBlackPixel(display, screen);
     Pixel white = XWhitePixel(display, screen);
+    Pixel blue = getColor("blue");
+    Pixel yellow = getColor("yellow");
 
     window = XCreateWindow(display, root,
                            0,
@@ -351,7 +389,7 @@ static void test_run(char* progname, bool pinging) {
                            CopyFromParent, InputOutput, CopyFromParent,
                            None, None);
 
-    XSetWindowBackground(display, window, black);
+    XSetWindowBackground(display, window, blue);
 
     Atom protocols[] = {
         _XA_WM_DELETE_WINDOW, _XA_WM_TAKE_FOCUS,
@@ -359,7 +397,7 @@ static void test_run(char* progname, bool pinging) {
     };
     XSetWMProtocols(display, window, protocols, COUNT(protocols) );
 
-    XClassHint classHint = { (char *)"name:1", (char *)"class 1" };
+    XClassHint classHint = { (char *)"window", (char *)"testnet" };
     XSetClassHint(display, window, &classHint);
     XStoreName(display, window, basename(progname));
 
@@ -390,17 +428,19 @@ static void test_run(char* progname, bool pinging) {
 
     XMapRaised(display, window);
 
-    unmapped = XCreateSimpleWindow(display, root, 0, 0, 100, 100, 20, white, black);
-    XClassHint unclassHint = { (char *)"unmapped:1", (char *)"class 1" };
+    unmapped = XCreateSimpleWindow(display, root, 0, 0, 100, 100, 20,
+                                   white, yellow);
+    XClassHint unclassHint = { (char *)"unmapped", (char *)"testnet" };
     XSetClassHint(display, unmapped, &unclassHint);
     XStoreName(display, unmapped, "unmapped");
+    setProperty(unmapped, _XA_NET_WM_PID, XA_CARDINAL, &pid, 1);
 
     setProperty(unmapped, _XA_WM_CLIENT_LEADER, XA_WINDOW, &leader, 1);
 
     Atom wmstate[] = {
         // _XA_NET_WM_STATE_ABOVE,
         // _XA_NET_WM_STATE_BELOW,
-        // _XA_NET_WM_STATE_DEMANDS_ATTENTION,
+        _XA_NET_WM_STATE_DEMANDS_ATTENTION,
         // _XA_NET_WM_STATE_FOCUSED,
         // _XA_NET_WM_STATE_FULLSCREEN,
         // _XA_NET_WM_STATE_HIDDEN,
@@ -516,14 +556,17 @@ static void test_run(char* progname, bool pinging) {
                    "4 : layer dock\n"
                    "5 : layer above dock\n"
                    "? : help\n"
+                   "A : urgent alarm 5 seconds\n"
                    "M : toggle state modal\n"
                    "a : toggle state above\n"
                    "b : toggle state below\n"
+                   "d : toggle state urgent\n"
                    "f : toggle fullscreen\n"
                    "s : toggle sticky\n"
                    "t : toggle skip taskbar\n"
                    "m : move resize 8\n"
                    "r : move resize 4\n"
+                   "u : map the unmapped\n"
                    "x : extents unmapped\n"
                    "X : extents window\n"
                    "^X : extents root\n"
@@ -560,12 +603,17 @@ static void test_run(char* progname, bool pinging) {
             toggleState(window, _XA_NET_WM_STATE_ABOVE);
         else if (k == 'b')
             toggleState(window, _XA_NET_WM_STATE_BELOW);
+        else if (k == 'd')
+            toggleState(window, _XA_NET_WM_STATE_DEMANDS_ATTENTION);
         else if (k == 'M')
             toggleState(window, _XA_NET_WM_STATE_MODAL);
         else if (k == 's')
             toggleState(window, _XA_NET_WM_STATE_STICKY);
         else if (k == 't')
             toggleState(window, _XA_NET_WM_STATE_SKIP_TASKBAR);
+        else if (k == 'A') {
+            int sec = 5; tell("alarm %d seconds\n", sec); alarm(sec);
+        }
         else if (k == '0')
             setLayer(window, WinLayerDesktop);
         else if (k == '1')
@@ -679,7 +727,7 @@ static void test_run(char* progname, bool pinging) {
                     printf("%s%s", i ? ", " : "",
                             atomName(((long *)prop)[i]));
                 }
-                printf("\n");
+                printf("%s\n", count == 0 ? "_" : "");
                 XFree(prop);
             }
         }
@@ -699,7 +747,7 @@ static void test_run(char* progname, bool pinging) {
                 for (unsigned i = 0; i < count; ++i) {
                     printf("%s%ld", i ? ", " : "  ", ((long *)prop)[i]);
                 }
-                printf("\n");
+                printf("%s\n", count == 0 ? "_" : "");
                 XFree(prop);
             }
         }
@@ -805,6 +853,7 @@ static void test_run(char* progname, bool pinging) {
     } break;
 
     default:
+        tell("%s\n", eventName(xev.type));
         break;
     }
 }
@@ -812,6 +861,7 @@ static void test_run(char* progname, bool pinging) {
 int main(int argc, char **argv) {
 
     signal(SIGTERM, sigcatch);
+    signal(SIGALRM, sigcatch);
 
     bool pinging = false;
 
