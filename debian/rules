@@ -102,7 +102,8 @@ override_dh_auto_clean:
 	dh_auto_clean
 
 override_dh_installchangelogs:
-	dh_installchangelogs -picewm-common CHANGES
+	cat ChangeLog CHANGES > debian/changelog.mix
+	dh_installchangelogs -picewm-common debian/changelog.mix
 
 override_dh_fixperms:
 	dh_fixperms

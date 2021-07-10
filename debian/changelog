@@ -1,6 +1,8 @@
 icewm (2.6.0-1) experimental; urgency=low
 
   * New upstream release
+  * Appending the old upstream changelog to the current ChangeLog.gz contents
+    and removing confusing legacy changelog file from docs
 
  -- Eduard Bloch <blade@debian.org>  Sat, 10 Jul 2021 19:13:00 +0200
 
