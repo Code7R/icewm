@@ -1,3 +1,9 @@
+icewm (2.7.0-1) UNRELEASED; urgency=medium
+
+  * New upstream release
+
+ -- Eduard Bloch <blade@debian.org>  Fri, 06 Aug 2021 23:12:18 +0200
+
 icewm (2.6.0-1) experimental; urgency=low
 
   * New upstream release
