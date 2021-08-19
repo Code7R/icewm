@@ -51,6 +51,19 @@ void YPixmap::replicate(bool horiz, bool copyMask) {
     (horiz ? fWidth : fHeight) = dim;
 }
 
+YPixmap::YPixmap(Pixmap pixmap, Pixmap mask,
+        unsigned width, unsigned height,
+        unsigned depth, ref<YImage> image):
+    fWidth(width),
+    fHeight(height),
+    fDepth(depth),
+    fPixmap(pixmap),
+    fMask(mask),
+    fPicture(None),
+    fImage(image)
+{
+}
+
 YPixmap::~YPixmap() {
     if (fPixmap != None) {
         if (xapp != nullptr)
@@ -160,7 +173,7 @@ ref<YPixmap> YPixmap::create(unsigned w, unsigned h, unsigned depth, bool useMas
 }
 
 ref<YPixmap> YPixmap::createFromImage(ref<YImage> image, unsigned depth) {
-    return image->renderToPixmap(depth);
+    return image != null ? image->renderToPixmap(depth) : null;
 }
 
 ref<YPixmap> YPixmap::createFromPixmapAndMask(Pixmap /*pixmap*/,
@@ -190,10 +203,12 @@ ref<YPixmap> YPixmap::createFromPixmapAndMaskScaled(Pixmap pix, Pixmap mask,
 }
 
 ref<YPixmap> YPixmap::load(upath filename) {
-    ref<YImage> image = YImage::load(filename);
     ref<YPixmap> pixmap;
-    if (image != null) {
-        pixmap = YPixmap::createFromImage(image, xapp->depth());
+    if (filename != null) {
+        ref<YImage> image(YImage::load(filename));
+        if (image != null) {
+            pixmap = YPixmap::createFromImage(image, xapp->depth());
+        }
     }
     return pixmap;
 }

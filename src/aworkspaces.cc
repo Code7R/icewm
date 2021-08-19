@@ -6,7 +6,7 @@
 #include "wmframe.h"
 #include "wmmgr.h"
 #include "udir.h"
-#include "ypaths.h"
+#include "wmapp.h"
 #include "wpixmaps.h"
 #include "intl.h"
 #include <math.h>
@@ -31,7 +31,7 @@ WorkspaceButton::WorkspaceButton(int ws, YWindow *parent, WorkspaceDragger* d):
     fGraphics(this, true),
     fPane(d)
 {
-    addStyle(wsNoExpose);
+    addStyle(wsNoExpose | wsToolTipping);
     setParentRelative();
     setTitle(name());
 }
@@ -104,6 +104,8 @@ void WorkspaceButton::handleCrossing(const XCrossingEvent &e) {
 
     if (false == pagerShowPreview) {
         super::handleCrossing(e);
+    } else {
+        YWindow::handleCrossing(e);
     }
 }
 
@@ -118,14 +120,16 @@ void WorkspaceButton::handleDNDLeave() {
     repaint();
 }
 
-void WorkspaceButton::handleBeginDrag(const XButtonEvent& d, const XMotionEvent& m)
+bool WorkspaceButton::handleBeginDrag(const XButtonEvent& d, const XMotionEvent& m)
 {
-    if (d.button == Button1) {
+    if (d.button == Button1 && fPane->limited()) {
         fDragging = true;
         fDownX = d.x_root;
         fDelta = m.x_root - d.x_root;
         fPane->drag(fWorkspace, fDelta, true, false);
+        return true;
     }
+    return false;
 }
 
 void WorkspaceButton::handleDrag(const XButtonEvent& d, const XMotionEvent& m)
@@ -162,6 +166,7 @@ void WorkspaceButton::inputReturn(YInputLine* input) {
             swap(*&str, *workspaces[fWorkspace]);
             manager->setDesktopNames();
             fPane->relabel(fWorkspace);
+            repaint();
         }
         fInput = nullptr;
     }
@@ -212,7 +217,8 @@ WorkspacesPane::WorkspacesPane(YWindow *parent):
     fTime(zerotime()),
     fMillis(16L),
     fRepositioning(false),
-    fReconfiguring(false)
+    fReconfiguring(false),
+    fRepaintSpaces(false)
 {
     addStyle(wsNoExpose);
     setParentRelative();
@@ -401,9 +407,10 @@ WorkspaceButton* WorkspacesPane::create(int workspace, unsigned height) {
 }
 
 WorkspaceIcons::WorkspaceIcons() {
-    ref<YResourcePaths> dirs(YResourcePaths::subdirs("workspace", false));
-    for (int i = 0; i < dirs->getCount(); ++i) {
-        upath path(dirs->getPath(i) + "/workspace/");
+    MStringArray dirs;
+    wmapp->subdirs("workspace", false, dirs);
+    for (const mstring& base : dirs) {
+        upath path(base + "/workspace/");
         for (adir dir(path.string()); dir.next(); ) {
             files += (path + dir.entry()).string();
         }
@@ -458,6 +465,10 @@ void WorkspacesPane::setPressed(long ws, bool set) {
             }
         }
     }
+}
+
+bool WorkspacesPane::limited() const {
+    return 0 < count() && (last()->extent() - fButtons[0]->x()) > int(width());
 }
 
 void WorkspacesPane::drag(int ws, int dx, bool start, bool end) {
@@ -589,8 +600,14 @@ mstring WorkspaceButton::baseName() {
     return name;
 }
 
-void WorkspaceButton::updateName() {
+void WorkspaceButton::updateToolTip() {
     setToolTip(_("Workspace: ") + baseName());
+}
+
+void WorkspaceButton::updateName() {
+    if (toolTipVisible()) {
+        updateToolTip();
+    }
 }
 
 void WorkspacesPane::repaint() {

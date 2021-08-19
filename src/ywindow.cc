@@ -27,21 +27,6 @@
 /******************************************************************************/
 /******************************************************************************/
 
-void YWindow::addIgnoreUnmap(Window /*w*/) {
-    unmapCount++;
-}
-
-bool YWindow::ignoreUnmap(Window /*w*/) {
-    if (unmapCount == 0)
-        return false;
-    unmapCount--;
-    return true;
-}
-
-void YWindow::removeAllIgnoreUnmap(Window /*w*/) {
-    unmapCount = 0;
-}
-
 class YAutoScroll: public YTimerListener {
 public:
     YAutoScroll();
@@ -127,7 +112,8 @@ YWindow::YWindow(YWindow *parent, Window win, int depth,
     fFocusedWindow(nullptr),
     fHandle(win), flags(0), fStyle(0),
     fX(0), fY(0), fWidth(1), fHeight(1),
-    fPointer(), unmapCount(0),
+    unmapCount(0),
+    fPointer(),
     fGraphics(nullptr),
     fEventMask(KeyPressMask|KeyReleaseMask|FocusChangeMask|
                LeaveWindowMask|EnterWindowMask),
@@ -195,8 +181,8 @@ Colormap YWindow::colormap() {
     return fColormap;
 }
 
-void YWindow::setWindowFocus() {
-    XSetInputFocus(xapp->display(), handle(), RevertToNone, CurrentTime);
+void YWindow::setWindowFocus(Time timestamp) {
+    XSetInputFocus(xapp->display(), handle(), RevertToNone, timestamp);
 }
 
 void YWindow::setTitle(char const * title) {
@@ -349,9 +335,9 @@ Window YWindow::create() {
         attributes.backing_store = WhenMapped;
         attrmask |= CWBackingStore;
     }
-    if (fPointer.handle() != None) {
+    if (fPointer) {
         attrmask |= CWCursor;
-        attributes.cursor = fPointer.handle();
+        attributes.cursor = fPointer;
     }
     if (fBitGravity != ForgetGravity) {
         attributes.bit_gravity = fBitGravity;
@@ -397,9 +383,11 @@ Window YWindow::create() {
     }
     fDepth = unsigned(wa.depth);
     fVisual = wa.visual;
-    if (parent() == desktop &&
-        !(flags & (wsManager | wsOverrideRedirect)))
-        XSetWMProtocols(xapp->display(), fHandle, &_XA_WM_DELETE_WINDOW, 1);
+    if (parent() == desktop && !(flags & (wsManager | wsOverrideRedirect))) {
+        Atom prot[] = { _XA_WM_DELETE_WINDOW, _XA_WM_TAKE_FOCUS };
+        const int n = 1 + hasbit(flags, wsTakeFocus);
+        XSetWMProtocols(xapp->display(), fHandle, prot, n);
+    }
 
     if ((flags & wfVisible) && !(flags & wfNullSize))
         XMapWindow(xapp->display(), fHandle);
@@ -448,7 +436,7 @@ void YWindow::destroy() {
             if (!(flags & wfAdopted)) {
                 MSG(("----------------------destroy %lX", fHandle));
                 XDestroyWindow(xapp->display(), fHandle);
-                removeAllIgnoreUnmap(fHandle);
+                removeAllIgnoreUnmap();
             } else {
                 XSelectInput(xapp->display(), fHandle, NoEventMask);
             }
@@ -475,7 +463,7 @@ void YWindow::reparent(YWindow *parent, int x, int y) {
     // ensure window was created before reparenting
     (void) handle();
     if ((flags & (wfVisible | wfDestroyed)) == wfVisible) {
-        addIgnoreUnmap(handle());
+        addIgnoreUnmap();
     }
 
     removeWindow();
@@ -502,7 +490,7 @@ void YWindow::hide() {
     if (flags & wfVisible) {
         flags &= unsigned(~wfVisible);
         if (!(flags & (wfNullSize | wfDestroyed))) {
-            addIgnoreUnmap(handle());
+            addIgnoreUnmap();
             XUnmapWindow(xapp->display(), handle());
         }
     }
@@ -595,25 +583,22 @@ void YWindow::handleEvent(const XEvent &event) {
 
     case MotionNotify:
          {
-             XEvent new_event, old_event;
+             const long mask = KeyPressMask |
+                               KeyReleaseMask |
+                               ButtonPressMask |
+                               ButtonReleaseMask |
+                               ButtonMotionMask;
+             XEvent old_event(event), new_event;
 
-             old_event = event;
-             while (/*XPending(app->display()) > 0 &&*/
-                    XCheckMaskEvent(xapp->display(),
-                                 KeyPressMask |
-                                 KeyReleaseMask |
-                                 ButtonPressMask |
-                                 ButtonReleaseMask |
-                                 ButtonMotionMask,
-                                 &new_event) == True)
-             {
+             while (XCheckMaskEvent(xapp->display(), mask, &new_event)) {
                  if (event.type != new_event.type ||
-                     event.xmotion.window != new_event.xmotion.window)
+                     event.xmotion.window != new_event.xmotion.window ||
+                     event.xmotion.subwindow != new_event.xmotion.subwindow)
                  {
                      XPutBackEvent(xapp->display(), &new_event);
                      break;
                  } else {
-                     XSync(xapp->display(), False);
+                     xapp->sync();
                      old_event = new_event;
                  }
              }
@@ -862,7 +847,7 @@ void YWindow::handleButton(const XButtonEvent &button) {
             fClickWindow = this;
             fClickCount = 1;
         } else {
-            if ((button.time - fClickTime < unsigned(MultiClickTime)) &&
+            if (button.time < fClickTime + MultiClickTime &&
                 fClickButton == button.button &&
                 motionDelta <= ClickMotionDistance &&
                 button.x >= 0 && button.y >= 0 &&
@@ -882,7 +867,7 @@ void YWindow::handleButton(const XButtonEvent &button) {
             !fClickDrag &&
             fClickCount > 0 &&
             fClickButtonDown == button.button &&
-            motionDelta <= ClickMotionDistance &&
+            // motionDelta <= ClickMotionDistance &&
             button.x >= 0 && button.y >= 0 &&
             button.x < int(width()) && button.y < int(height()))
         {
@@ -909,26 +894,21 @@ void YWindow::handleMotion(const XMotionEvent &motion) {
             int const dx(abs(motion.x_root - fClickEvent.x_root));
             int const dy(abs(motion.y_root - fClickEvent.y_root));
             int const motionDelta(max(dx, dy));
-            int curButtons = 0;
-
-            curButtons =
-                ((motion.state & Button1Mask) ? (1 << 1) : 0) |
-                ((motion.state & Button2Mask) ? (1 << 2) : 0) |
-                ((motion.state & Button3Mask) ? (1 << 3) : 0) |
-                ((motion.state & Button4Mask) ? (1 << 4) : 0) |
-                ((motion.state & Button5Mask) ? (1 << 5) : 0);
-
-            if (((motion.time - fClickTime > unsigned(ClickMotionDelay)) ||
-                (motionDelta >= ClickMotionDistance)) &&
-                ((1 << fClickButton) == curButtons)
-               )
+            if (motion.time > fClickTime + ClickMotionDelay ||
+                motionDelta >= ClickMotionDistance)
             {
-                //msg("start drag %d %d %d", curButtons, fClickButton, motion.state);
-                fClickDrag = true;
-                handleBeginDrag(fClickEvent, motion);
+                if ((motion.state & xapp->ButtonMask) / Button1Mask
+                    == fClickButton)
+                {
+                    fClickDrag = handleBeginDrag(fClickEvent, motion);
+                }
             }
         }
     }
+}
+
+bool YWindow::handleBeginDrag(const XButtonEvent &, const XMotionEvent &) {
+    return false;
 }
 
 void YWindow::setToolTip(const mstring& tip) {
@@ -939,6 +919,10 @@ void YWindow::setToolTip(const mstring& tip) {
     }
 }
 
+mstring YWindow::getToolTip() {
+    return fToolTip ? fToolTip->getText() : null;
+}
+
 bool YWindow::toolTipVisible() {
     return fToolTip && fToolTip->visible();
 }
@@ -946,14 +930,18 @@ bool YWindow::toolTipVisible() {
 void YWindow::updateToolTip() {
 }
 
-void YWindow::handleCrossing(const XCrossingEvent &crossing) {
-    if (fToolTip) {
+void YWindow::handleCrossing(const XCrossingEvent& crossing) {
+    if (fToolTip || fStyle & wsToolTipping) {
         if (crossing.type == EnterNotify && crossing.mode == NotifyNormal) {
             updateToolTip();
-            fToolTip->enter(this);
+            if (fToolTip) {
+                fToolTip->enter(this);
+            }
         }
         else if (crossing.type == LeaveNotify) {
-            fToolTip->leave();
+            if (fToolTip) {
+                fToolTip->leave();
+            }
         }
     }
 }
@@ -1013,7 +1001,7 @@ void YWindow::handleMapNotify(const XMapEvent &) {
 
 void YWindow::handleUnmapNotify(const XUnmapEvent &xunmap) {
     if (xunmap.window == xunmap.event || xunmap.send_event) {
-        if (!ignoreUnmap(xunmap.window)) {
+        if (ignoreUnmap() == false) {
             flags &= unsigned(~wfVisible);
             handleUnmap(xunmap);
         }
@@ -1032,7 +1020,7 @@ void YWindow::handleMapRequest(const XMapRequestEvent&) {
 void YWindow::handleDestroyWindow(const XDestroyWindowEvent &destroyWindow) {
     if (destroyWindow.window == fHandle) {
         setDestroyed();
-        removeAllIgnoreUnmap(destroyWindow.window);
+        removeAllIgnoreUnmap();
     }
 }
 
@@ -1046,7 +1034,7 @@ bool YWindow::nullGeometry() {
     if (zero && !(flags & wfNullSize)) {
         flags |= wfNullSize;
         if (flags & wfVisible) {
-            addIgnoreUnmap(handle());
+            addIgnoreUnmap();
             XUnmapWindow(xapp->display(), handle());
         }
     } else if ((flags & wfNullSize) && !zero) {
@@ -1155,12 +1143,12 @@ void YWindow::configure(const YRect2& r2)
     configure((const YRect &) r2);
 }
 
-void YWindow::setPointer(const YCursor& pointer) {
+void YWindow::setPointer(Cursor pointer) {
     fPointer = pointer;
 
     if (flags & wfCreated) {
         XSetWindowAttributes attributes;
-        attributes.cursor = fPointer.handle();
+        attributes.cursor = fPointer;
         XChangeWindowAttributes(xapp->display(), handle(),
                                 CWCursor, &attributes);
     }
@@ -1233,23 +1221,7 @@ bool YWindow::isFocusTraversable() {
     return false;
 }
 
-bool YWindow::isFocused() {
-    return (flags & wfFocused) != 0;
-#if 0
-    if (parent() == 0)
-        return true;
-    else if (isToplevel())
-        return (flags & wfFocused) != 0;
-    else
-        return (parent()->fFocusedWindow == this) && parent()->isFocused();
-#endif
-}
-
 void YWindow::requestFocus(bool requestUserFocus) {
-//    if (!toplevel())
-//        return ;
-
-//    setFocus(0);///!!! is this the right place?
     if (isToplevel()) {
         if (visible() && requestUserFocus)
             setWindowFocus();
@@ -1449,6 +1421,12 @@ void YWindow::setProperty(Atom prop, Atom type, const Atom* values, int count) {
 
 void YWindow::setProperty(Atom property, Atom propType, Atom value) {
     setProperty(property, propType, &value, 1);
+}
+
+void YWindow::setNetName(const char* name) {
+    int length = int(strlen(name));
+    XChangeProperty(xapp->display(), handle(), _XA_NET_WM_NAME, _XA_UTF8_STRING,
+                    8, PropModeReplace, (const unsigned char *) name, length);
 }
 
 void YWindow::setNetWindowType(Atom window_type) {
@@ -1680,11 +1658,13 @@ YDesktop::YDesktop(YWindow *aParent, Window win):
 }
 
 YDesktop::~YDesktop() {
+#if DEBUG || PRECON
     for (YWindow* w; (w = firstWindow()) != nullptr; delete w) {
         char* name = demangle(typeid(*w).name());
         INFO("deleting stray %s", name);
         free(name);
     }
+#endif
     if (desktop == this)
         desktop = nullptr;
 }
@@ -1786,11 +1766,11 @@ void YWindow::grabVButton(int button, unsigned int vm) {
     }
 }
 
-unsigned int YWindow::VMod(int m) {
+unsigned YWindow::VMod(unsigned m) {
     unsigned vm = 0;
-    unsigned m1 = unsigned(m) & ~xapp->WinMask;
+    unsigned m1 = m & ~xapp->WinMask;
 
-    if (unsigned(m) & xapp->WinMask) {
+    if (m & xapp->WinMask) {
         if (modSuperIsCtrlAlt) {
             vm |= kfCtrl + kfAlt;
         } else if (xapp->WinMask == xapp->SuperMask) {
@@ -2086,7 +2066,7 @@ int YDesktop::getScreenForRect(int x, int y, unsigned width, unsigned height) {
 }
 
 
-KeySym YWindow::keyCodeToKeySym(unsigned int keycode, int index) {
+KeySym YWindow::keyCodeToKeySym(unsigned keycode, unsigned index) {
     KeySym k = XkbKeycodeToKeysym(xapp->display(), KeyCode(keycode), 0, index);
     return k;
 }

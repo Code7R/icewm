@@ -236,16 +236,27 @@ Delay pointer focusing when mouse moves.
 
 =item B<Win95Keys>=1
 
-Support win95 keyboard keys (Penguin/Meta/Win_L,R shows menu).
+Support the Windows/Super key modifier to activate special functions.
+The left Super key toggles the Start menu, while the right Super key
+toggles the Window list window.
 
-=item B<ModSuperIsCtrlAlt>=1
+=item B<ModSuperIsCtrlAlt>=0
 
-Treat Super/Win modifier as Ctrl+Alt.
+Treat the Super/Win key modifier as a synonym for the Ctrl+Alt modifier
+combination. The default key bindings have many occurrences of Ctrl+Alt.
+If you enable this, then the Super modifier is an alternative way to
+activate them.
 
 =item B<UseMouseWheel>=0
 
 Support mouse wheel. When pressing Ctrl+Alt rotating the mouse wheel
 on the root window will cycle the focus over the windows.
+
+=item B<TaskBarTaskGrouping>=0
+
+Group applications with the same class name under a single task button.
+0 disables it, 1 shows the number of windows, 2 shows bread crumbs,
+3 shows a number + bread crumbs.
 
 =item B<ShowPopupsAbovePointer>=0
 
@@ -295,21 +306,21 @@ multi-monitor without STRUT).
 
 =back
 
-=head3 Quick Switch List
+=head2 QUICK SWITCH
 
 =over
 
 =item B<QuickSwitch>=1
 
-Alt+Tab window switching.
+Enable Alt+Tab window switching.
 
 =item B<QuickSwitchToMinimized>=1
 
-Alt+Tab to minimized windows.
+Enable Alt+Tab to minimized windows.
 
 =item B<QuickSwitchToHidden>=1
 
-Alt+Tab to hidden windows.
+Enable Alt+Tab to hidden windows.
 
 =item B<QuickSwitchToUrgent>=1
 
@@ -317,11 +328,15 @@ Prioritize Alt+Tab to urgent windows.
 
 =item B<QuickSwitchToAllWorkspaces>=0
 
-Alt+Tab to windows on other workspaces.
+Include windows from all workspaces in Alt+Tab.
 
 =item B<QuickSwitchGroupWorkspaces>=1
 
-Alt+Tab: group windows on current workspace.
+Group windows by workspace together in Alt+Tab.
+
+=item B<QuickSwitchRaiseCandidate>=0
+
+Raise a selected window while Alt+Tabbing in the QuickSwitch.
 
 =item B<QuickSwitchAllIcons>=1
 
@@ -333,11 +348,11 @@ Show the window title above (all reachable) icons.
 
 =item B<QuickSwitchSmallWindow>=0
 
-Attempt to create a small QuickSwitch window (1/3 instead of 3/5 of
+Create a smaller QuickSwitch window of 1/3 screen width.
 
 =item B<QuickSwitchMaxWidth>=0
 
-Go through all window titles and choose width of the longest one.
+Go trough all window titles and choose width of the longest one.
 
 =item B<QuickSwitchVertical>=1
 
@@ -353,7 +368,7 @@ Fill the rectangle highlighting the current icon.
 
 =back
 
-=head3 Edge Workspace Switching
+=head2 EDGE SWITCHING
 
 =over
 
@@ -510,6 +525,12 @@ Show ACPI temperature in CPU status bar.
 
 Show CPU frequency in CPU status tool tip.
 
+=item B<NetStatusShowOnlyRunning>=0
+
+Show network status only for connected devices, such as an active ethernet link
+or associated wireless interface. If false, any network interface that has been
+brought up will be displayed.
+
 =item B<TaskBarShowMEMStatus>=1
 
 Show memory usage status on task bar (Linux only).
@@ -647,6 +668,11 @@ Alternate Clock Time format (e.g., for blinking effects).
 =item B<DateFormat>="%c"
 
 Clock Date format for tooltip (strftime format string).
+
+=item B<DockApps>="right high desktop"
+
+Support DockApps (right, left, center, down, high, above, below,
+desktop, or empty to disable). Control with Ctrl+Mouse.
 
 =item B<XRRPrimaryScreenName>=""
 
@@ -888,6 +914,10 @@ Taskbar blink interval (ms) when requesting focus (0 = blinking disabled).
 
 Delay between power status updates (seconds).
 
+=item B<PingTimeout>=3  [0-86400]
+
+Timeout in seconds for applications to respond to the _NET_WM_PING protocol.
+
 =back
 
 =head2 BUTTONS AND KEYS
@@ -1066,13 +1096,13 @@ Show application icon over menu button
 
 =head2 THEME SETTINGS
 
-This section shows settings that can be set in theme files.  They can
-also be set in the F<preferences> file, but themes will override the
-values set there.  To override the theme values, the settings should be
-set in F<prefoverrides> file: see L<icewm-prefoverrides(5)>.  Default
+The following sections show settings that can be set in theme files.
+They can also be set in the F<preferences> file, but themes will override
+the values set there.  To override the theme values, the settings should
+be set in F<prefoverrides> file: see L<icewm-prefoverrides(5)>.  Default
 values are shown following the equal sign.
 
-=head3 Description
+=head3 THEME DESCRIPTION
 
 =over
 
@@ -1096,7 +1126,7 @@ List of gradient pixmaps in the current theme.
 
 =back
 
-=head3 Borders, Icons, Margins and Buttons
+=head3 THEME BORDERS, ICONS, MARGINS AND BUTTONS
 
 =over
 
@@ -1214,7 +1244,7 @@ Join title*T and title*B.
 
 =back
 
-=head3 Fonts
+=head3 THEME FONTS
 
 =over
 
@@ -1334,7 +1364,7 @@ Name of the label font.
 
 =back
 
-=head3 Colors
+=head3 THEME COLORS
 
 =over
 
@@ -1693,7 +1723,7 @@ Color(s) to announce for semitransparent windows.
 
 =back
 
-=head3 Desktop Background
+=head3 DESKTOP BACKGROUND
 
 The following preferences are read by L<icewmbg(1)>:
 

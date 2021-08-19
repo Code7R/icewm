@@ -12,13 +12,13 @@ XIV(bool, showEllipsis,                         true)
 #ifdef CONFIG_I18N
 XIV(bool, multiByte,                            true)
 #endif
-XIV(bool, modSuperIsCtrlAlt,                    true)
+XIV(bool, modSuperIsCtrlAlt,                    false)
 XIV(bool, doubleBuffer,                         true)
 XIV(bool, xrrDisable,                           false)
 XIV(int, xineramaPrimaryScreen,                 0)
 XIV(int, MenuActivateDelay,                     40)
 XIV(int, SubmenuActivateDelay,                  300)
-XIV(int, DelayFuzziness,                        10)
+extern int DelayFuzziness;
 XIV(int, ClickMotionDistance,                   4)
 XIV(int, ClickMotionDelay,                      200)
 XIV(int, MultiClickTime,                        400)

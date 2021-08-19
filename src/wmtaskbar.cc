@@ -45,7 +45,7 @@ EdgeTrigger::EdgeTrigger(TaskBar *owner):
     fHideOrShow(Hide)
 {
     setStyle(wsOverrideRedirect | wsInputOnly);
-    setPointer(YXApplication::leftPointer);
+    setPointer(YWMApp::leftPointer);
     setDND(enabled());
     setTitle("IceEdge");
 }
@@ -139,7 +139,7 @@ TaskBar::TaskBar(IApp *app, YWindow *aParent, YActionListener *wmActionListener,
 {
     taskBar = this;
 
-    addStyle(wsNoExpose);
+    addStyle(wsDesktopAware | wsTakeFocus | wsNoExpose);
     setWinHintsHint(WinHintsSkipFocus |
                     WinHintsSkipWindowMenu |
                     WinHintsSkipTaskBar);
@@ -162,7 +162,7 @@ TaskBar::TaskBar(IApp *app, YWindow *aParent, YActionListener *wmActionListener,
        MWM_HINTS_FUNCTIONS | MWM_HINTS_DECORATIONS,
        MWM_FUNC_MOVE));
     setFrameState(NormalState);
-    setPointer(YXApplication::leftPointer);
+    setPointer(YWMApp::leftPointer);
     setDND(true);
 
     fEdgeTrigger = new EdgeTrigger(this);
@@ -402,8 +402,10 @@ void TaskBar::initApplets() {
                                   this, trayDrawBevel);
         fDesktopTray->setTitle("SystemTray");
         fDesktopTray->relayout();
-    } else
+    } else {
         fDesktopTray = nullptr;
+        updateLocation();
+    }
 
     if (fCollapseButton) {
         fCollapseButton->raise();
@@ -590,7 +592,7 @@ void TaskBar::updateLayout(unsigned &size_w, unsigned &size_h) {
             fTasks->hide();
             fTasks->setGeometry(YRect(left[0],
                                       y[0],
-                                      max(0, right[0] - left[0]),
+                                      max(0U, unsigned(right[0] - left[0])),
                                       h[0]));
             fTasks->show();
             fTasks->relayout();
@@ -601,7 +603,7 @@ void TaskBar::updateLayout(unsigned &size_w, unsigned &size_h) {
 
         fAddressBar->setGeometry(YRect(left[row],
                                        y[row] + 2,
-                                       max(0, right[row] - left[row]),
+                                       max(0U, unsigned(right[row] - left[row])),
                                        h[row] - 4));
         fAddressBar->raise();
         if (::showAddressBar) {
@@ -616,8 +618,10 @@ void TaskBar::updateLayout(unsigned &size_w, unsigned &size_h) {
 
 void TaskBar::relayoutNow() {
     if (fUpdates.nonempty()) {
-        for (YFrameWindow* frame : fUpdates) {
-            frame->updateAppStatus();
+        for (int i = fUpdates.getCount(); --i >= 0; ) {
+            if (i < fUpdates.getCount() && fUpdates[i]) {
+                fUpdates[i]->updateAppStatus();
+            }
         }
         fUpdates.clear();
     }
@@ -689,14 +693,14 @@ void TaskBar::updateLocation() {
 
     int by = taskBarAtTop ? dy : dy + dh - 1;
 
-    fEdgeTrigger->setGeometry(YRect(x, by, w, 1));
+    fEdgeTrigger->setGeometry(YRect(x, by, w, 1U));
 
     int y = taskBarAtTop ? dy : dy + dh - h;
 
     if ( !fIsHidden || fIsCollapsed) {
         if (getFrame()) {
             if (geometry() != YRect(x, y, w, h)) {
-                XConfigureRequestEvent conf;
+                XConfigureRequestEvent conf = {};
                 conf.type = ConfigureRequest;
                 conf.window = handle();
                 conf.x = x;
@@ -826,7 +830,7 @@ bool TaskBar::handleKey(const XKeyEvent &key) {
 void TaskBar::handleButton(const XButtonEvent &button) {
     if ((button.type == ButtonRelease) &&
         (button.button == 1 || button.button == 3) &&
-        (BUTTON_MODMASK(button.state) == Button1Mask + Button3Mask))
+        xapp->isButton(button.state, Button1Mask + Button3Mask))
     {
         windowList->showFocused(button.x_root, button.y_root);
     }
@@ -855,7 +859,7 @@ void TaskBar::handleClick(const XButtonEvent &up, int count) {
     } else if (up.button == 2) {
         windowList->showFocused(up.x_root, up.y_root);
     } else {
-        if (up.button == 3 && count == 1 && IS_BUTTON(up.state, Button3Mask)) {
+        if (up.button == 3 && count == 1 && xapp->isButton(up.state, Button3Mask)) {
             contextMenu(up.x_root, up.y_root);
         }
     }
@@ -865,16 +869,16 @@ void TaskBar::handleEndDrag(const XButtonEvent &/*down*/, const XButtonEvent &/*
     xapp->releaseEvents();
 }
 void TaskBar::handleDrag(const XButtonEvent &/*down*/, const XMotionEvent &motion) {
-    int newPosition = 0;
+    bool newPosition = false;
 
-    xapp->grabEvents(this, YXApplication::movePointer.handle(),
+    xapp->grabEvents(this, YWMApp::movePointer,
                          ButtonPressMask |
                          ButtonReleaseMask |
                          PointerMotionMask);
 
 
     if (motion.y_root < int(desktop->height() / 2))
-        newPosition = 1;
+        newPosition = true;
 
     if (taskBarAtTop != newPosition) {
         taskBarAtTop = newPosition;
@@ -938,7 +942,7 @@ void TaskBar::popOut() {
 
 void TaskBar::showBar() {
     if (getFrame() == nullptr) {
-        manager->manageClient(handle());
+        manager->manageClient(this);
         updateWinLayer();
         if (getFrame()) {
             getFrame()->setAllWorkspaces();

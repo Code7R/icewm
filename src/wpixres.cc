@@ -4,8 +4,9 @@
 #include "ypixmap.h"
 #include "yimage.h"
 #include "ref.h"
-#include "ypaths.h"
 #include "ymenu.h"
+#include "yapp.h"
+#include "intl.h"
 
 #define extern
 #include "wpixmaps.h"
@@ -59,7 +60,7 @@ public:
     bool needLoad() const {
         return (pixmapRef != nullptr) ? *pixmapRef == null : needImage();
     }
-    void loadFromFile(const upath& file) const;
+    void loadFromFile(upath& file) const;
     void reset() const {
         if (pixmapRef != nullptr) *pixmapRef = null;
         if (imageRef != nullptr) *imageRef = null;
@@ -82,13 +83,21 @@ private:
 
 };
 
-void PixmapResource::loadFromFile(const upath& file) const
+void PixmapResource::loadFromFile(upath& file) const
 {
     if (needPixmap()) {
-        *pixmapRef = YResourcePaths::loadPixmapFile(file);
+        ref<YPixmap> p(YPixmap::load(file));
+        if (p != null && p->pixmap())
+            *pixmapRef = p;
+        else
+            warn(_("Image not readable: %s"), file.string());
     }
     if (needImage()) {
-        *imageRef = YResourcePaths::loadImageFile(file);
+        ref<YImage> p(YImage::load(file));
+        if (p != null && p->valid())
+            *imageRef = p;
+        else
+            warn(_("Image not readable: %s"), file.string());
     }
 }
 
@@ -323,20 +332,20 @@ public:
 
     int count() const { return (int) size; }
 
-    void load(const upath& file, const char *ent);
-    void altL(const upath& file, const char *ent);
-    void scan(const upath& path);
+    void load(upath& file, const char *ent);
+    void altL(upath& file, const char *ent);
+    void scan(mstring& path);
 };
 
 static PixmapsDescription pixdes[] = {
     { themePixRes, ACOUNT(themePixRes), nullptr, true },
-    { taskbarPixRes, ACOUNT(taskbarPixRes), "taskbar", true },
-    { taskbar2PixRes, ACOUNT(taskbar2PixRes), "taskbar", false },
-    { mailboxPixRes, ACOUNT(mailboxPixRes), "mailbox", false },
-    { ledclockPixRes, ACOUNT(ledclockPixRes), "ledclock", false },
+    { taskbarPixRes, ACOUNT(taskbarPixRes), "/taskbar", true },
+    { taskbar2PixRes, ACOUNT(taskbar2PixRes), "/taskbar", false },
+    { mailboxPixRes, ACOUNT(mailboxPixRes), "/mailbox", false },
+    { ledclockPixRes, ACOUNT(ledclockPixRes), "/ledclock", false },
 };
 
-void PixmapsDescription::load(const upath& file, const char *ent) {
+void PixmapsDescription::load(upath& file, const char *ent) {
     for (int i = 0; i < count(); ++i) {
         const PixmapResource *res = &pixres[i];
         if (res->needLoad()) {
@@ -347,7 +356,7 @@ void PixmapsDescription::load(const upath& file, const char *ent) {
     }
 }
 
-void PixmapsDescription::altL(const upath& file, const char *ent) {
+void PixmapsDescription::altL(upath& file, const char *ent) {
     for (int i = 0; i < count(); ++i) {
         const PixmapResource *res = &pixres[i];
         if (res->needLoad()) {
@@ -362,7 +371,7 @@ inline const char* extension(const char* filename) {
     return Elvis<const char*>(strrchr(filename, '.'), "");
 }
 
-void PixmapsDescription::scan(const upath& path) {
+void PixmapsDescription::scan(mstring& path) {
     YStringArray xpm(80), png(80);
     upath subdir(path + this->subdir);
     for (cdir dir(subdir.string()); dir.next(); ) {
@@ -399,14 +408,14 @@ void PixmapsDescription::scan(const upath& path) {
     }
 }
 
-static void loadPixmapResources() {
-    bool themeOnly = true;
-    for (int k = 0; k < 2; ++k, themeOnly = !themeOnly) {
-        ref<YResourcePaths> paths = YResourcePaths::subdirs(null, themeOnly);
-        for (int i = 0; i < (int) ACOUNT(pixdes); ++i) {
-            if (themeOnly == pixdes[i].themeOnly) {
-                for (int p = 0; p < paths->getCount(); ++p) {
-                    pixdes[i].scan(paths->getPath(p));
+static void loadPixmapResources(IResourceLocator* locator) {
+    for (bool only : { true, false }) {
+        MStringArray dirs;
+        locator->subdirs(nullptr, only, dirs);
+        for (PixmapsDescription& des : pixdes) {
+            if (only == des.themeOnly) {
+                for (mstring& path : dirs) {
+                    des.scan(path);
                 }
             }
         }
@@ -414,9 +423,9 @@ static void loadPixmapResources() {
 }
 
 static void freePixmapResources() {
-    for (int i = 0; i < (int) ACOUNT(pixdes); ++i) {
-        for (int k = 0; k < pixdes[i].count(); ++k) {
-            pixdes[i].pixres[k].reset();
+    for (PixmapsDescription& des : pixdes) {
+        for (int k = 0; k < des.count(); ++k) {
+            des.pixres[k].reset();
         }
     }
 }
@@ -566,11 +575,11 @@ static PixbufOffset taskbuttonPixbufOffsets[] = {
 static void initPixmapOffsets() {
     extern unsigned taskbuttonIconOffset;
     if (taskbuttonIconOffset) {
-        for (unsigned i = 0; i < ACOUNT(taskbuttonPixmapOffsets); ++i) {
-            taskbuttonPixmapOffsets[i].split(taskbuttonIconOffset);
+        for (PixmapOffset& pix : taskbuttonPixmapOffsets) {
+            pix.split(taskbuttonIconOffset);
         }
-        for (unsigned i = 0; i < ACOUNT(taskbuttonPixbufOffsets); ++i) {
-            taskbuttonPixbufOffsets[i].split(taskbuttonIconOffset);
+        for (PixbufOffset& pix : taskbuttonPixbufOffsets) {
+            pix.split(taskbuttonIconOffset);
         }
     }
 
@@ -580,11 +589,10 @@ static void initPixmapOffsets() {
         frameT[1][0], frameTL[1][0], frameTR[1][0],
         frameT[1][1], frameTL[1][1], frameTR[1][1],
     };
-    const int count = int ACOUNT(ts);
     unsigned offset = UINT_MAX;
-    for (int i = 0; i < count; ++i) {
-        if (ts[i] != null) {
-            unsigned vo = ts[i]->verticalOffset();
+    for (const ref<YPixmap>& pix : ts) {
+        if (pix != null) {
+            unsigned vo = pix->verticalOffset();
             if (offset > vo) {
                 offset = vo;
             }
@@ -600,16 +608,16 @@ static void initPixmapOffsets() {
 }
 
 static void freePixmapOffsets() {
-    for (unsigned i = 0; i < ACOUNT(taskbuttonPixmapOffsets); ++i) {
-        taskbuttonPixmapOffsets[i].reset();
+    for (PixmapOffset& pix : taskbuttonPixmapOffsets) {
+        pix.reset();
     }
-    for (unsigned i = 0; i < ACOUNT(taskbuttonPixbufOffsets); ++i) {
-        taskbuttonPixbufOffsets[i].reset();
+    for (PixbufOffset& pix : taskbuttonPixbufOffsets) {
+        pix.reset();
     }
 }
 
-void WPixRes::initPixmaps() {
-    loadPixmapResources();
+void WPixRes::initPixmaps(IResourceLocator* locator) {
+    loadPixmapResources(locator);
     copyPixmaps();
     replicatePixmaps();
     initPixmapOffsets();

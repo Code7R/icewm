@@ -15,17 +15,31 @@
 #include "prefs.h"
 #include "intl.h"
 
-YMsgBox::YMsgBox(int buttons):
+const unsigned margin = 18;
+
+YMsgBox::YMsgBox(int buttons,
+                 const char* title,
+                 const char* text,
+                 YMsgBoxListener* listener,
+                 const char* iconName):
     YDialog(),
     fLabel(nullptr),
     fInput(nullptr),
     fButtonOK(nullptr),
     fButtonCancel(nullptr),
-    fListener(nullptr)
+    fListener(listener),
+    fPixmap(null)
 {
     setToplevel(true);
+    if (title) {
+        setWindowTitle(title);
+    }
+    if (text) {
+        fLabel = new YLabel(text, this);
+        fLabel->show();
+    }
     if (buttons & mbInput) {
-        fInput = new YInputLine(this);
+        fInput = new YInputLine(this, this);
         if (fInput) {
             fInput->show();
         }
@@ -36,10 +50,22 @@ YMsgBox::YMsgBox(int buttons):
     if (buttons & mbCancel) {
         fButtonCancel = new YActionButton(this, _("_Cancel"), -2, this);
     }
+    if (nonempty(iconName)) {
+        ref<YIcon> icon(YIcon::getIcon(iconName));
+        if (icon != null) {
+            if (text && !strchr(text, '\n') && icon->small() != null) {
+                fPixmap = icon->small()->renderToPixmap(xapp->depth());
+            }
+            else if (icon->large() != null) {
+                fPixmap = icon->large()->renderToPixmap(xapp->depth());
+            }
+        }
+    }
     autoSize();
     setLayerHint(WinLayerAboveDock);
     setWorkspaceHint(AllWorkspaces);
     setWinHintsHint(WinHintsSkipWindowMenu);
+    setNetWindowType(_XA_NET_WM_WINDOW_TYPE_DIALOG);
     Atom protocols[] = { _XA_WM_DELETE_WINDOW, _XA_WM_TAKE_FOCUS };
     XSetWMProtocols(xapp->display(), handle(), protocols, 2);
     getProtocols(true);
@@ -47,6 +73,9 @@ YMsgBox::YMsgBox(int buttons):
        MWM_HINTS_FUNCTIONS | MWM_HINTS_DECORATIONS,
        MWM_FUNC_MOVE | MWM_FUNC_CLOSE,
        MWM_DECOR_BORDER | MWM_DECOR_TITLE | MWM_DECOR_MENU));
+    if (fListener) {
+        showFocused();
+    }
 }
 
 YMsgBox::~YMsgBox() {
@@ -57,17 +86,20 @@ YMsgBox::~YMsgBox() {
 }
 
 void YMsgBox::autoSize() {
+    unsigned pw = (fPixmap != null) ? fPixmap->width() + margin : 0;
+    unsigned ph = (fPixmap != null) ? fPixmap->height() : 0;
     unsigned lw = fLabel ? fLabel->width() : 0;
-    unsigned w = clamp(lw + 24, 240U, desktop->width());
-    unsigned h = 12;
+    unsigned lh = fLabel ? fLabel->height() : 0;
+    unsigned w = clamp(lw + pw + 2*margin, 240U, desktop->width());
+    unsigned h = margin;
 
     if (fLabel) {
-        fLabel->setPosition((w - lw) / 2, h);
-        h += fLabel->height();
+        fLabel->setPosition(pw + (w - pw - lw) / 2, h);
     }
-    h += 18;
+    h += 18 + max(lh, ph);
 
     if (fInput) {
+        fInput->setSize(w - 2*margin, fInput->height());
         fInput->setPosition((w - fInput->width()) / 2, h);
         h += 18 + fInput->height();
     }
@@ -86,9 +118,9 @@ void YMsgBox::autoSize() {
         fButtonCancel->setPosition((w + hh)/2, h);
     }
 
-    h += fButtonOK ? fButtonOK->height() :
-        fButtonCancel ? fButtonCancel->height() : 0;
-    h += 12;
+    h += max(fButtonOK ? fButtonOK->height() : 0,
+             fButtonCancel ? fButtonCancel->height() : 0);
+    h += margin;
 
     setSize(w, h);
 }
@@ -112,7 +144,11 @@ void YMsgBox::setText(const char* text) {
     }
 }
 
-void YMsgBox::setPixmap(ref<YPixmap>/*pixmap*/) {
+void YMsgBox::setPixmap(ref<YPixmap> pixmap) {
+    if (fPixmap != pixmap) {
+        fPixmap = pixmap;
+        autoSize();
+    }
 }
 
 void YMsgBox::actionPerformed(YAction action, unsigned int /*modifiers*/) {
@@ -131,34 +167,59 @@ void YMsgBox::actionPerformed(YAction action, unsigned int /*modifiers*/) {
 
 void YMsgBox::handleClose() {
     if (fListener)
-        fListener->handleMsgBox(this, 0);
-    else {
-        manager->unmanageClient(this);
-        manager->focusTopWindow();
-    }
+        fListener->handleMsgBox(this, mbClose);
+    else
+        unmanage();
 }
 
-void YMsgBox::handleFocus(const XFocusChangeEvent &/*focus*/) {
+void YMsgBox::handleFocus(const XFocusChangeEvent& focus) {
+    if (fInput) {
+        fInput->handleFocus(focus);
+    }
 }
 
 void YMsgBox::showFocused() {
-    YRect r(desktop->getScreenGeometry());
-    setPosition(r.x() + int(r.width() / 2) - int(width() / 2),
-                r.y() + int(r.height() / 2) - int(height() / 2));
+    if (fInput) {
+        fInput->requestFocus(false);
+    }
+    else if (msgBoxDefaultAction == 0 && fButtonCancel) {
+        fButtonCancel->requestFocus(false);
+    }
+    else if (msgBoxDefaultAction == 1 && fButtonOK) {
+        fButtonOK->requestFocus(false);
+    }
 
-    switch (msgBoxDefaultAction) {
-    case 0:
-        if (fButtonCancel) fButtonCancel->requestFocus(false);
-        break;
-    case 1:
-        if (fButtonOK) fButtonOK->requestFocus(false);
-        break;
+    center();
+    become();
+}
+
+void YMsgBox::unmanage() {
+    manager->unmanageClient(this);
+}
+
+void YMsgBox::inputReturn(YInputLine* input) {
+    if (fListener) {
+        fListener->handleMsgBox(this, mbOK);
     }
-    if (getFrame() == nullptr) {
-        manager->manageClient(handle(), false);
+}
+
+void YMsgBox::inputEscape(YInputLine* input) {
+    if (fListener) {
+        fListener->handleMsgBox(this, mbCancel);
     }
-    if (getFrame()) {
-        getFrame()->activateWindow(true);
+}
+
+void YMsgBox::inputLostFocus(YInputLine* input) {
+}
+
+void YMsgBox::paint(Graphics &g, const YRect& r) {
+    YDialog::paint(g, r);
+    if (fPixmap != null) {
+        int dy = 0;
+        if (fLabel && fLabel->height() > fPixmap->height()) {
+            dy = (fLabel->height() - fPixmap->height()) / 2;
+        }
+        g.drawPixmap(fPixmap, margin, margin + dy);
     }
 }
 

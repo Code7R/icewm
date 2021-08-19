@@ -1,9 +1,12 @@
-#ifndef __YXAPP_H
-#define __YXAPP_H
+#ifndef YXAPP_H
+#define YXAPP_H
 
 #include "yapp.h"
 #include "ywindow.h"
+#include "ycursor.h"
 #include <X11/Xutil.h>
+
+#define KEY_MODMASK(x) ((x) & (xapp->KeyMask))
 
 class YAtom {
     const char* name;
@@ -48,6 +51,8 @@ public:
 
     ~YProperty() { discard(); }
 
+    void append(void const* data, int count) const;
+    void replace(void const* data, int count) const;
     void discard();
     const YProperty& update();
     Atom property() const { return fProp; }
@@ -64,6 +69,7 @@ public:
     long operator*() const { return *data<long>(); }
     template<class T> T* operator->() const { return data<T>(); }
 
+    char* string() const { return data<char>(); }
     Atom* begin() const { return data<Atom>(); }
     Atom* end() const { return begin() + fSize; }
 
@@ -103,8 +109,8 @@ public:
     int displayWidth() { return DisplayWidth(display(), screen()); }
     int displayHeight() { return DisplayHeight(display(), screen()); }
     Atom atom(const char* name) { return XInternAtom(display(), name, False); }
-    void sync() { XSync(display(), False); }
-    void send(XClientMessageEvent& ev, Window win, long mask = NoEventMask) {
+    void sync() const { XSync(display(), False); }
+    void send(XClientMessageEvent& ev, Window win, long mask = NoEventMask) const {
         XSendEvent(display(), win, False, mask,
                    reinterpret_cast<XEvent*>(&ev));
     }
@@ -150,9 +156,6 @@ public:
     void setClipboardText(mstring data);
     void dropClipboard();
 
-    static YCursor leftPointer;
-    static YCursor rightPointer;
-    static YCursor movePointer;
     static bool alphaBlending;
     static bool synchronizeX11;
 
@@ -172,11 +175,21 @@ public:
 
     bool hasControlAlt(unsigned state) const;
     bool hasWinMask(unsigned state) const;
+    unsigned buttonMask(unsigned state) const {
+        return state & ButtonMask;
+    }
+    unsigned buttonModMask(unsigned state) const {
+        return state & ButtonKeyMask;
+    }
+    bool isButton(unsigned state, unsigned mask) const {
+        return mask == buttonModMask(state);
+    }
 
     static const char* getHelpText();
 
 protected:
     virtual int handleError(XErrorEvent* xev);
+    virtual Cursor getRightPointer() const { return None; }
 
 private:
     XRenderPictFormat* findFormat(int depth) const;
@@ -219,7 +232,6 @@ private:
 
     void initModifiers();
     static void initAtoms();
-    static void initPointers();
 
     static const char* parseArgs(int argc, char **argv, const char *displayName);
     static Display* openDisplay(const char* displayName);

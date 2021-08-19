@@ -5,11 +5,10 @@ PROJECT(ICEWM CXX C)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
-enable_testing()
+include(CTest)
 
 set(PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src)
 include_directories(${CMAKE_BINARY_DIR})
-include_directories(${PROJECT_SOURCE_DIR})
 
 IF(NOT DEFINED(CMAKE_INSTALL_PREFIX))
 set(CMAKE_INSTALL_PREFIX "/usr/local" CACHE STRING "Target file space")

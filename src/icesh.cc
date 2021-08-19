@@ -19,10 +19,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
-#include <setjmp.h>
 #include <string.h>
 #include <time.h>
-#include <math.h>
 #include <unistd.h>
 #include <vector>
 #include <algorithm>
@@ -181,6 +179,7 @@ static NAtom ATOM_WIN_TRAY(XA_WIN_TRAY);
 static NAtom ATOM_WIN_PROTOCOLS(XA_WIN_PROTOCOLS);
 static NAtom ATOM_GUI_EVENT(XA_GUI_EVENT_NAME);
 static NAtom ATOM_ICE_ACTION("_ICEWM_ACTION");
+static NAtom ATOM_ICE_DOCKAPPS("_ICEWM_DOCKAPPS");
 static NAtom ATOM_ICE_WINOPT("_ICEWM_WINOPTHINT");
 static NAtom ATOM_MOTIF_HINTS(_XA_MOTIF_WM_HINTS);
 static NAtom ATOM_NET_CLIENT_LIST("_NET_CLIENT_LIST");
@@ -311,21 +310,16 @@ public:
 
 class Confine {
 public:
-    Confine(int screen = -1) :
-        fScreen(screen),
-        fCount(0),
-        fInfo(nullptr)
-    {
-    }
+    Confine(int screen = -1) : fScreen(screen) { }
 
     void confineTo(int screen) { fScreen = screen; }
     bool confining() { return 0 <= fScreen && fScreen < count(); }
-    int count() { load(); return fCount; }
+    int count() { load(); return fInfo.size(); }
     int screen() const { return fScreen; }
     const YScreen& operator[](int i) const { return fInfo[i]; }
 
     bool load() {
-        return fInfo || load_rand() || load_xine() || load_deft();
+        return fInfo.size() || load_rand() || load_xine() || load_deft();
     }
 
     bool load_rand() {
@@ -333,22 +327,17 @@ public:
         XRRScreenResources *rr = XRRGetScreenResources(display, root);
         if (rr && 0 < rr->ncrtc) {
             const int screens = rr->ncrtc;
-            fCount = 0;
-            fInfo = new YScreen[screens];
-            if (fInfo) {
-                for (int k = 0; k < screens; ++k) {
-                    RRCrtc crt = rr->crtcs[k];
-                    XRRCrtcInfo *ci = XRRGetCrtcInfo(display, rr, crt);
-                    fInfo[k].index = k;
-                    fInfo[k].setRect(ci->x, ci->y, ci->width, ci->height);
-                    XRRFreeCrtcInfo(ci);
-                }
-                fCount = screens;
+            fInfo.clear();
+            for (int k = 0; k < screens; ++k) {
+                RRCrtc crt = rr->crtcs[k];
+                XRRCrtcInfo *ci = XRRGetCrtcInfo(display, rr, crt);
+                fInfo.push_back(YScreen(k, ci->x, ci->y, ci->width, ci->height));
+                XRRFreeCrtcInfo(ci);
             }
             XRRFreeScreenResources(rr);
         }
 #endif
-        return fInfo && 0 < fCount;
+        return 0 < fInfo.size();
     }
 
     bool load_xine() {
@@ -361,40 +350,29 @@ public:
             xsmart<XineramaScreenInfo> xine(
                    XineramaQueryScreens(display, &screens));
             if (xine) {
-                fCount = 0;
-                fInfo = new YScreen[screens];
-                if (fInfo) {
-                    for (int k = 0; k < screens; ++k) {
-                        fInfo[k].index = xine[k].screen_number;
-                        fInfo[k].setRect(
-                                 xine[k].x_org,
-                                 xine[k].y_org,
-                                 xine[k].width,
-                                 xine[k].height);
-                    }
-                    fCount = screens;
+                fInfo.clear();
+                for (int k = 0; k < screens; ++k) {
+                    fInfo.push_back(YScreen(xine[k].screen_number,
+                                    xine[k].x_org,
+                                    xine[k].y_org,
+                                    xine[k].width,
+                                    xine[k].height));
                 }
             }
         }
 #endif
-        return fInfo && 0 < fCount;
+        return 0 < fInfo.size();
     }
 
     bool load_deft() {
-        fCount = 0;
-        fInfo = new YScreen[1];
-        if (fInfo) {
-            fInfo[0].index = 0;
-            fInfo[0].setRect(0, 0, displayWidth(), displayHeight());
-            fCount = 1;
-        }
-        return fInfo && 0 < fCount;
+        fInfo.clear();
+        fInfo.push_back(YScreen(0, 0, 0, displayWidth(), displayHeight()));
+        return 0 < fInfo.size();
     }
 
 private:
     int fScreen;
-    int fCount;
-    asmart<YScreen> fInfo;
+    vector<YScreen> fInfo;
 };
 
 /******************************************************************************/
@@ -632,6 +610,23 @@ public:
         }
         for (int i = 0; i < n; i += 2) {
             send(ATOM_NET_WM_STATE, window(), NetStateRemove,
+                 atoms[i], (i + 1 < n) ? atoms[i + 1] : None,
+                 SourceIndication, None);
+        }
+    }
+
+    void operator ^=(long state) {
+        const int size = 16;
+        Atom atoms[size];
+        int n = 0;
+        for (int i = 0; i < netStateAtomCount && n < size; ++i) {
+            bool flag = hasbit(state, netStateAtoms[i].flag);
+            if (flag && n < size) {
+                atoms[n++] = netStateAtoms[i].atom;
+            }
+        }
+        for (int i = 0; i < n; i += 2) {
+            send(ATOM_NET_WM_STATE, window(), NetStateToggle,
                  atoms[i], (i + 1 < n) ? atoms[i + 1] : None,
                  SourceIndication, None);
         }
@@ -909,7 +904,6 @@ public:
     }
 
     bool append(Window window) {
-        fFiltered.clear();
         return have(window) ? false
             : (fChildren.push_back(window), true);
     }
@@ -950,10 +944,21 @@ public:
         if (count()) {
             Window w = fChildren.back();
             fChildren.pop_back();
-            fFiltered = fChildren;
             fChildren.clear();
             fChildren.push_back(w);
         }
+    }
+
+    void filterByMapState(int state) {
+        vector<Window> keep;
+        for (YTreeIter client(*this); client; ++client) {
+            XWindowAttributes attr = {};
+            if (XGetWindowAttributes(display, client, &attr)
+                && attr.map_state == state) {
+                keep.push_back(client);
+            }
+        }
+        fChildren = keep;
     }
 
     void findTaskbar() {
@@ -1178,7 +1183,6 @@ public:
 
     void release() {
         fChildren.clear();
-        fFiltered.clear();
         fParent = None;
     }
 
@@ -1241,7 +1245,6 @@ private:
     Confine fConfine;
     Window fParent;
     vector<Window> fChildren;
-    vector<Window> fFiltered;
     YTreeLeaf fLeaf;
 };
 
@@ -1259,7 +1262,7 @@ class IceSh {
 public:
     IceSh(int argc, char **argv);
     ~IceSh();
-    operator int() const { return rc; }
+    operator int() const { return rc ? rc : windowList ? 0 : 1; }
 
 private:
     int rc;
@@ -1267,13 +1270,16 @@ private:
     char **argv;
     char **argp;
     char *dpyname;
+    bool quietude;
     bool selecting;
     bool filtering;
 
     YWindowTree windowList;
 
-    jmp_buf jmpbuf;
-    void THROW(int val);
+    enum IfTE { NoS, If, IfT, IfF, ElF, ElT, EIF, };
+    vector<IfTE> ifs;
+    IfTE ifte();
+    vector<YWindowTree> trees;
 
     void spy();
     void spyEvent(const XEvent& event);
@@ -1297,13 +1303,18 @@ private:
     char* getArg();
     long getLong();
     bool haveArg();
+    bool isArg(const char* str);
     bool isAction(const char* str, int argCount);
     bool icewmAction();
+    bool conditional();
+    bool evaluating();
+    void unexpected();
     bool guiEvents();
     bool listShown();
     bool listXembed();
     void listXembed(Window w);
     void queryXembed(Window w);
+    void queryDockapps();
     bool listClients();
     bool listWindows();
     bool listScreens();
@@ -1825,6 +1836,14 @@ void IceSh::queryXembed(Window parent)
     }
 }
 
+void IceSh::queryDockapps()
+{
+    YProperty info(root, ATOM_ICE_DOCKAPPS, XA_WINDOW, 123);
+    for (int i = 0; i < info.count(); ++i) {
+        windowList.append(info[i]);
+    }
+}
+
 void IceSh::listXembed(Window parent)
 {
     YWindowTree windowList(parent);
@@ -1962,9 +1981,9 @@ bool IceSh::runonce()
     if (count() == 0 || windowList.isRoot()) {
         execvp(argp[0], argp);
         perror(argp[0]);
-        THROW(1);
+        throw 1;
     } else {
-        THROW(0);
+        throw 0;
     }
 
     return true;
@@ -2180,7 +2199,7 @@ bool IceSh::change()
     char* name = getArg();
     long workspace;
     if ( ! WorkspaceInfo().parseWorkspace(name, &workspace))
-        THROW(1);
+        throw 1;
 
     changeWorkspace(workspace);
 
@@ -2258,7 +2277,7 @@ void IceSh::changeState(const char* arg)
         changeState(WithdrawnState);
     else {
         msg(_("Invalid state: `%s'."), arg);
-        THROW(1);
+        throw 1;
     }
 }
 
@@ -2277,7 +2296,7 @@ void IceSh::click()
     if (tolong(xs, lx) &&
         tolong(ys, ly) &&
         tolong(bs, lb) &&
-        inrange<long>(lb, Button1, Button5))
+        inrange<long>(lb, Button1, Button5 + 4))
     {
         FOREACH_WINDOW(window) {
             int gx, gy, gw, gh;
@@ -2402,10 +2421,10 @@ bool IceSh::icewmAction()
         { "winoptions", ICEWM_ACTION_WINOPTIONS },
         { "keys",       ICEWM_ACTION_RELOADKEYS },
     };
-    for (int i = 0; i < int ACOUNT(sa); ++i) {
-        if (0 == strcmp(*argp, sa[i].name)) {
+    for (Symbol sym : sa) {
+        if (0 == strcmp(*argp, sym.name)) {
             ++argp;
-            send(ATOM_ICE_ACTION, root, CurrentTime, sa[i].code);
+            send(ATOM_ICE_ACTION, root, CurrentTime, sym.code);
             return true;
         }
     }
@@ -2780,27 +2799,29 @@ void IceSh::motif(Window window, char** args, int count) {
                 hints->hasStatus() ? " status" : "");
         if (hints->hasFuncs()) {
             unsigned long funcs = hints->functions;
-            if (funcs & MWM_FUNC_ALL)
-                funcs = (~funcs & 0x3E);
+            char sign = '+';
             printf("%sfuncs:", spaces);
-            for (int i = 1, n = 0; motifFunctions[i].name; ++i) {
-                if (funcs & motifFunctions[i].code)
+            for (int i = 0, n = 0; motifFunctions[i].name; ++i) {
+                if (funcs & motifFunctions[i].code) {
                     printf("%c%s",
-                            ++n == 1 ? ' ' : '+',
+                            ++n == 1 ? ' ' : sign,
                             motifFunctions[i].name);
+                    sign = (funcs & MWM_FUNC_ALL) ? '-' : '+';
+                }
             }
             newline();
         }
         if (hints->hasDecor()) {
             unsigned long decor = hints->decorations;
-            if (decor & MWM_DECOR_ALL)
-                decor = (~decor & 0x7E);
+            char sign = '+';
             printf("%sdecor:", spaces);
-            for (int i = 1, n = 0; motifDecorations[i].name; ++i) {
-                if (decor & motifDecorations[i].code)
+            for (int i = 0, n = 0; motifDecorations[i].name; ++i) {
+                if (decor & motifDecorations[i].code) {
                     printf("%c%s",
-                            ++n == 1 ? ' ' : '+',
+                            ++n == 1 ? ' ' : sign,
                             motifDecorations[i].name);
+                    sign = (decor & MWM_DECOR_ALL) ? '-' : '+';
+                }
             }
             newline();
         }
@@ -3108,7 +3129,7 @@ void IceSh::confine(const char* val) {
             }
             else {
                 msg(_("Cannot get geometry of window 0x%lx"), active);
-                THROW(1);
+                throw 1;
             }
         }
         else {
@@ -3133,20 +3154,14 @@ void IceSh::confine(const char* val) {
     }
     else {
         msg(_("Invalid Xinerama: `%s'."), val);
-        THROW(1);
+        throw 1;
     }
 }
 
 void IceSh::flush()
 {
     if (fflush(stdout) || ferror(stdout))
-        THROW(1);
-}
-
-void IceSh::THROW(int val)
-{
-    rc = val;
-    longjmp(jmpbuf, true);
+        throw 1;
 }
 
 IceSh::IceSh(int ac, char **av) :
@@ -3155,14 +3170,18 @@ IceSh::IceSh(int ac, char **av) :
     argv(av),
     argp(av + 1),
     dpyname(nullptr),
+    quietude(false),
     selecting(false),
     filtering(false)
 {
     singleton = this;
     setAtomName(NAtom::lookup);
-    if (setjmp(jmpbuf) == 0) {
+    try {
         xinit();
         flags();
+    }
+    catch (int code) {
+        rc = code;
     }
 }
 
@@ -3182,29 +3201,32 @@ long IceSh::getLong()
     long num;
     if ( !tolong(str, num)) {
         msg(_("Invalid argument: `%s'"), str);
-        THROW(1);
+        throw 1;
     }
     return num;
 }
 
+bool IceSh::isArg(const char* str)
+{
+    return haveArg() && 0 == strcmp(str, *argp)
+        ? ++argp, true : false;
+}
+
 bool IceSh::isAction(const char* action, int count)
 {
-    if ( !haveArg() || strcmp(action, *argp))
-        return false;
-
-    if (++argp + count > &argv[argc]) {
+    bool is = isArg(action);
+    if (is && argp + count > argv + argc) {
         msg(_("Action `%s' requires at least %d arguments."), action, count);
-        THROW(1);
+        throw 1;
     }
-
-    return true;
+    return is;
 }
 
 bool IceSh::check(const SymbolTable& symtab, long code, const char* str)
 {
     if (symtab.invalid(code)) {
         msg(_("Invalid expression: `%s'"), str);
-        THROW(1);
+        throw 1;
     }
     return true;
 }
@@ -3216,11 +3238,12 @@ void IceSh::xinit()
     if (nullptr == (display = XOpenDisplay(dpyname))) {
         warn(_("Can't open display: %s. X must be running and $DISPLAY set."),
              XDisplayName(dpyname));
-        THROW(3);
+        throw 3;
     }
 
     root = DefaultRootWindow(display);
     XSynchronize(display, True);
+    XSetErrorHandler(xerrors);
 }
 
 /******************************************************************************/
@@ -3228,7 +3251,7 @@ void IceSh::xinit()
 void IceSh::invalidArgument(const char* str)
 {
     msg(_("Invalid argument: `%s'"), str);
-    THROW(1);
+    throw 1;
 }
 
 void IceSh::setWindow(Window window)
@@ -3241,12 +3264,107 @@ void IceSh::addWindow(Window window)
     windowList.append(window);
 }
 
+IceSh::IfTE IceSh::ifte()
+{
+    IfTE state = NoS;
+    if (ifs.size()) {
+        state = ifs.back();
+        ifs.pop_back();
+    }
+    return state;
+}
+
+bool IceSh::conditional()
+{
+    if (isArg("if")) {
+        ifs.push_back(If);
+        trees.push_back(windowList);
+    }
+    else if (isArg("then")) {
+        IfTE state = ifte();
+        if (state == If && windowList)
+            ifs.push_back(IfT);
+        else if (state == If)
+            ifs.push_back(IfF);
+        else if (state == EIF)
+            ifs.push_back(IfF);
+        else
+            unexpected();
+    }
+    else if (isArg("elif")) {
+        IfTE state = ifte();
+        if (state == If && windowList)
+            ifs.push_back(EIF);
+        else if (state == If)
+            ifs.push_back(If);
+        else if (state == IfT)
+            ifs.push_back(EIF);
+        else if (state == IfF)
+            ifs.push_back(If);
+        else if (state == EIF)
+            ifs.push_back(EIF);
+        else
+            unexpected();
+        if (ifs.back() == If && evaluating())
+            windowList = trees.back();
+    }
+    else if (isArg("else")) {
+        IfTE state = ifte();
+        if (state == If && windowList)
+            ifs.push_back(ElF);
+        else if (state == If)
+            ifs.push_back(ElT);
+        else if (state == IfT)
+            ifs.push_back(ElF);
+        else if (state == IfF)
+            ifs.push_back(ElT);
+        else if (state == EIF)
+            ifs.push_back(ElF);
+        else
+            unexpected();
+        if (ifs.back() == ElT && evaluating())
+            windowList = trees.back();
+    }
+    else if (isArg("end")) {
+        if (ifte() == NoS)
+            unexpected();
+        trees.pop_back();
+        if (trees.size())
+            windowList = trees.back();
+    }
+    else if (evaluating()) {
+        return false;
+    }
+    else {
+        ++argp;
+    }
+    return true;
+}
+
+bool IceSh::evaluating()
+{
+    for (IfTE i : ifs) {
+        if (i == IfF || i == EIF || i == ElF)
+            return false;
+    }
+    return true;
+}
+
+void IceSh::unexpected()
+{
+    msg(_("Unexpected: `%s'."), argp[-1]);
+    throw 2;
+}
+
 void IceSh::flags()
 {
     bool act = false;
 
     while (haveArg()) {
-        if (argp[0][0] == '-') {
+        if (conditional()) {
+            /*ignore*/;
+        }
+        else if (argp[0][0] == '-') {
             char* arg = getArg();
             if (arg[1] == '-')
                 arg++;
@@ -3262,13 +3380,14 @@ void IceSh::flags()
             else if (windowList)
                 parseAction();
             else if (selecting | filtering) {
-                msg(_("No windows found."));
-                THROW(1);
+                if (!quietude)
+                    msg(_("No windows found."));
+                throw 1;
             }
             else {
                 Window w = pickWindow();
                 if (w <= root)
-                    THROW(1);
+                    throw 1;
                 setWindow(w);
                 parseAction();
             }
@@ -3278,7 +3397,7 @@ void IceSh::flags()
 
     if (act == false) {
         msg(_("No actions specified."));
-        THROW(1);
+        throw 1;
     }
 }
 
@@ -3335,11 +3454,32 @@ void IceSh::flag(char* arg)
         selecting = true;
         return;
     }
+    if (isOptArg(arg, "-Dockapps", "")) {
+        windowList.release();
+        queryDockapps();
+        MSG(("dockapps windows selected"));
+        selecting = true;
+        return;
+    }
     if (isOptArg(arg, "-last", "")) {
         if ( ! windowList && ! selecting)
             windowList.getClientList();
         windowList.filterLast();
         MSG(("last window selected"));
+        selecting = true;
+        return;
+    }
+    if (isOptArg(arg, "-unmapped", "")) {
+        if ( ! windowList && ! selecting)
+            windowList.getClientList();
+        windowList.filterByMapState(IsUnmapped);
+        selecting = true;
+        return;
+    }
+    if (isOptArg(arg, "-viewable", "")) {
+        if ( ! windowList && ! selecting)
+            windowList.getClientList();
+        windowList.filterByMapState(IsViewable);
         selecting = true;
         return;
     }
@@ -3356,6 +3496,10 @@ void IceSh::flag(char* arg)
         windowList += taskbar;
         MSG(("taskbar appended"));
         selecting = true;
+        return;
+    }
+    if (isOptArg(arg, "-quiet", "")) {
+        quietude = true;
         return;
     }
 
@@ -3383,7 +3527,7 @@ void IceSh::flag(char* arg)
         }
         else {
             msg(_("Invalid window identifier: `%s'"), val);
-            THROW(1);
+            throw 1;
         }
     }
     else if (isOptArg(arg, "-display", val)) {
@@ -3400,7 +3544,7 @@ void IceSh::flag(char* arg)
         }
         else {
             msg(_("Invalid PID: `%s'"), val);
-            THROW(1);
+            throw 1;
         }
     }
     else if (isOptArg(arg, "-machine", val)) {
@@ -3423,7 +3567,7 @@ void IceSh::flag(char* arg)
         bool inverse(*val == '!');
         long ws;
         if ( ! WorkspaceInfo().parseWorkspace(val + inverse, &ws))
-            THROW(1);
+            throw 1;
 
         if ( ! windowList)
             windowList.getClientList();
@@ -3436,7 +3580,7 @@ void IceSh::flag(char* arg)
         long layer = layers.parseIdentifier(val + inverse);
         if (layer == WinLayerInvalid) {
             msg(_("Invalid layer: `%s'."), val);
-            THROW(1);
+            throw 1;
         }
         if ( ! windowList)
             windowList.getClientList();
@@ -3466,7 +3610,7 @@ void IceSh::flag(char* arg)
         long flags(netstates.parseExpression(val + inverse + question));
         if (flags == -1L) {
             msg(_("Invalid state: `%s'."), val + inverse + question);
-            THROW(1);
+            throw 1;
         }
         if ( ! windowList)
             windowList.getClientList();
@@ -3750,7 +3894,9 @@ void IceSh::xerror(XErrorEvent* evt) {
     if (XGetErrorText(display, evt->error_code, message, 80) != Success)
         *message = '\0';
 
-    tlog("%s(0x%08lx): %s", req, evt->resourceid, message);
+    tlog("%s(0x%lx): %s", req, evt->resourceid, message);
+    argp = argv + argc;
+    rc = 4;
 }
 
 /******************************************************************************/
@@ -3932,7 +4078,7 @@ void IceSh::parseAction()
             }
         }
         else if (isAction("netState", 0)) {
-            if (haveArg() && strchr("+-=", **argp)) {
+            if (haveArg() && strchr("+-=^", **argp)) {
                 char* arg = getArg();
                 long state(netstates.parseExpression(arg + 1));
                 if (state == -1) {
@@ -3947,6 +4093,8 @@ void IceSh::parseAction()
                             prop -= state;
                         else if (*arg == '=')
                             prop = state;
+                        else if (*arg == '^')
+                            prop ^= state;
                     }
                 }
             }
@@ -3968,7 +4116,7 @@ void IceSh::parseAction()
         else if (isAction("setWorkspace", 1)) {
             long workspace;
             if ( ! WorkspaceInfo().parseWorkspace(getArg(), &workspace))
-                THROW(1);
+                throw 1;
 
             MSG(("setWorkspace: %ld", workspace));
             if (windowList.isRoot())
@@ -4162,6 +4310,10 @@ void IceSh::parseAction()
                                      NetHorizontal | NetVertical;
             changeState(NormalState);
         }
+        else if (isAction("denormal", 0)) {
+            FOREACH_WINDOW(window)
+                XDeleteProperty(display, window, XA_WM_NORMAL_HINTS);
+        }
         else if (isAction("opacity", 0)) {
             char* opaq = nullptr;
             if (haveArg()) {
@@ -4239,7 +4391,7 @@ void IceSh::parseAction()
         }
         else {
             msg(_("Unknown action: `%s'"), *argp);
-            THROW(1);
+            throw 1;
         }
     }
 }
@@ -4266,7 +4418,7 @@ int main(int argc, char **argv) {
     textdomain(PACKAGE);
 #endif
 
-    check_argv(argc, argv, get_help_text(), VERSION);
+    check_argv(argc, argv, get_help_text, VERSION);
 
     return IceSh(argc, argv);
 }

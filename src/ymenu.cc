@@ -40,15 +40,13 @@ void YMenu::setActionListener(YActionListener *actionListener) {
     fActionListener = actionListener;
 }
 
-void YMenu::finishPopup(YMenuItem *item, YAction action,
-                        unsigned int modifiers)
-{
+void YMenu::finishPopup(YMenuItem *item, YAction action, unsigned modifiers) {
     YActionListener *cmd = fActionListener;
 
     YPopupWindow::finishPopup();
 
-    if (item)
-        item->actionPerformed(cmd, action, modifiers);
+    if (cmd)
+        cmd->actionPerformed(action, modifiers);
 }
 
 lazy<YTimer> YMenu::fMenuTimer;
@@ -60,6 +58,7 @@ YMenu::YMenu(YWindow *parent):
     fMenusel(null)
 {
     paintedItem = selectedItem = -1;
+    paramPos = namePos = 0;
     submenuItem = -1;
     fPopup = nullptr;
     fActionListener = nullptr;
@@ -213,15 +212,15 @@ void YMenu::activateSubMenu(int item, bool byMouse) {
             getOffsets(l, t, r, b);
             findItemPos(item, xp, yp, ih);
             YRect rect(x(), y(), width(), height());
-            if (sub->getActionListener() == nullptr)
-                sub->setActionListener(getActionListener());
+            if (sub->fActionListener == nullptr)
+                sub->setActionListener(fActionListener);
             sub->popup(nullptr, this, nullptr,
                        x() + int(width()) - r, y() + yp - t,
                        int(width()) - r - l, -1,
                        getXiScreen(),
-                       YPopupWindow::pfCanFlipHorizontal |
-                       (popupFlags() & YPopupWindow::pfFlipHorizontal) |
-                       (byMouse ? (unsigned int)YPopupWindow::pfButtonDown : 0U));
+                       pfCanFlipHorizontal |
+                       (popupFlags() & pfFlipHorizontal) |
+                       (byMouse ? pfButtonDown : 0));
             fPopup = sub;
             submenuItem = item;
         }

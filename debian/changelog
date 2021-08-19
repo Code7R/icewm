@@ -1,15 +1,53 @@
-icewm (2.1.2-2) UNRELEASED; urgency=low
+icewm (2.7.0-1) unstable; urgency=low
 
-  * Cherry-picking isolated fixes from upstream version 2.2:
-    + If an application resizes itself partially outside the work area, then
-      move it back inside the work area, if possible, for issue #550.
-    + Fix ignoreQuickSwitch winoption for focused windows for issue #552.
-    + Only reposition when resizing outside of bottom right corner to permit
-      negative positions in issue #550.
-    + Fix for immediately redrawing after setting default clock format.
-    + [Documentation] Add compositor and replace read by executed.
+  * New upstream release (closes: #991153)
 
- -- Eduard Bloch <blade@debian.org>  Sun, 28 Feb 2021 22:27:44 +0100
+ -- Eduard Bloch <blade@debian.org>  Thu, 19 Aug 2021 19:16:50 +0200
+
+icewm (2.6.0-1) experimental; urgency=low
+
+  * New upstream release
+  * Appending the old upstream changelog to the current ChangeLog.gz contents
+    and removing confusing legacy changelog file from docs
+
+ -- Eduard Bloch <blade@debian.org>  Sat, 10 Jul 2021 19:13:00 +0200
+
+icewm (2.5.0-1) experimental; urgency=low
+
+  * New upstream release
+
+ -- Eduard Bloch <blade@debian.org>  Tue, 29 Jun 2021 12:47:10 +0200
+
+icewm (2.4.0+git20210619-1) experimental; urgency=low
+
+  * New upstream release
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 20 Jun 2021 13:19:13 +0200
+
+icewm (2.3.4-1) experimental; urgency=low
+
+  * New upstream release
+
+ -- Eduard Bloch <blade@debian.org>  Tue, 11 May 2021 10:53:42 +0200
+
+icewm (2.3.2-1) experimental; urgency=low
+
+  * New upstream release
+
+ -- Eduard Bloch <blade@debian.org>  Thu, 15 Apr 2021 13:20:21 +0200
+
+icewm (2.3.1-1) experimental; urgency=low
+
+  * New upstream release
+  * Adding explicit dependency on sensible-utils
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 04 Apr 2021 12:47:13 +0200
+
+icewm (2.2.1-1) experimental; urgency=low
+
+  * New upstream release
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 28 Feb 2021 22:44:13 +0100
 
 icewm (2.1.2-1) unstable; urgency=medium
 

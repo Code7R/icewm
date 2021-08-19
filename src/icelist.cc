@@ -74,7 +74,7 @@ public:
     virtual void handleClick(const XButtonEvent &up, int count) {
         if (up.button == 3 && count == 1) {
             YMenu *menu = folderMenu;
-            menu->popup(this, 0, 0, up.x_root, up.y_root,
+            menu->popup(this, nullptr, nullptr, up.x_root, up.y_root,
                         YPopupWindow::pfCanFlipVertical |
                         YPopupWindow::pfCanFlipHorizontal |
                         YPopupWindow::pfPopupMenu);
@@ -331,7 +331,7 @@ void Panes::movePane(Pane *pane, int delta) {
             int b = ob - delta;
             if (b < TH)
                 b = TH;
-            pane->setGeometry(YRect(pane->x(), delta, pane->width(), b));
+            pane->setGeometry(YRect(pane->x(), delta, pane->width(), unsigned(b)));
         }
         if (pane->y() < oldY) {
             int bottom = pane->y();
@@ -341,7 +341,7 @@ void Panes::movePane(Pane *pane, int delta) {
                     panes[n]->setGeometry(YRect(panes[n]->x(),
                                                 bottom - TH,
                                                 panes[n]->width(),
-                                                TH));
+                                                unsigned(TH)));
                     bottom -= TH;
                 } else {
                     panes[n]->setSize(panes[n]->width(),
@@ -387,7 +387,7 @@ public:
         p->show();
 
         input = new YInputLine(this);
-        input->setGeometry(YRect(0, p->height(), p->width(), 25));
+        input->setGeometry(YRect(0, p->height(), p->width(), 25U));
         input->setText("http://slashdot.org/", false);
         input->show();
 

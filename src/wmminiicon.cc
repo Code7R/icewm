@@ -44,7 +44,8 @@ MiniIcon::MiniIcon(YFrameWindow *frame):
         minimizedWindowFont = YFont::getFont(XFA(minimizedWindowFontName));
 
     if (fIconWindow) {
-        Window root, parent, *child;
+        Window root, parent;
+        xsmart<Window> child;
         unsigned border, depth, count;
         if (XGetGeometry(xapp->display(), fIconWindow, &root,
                          &fIconGeometry.xx, &fIconGeometry.yy,
@@ -202,9 +203,10 @@ void MiniIcon::handleCrossing(const XCrossingEvent &crossing) {
     YWindow::handleCrossing(crossing);
 }
 
-void MiniIcon::handleBeginDrag(const XButtonEvent& d, const XMotionEvent& m) {
+bool MiniIcon::handleBeginDrag(const XButtonEvent& d, const XMotionEvent& m) {
     setToolTip(null);
     raise();
+    return true;
 }
 
 void MiniIcon::handleEndDrag(const XButtonEvent& d, const XButtonEvent& u) {

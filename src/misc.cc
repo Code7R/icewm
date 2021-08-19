@@ -401,10 +401,10 @@ void print_copying_exit()
     exit(0);
 }
 
-void check_help_version(const char *arg, const char *help, const char *version)
+void check_help_version(const char *arg, help_text_fun help, const char *version)
 {
     if (is_help_switch(arg)) {
-        print_help_exit(help);
+        print_help_exit(help());
     }
     if (is_version_switch(arg)) {
         print_version_exit(version);
@@ -414,7 +414,12 @@ void check_help_version(const char *arg, const char *help, const char *version)
     }
 }
 
-void check_argv(int argc, char **argv, const char *help, const char *version)
+static const char* help_display()
+{
+    return "  -d, --display=NAME    NAME of the X server to use.\n";
+}
+
+void check_argv(int argc, char **argv, help_text_fun help, const char *version)
 {
     if (ApplicationName == nullptr) {
         ApplicationName = my_basename(argv[0]);
@@ -428,8 +433,8 @@ void check_argv(int argc, char **argv, const char *help, const char *version)
                 }
             }
             else if (strchr("h?vVcC", c)) {
-                check_help_version(*arg, nonempty(help) ? help :
-                    "  -d, --display=NAME    NAME of the X server to use.\n",
+                check_help_version(*arg,
+                    help ? help : help_display,
                     version);
             }
             else if (c == 'd') {
@@ -457,7 +462,9 @@ bool isFile(const char* path) {
 }
 
 bool isExeFile(const char* path) {
-    return access(path, X_OK) == 0 && isFile(path);
+    struct stat s;
+    return stat(path, &s) == 0 && S_ISREG(s.st_mode)
+        && (s.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH));
 }
 
 // parse a C-style identifier
@@ -606,7 +613,6 @@ char* path_lookup(const char* name) {
         return nullptr;
 
     const size_t namlen = strlen(name);
-    char filebuf[PATH_MAX];
 
     char *directory, *save = nullptr;
     for (directory = strtok_r(env, ":", &save); directory;
@@ -614,8 +620,10 @@ char* path_lookup(const char* name) {
     {
         size_t dirlen = strlen(directory);
         size_t length = dirlen + namlen + 3;
-        if (length < sizeof filebuf) {
-            snprintf(filebuf, sizeof filebuf, "%s/%s",
+        const size_t bufsize = 1234;
+        if (length < bufsize) {
+            char filebuf[bufsize];
+            snprintf(filebuf, bufsize, "%s/%s",
                      dirlen ? directory : ".", name);
             if (isExeFile(filebuf)) {
                 return newstr(filebuf);
@@ -635,7 +643,7 @@ const char* getprogname() {
 char* progpath() {
 #ifdef __linux__
     char* path = program_invocation_name;
-    bool fail = isEmpty(path) || access(path, R_OK | X_OK) || !isFile(path);
+    bool fail = (isEmpty(path) || !isExeFile(path));
     if (fail) {
         const size_t linksize = 123;
         char link[linksize];
@@ -679,7 +687,7 @@ void show_backtrace(const int limit) {
     fprintf(stderr, "backtrace:\n"); fflush(stderr);
 
     int status(1);
-    if (path && access(path, R_OK) == 0 && access(tool, X_OK) == 0) {
+    if (path && access(tool, X_OK) == 0) {
         const size_t bufsize(1234);
         char buf[bufsize];
         snprintf(buf, bufsize, "%s -C -f -p -s -e '%s'", tool, path);

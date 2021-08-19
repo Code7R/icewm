@@ -22,6 +22,11 @@ public:
         addSeparator();
         addItem(_("Select _All"), -2, _("Ctrl+A"), actionSelectAll);
     }
+    ~YInputMenu() {
+        if (xapp->popup() == this) {
+            xapp->popdown(this);
+        }
+    }
 };
 
 YInputLine::YInputLine(YWindow *parent, YInputListener *listener):
@@ -40,8 +45,7 @@ YInputLine::YInputLine(YWindow *parent, YInputListener *listener):
     inputBg(&clrInput),
     inputFg(&clrInputText),
     inputSelectionBg(&clrInputSelection),
-    inputSelectionFg(&clrInputSelectionText),
-    inputMenu()
+    inputSelectionFg(&clrInputSelectionText)
 {
     addStyle(wsNoExpose);
     if (inputFont != null)
@@ -337,6 +341,7 @@ void YInputLine::handleButton(const XButtonEvent &button) {
         if (button.button == 1) {
             if (fHasFocus == false) {
                 setWindowFocus();
+                requestFocus(false);
             } else {
                 fSelecting = true;
                 curPos = markPos = offsetToPos(button.x + leftOfs);
@@ -408,12 +413,13 @@ void YInputLine::handleClickDown(const XButtonEvent &down, int count) {
 }
 
 void YInputLine::handleClick(const XButtonEvent &up, int /*count*/) {
-    if (up.button == 3 && IS_BUTTON(up.state, Button3Mask)) {
+    if (up.button == 3 && xapp->isButton(up.state, Button3Mask)) {
         inputMenu->setActionListener(this);
-        inputMenu->popup(this, nullptr, nullptr, up.x_root, up.y_root,
+        inputMenu->popup(this, nullptr, this, up.x_root, up.y_root,
                          YPopupWindow::pfCanFlipVertical |
                          YPopupWindow::pfCanFlipHorizontal);
-    } else if (up.button == 2 && IS_BUTTON(up.state, Button2Mask)) {
+        inputMenu->setPopDownListener(this);
+    } else if (up.button == 2 && xapp->isButton(up.state, Button2Mask)) {
         requestSelection(true);
     }
 }
@@ -458,10 +464,16 @@ void YInputLine::handleFocus(const XFocusChangeEvent &focus) {
         fHasFocus = false;
         repaint();
         cursorBlinkTimer = null;
-        if (fListener) {
+        if (inputMenu && inputMenu == xapp->popup()) {
+        }
+        else if (fListener) {
             fListener->inputLostFocus(this);
         }
     }
+}
+
+void YInputLine::handlePopDown(YPopupWindow *popup) {
+    inputMenu = null;
 }
 
 bool YInputLine::handleAutoScroll(const XMotionEvent & /*mouse*/) {
@@ -690,6 +702,27 @@ void YInputLine::complete() {
     if (1 <= res_count)
         setText(res, res_count == 1);
     free(res);
+}
+
+bool YInputLine::isFocusTraversable() {
+    return true;
+}
+
+void YInputLine::gotFocus() {
+    if (fHasFocus == false) {
+        fHasFocus = true;
+        fCursorVisible = true;
+        cursorBlinkTimer->setTimer(fBlinkTime, this, true);
+        repaint();
+    }
+}
+
+void YInputLine::lostFocus() {
+    if (cursorBlinkTimer) {
+        cursorBlinkTimer = null;
+        fHasFocus = false;
+        repaint();
+    }
 }
 
 // vim: set sw=4 ts=4 et:

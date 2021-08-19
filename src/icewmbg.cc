@@ -4,11 +4,11 @@
 #include <signal.h>
 #include <time.h>
 #include <sys/stat.h>
+#include <sys/resource.h>
 #include <stdlib.h>
-#include "yfull.h"
+#include <X11/Xatom.h>
 #include "yxapp.h"
 #include "yprefs.h"
-#include "ypaths.h"
 #include "ytimer.h"
 #include "udir.h"
 #include "intl.h"
@@ -19,112 +19,26 @@
 
 char const *ApplicationName = nullptr;
 
-class PixFile {
+typedef ref<YImage> Image;
+
+class Cache {
 public:
-    typedef ref<YResourcePaths> Paths;
-    typedef ref<YPixmap> Pixmap;
-private:
-    mstring name;
-    Pixmap pix;
-    time_t last, check;
-public:
-    explicit PixFile(mstring file, Pixmap pixmap = null)
-        : name(file), pix(pixmap), last(0L), check(0L)
-    {
-    }
-    ~PixFile() {
-        name = null;
-        pix = null;
-    }
-    mstring file() const { return name; }
-    Pixmap pixmap(Paths paths) {
-        time_t now = time(nullptr);
-        if (pix == null) {
-            if (last == 0 || last + 2 < now) {
-                pix = load(paths);
-                last = check = now;
+    Cache() { }
+    ~Cache() { clear(); }
+    void clear() { iname = null; image = null; }
+    Image get(const mstring& name) {
+        if (iname != name) {
+            iname = name;
+            image = YImage::load(iname);
+            if (image == null && testOnce(iname, __LINE__)) {
+                tlog(_("Failed to load image '%s'."), iname.c_str());
             }
-        }
-        else if (check + 10 < now) {
-            check = now;
-            upath path(name);
-            struct stat st;
-            if (path.stat(&st) == 0) {
-                if (last < st.st_mtime) {
-                    Pixmap tmp = load(paths);
-                    if (tmp != null) {
-                        pix = tmp;
-                        last = now;
-                    }
-                }
-            }
-        }
-        return pix;
-    }
-    Pixmap load(Paths paths) {
-        Pixmap image;
-        upath path(name);
-        if (false == path.isAbsolute()) {
-            image = paths->loadPixmap(null, path);
-        }
-        if (image == null) {
-            image = YPixmap::load(path);
-        }
-        if (image == null) {
-            tlog(_("Failed to load image '%s'."), name.c_str());
         }
         return image;
     }
-    void unload() {
-        pix = null;
-        last = check = 0L;
-    }
-};
-
-class PixCache {
-public:
-    typedef ref<YResourcePaths> Paths;
-    typedef ref<YPixmap> Pixmap;
 private:
-    Paths paths;
-    YObjectArray<PixFile> pixes;
-    int find(mstring name) {
-        for (int i = 0; i < pixes.getCount(); ++i) {
-            if (name == pixes[i]->file()) {
-                return i;
-            }
-        }
-        return -1;
-    }
-    Paths getPaths() {
-        if (paths == null) {
-            paths = YResourcePaths::subdirs(null);
-        }
-        return paths;
-    }
-public:
-    ~PixCache() {
-        clear();
-        paths = null;
-    }
-    void add(mstring file, Pixmap pixmap = null) {
-        if (-1 == find(file)) {
-            pixes.append(new PixFile(file, pixmap));
-        }
-    }
-    Pixmap get(mstring name) {
-        int k = find(name);
-        return k == -1 ? null : pixes[k]->pixmap(getPaths());
-    }
-    void clear() {
-        pixes.clear();
-        paths = null;
-    }
-    void unload() {
-        for (int k = pixes.getCount(); --k >= 0; ) {
-            pixes[k]->unload();
-        }
-    }
+    mstring iname;
+    Image image;
 };
 
 class Background: public YXApplication, private YTimerListener {
@@ -147,6 +61,7 @@ public:
     void enableSemitransparency(bool enable = true) {
         supportSemitransparency = enable;
     }
+    bool haveBackgrounds() { return imageInited; }
 
 private:
     virtual bool filterEvent(const XEvent& xev);
@@ -188,47 +103,54 @@ private:
     typedef YArray<YColor> YColors;
 
     void addImage(Strings& images, const char* name, bool append);
-    ref<YPixmap> renderBackground(ref<YPixmap> back, YColor color);
-    ref<YPixmap> getBackgroundPixmap();
+    ref<YPixmap> renderBackground(Image back, YColor color);
+    Image getBackgroundImage();
     YColor getBackgroundColor();
-    ref<YPixmap> getTransparencyPixmap();
+    Image getTransparencyImage();
     YColor getTransparencyColor();
     Atom atom(const char* name) const;
     static Window window() { return desktop->handle(); }
     upath getThemeDir();
+    bool checkWM();
+    void syncWM();
 
 private:
     char** mainArgv;
     bool verbose;
     bool randInited;
+    bool themeInited;
+    bool imageInited;
     Strings backgroundImages;
     YColors backgroundColors;
     Strings transparencyImages;
     YColors transparencyColors;
-    PixCache cache;
+    Cache cache;
     upath themeDir;
+    const int mypid;
     int activeWorkspace;
     int cycleOffset;
     int desktopCount;
     unsigned desktopWidth, desktopHeight;
-    ref<YPixmap> currentBackgroundPixmap;
     ref<YPixmap> currentTransparencyPixmap;
     YColor currentBackgroundColor;
-    mstring pixmapName;
+    mstring backgroundName;
     YArray<int> sequence;
     lazy<YTimer> cycleTimer;
+    lazy<YTimer> checkTimer;
 
     Atom _XA_XROOTPMAP_ID;
     Atom _XA_XROOTCOLOR_PIXEL;
     Atom _XA_NET_CURRENT_DESKTOP;
     Atom _XA_NET_DESKTOP_GEOMETRY;
     Atom _XA_NET_NUMBER_OF_DESKTOPS;
+    Atom _XA_NET_SUPPORTING_WM_CHECK;
     Atom _XA_NET_WORKAREA;
     Atom _XA_ICEWMBG_QUIT;
     Atom _XA_ICEWMBG_IMAGE;
     Atom _XA_ICEWMBG_SHUFFLE;
     Atom _XA_ICEWMBG_RESTART;
     Atom _XA_ICEWMBG_PID;
+    Atom _XA_ICEWM_WINOPT;
 };
 
 Background::Background(int *argc, char ***argv, bool verb):
@@ -236,6 +158,9 @@ Background::Background(int *argc, char ***argv, bool verb):
     mainArgv(*argv),
     verbose(verb),
     randInited(false),
+    themeInited(false),
+    imageInited(false),
+    mypid(getpid()),
     activeWorkspace(0),
     cycleOffset(0),
     desktopCount(MAX_WORKSPACES),
@@ -247,11 +172,13 @@ Background::Background(int *argc, char ***argv, bool verb):
     _XA_NET_CURRENT_DESKTOP(atom("_NET_CURRENT_DESKTOP")),
     _XA_NET_DESKTOP_GEOMETRY(atom("_NET_DESKTOP_GEOMETRY")),
     _XA_NET_NUMBER_OF_DESKTOPS(atom("_NET_NUMBER_OF_DESKTOPS")),
+    _XA_NET_SUPPORTING_WM_CHECK(atom("_NET_SUPPORTING_WM_CHECK")),
     _XA_NET_WORKAREA(atom("_NET_WORKAREA")),
     _XA_ICEWMBG_QUIT(atom("_ICEWMBG_QUIT")),
     _XA_ICEWMBG_IMAGE(atom("_ICEWMBG_IMAGE")),
     _XA_ICEWMBG_SHUFFLE(atom("_ICEWMBG_SHUFFLE")),
-    _XA_ICEWMBG_RESTART(atom("_ICEWMBG_RESTART"))
+    _XA_ICEWMBG_RESTART(atom("_ICEWMBG_RESTART")),
+    _XA_ICEWM_WINOPT(atom("_ICEWM_WINOPTHINT"))
 {
     char abuf[42];
     snprintf(abuf, sizeof abuf, "_ICEWMBG_PID_S%d", xapp->screen());
@@ -269,7 +196,7 @@ Background::Background(int *argc, char ***argv, bool verb):
 }
 
 upath Background::getThemeDir() {
-    if (themeDir == null && nonempty(themeName)) {
+    if (themeInited == false && nonempty(themeName)) {
         upath path(themeName);
         if (path.isAbsolute() == false) {
             if (strchr(themeName, '/') == nullptr) {
@@ -290,6 +217,7 @@ upath Background::getThemeDir() {
             tlog("Could not find theme dir");
             themeDir = "";
         }
+        themeInited = true;
     }
     return themeDir;
 }
@@ -297,14 +225,14 @@ upath Background::getThemeDir() {
 Background::~Background() {
     int pid = getBgPid();
     if (supportSemitransparency) {
-        if (pid <= 0 || pid == getpid()) {
+        if (pid <= 0 || pid == mypid) {
             if (_XA_XROOTPMAP_ID)
                 deleteProperty(_XA_XROOTPMAP_ID);
             if (_XA_XROOTCOLOR_PIXEL)
                 deleteProperty(_XA_XROOTCOLOR_PIXEL);
         }
     }
-    if (pid == getpid()) {
+    if (pid == mypid) {
         deleteProperty(_XA_ICEWMBG_PID);
         deleteProperty(_XA_ICEWMBG_IMAGE);
     }
@@ -312,7 +240,6 @@ Background::~Background() {
     clearBackgroundColors();
     clearTransparencyImages();
     clearTransparencyColors();
-    cache.clear();
 }
 
 int Background::mainLoop() {
@@ -356,12 +283,13 @@ void Background::addImage(Strings& images, const char* name, bool append) {
             ++name;
         }
         upath path(name);
-        bool globbing = path.hasglob();
-        if (globbing == false && path.dirExists()) {
-            path += "*";
-            globbing = true;
+        if (path.name() == "*") {
+            upath up(path.parent());
+            if (up.dirExists() && up.hasglob() == false) {
+                path = up;
+            }
         }
-        if (globbing) {
+        if (path.hasglob()) {
             YStringArray list;
             if (path.glob(list, "/")) {
                 if (permute) {
@@ -376,7 +304,6 @@ void Background::addImage(Strings& images, const char* name, bool append) {
                     if (hasImageExt(*iter)) {
                         upath image(*iter);
                         images.append(image);
-                        cache.add(image);
                     }
                 }
             }
@@ -384,27 +311,45 @@ void Background::addImage(Strings& images, const char* name, bool append) {
         else {
             bool isAbs = path.isAbsolute();
             path = path.expand();
-            bool xist = (isAbs && path.fileExists());
+            bool xist = (isAbs && path.isReadable());
             if (xist == false && isAbs == false) {
                 upath p(getThemeDir() + path);
-                if (p.fileExists()) {
+                if (p.isReadable()) {
                     path = p;
                     xist = true;
                 }
             }
-            if (xist || (isAbs == false && path.fileExists())) {
+            if (xist && path.dirExists()) {
+                int start = images.getCount();
+                for (udir dir(path); dir.nextFile(); ) {
+                    if (hasImageExt(dir.entry())) {
+                        upath file(path + dir.entry());
+                        images.append(file);
+                        if (images.getCount() >= ICEBG_MAX_ARGS)
+                            break;
+                    }
+                }
+                if (permute) {
+                    int k = images.getCount();
+                    randinit(k);
+                    while (start < --k) {
+                        images.swap(k, start + randmax(k - start));
+                    }
+                }
+            }
+            else if (xist && path.fileExists()) {
                 images.append(path);
-                cache.add(path);
             }
         }
     }
 }
 
 void Background::add(const char* name, const char* value, bool append) {
-    if (value == nullptr || *value == 0) {
+    if (isEmpty(value)) {
     }
     else if (0 == strcmp(name, "DesktopBackgroundImage")) {
         addImage(backgroundImages, value, append);
+        imageInited = true;
     }
     else if (0 == strcmp(name, "DesktopBackgroundColor")) {
         if (append == false) {
@@ -459,26 +404,31 @@ void Background::handleSignal(int sig) {
 bool Background::handleTimer(YTimer* timer) {
     if (timer == cycleTimer) {
         cycleOffset += desktopCount;
-        cache.unload();
+        update(true);
+        return true;
+    }
+    else if (timer == checkTimer) {
+        if (checkWM())
+            syncWM();
         update(true);
     }
-    return true;
+    return false;
 }
 
-ref<YPixmap> Background::getBackgroundPixmap() {
-    ref<YPixmap> pixmap;
+Image Background::getBackgroundImage() {
+    Image image;
     int count = backgroundImages.getCount();
     if (count > 0 && activeWorkspace >= 0) {
         for (int i = 0; i < count; ++i) {
             int k = shuffle((i + activeWorkspace + cycleOffset) % count);
-            pixmap = cache.get(backgroundImages[k]);
-            if (pixmap != null) {
-                pixmapName = backgroundImages[k];
+            image = cache.get(backgroundImages[k]);
+            if (image != null) {
+                backgroundName = backgroundImages[k];
                 break;
             }
         }
     }
-    return pixmap;
+    return image;
 }
 
 YColor Background::getBackgroundColor() {
@@ -488,19 +438,19 @@ YColor Background::getBackgroundColor() {
         : YColor::black;
 }
 
-ref<YPixmap> Background::getTransparencyPixmap() {
-    ref<YPixmap> pixmap;
+Image Background::getTransparencyImage() {
+    Image image;
     int count = transparencyImages.getCount();
     int numbg = backgroundImages.getCount();
     if (count > 0 && numbg > 0 && activeWorkspace >= 0) {
         for (int i = 0; i < count; ++i) {
             int k = shuffle((i + activeWorkspace + cycleOffset) % numbg) % count;
-            pixmap = cache.get(transparencyImages[k]);
-            if (pixmap != null)
+            image = cache.get(transparencyImages[k]);
+            if (image != null)
                 break;
         }
     }
-    return pixmap;
+    return image;
 }
 
 YColor Background::getTransparencyColor() {
@@ -513,7 +463,7 @@ YColor Background::getTransparencyColor() {
 void Background::randinit(long seed) {
     if (randInited == false) {
         timeval now = walltime();
-        srand(unsigned((seed + getpid()) * now.tv_sec + now.tv_usec));
+        srand(unsigned((seed + mypid) * now.tv_sec + now.tv_usec));
         randInited = true;
     }
 }
@@ -538,7 +488,6 @@ int Background::shuffle(int index) {
     if (shuffleBackgroundImages) {
         if (backgroundImages.getCount() != sequence.getCount()) {
             reshuffle();
-            cache.unload();
         }
         return sequence[index];
     }
@@ -561,21 +510,9 @@ void Background::update(bool force) {
 }
 
 long* Background::getLongProperties(Atom property, int n) const {
-    Atom r_type;
-    int r_format;
-    unsigned long nitems, lbytes;
-    unsigned char *prop(nullptr);
-
-    if (XGetWindowProperty(display(), window(), property,
-                           0, n, False, XA_CARDINAL,
-                           &r_type, &r_format,
-                           &nitems, &lbytes, &prop) == Success && prop)
-    {
-        if (r_type == XA_CARDINAL && r_format == 32 &&
-                n >= 0 && nitems == (unsigned long) n) {
-            return (long *) prop;
-        }
-        XFree(prop);
+    YProperty prop(window(), property, F32, long(n), XA_CARDINAL);
+    if (prop && unsigned(n) <= prop.size()) {
+        return prop.retrieve<long>();
     }
     return nullptr;
 }
@@ -604,33 +541,33 @@ int Background::getNumberOfDesktops() const {
     return getLongProperty(_XA_NET_NUMBER_OF_DESKTOPS);
 }
 
-ref<YPixmap> Background::renderBackground(ref<YPixmap> back, YColor color) {
+ref<YPixmap> Background::renderBackground(Image back, YColor color) {
     if (verbose) tlog("rendering...");
     unsigned width = desktopWidth;
     unsigned height = desktopHeight;
     if (back == null || width == 0 || height == 0) {
         if (verbose) tlog("%s null return", __func__);
-        return back;
+        return null;
     }
 
     int numScreens = multiheadBackground ? 1 : desktop->getScreenCount();
     if (numScreens == 1) {
         if (width == back->width() && height == back->height()) {
             if (verbose) tlog("%s numScreens == 1 return", __func__);
-            return back;
+            return back->renderToPixmap(desktop->depth());
         }
     }
 
-    ref<YPixmap> cBack = YPixmap::create(width, height, xapp->depth());
+    ref<YPixmap> cBack = YPixmap::create(width, height, desktop->depth());
     Graphics g(cBack, 0, 0);
     g.setColor(color);
     g.fillRect(0, 0, width, height);
 
     if (centerBackground == false && scaleBackground == false) {
-        g.fillPixmap(back, 0, 0, width, height, 0, 0);
-        back = cBack;
+        ref<YPixmap> pixm = back->renderToPixmap(desktop->depth());
+        g.fillPixmap(pixm, 0, 0, width, height, 0, 0);
         if (verbose) tlog("%s fillPixmap false return", __func__);
-        return back;
+        return cBack;
     }
 
     unsigned zeroWidth(0), zeroHeight(0);
@@ -652,6 +589,7 @@ ref<YPixmap> Background::renderBackground(ref<YPixmap> back, YColor color) {
     }
     bool zeroDone(false);
 
+    Image scaled;
     for (int screen = 0; screen < numScreens; ++screen) {
         int x(0), y(0);
         if (numScreens > 1) {
@@ -690,44 +628,52 @@ ref<YPixmap> Background::renderBackground(ref<YPixmap> back, YColor color) {
             }
         }
 
-        ref<YPixmap> scaled;
+        Image todraw;
         if (bw != back->width() || bh != back->height()) {
-            scaled = back->scale(bw, bh);
+            if (scaled == null ||
+                scaled->width() != bw ||
+                scaled->height() != bh) {
+                scaled = back->scale(bw, bh);
+            }
+            todraw = scaled;
         }
-        if (scaled == null) {
-            scaled = back;
+        if (todraw == null) {
+            todraw = back;
         }
-        g.drawPixmap(scaled,
-                     max(0, int(bw - width) / 2),
-                     max(0, int(bh - height) / 2),
-                     min(width, bw),
-                     min(height, bh),
-                     max(x, x + int(width - bw) / 2),
-                     max(y, y + int(height - bh) / 2));
+        ref<YPixmap> pixm = todraw->renderToPixmap(g.rdepth());
+        if (pixm != null) {
+            g.drawPixmap(pixm,
+                         max(0, int(bw - width) / 2),
+                         max(0, int(bh - height) / 2),
+                         min(width, bw),
+                         min(height, bh),
+                         max(x, x + int(width - bw) / 2),
+                         max(y, y + int(height - bh) / 2));
+        }
     }
-    back = cBack;
 
-    return back;
+    return cBack;
 }
 
 void Background::changeBackground(bool force) {
-    ref<YPixmap> backgroundPixmap = getBackgroundPixmap();
+    Image backgroundImage = getBackgroundImage();
     YColor backgroundColor(getBackgroundColor());
     if (force == false) {
-        if (backgroundPixmap == currentBackgroundPixmap &&
+        if (backgroundImage == null &&
             backgroundColor == currentBackgroundColor) {
+            cache.clear();
             return;
         }
     }
     unsigned long const bPixel(backgroundColor.pixel());
-    bool handleBackground(false);
+    bool handleBackground = false;
     Pixmap bPixmap(None);
-    ref<YPixmap> back = renderBackground(backgroundPixmap, backgroundColor);
+    ref<YPixmap> back = renderBackground(backgroundImage, backgroundColor);
 
     if (back != null) {
         bPixmap = back->pixmap();
         XSetWindowBackgroundPixmap(display(), window(), bPixmap);
-        changeStringProperty(_XA_ICEWMBG_IMAGE, (char *) pixmapName.c_str());
+        changeStringProperty(_XA_ICEWMBG_IMAGE, (char *) backgroundName.c_str());
         handleBackground = true;
     }
     if (false == handleBackground) {
@@ -743,8 +689,8 @@ void Background::changeBackground(bool force) {
             _XA_XROOTCOLOR_PIXEL)
         {
             YColor tColor(getTransparencyColor());
-            ref<YPixmap> trans = getTransparencyPixmap();
-            bool samePixmap = trans == backgroundPixmap;
+            Image trans = getTransparencyImage();
+            bool samePixmap = trans == backgroundImage;
             bool sameColor = tColor == backgroundColor;
             currentTransparencyPixmap =
                 trans == null || (samePixmap && sameColor) ? back :
@@ -763,13 +709,15 @@ void Background::changeBackground(bool force) {
     }
     XClearWindow(display(), window());
     XFlush(display());
+    cache.clear();
+
     if (false == supportSemitransparency &&
         backgroundImages.getCount() <= 1 &&
         backgroundColors.getCount() <= 1)
     {
         this->exit(0);
     }
-    currentBackgroundPixmap = backgroundPixmap;
+    // currentBackgroundPixmap = backgroundPixmap;
     currentBackgroundColor = backgroundColor;
 }
 
@@ -790,34 +738,39 @@ bool Background::filterEvent(const XEvent &xev) {
     if (xev.xany.window != window()) {
         /*ignore*/;
     }
-    else if (xev.type == PropertyNotify) {
+    else if (xev.type == PropertyNotify &&
+             xev.xproperty.state == PropertyNewValue)
+    {
         if (xev.xproperty.atom == _XA_NET_CURRENT_DESKTOP) {
             update();
         }
-        if (xev.xproperty.atom == _XA_NET_NUMBER_OF_DESKTOPS) {
+        else if (xev.xproperty.atom == _XA_NET_NUMBER_OF_DESKTOPS) {
             getNumberOfDesktops();
         }
-        if (xev.xproperty.atom == _XA_NET_DESKTOP_GEOMETRY) {
+        else if (xev.xproperty.atom == _XA_NET_DESKTOP_GEOMETRY) {
             unsigned w = desktopWidth, h = desktopHeight;
             getDesktopGeometry();
             update(w != desktopWidth || h != desktopHeight);
         }
-        if (xev.xproperty.atom == _XA_NET_WORKAREA) {
+        else if (xev.xproperty.atom == _XA_NET_WORKAREA) {
             unsigned w = desktopWidth, h = desktopHeight;
             desktop->updateXineramaInfo(desktopWidth, desktopHeight);
             update(w != desktopWidth || h != desktopHeight);
         }
-        if (xev.xproperty.atom == _XA_ICEWMBG_PID) {
+        else if (xev.xproperty.atom == _XA_ICEWMBG_PID) {
             int pid = getBgPid();
-            if (pid > 0 && pid != getpid()) {
+            if (pid > 0 && pid != mypid) {
                 this->exit(0);
             }
             return true;
         }
+        else if (xev.xproperty.atom == _XA_NET_SUPPORTING_WM_CHECK) {
+            checkTimer->setTimer(100L, this, true);
+        }
     }
     else if (xev.type == ClientMessage) {
         if (xev.xclient.message_type == _XA_ICEWMBG_QUIT) {
-            if (xev.xclient.data.l[0] != getpid()) {
+            if (xev.xclient.data.l[0] != mypid) {
                 if (verbose) tlog("quit");
                 this->exit(0);
             }
@@ -836,20 +789,39 @@ bool Background::filterEvent(const XEvent &xev) {
     return YXApplication::filterEvent(xev);
 }
 
+bool Background::checkWM() {
+    YProperty wchk(window(), _XA_NET_SUPPORTING_WM_CHECK, F32, 1L, XA_WINDOW);
+    if (wchk) {
+        YProperty name(*wchk, _XA_NET_WM_NAME, F8, 5L, _XA_UTF8_STRING);
+        return name && strncmp(name.string(), "IceWM", 5) == 0;
+    }
+    return false;
+}
+
+void Background::syncWM() {
+    YProperty wopt(window(), _XA_ICEWM_WINOPT, F8, 99L, _XA_ICEWM_WINOPT);
+    if (wopt == false) {
+        wopt.append("\0\0\0", 3);
+        sync();
+    }
+    for (int i = 0; ++i < 10 && wopt; ++i) {
+        usleep(i * 1000);
+        wopt.update();
+    }
+}
+
 void Background::sendClientMessage(Atom message) const {
     XClientMessageEvent xev = {};
     xev.type = ClientMessage;
     xev.window = window();
     xev.message_type = message;
     xev.format = 32;
-    xev.data.l[0] = getpid();
-    XSendEvent(display(), window(), False,
-               StructureNotifyMask, (XEvent *) &xev);
-    XSync(display(), False);
+    xev.data.l[0] = mypid;
+    send(xev, window(), StructureNotifyMask);
+    sync();
 }
 
 bool Background::become(bool replace) {
-    long mypid = (long) getpid();
     int pid = getBgPid();
 
     if (pid > 0 && pid != mypid && (replace || kill(pid, 0) != 0)) {
@@ -868,12 +840,13 @@ bool Background::become(bool replace) {
         }
     }
     if (pid <= 0) {
-        changeLongProperty(_XA_ICEWMBG_PID, (unsigned char *) &mypid);
-        XSync(display(), False);
-        pid = (int) mypid;
+        long lpid = mypid;
+        changeLongProperty(_XA_ICEWMBG_PID, (unsigned char *) &lpid);
+        sync();
+        pid = mypid;
     }
 
-    return pid == (int) mypid;
+    return pid == mypid;
 }
 
 static const char* get_help_text() {
@@ -944,9 +917,9 @@ void addBgImage(const char* name, const char* value, bool append) {
 
 static void bgLoadConfig(const char *configFile, const char *overrideTheme)
 {
-    if (configFile == nullptr || *configFile == 0)
+    if (isEmpty(configFile))
         configFile = "preferences";
-    if (overrideTheme && *overrideTheme)
+    if (nonempty(overrideTheme))
         themeName = overrideTheme;
     else
     {
@@ -1059,11 +1032,18 @@ int main(int argc, char **argv) {
             else if (GetArgument(value, "y", "cycle", arg, argv + argc)) {
                 cycle = value;
             }
+            else if (GetArgument(value, "d", "display", arg, argv + argc)) {
+                /*ignore*/;
+            }
+            else
+                warn(_("Unrecognized option '%s'."), *arg);
         }
     }
 
-    if (nice(5)) {
-        /*ignore*/;
+    if (getpriority(PRIO_PROCESS, 0) < 5) {
+        if (nice(5)) {
+            /*ignore*/;
+        }
     }
 
     Background bg(&argc, &argv, verbose);
@@ -1116,6 +1096,15 @@ int main(int argc, char **argv) {
     }
     if (cycle) {
         cycleBackgroundsPeriod = atoi(cycle);
+    }
+
+    if (bg.haveBackgrounds() == false) {
+#ifdef CONFIG_DEFAULT_BACKGROUND
+        const char def[] = CONFIG_DEFAULT_BACKGROUND "";
+        if (def[0]) {
+            bgParse("DesktopBackgroundImage", def);
+        }
+#endif
     }
 
     globalBg = nullptr;

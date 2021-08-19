@@ -22,8 +22,18 @@ inline T min(T a, T b) {
 }
 
 template <class T>
+inline T min(T a, T b, T c) {
+    return (a < b ? a < c ? a : c : b < c ? b : c);
+}
+
+template <class T>
 inline T max(T a, T b) {
     return (a < b ? b : a);
+}
+
+template <class T>
+inline T max(T a, T b, T c) {
+    return (a < b ? b < c ? c : b : a < c ? c : a);
 }
 
 template <class T>
@@ -120,15 +130,6 @@ void show_backtrace(const int limit = 0);
 
 #define ACOUNT(x) (sizeof(x)/sizeof(x[0]))
 #define BUFNSIZE(x) x, sizeof(x)
-
-//!!! clean these up
-#define KEY_MODMASK(x) ((x) & (xapp->KeyMask))
-#define BUTTON_MASK(x) ((x) & (xapp->ButtonMask))
-#define BUTTON_MODMASK(x) ((x) & (xapp->ButtonKeyMask))
-#define IS_BUTTON(s,b) (BUTTON_MODMASK(s) == (b))
-
-#define ISMASK(w,e,n) (((w) & ~(n)) == (e))
-#define HASMASK(w,e,n) ((((w) & ~(n)) & (e)) == (e))
 
 int strpcmp(char const *str, char const *pfx, char const *delim = "=:");
 char const * strnxt(const char *str, const char *delim = " \t");
@@ -230,8 +231,9 @@ bool is_version_switch(const char *arg);
 void print_copying_exit();
 void print_help_exit(const char *help);
 void print_version_exit(const char *version);
-void check_help_version(const char *arg, const char *help, const char *version);
-void check_argv(int argc, char **argv, const char *help, const char *version);
+typedef const char* (*help_text_fun)();
+void check_help_version(const char *arg, help_text_fun help, const char *version);
+void check_argv(int argc, char **argv, help_text_fun help, const char *version);
 
 inline int intersection(int s1, int e1, int s2, int e2) {
     return max(0, min(e1, e2) - max(s1, s2));

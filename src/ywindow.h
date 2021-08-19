@@ -2,7 +2,6 @@
 #define YWINDOW_H
 
 #include "ypaint.h"
-#include "ycursor.h"
 #include "yarray.h"
 #include "ylist.h"
 #include "yrect.h"
@@ -65,7 +64,7 @@ public:
     bool getWindowAttributes(XWindowAttributes* attr);
     void beneath(YWindow* superior);
     void raiseTo(YWindow* inferior);
-    void setWindowFocus();
+    void setWindowFocus(Time timestamp = CurrentTime);
 
     bool fetchTitle(char** title);
     void setTitle(char const * title);
@@ -120,7 +119,7 @@ public:
 
     virtual void handleClickDown(const XButtonEvent &, int) {}
     virtual void handleClick(const XButtonEvent &, int) {}
-    virtual void handleBeginDrag(const XButtonEvent &, const XMotionEvent &) {}
+    virtual bool handleBeginDrag(const XButtonEvent &, const XMotionEvent &);
     virtual void handleDrag(const XButtonEvent &, const XMotionEvent &) {}
     virtual void handleEndDrag(const XButtonEvent &, const XButtonEvent &) {}
 
@@ -129,11 +128,11 @@ public:
     virtual bool handleAutoScroll(const XMotionEvent &mouse);
     void beginAutoScroll(bool autoScroll, const XMotionEvent *motion);
 
-    void setPointer(const YCursor& pointer);
+    void setPointer(Cursor pointer);
     void grabKeyM(int key, unsigned modifiers);
     void grabKey(int key, unsigned modifiers);
     void grabVKey(int key, unsigned vmodifiers);
-    unsigned VMod(int modifiers);
+    unsigned VMod(unsigned modifiers);
     void grabButtonM(int button, unsigned modifiers);
     void grabButton(int button, unsigned modifiers);
     void grabVButton(int button, unsigned vmodifiers);
@@ -181,10 +180,12 @@ public:
         wsDesktopAware     = 1 << 6,
         wsToolTip          = 1 << 7,
         wsBackingMapped    = 1 << 8,
+        wsToolTipping      = 1 << 9,
+        wsTakeFocus        = 1 << 10,
     };
 
     virtual bool isFocusTraversable();
-    bool isFocused();
+    bool isFocused() const { return focused(); }
     void nextFocus();
     void prevFocus();
     bool changeFocus(bool next);
@@ -202,6 +203,7 @@ public:
     void installAccelerator(unsigned key, unsigned mod, YWindow *win);
     void removeAccelerator(unsigned key, unsigned mod, YWindow *win);
 
+    mstring getToolTip();
     void setToolTip(const mstring &tip);
 
     void mapToGlobal(int &x, int &y);
@@ -213,6 +215,7 @@ public:
     void deleteProperty(Atom property);
     void setProperty(Atom prop, Atom type, const Atom* values, int count);
     void setProperty(Atom property, Atom propType, Atom value);
+    void setNetName(const char* name);
     void setNetWindowType(Atom window_type);
     void setNetOpacity(Atom opacity);
     void setNetPid();
@@ -242,7 +245,7 @@ public:
 
     bool hasPopup();
 
-    KeySym keyCodeToKeySym(unsigned int keycode, int index = 0);
+    KeySym keyCodeToKeySym(unsigned keycode, unsigned index = 0);
     static unsigned long getLastEnterNotifySerial();
 
     void unmanageWindow() { removeWindow(); }
@@ -279,8 +282,8 @@ private:
     unsigned fStyle;
     int fX, fY;
     unsigned fWidth, fHeight;
-    YCursor fPointer;
     int unmapCount;
+    Cursor fPointer;
     Graphics *fGraphics;
     long fEventMask;
     int fWinGravity, fBitGravity;
@@ -307,9 +310,9 @@ private:
 
     static YAutoScroll *fAutoScroll;
 
-    void addIgnoreUnmap(Window w);
-    bool ignoreUnmap(Window w);
-    void removeAllIgnoreUnmap(Window w);
+    void addIgnoreUnmap()       { ++unmapCount; }
+    bool ignoreUnmap()          { return (0 < unmapCount) && unmapCount--; }
+    void removeAllIgnoreUnmap() { unmapCount = 0; }
 };
 
 class YDndWindow : public YWindow {

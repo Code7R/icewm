@@ -12,14 +12,14 @@
 #include "default.h"
 
 const char *ApplicationName = "testmenus";
-YMenu *logoutMenu(NULL);
+lazy<LogoutMenu> logoutMenu;
 YWMApp *wmapp(NULL);
 YMenu *windowListMenu(NULL);
 YWindowManager *manager;
 
 void YWMApp::restartClient(const char *path, char *const *args) {
 }
-void YWMApp::runOnce(const char *resource, const char *path, char *const *args) {
+void YWMApp::runOnce(const char *resource, long int*, const char *path, char *const *args) {
 }
 void YWMApp::signalGuiEvent(GUIEvent) {
 }
@@ -80,7 +80,7 @@ public:
         if ((button.type == ButtonRelease) &&
             (button.button == 3))
         {
-            menu->popup(this, 0, 0, button.x_root, button.y_root,
+            menu->popup(this, nullptr, nullptr, button.x_root, button.y_root,
                         YPopupWindow::pfCanFlipVertical |
                         YPopupWindow::pfCanFlipHorizontal |
                         YPopupWindow::pfPopupMenu);

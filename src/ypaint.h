@@ -132,7 +132,8 @@ public:
     void drawMask(ref<YPixmap> pix, int x, int y);
     void drawClippedPixmap(Pixmap pix, Pixmap clip,
                            int x, int y, unsigned w, unsigned h, int toX, int toY);
-    void fillRect(int x, int y, unsigned width, unsigned height);
+    void fillRect(int x, int y, unsigned width, unsigned height,
+                  unsigned rounding = 0);
     void fillRects(XRectangle * rects, int n);
     void fillPolygon(XPoint * points, int n, int shape,
                      int mode);
@@ -143,7 +144,7 @@ public:
     void setThinLines() { setLineWidth(0); }
     void setWideLines(unsigned width = 1) { setLineWidth(width >= 1 ? width : 1); }
     void setLineWidth(unsigned width);
-    void setPenStyle(bool dotLine = false); ///!!!hack
+    void setPenStyle(bool dotLine = false, int cap = CapButt, int join = JoinMiter);
     void setFunction(int function = GXcopy);
     unsigned long getColorPixel() const;
 
@@ -230,6 +231,7 @@ public:
     void paint(const class YRect& rect);
     void paint();
     void release();
+    void scroll(int dx, int dy);
 
     YWindow* window() const { return fWindow; }
     int nesting() const { return fNesting; }

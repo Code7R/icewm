@@ -1,9 +1,7 @@
-#ifndef __YACTION_H
-#define __YACTION_H
+#ifndef YACTION_H
+#define YACTION_H
 
-#ifndef __WMACTION_H
 #include "wmaction.h"
-#endif
 
 class YAction {
 public:
@@ -43,7 +41,7 @@ private:
 
 class YActionListener {
 public:
-    virtual void actionPerformed(YAction action, unsigned int modifiers) = 0;
+    virtual void actionPerformed(YAction action, unsigned modifiers = 0) = 0;
 protected:
     virtual ~YActionListener() {}
 };

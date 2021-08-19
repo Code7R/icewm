@@ -21,9 +21,6 @@ YXApplication *xapp = nullptr;
 YDesktop *desktop = nullptr;
 YContext<YWindow> windowContext;
 
-YCursor YXApplication::leftPointer;
-YCursor YXApplication::rightPointer;
-YCursor YXApplication::movePointer;
 bool YXApplication::synchronizeX11;
 bool YXApplication::alphaBlending;
 
@@ -488,13 +485,6 @@ const char* YXApplication::atomName(Atom atom) {
     return buf;
 }
 
-void YXApplication::initPointers() {
-    osmart<YCursorLoader> l(YCursor::newLoader());
-    leftPointer  = l->load("left.xpm",  XC_left_ptr);
-    rightPointer = l->load("right.xpm", XC_right_ptr);
-    movePointer  = l->load("move.xpm",  XC_fleur);
-}
-
 void YXApplication::initModifiers() {
     XModifierKeymap *xmk = XGetModifierMapping(xapp->display());
     AltMask = MetaMask = WinMask = SuperMask = HyperMask =
@@ -531,8 +521,8 @@ void YXApplication::initModifiers() {
     if (MetaMask == AltMask)
         MetaMask = 0;
 
-    MSG(("alt:%d meta:%d super:%d hyper:%d mode:%d num:%d scroll:%d",
-         AltMask, MetaMask, SuperMask, HyperMask, ModeSwitchMask,
+    MSG(("alt:%d meta:%d super:%d hyper:%d win:%d mode:%d num:%d scroll:%d",
+         AltMask, MetaMask, SuperMask, HyperMask, WinMask, ModeSwitchMask,
          NumLockMask, ScrollLockMask));
 
     // some hacks for "broken" modifier configurations
@@ -1024,8 +1014,10 @@ YXApplication::parseArgs(int argc, char **argv, const char *displayName) {
 Display* YXApplication::openDisplay(const char* displayName) {
     if (nonempty(displayName))
         setenv("DISPLAY", displayName, True);
+    else
+        displayName = getenv("DISPLAY");
 
-    Display* display = XOpenDisplay(nullptr);
+    Display* display = XOpenDisplay(displayName);
     if (display == nullptr)
         die(1, _("Can't open display: %s. X must be running and $DISPLAY set."),
             displayName ? displayName : _("<none>"));
@@ -1078,7 +1070,6 @@ YXApplication::YXApplication(int *argc, char ***argv, const char *displayName):
 
     initAtoms();
     initModifiers();
-    initPointers();
 }
 
 void YExtension::init(Display* dis, QueryFunc ext, QueryFunc ver) {
@@ -1118,8 +1109,8 @@ void YXApplication::initExtensions(Display* dpy) {
 }
 
 YXApplication::~YXApplication() {
-    if (fColormap32 != CopyFromParent)
-        XFreeColormap(xapp->display(), fColormap32);
+    if (fColormap32)
+        XFreeColormap(display(), fColormap32);
 
     xfd.unregisterPoll();
     XCloseDisplay(display());
@@ -1328,7 +1319,7 @@ YTextProperty::YTextProperty(const char* str) {
     format = 8;
     if (str) {
         nitems = strlen(str);
-        value = new unsigned char[1 + nitems];
+        value = (unsigned char *) malloc(1 + nitems);
         if (value) memcpy(value, str, 1 + nitems);
     } else {
         nitems = 0;
@@ -1337,7 +1328,7 @@ YTextProperty::YTextProperty(const char* str) {
 }
 
 YTextProperty::~YTextProperty() {
-    if (value) delete[] value;
+    if (value) XFree(value);
 }
 
 void YProperty::discard() {
@@ -1360,6 +1351,18 @@ const YProperty& YProperty::update() {
         discard();
     }
     return *this;
+}
+
+void YProperty::append(void const* data, int count) const {
+    unsigned char const* bytes = reinterpret_cast<unsigned char const*>(data);
+    XChangeProperty(xapp->display(), fWind, fProp, fKind, fBits,
+                    PropModeAppend, bytes, count);
+}
+
+void YProperty::replace(void const* data, int count) const {
+    unsigned char const* bytes = reinterpret_cast<unsigned char const*>(data);
+    XChangeProperty(xapp->display(), fWind, fProp, fKind, fBits,
+                    PropModeReplace, bytes, count);
 }
 
 // vim: set sw=4 ts=4 et:

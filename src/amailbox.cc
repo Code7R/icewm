@@ -28,6 +28,8 @@
 extern YColorName taskBarBg;
 
 int MailCheck::fInstanceCounter;
+int MailCheck::fDestructCounter;
+csmart MailCheck::openssl_path;
 
 MailCheck::MailCheck(mstring url, MailBoxStatus *mbx):
     state(IDLE),
@@ -73,6 +75,11 @@ MailCheck::~MailCheck() {
     if (fAddr) {
         freeaddrinfo(fAddr);
         fAddr = nullptr;
+    }
+    if (++fDestructCounter == fInstanceCounter) {
+        if (openssl_path != nullptr) {
+            openssl_path = nullptr;
+        }
     }
 }
 
@@ -319,11 +326,14 @@ void MailCheck::startCheck() {
 
 void MailCheck::startSSL() {
     const char file[] = "openssl";
-    csmart path(path_lookup(file));
-    if (path == nullptr) {
-        if (ONCE)
-            warn(_("Failed to find %s command"), file);
-        return;
+
+    if (openssl_path == nullptr) {
+        openssl_path = path_lookup(file);
+        if (openssl_path == nullptr) {
+            if (ONCE)
+                warn(_("Failed to find %s command"), file);
+            return;
+        }
     }
 
     int other;
@@ -349,8 +359,8 @@ void MailCheck::startSSL() {
                 file, "s_client", "-quiet", "-no_ign_eof",
                 "-connect", hostnamePort, nullptr
             };
-            execv(path, (char* const*) args);
-            fail(_("Failed to execute %s"), (char *) path);
+            execv(openssl_path, (char* const*) args);
+            fail(_("Failed to execute %s"), (char *) openssl_path);
             _exit(1);
         }
         else {
@@ -674,6 +684,7 @@ MailBoxStatus::MailBoxStatus(MailHandler* handler,
     fState(mbxNoMail),
     check(mailbox, this),
     fHandler(handler),
+    fCount(0),
     fUnread(0),
     fSuspended(false)
 {
@@ -763,31 +774,6 @@ void MailBoxStatus::handleClick(const XButtonEvent &up, int count) {
         fHandler->handleClick(up, this);
 }
 
-void MailBoxStatus::handleCrossing(const XCrossingEvent &crossing) {
-    if (crossing.type == EnterNotify) {
-#if 0
-        if (countMailMessages) {
-            struct stat st;
-            unsigned long countSize;
-            time_t countTime;
-
-            if (stat(fMailBox, &st) != -1) {
-                countSize = st.st_size;
-                countTime = st.st_mtime;
-            } else {
-                countSize = 0;
-                countTime = 0;
-            }
-            if (fLastCountSize != countSize || fLastCountTime != countTime)
-            fLastCountSize = countSize;
-        } else {
-            setToolTip(0);
-        }
-#endif
-    }
-    YWindow::handleCrossing(crossing);
-}
-
 void MailBoxStatus::checkMail() {
     if (suspended() == false) {
         check.startCheck();
@@ -805,7 +791,6 @@ void MailBoxStatus::mailChecked(MailBoxState mst, long count, long unread) {
         if (fState == mbxHasNewMail)
             newMailArrived(count, unread);
     }
-    updateToolTip();
 }
 
 void MailBoxStatus::updateToolTip() {

@@ -96,7 +96,6 @@ CPUStatus::CPUStatus(YWindow *aParent, CPUStatusHandler *aHandler, int cpuid) :
     setSize(taskBarCPUSamples, taskBarGraphHeight);
     getStatus();
     updateStatus();
-    updateToolTip();
     char buf[99];
     snprintf(buf, 99, "CPU%d", cpuid);
     setTitle(buf);
@@ -427,10 +426,13 @@ int CPUStatus::getAcpiTemp(char *tempbuf, int buflen) {
         if (1 < retbuflen && retbuflen + 1 < buflen) {
             // TRANSLATORS: Please translate the string "C" into "Celsius Temperature" in your language.
             // TRANSLATORS: Please make sure the translated string could be shown in your non-utf8 locale.
-            static const char *T = _("°C");
-            int i = -1;
-            while (T[++i]) tempbuf[retbuflen++] = T[i];
-            tempbuf[retbuflen] = '\0';
+            const char* T = _("°C");
+            int len = int(strlen(T));
+            if (retbuflen + len + 1 < buflen) {
+                for (int i = 0; T[i]; ++i)
+                    tempbuf[retbuflen++] = T[i];
+                tempbuf[retbuflen] = '\0';
+            }
         }
     }
     else if (dir.open("/proc/acpi/thermal_zone")) {
@@ -453,7 +455,7 @@ int CPUStatus::getAcpiTemp(char *tempbuf, int buflen) {
     return retbuflen;
 }
 
-float CPUStatus::getCpuFreq(unsigned int cpu) {
+float CPUStatus::getCpuFreq(int cpu) {
 
 #if __linux__
     char buf[16], namebuf[100];

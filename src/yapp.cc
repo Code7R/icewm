@@ -19,6 +19,7 @@
 #include "ywordexp.h"
 
 IMainLoop *mainLoop;
+int DelayFuzziness = 10;
 static int signalPipe[2];
 static sigset_t oldSignalMask;
 static sigset_t signalMask;
@@ -99,8 +100,8 @@ bool YApplication::nextTimeout(timeval *timeout) {
     bool fFirst = true;
     YArrayIterator<YTimer*> t = timers.iterator();
     while (++t) {
-        if (t->isRunning() && (fFirst || t->timeout < *timeout)) {
-            *timeout = t->timeout;
+        if (t->isRunning() && (fFirst || t->timeout() < *timeout)) {
+            *timeout = t->timeout();
             fFirst = false;
         }
     }
@@ -120,22 +121,22 @@ bool YApplication::nextTimeoutWithFuzziness(timeval *timeout) {
             if (iter->isFixed()) {
                 // Update if no fixed timer yet or current
                 // is earlier than previously registered one.
-                if (false == fixedExists || iter->timeout < timeout_fixed) {
-                    timeout_fixed = iter->timeout;
+                if (false == fixedExists || iter->timeout() < timeout_fixed) {
+                    timeout_fixed = iter->timeout();
                     fixedExists = true;
                 }
             }
             else if (false == fuzzyExists) {
                 // encountered first fuzzy timer, register everything
-                timeout_fuzzy = iter->timeout;
-                timeout_max = iter->timeout_max;
+                timeout_fuzzy = iter->timeout();
+                timeout_max = iter->timeout_max();
                 fuzzyExists = true;
             }
-            else if (iter->timeout < timeout_fuzzy) {
+            else if (iter->timeout() < timeout_fuzzy) {
                 // this fuzzy timer is earlier than previous one
-                timeout_fuzzy = iter->timeout;
-                if (iter->timeout_max < timeout_max)
-                    timeout_max = iter->timeout_max;
+                timeout_fuzzy = iter->timeout();
+                if (iter->timeout_max() < timeout_max)
+                    timeout_max = iter->timeout_max();
             }
         }
     }
@@ -172,7 +173,7 @@ void YApplication::handleTimeouts() {
         if (++iter &&
             *iter != timeout &&
             iter->isRunning() &&
-            iter->timeout_min < now)
+            iter->timeout_min() < now)
         {
             timeout = *iter;
             YTimerListener *listener = timeout->getTimerListener();
@@ -186,7 +187,7 @@ void YApplication::handleTimeouts() {
 void YApplication::decreaseTimeouts(timeval diff) {
     YArrayIterator<YTimer*> iter = timers.reverseIterator();
     while (++iter)
-        iter->timeout += diff;
+        iter->decreaseTimeout(diff);
 }
 
 void YApplication::registerPoll(YPollBase *t) {
@@ -517,6 +518,21 @@ upath YApplication::getHomeDir() {
         }
     }
     return upath(null);
+}
+
+void YApplication::subdirs(const char* subdir, bool to, class MStringArray& ms) {
+    upath paths[] = {
+        getPrivConfDir(),
+        getConfigDir(),
+        getLibDir(),
+    };
+    for (upath& path : paths) {
+        if (path != null) {
+            if (isEmpty(subdir) || path.relative(subdir).isExecutable()) {
+                ms += path;
+            }
+        }
+    }
 }
 
 upath YApplication::findConfigFile(upath name) {

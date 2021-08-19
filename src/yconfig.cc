@@ -5,7 +5,6 @@
 #include "yconfig.h"
 #include "ypaint.h"
 #include "yprefs.h"
-#include "ypaths.h"
 #include "sysdep.h"
 #include "binascii.h"
 #include "yapp.h"
@@ -101,6 +100,13 @@ bool YConfig::parseKey(const char *arg, KeySym *key, unsigned int *mod) {
         *key = XStringToKeysym(s);
     } else {
         *key = XStringToKeysym(arg);
+    }
+
+    if (*key == NoSymbol && !strncmp(arg, "Pointer_Button", 14)) {
+        int button = 0;
+        if (sscanf(arg + 14, "%d", &button) == 1 && button > 0) {
+            *key = button + XK_Pointer_Button1 - 1;
+        }
     }
 
     if (*key == NoSymbol && *arg) {
@@ -259,13 +265,18 @@ void YConfig::parseConfiguration(char *data) {
     }
 }
 
-bool YConfig::loadConfigFile(cfoption* opts, upath fileName, cfoption* more) {
+bool YConfig::loadConfigFile(cfoption* opts, upath fileName,
+                             cfoption* more, cfoption* xtra)
+{
     YTraceConfig trace(fileName.string());
     auto buf(fileName.loadText());
     if (buf) {
         YConfig(opts).parseConfiguration(buf);
         if (more) {
             YConfig(more).parseConfiguration(buf);
+        }
+        if (xtra) {
+            YConfig(xtra).parseConfiguration(buf);
         }
     }
     return buf;
@@ -315,6 +326,31 @@ YConfig& YConfig::loadTheme() {
 
 YConfig& YConfig::loadOverride() {
     return load("prefoverride");
+}
+
+bool cfoption::operator==(const cfoption& r) const {
+    if (type == r.type) {
+        switch (type) {
+            case CF_NONE:
+                return true;
+            case CF_BOOL:
+                return boolval() == r.boolval();
+            case CF_INT:
+                return intval() == r.intval();
+            case CF_UINT:
+                return uintval() == r.uintval();
+            case CF_STR:
+                return str() == r.str() ||
+                    (isEmpty(str()) ? isEmpty(r.str()) :
+                    (nonempty(r.str()) && 0 == strcmp(str(), r.str())));
+            case CF_KEY:
+                return key()->operator==(*r.key())
+                    && 0 == strcmp(key()->name, r.key()->name);
+            case CF_FUNC:
+                return false;
+        }
+    }
+    return false;
 }
 
 // vim: set sw=4 ts=4 et:

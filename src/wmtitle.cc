@@ -14,6 +14,8 @@
 #include "prefs.h"
 #include "intl.h"
 
+#define ISMASK(w,e,n) (((w) & ~(n)) == (e))
+
 static ref<YFont> titleFont;
 
 static YColorName titleBarBackground[2] = {
@@ -108,7 +110,7 @@ void YFrameTitleBar::handleButton(const XButtonEvent &button) {
     }
     else if (button.type == ButtonRelease) {
         if ((button.button == Button1 || button.button == Button3) &&
-            IS_BUTTON(button.state, Button1Mask + Button3Mask))
+            xapp->isButton(button.state, Button1Mask + Button3Mask))
         {
             windowList->showFocused(button.x_root, button.y_root);
         }
@@ -119,27 +121,29 @@ void YFrameTitleBar::handleButton(const XButtonEvent &button) {
 void YFrameTitleBar::handleClick(const XButtonEvent &up, int count) {
     YAction action(actionNull);
     if (count >= 2 && (count % 2 == 0)) {
-        if (up.button == (unsigned) titleMaximizeButton &&
+        if (up.button == titleMaximizeButton &&
             ISMASK(KEY_MODMASK(up.state), 0, ControlMask))
         {
             action = actionMaximize;
         }
-        else if (up.button == (unsigned) titleMaximizeButton &&
+        else if (up.button == titleMaximizeButton &&
              ISMASK(KEY_MODMASK(up.state), ShiftMask, ControlMask))
         {
             action = actionMaximizeVert;
         }
-        else if (up.button == (unsigned) titleMaximizeButton && xapp->AltMask &&
+        else if (up.button == titleMaximizeButton && xapp->AltMask &&
              ISMASK(KEY_MODMASK(up.state), xapp->AltMask + ShiftMask, ControlMask))
         {
             action = actionMaximizeHoriz;
         }
-        else if (up.button == (unsigned) titleRollupButton &&
+        else if (up.button == titleRollupButton &&
+             up.button <= Button3 &&
              ISMASK(KEY_MODMASK(up.state), 0, ControlMask))
         {
             action = actionRollup;
         }
-        else if (up.button == (unsigned) titleRollupButton &&
+        else if (up.button == titleRollupButton &&
+             up.button <= Button3 &&
              ISMASK(KEY_MODMASK(up.state), ShiftMask, ControlMask))
         {
             action = actionMaximizeHoriz;
@@ -166,13 +170,21 @@ void YFrameTitleBar::handleClick(const XButtonEvent &up, int count) {
                 }
             }
         }
+        else if (inrange<unsigned>(up.button, Button4, Button5) &&
+                 inrange<unsigned>(titleRollupButton, Button4, Button5))
+        {
+            if (up.button == Button4 && !getFrame()->isRollup())
+                action = actionRollup;
+            if (up.button == Button5 && getFrame()->isRollup())
+                action = actionRollup;
+        }
     }
     if (action != actionNull) {
         getFrame()->actionPerformed(action, up.state);
     }
 }
 
-void YFrameTitleBar::handleBeginDrag(
+bool YFrameTitleBar::handleBeginDrag(
         const XButtonEvent &down,
         const XMotionEvent &motion)
 {
@@ -183,13 +195,15 @@ void YFrameTitleBar::handleBeginDrag(
          down.subwindow == getFrame()->topLeftIndicator() ||
          down.subwindow == getFrame()->topRightIndicator()))
     {
-        getFrame()->handleBeginDrag(down, motion);
+        return getFrame()->handleBeginDrag(down, motion);
     }
     else if (getFrame()->canMove()) {
         getFrame()->startMoveSize(true, true,
                                   0, 0,
                                   down.x + x(), down.y + y());
+        return true;
     }
+    return false;
 }
 
 void YFrameTitleBar::activate() {

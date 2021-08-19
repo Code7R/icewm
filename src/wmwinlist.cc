@@ -177,7 +177,7 @@ bool WindowListBox::handleKey(const XKeyEvent &key) {
 }
 
 void WindowListBox::handleClick(const XButtonEvent &up, int count) {
-    if (up.button == 3 && count == 1 && IS_BUTTON(up.state, Button3Mask)) {
+    if (up.button == 3 && count == 1 && xapp->isButton(up.state, Button3Mask)) {
         int no = findItemByPoint(up.x, up.y);
 
         if (no != -1) {
@@ -543,7 +543,7 @@ void WindowList::showFocused(int x, int y) {
         int x = int((dw - w) / 2);
         int y = int((dh - h) / 2);
         setGeometry(YRect(x, y, w, h));
-        manager->manageClient(handle(), false);
+        manager->manageClient(this);
     }
     if (getFrame()) {
         if (x == -1 && y == -1) {

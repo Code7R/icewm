@@ -1,5 +1,5 @@
-#ifndef __DEFAULT_H
-#define __DEFAULT_H
+#ifndef DEFAULT_H
+#define DEFAULT_H
 
 #include "yconfig.h"
 
@@ -64,6 +64,7 @@ XIV(bool, taskBarWorkspacesLeft,                true)
 XIV(bool, taskBarWorkspacesTop,                 false)
 XSV(const char *, taskBarWorkspacesLimit,       0)
 XIV(bool, taskBarUseMouseWheel,                 true)
+XIV(int, taskBarTaskGrouping,                   0)
 XIV(bool, pagerShowPreview,                     true)
 XIV(bool, pagerShowWindowIcons,                 true)
 XIV(bool, pagerShowMinimized,                   true)
@@ -76,6 +77,7 @@ XIV(bool, cpustatusShowSwapUsage,               true)
 XIV(bool, cpustatusShowAcpiTemp,                true)
 XIV(bool, cpustatusShowAcpiTempInGraph,         false)
 XIV(bool, cpustatusShowCpuFreq,                 true)
+XIV(bool, netstatusShowOnlyRunning,             false)
 XIV(bool, taskBarShowMEMStatus,                 true)
 XIV(bool, taskBarShowNetStatus,                 true)
 XIV(bool, taskBarLaunchOnSingleClick,           true)
@@ -97,6 +99,7 @@ XIV(bool, quickSwitchToHidden,                  true)
 XIV(bool, quickSwitchToUrgent,                  true)
 XIV(bool, quickSwitchToAllWorkspaces,           false)
 XIV(bool, quickSwitchGroupWorkspaces,           true)
+XIV(bool, quickSwitchRaiseCandidate,            false)
 XIV(bool, quickSwitchAllIcons,                  true)
 XIV(bool, quickSwitchTextFirst,                 false)
 XIV(bool, quickSwitchVertical,                  true)
@@ -153,12 +156,13 @@ XIV(int, scrollBarDelay,                        30)
 XIV(int, workspaceStatusTime,                   700)
 XIV(int, useRootButtons,                        255)    // bitmask=all
 XIV(int, buttonRaiseMask,                       1)
-XIV(int, rootWinMenuButton,                     0)
-XIV(int, rootWinListButton,                     2)
-XIV(int, rootMenuButton,                        3)
-XIV(int, titleMaximizeButton,                   1)
-XIV(int, titleRollupButton,                     2)
+XIV(unsigned, rootWinMenuButton,                0)
+XIV(unsigned, rootWinListButton,                2)
+XIV(unsigned, rootMenuButton,                   3)
+XIV(unsigned, titleMaximizeButton,              1)
+XIV(unsigned, titleRollupButton,                2)
 XIV(int, msgBoxDefaultAction,                   0)
+XIV(int, pingTimeout,                           3)
 XIV(int, mailCheckDelay,                        30)
 XIV(int, taskBarCPUSamples,                     20)
 XIV(int, taskBarApmGraphWidth,                  10)
@@ -183,7 +187,7 @@ XSV(const char *, openCommand,                  0)
 XSV(const char *, terminalCommand,              TERM " -hold")
 XSV(const char *, logoutCommand,                0)
 XSV(const char *, logoutCancelCommand,          0)
-#if defined(__linux__)
+#if __linux__
 XSV(const char *, shutdownCommand,              "test -e /run/systemd/system && systemctl poweroff || sudo -n /sbin/poweroff")
 XSV(const char *, rebootCommand,                "test -e /run/systemd/system && systemctl reboot || sudo -n /sbin/reboot")
 XSV(const char *, suspendCommand,               "test -e /run/systemd/system && systemctl suspend || sudon -n /usr/sbin/pm-suspend")
@@ -191,7 +195,7 @@ XSV(const char *, suspendCommand,               "test -e /run/systemd/system && 
 XSV(const char *, shutdownCommand,              0)
 XSV(const char *, rebootCommand,                0)
 XSV(const char *, suspendCommand,               0)
-#endif // LINUX
+#endif
 XIV(int, taskBarCPUDelay,                       500)
 XIV(int, taskBarMEMDelay,                       500)
 XIV(int, taskBarNetSamples,                     20)
@@ -202,11 +206,12 @@ XIV(bool, cpuCombine,                           true)
 XSV(const char *, netCommand,                   TERM " -T 'Network Status' -e /bin/sh /usr/share/icewm/netstat.sh")
 XSV(const char *, netClassHint,                 "ss.XTerm")
 XSV(const char *, netDevice,                    "[ew]*"
-#ifdef __OpenBSD__
+#if __OpenBSD__
                                                 " vio*"
 #endif
    )
 XSV(const char *, addressBarCommand,            0)
+XSV(const char *, dockApps,                     "right high desktop")
 #ifdef CONFIG_I18N
 XSV(const char *, fmtTime,                      "%X")
 XSV(const char *, fmtTimeAlt,                   NULL)
@@ -217,7 +222,7 @@ XSV(const char *, fmtTimeAlt,                   NULL)
 XSV(const char *, fmtDate,                      "%Y-%m-%d %H:%M:%S %z %B %A")
 #endif
 
-#if defined(CFGDEF)
+#ifdef CFGDEF
 
 cfoption icewm_preferences[] = {
     OBV("ClickToFocus",                         &clickFocus,                    "Focus windows by clicking"),
@@ -265,17 +270,18 @@ cfoption icewm_preferences[] = {
     OBV("MenuMouseTracking",                    &menuMouseTracking,             "Menus track mouse even with no mouse buttons held"),
     OBV("AutoRaise",                            &autoRaise,                     "Auto raise windows after delay"),
     OBV("DelayPointerFocus",                    &delayPointerFocus,             "Delay pointer focusing when mouse moves"),
-    OBV("Win95Keys",                            &win95keys,                     "Support win95 keyboard keys (Penguin/Meta/Win_L,R shows menu)"),
-    OBV("ModSuperIsCtrlAlt",                    &modSuperIsCtrlAlt,             "Treat Super/Win modifier as Ctrl+Alt"),
-    OBV("UseMouseWheel",                        &useMouseWheel,                 "Support mouse wheel"),
+    OBV("Win95Keys",                            &win95keys,                     "Support the Windows/Super key modifier to activate special functions.  The left Super key toggles the Start menu, while the right Super key toggles the Window list window."),
+    OBV("ModSuperIsCtrlAlt",                    &modSuperIsCtrlAlt,             "Treat the Super/Win key modifier as a synonym for the Ctrl+Alt modifier combination. The default key bindings have many occurrences of Ctrl+Alt.  If you enable this, then the Super modifier is an alternative way to activate them."),
+    OBV("UseMouseWheel",                        &useMouseWheel,                 "Support mouse wheel. When pressing Ctrl+Alt rotating the mouse wheel on the root window will cycle the focus over the windows."),
     OBV("ShowPopupsAbovePointer",               &showPopupsAbovePointer,        "Show popup menus above mouse pointer"),
     OBV("ReplayMenuCancelClick",                &replayMenuCancelClick,         "Send the clicks outside menus to target window"),
-    OBV("QuickSwitch",                          &quickSwitch,                   "Alt+Tab window switching"),
-    OBV("QuickSwitchToMinimized",               &quickSwitchToMinimized,        "Alt+Tab to minimized windows"),
-    OBV("QuickSwitchToHidden",                  &quickSwitchToHidden,           "Alt+Tab to hidden windows"),
+    OBV("QuickSwitch",                          &quickSwitch,                   "Enable Alt+Tab window switching"),
+    OBV("QuickSwitchToMinimized",               &quickSwitchToMinimized,        "Enable Alt+Tab to minimized windows"),
+    OBV("QuickSwitchToHidden",                  &quickSwitchToHidden,           "Enable Alt+Tab to hidden windows"),
     OBV("QuickSwitchToUrgent",                  &quickSwitchToUrgent,           "Prioritize Alt+Tab to urgent windows"),
-    OBV("QuickSwitchToAllWorkspaces",           &quickSwitchToAllWorkspaces,    "Alt+Tab to windows on other workspaces"),
-    OBV("QuickSwitchGroupWorkspaces",           &quickSwitchGroupWorkspaces,    "Alt+Tab: group windows on current workspace"),
+    OBV("QuickSwitchToAllWorkspaces",           &quickSwitchToAllWorkspaces,    "Include windows from all workspaces in Alt+Tab"),
+    OBV("QuickSwitchGroupWorkspaces",           &quickSwitchGroupWorkspaces,    "Group windows by workspace together in Alt+Tab"),
+    OBV("QuickSwitchRaiseCandidate",            &quickSwitchRaiseCandidate,     "Raise a selected window while Alt+Tabbing in the QuickSwitch"),
     OBV("QuickSwitchAllIcons",                  &quickSwitchAllIcons,           "Show all reachable icons when quick switching"),
     OBV("QuickSwitchTextFirst",                 &quickSwitchTextFirst,          "Show the window title above (all reachable) icons"),
     OBV("QuickSwitchSmallWindow",               &quickSwitchSmallWindow,        "Create a smaller QuickSwitch window of 1/3 screen width"),
@@ -322,6 +328,7 @@ cfoption icewm_preferences[] = {
     OBV("CPUStatusShowAcpiTemp",                &cpustatusShowAcpiTemp,         "Show ACPI temperature in CPU status tool tip"),
     OBV("CPUStatusShowAcpiTempInGraph",         &cpustatusShowAcpiTempInGraph,  "Show ACPI temperature in CPU status bar"),
     OBV("CPUStatusShowCpuFreq",                 &cpustatusShowCpuFreq,          "Show CPU frequency in CPU status tool tip"),
+    OBV("NetStatusShowOnlyRunning",             &netstatusShowOnlyRunning,      "Show network status only for connected devices."),
     OBV("TaskBarShowMEMStatus",                 &taskBarShowMEMStatus,          "Show memory usage status on task bar (Linux only)"),
     OBV("TaskBarShowNetStatus",                 &taskBarShowNetStatus,          "Show network status on task bar"),
     OBV("TaskBarShowCollapseButton",            &taskBarShowCollapseButton,     "Show a button to collapse the taskbar"),
@@ -330,6 +337,7 @@ cfoption icewm_preferences[] = {
     OBV("TaskBarWorkspacesTop",                 &taskBarWorkspacesTop,          "Place workspace pager on top row when using dual-height taskbar"),
     OSV("TaskBarWorkspacesLimit",               &taskBarWorkspacesLimit,        "Limit number of taskbar workspaces"),
     OBV("TaskBarUseMouseWheel",                 &taskBarUseMouseWheel,          "Enable mouse wheel cycling over workspaces and task buttons in taskbar"),
+    OIV("TaskBarTaskGrouping",                  &taskBarTaskGrouping, 0, 3,     "Group applications with the same class name under a single task button: 0=off, 1=digits, 2=dots, 3=both."),
     OBV("PagerShowPreview",                     &pagerShowPreview,              "Show a mini desktop preview on each workspace button"),
     OBV("PagerShowWindowIcons",                 &pagerShowWindowIcons,          "Draw window icons inside large enough preview windows on pager (if PagerShowPreview=1)"),
     OBV("PagerShowMinimized",                   &pagerShowMinimized,            "Draw even minimized windows as unfilled rectangles (if PagerShowPreview=1)"),
@@ -371,7 +379,7 @@ cfoption icewm_preferences[] = {
     OIV("SubmenuMenuActivateDelay",             &SubmenuActivateDelay, 0, 5000, "Delay in ms before activating menu submenus"),
     OIV("MenuMaximalWidth",                     &MenuMaximalWidth, 0, 16384,    "Maximal width of popup menus,  2/3 of the screen's width if set to zero"),
     OIV("ToolTipDelay",                         &ToolTipDelay, 0, 5000,         "Delay in ms before tooltip window is displayed"),
-    OIV("ToolTipTime",                          &ToolTipTime, 0, 60000,         "Time in ms before tooltip window is hidden (0 means never"),
+    OIV("ToolTipTime",                          &ToolTipTime, 0, 60000,         "Time in ms before tooltip window is hidden (0 means never)"),
     OIV("AutoHideDelay",                        &autoHideDelay, 0, 5000,        "Delay in ms before task bar is hidden"),
     OIV("AutoShowDelay",                        &autoShowDelay, 0, 5000,        "Delay in ms before task bar is shown"),
     OIV("AutoRaiseDelay",                       &autoRaiseDelay, 0, 5000,       "Delay in ms before windows are auto raised"),
@@ -392,6 +400,7 @@ cfoption icewm_preferences[] = {
     OIV("TitleBarMaximizeButton",               &titleMaximizeButton, 0, 5,     "TitleBar mouse-button double click to maximize the window"),
     OIV("TitleBarRollupButton",                 &titleRollupButton, 0, 5,       "TitleBar mouse-button double click to rollup the window"),
     OIV("MsgBoxDefaultAction",                  &msgBoxDefaultAction, 0, 1,     "Preselect to Cancel (0) or the OK (1) button in message boxes"),
+    OIV("PingTimeout",                          &pingTimeout, 0, (3600*24),     "Timeout in seconds for applications to respond to _NET_WM_PING protocol"),
     OIV("MailCheckDelay",                       &mailCheckDelay, 0, (3600*24),  "Delay between new-mail checks in seconds"),
     OIV("TaskBarCPUDelay",                      &taskBarCPUDelay, 10, (60*60*1000),    "Delay between CPU Monitor samples in ms"),
     OIV("TaskBarCPUSamples",                    &taskBarCPUSamples, 2, 1000,    "The width of the CPU Monitor applet in pixels"),
@@ -399,7 +408,7 @@ cfoption icewm_preferences[] = {
     OIV("TaskBarMEMDelay",                      &taskBarMEMDelay, 10, (60*60*1000),    "Delay between Memory Monitor samples in ms"),
     OIV("TaskBarNetSamples",                    &taskBarNetSamples, 2, 1000,    "The width of the Net Monitor applet in pixels"),
     OIV("TaskBarNetDelay",                      &taskBarNetDelay, 10, (60*60*1000),    "Delay between Net Monitor samples in ms"),
-    OIV("TaskbarButtonWidthDivisor",            &taskBarButtonWidthDivisor, 1, 25, "default number of tasks in taskbar"),
+    OIV("TaskbarButtonWidthDivisor",            &taskBarButtonWidthDivisor, 1, 50, "default number of tasks in taskbar"),
     OIV("TaskBarWidthPercentage",               &taskBarWidthPercentage, 0, 100, "Task bar width as percentage of the screen width"),
     OSV("TaskBarJustify",                       &taskBarJustify, "Taskbar justify left, right or center"),
     OIV("TaskBarApmGraphWidth",                 &taskBarApmGraphWidth, 1, 1000,  "Width of battery Monitor"),
@@ -422,7 +431,7 @@ cfoption icewm_preferences[] = {
     OSV("ClockCommand",                         &clockCommand,                  "Command to run on clock"),
     OSV("ClockClassHint",                       &clockClassHint,                "WM_CLASS to allow runonce for ClockCommand"),
     OSV("RunCommand",                           &runDlgCommand,                 "Command to select and run a program"),
-    OSV("OpenCommand",                          &openCommand,                   ""),
+    OSV("OpenCommand",                          &openCommand,                   "Command to select and run a program."),
     OSV("TerminalCommand",                      &terminalCommand,               "Terminal emulator must accept -e option."),
     OSV("LogoutCommand",                        &logoutCommand,                 "Command to start logout"),
     OSV("LogoutCancelCommand",                  &logoutCancelCommand,           "Command to cancel logout"),
@@ -439,6 +448,7 @@ cfoption icewm_preferences[] = {
     OSV("TimeFormat",                           &fmtTime,                       "Clock Time format (strftime format string)"),
     OSV("TimeFormatAlt",                        &fmtTimeAlt,                    "Alternate Clock Time format for blinking effects"),
     OSV("DateFormat",                           &fmtDate,                       "Clock Date format for tooltip (strftime format string)"),
+    OSV("DockApps",                             &dockApps,                       "Support DockApps (right, left, center, down, high, above, below, desktop, or empty to disable). Control with Ctrl+Mouse."),
     OSV("XRRPrimaryScreenName",                 &xineramaPrimaryScreenName,     "screen/output name of the primary screen"),
     OSV("AcpiIgnoreBatteries",                  &acpiIgnoreBatteries,           "List of battery names (directories) in /proc/acpi/battery to ignore. Useful when more slots are built-in, but only one battery is used"),
 
@@ -446,91 +456,91 @@ cfoption icewm_preferences[] = {
     OKV("MouseWinSize",                         gMouseWinSize,                  "Mouse binding for window resize"),
     OKV("MouseWinRaise",                        gMouseWinRaise,                 "Mouse binding to raise window"),
     OKV("MouseWinLower",                        gMouseWinLower,                 "Mouse binding to lower window"),
-    OKV("KeyWinRaise",                          gKeyWinRaise,                   ""),
-    OKV("KeyWinOccupyAll",                      gKeyWinOccupyAll,               ""),
-    OKV("KeyWinLower",                          gKeyWinLower,                   ""),
-    OKV("KeyWinClose",                          gKeyWinClose,                   ""),
-    OKV("KeyWinRestore",                        gKeyWinRestore,                 ""),
-    OKV("KeyWinPrev",                           gKeyWinPrev,                    ""),
-    OKV("KeyWinNext",                           gKeyWinNext,                    ""),
-    OKV("KeyWinMove",                           gKeyWinMove,                    ""),
-    OKV("KeyWinSize",                           gKeyWinSize,                    ""),
-    OKV("KeyWinMinimize",                       gKeyWinMinimize,                ""),
-    OKV("KeyWinMaximize",                       gKeyWinMaximize,                ""),
-    OKV("KeyWinMaximizeVert",                   gKeyWinMaximizeVert,            ""),
-    OKV("KeyWinMaximizeHoriz",                  gKeyWinMaximizeHoriz,           ""),
-    OKV("KeyWinFullscreen",                     gKeyWinFullscreen,              ""),
-    OKV("KeyWinHide",                           gKeyWinHide,                    ""),
-    OKV("KeyWinRollup",                         gKeyWinRollup,                  ""),
-    OKV("KeyWinMenu",                           gKeyWinMenu,                    ""),
-    OKV("KeyWinArrangeN",                       gKeyWinArrangeN,                ""),
-    OKV("KeyWinArrangeNE",                      gKeyWinArrangeNE,               ""),
-    OKV("KeyWinArrangeE",                       gKeyWinArrangeE,                ""),
-    OKV("KeyWinArrangeSE",                      gKeyWinArrangeSE,               ""),
-    OKV("KeyWinArrangeS",                       gKeyWinArrangeS,                ""),
-    OKV("KeyWinArrangeSW",                      gKeyWinArrangeSW,               ""),
-    OKV("KeyWinArrangeW",                       gKeyWinArrangeW,                ""),
-    OKV("KeyWinArrangeNW",                      gKeyWinArrangeNW,               ""),
-    OKV("KeyWinArrangeC",                       gKeyWinArrangeC,                ""),
-    OKV("KeyWinSmartPlace",                     gKeyWinSmartPlace,              ""),
-    OKV("KeySysSwitchNext",                     gKeySysSwitchNext,              ""),
-    OKV("KeySysSwitchLast",                     gKeySysSwitchLast,              ""),
-    OKV("KeySysSwitchClass",                    gKeySysSwitchClass,             ""),
-    OKV("KeySysWinNext",                        gKeySysWinNext,                 ""),
-    OKV("KeySysWinPrev",                        gKeySysWinPrev,                 ""),
+    OKV("KeyWinRaise",                          gKeyWinRaise,                   "Raises the window which currently has input focus."),
+    OKV("KeyWinOccupyAll",                      gKeyWinOccupyAll,               "Makes the active window occupy all work spaces."),
+    OKV("KeyWinLower",                          gKeyWinLower,                   "Lowers the window which currently has input focus."),
+    OKV("KeyWinClose",                          gKeyWinClose,                   "Closes the active window."),
+    OKV("KeyWinRestore",                        gKeyWinRestore,                 "Restores the active window to its visible state."),
+    OKV("KeyWinPrev",                           gKeyWinPrev,                    "Switches focus to the previous window."),
+    OKV("KeyWinNext",                           gKeyWinNext,                    "Switches focus to the next window."),
+    OKV("KeyWinMove",                           gKeyWinMove,                    "Starts movement of the active window."),
+    OKV("KeyWinSize",                           gKeyWinSize,                    "Starts resizing of the active window."),
+    OKV("KeyWinMinimize",                       gKeyWinMinimize,                "Iconifies the active window."),
+    OKV("KeyWinMaximize",                       gKeyWinMaximize,                "Maximizes the active window with borders."),
+    OKV("KeyWinMaximizeVert",                   gKeyWinMaximizeVert,            "Maximizes the active window vertically."),
+    OKV("KeyWinMaximizeHoriz",                  gKeyWinMaximizeHoriz,           "Maximizes the active window horizontally."),
+    OKV("KeyWinFullscreen",                     gKeyWinFullscreen,              "Maximizes the active window without borders."),
+    OKV("KeyWinHide",                           gKeyWinHide,                    "Hides the active window."),
+    OKV("KeyWinRollup",                         gKeyWinRollup,                  "Rolls up the active window."),
+    OKV("KeyWinMenu",                           gKeyWinMenu,                    "Posts the window menu."),
+    OKV("KeyWinArrangeN",                       gKeyWinArrangeN,                "Moves the active window to the top middle of the screen."),
+    OKV("KeyWinArrangeNE",                      gKeyWinArrangeNE,               "Moves the active window to the top right of the screen."),
+    OKV("KeyWinArrangeE",                       gKeyWinArrangeE,                "Moves the active window to the middle right of the screen."),
+    OKV("KeyWinArrangeSE",                      gKeyWinArrangeSE,               "Moves the active window to the bottom right of the screen."),
+    OKV("KeyWinArrangeS",                       gKeyWinArrangeS,                "Moves the active window to the bottom middle of the screen."),
+    OKV("KeyWinArrangeSW",                      gKeyWinArrangeSW,               "Moves the active window to the bottom left of the screen."),
+    OKV("KeyWinArrangeW",                       gKeyWinArrangeW,                "Moves the active window to the middle left of the screen."),
+    OKV("KeyWinArrangeNW",                      gKeyWinArrangeNW,               "Moves the active window to the top left corner of the screen."),
+    OKV("KeyWinArrangeC",                       gKeyWinArrangeC,                "Moves the active window to the top middle of the screen."),
+    OKV("KeyWinSmartPlace",                     gKeyWinSmartPlace,              "Smart place the active window."),
+    OKV("KeySysSwitchNext",                     gKeySysSwitchNext,              "Opens the QuickSwitch popup and/or moves the selector in the QuickSwitch popup"),
+    OKV("KeySysSwitchLast",                     gKeySysSwitchLast,              "Works like KeySysSwitchNext but moving in the opposite direction."),
+    OKV("KeySysSwitchClass",                    gKeySysSwitchClass,             "Is like KeySysSwitchNext but only for windows with the same WM_CLASS property as the currently focused window."),
+    OKV("KeySysWinNext",                        gKeySysWinNext,                 "Give focus to the next window and raise it."),
+    OKV("KeySysWinPrev",                        gKeySysWinPrev,                 "Give focus to the previous window and raise it."),
     OKV("KeyTaskBarSwitchNext",                 gKeyTaskBarSwitchNext,          "Switch to the next window in the Task Bar"),
     OKV("KeyTaskBarSwitchPrev",                 gKeyTaskBarSwitchPrev,          "Switch to the previous window in the Task Bar"),
     OKV("KeyTaskBarMoveNext",                   gKeyTaskBarMoveNext,            "Move the Task Bar button of the current window right"),
     OKV("KeyTaskBarMovePrev",                   gKeyTaskBarMovePrev,            "Move the Task Bar button of the current window left"),
-    OKV("KeySysWinMenu",                        gKeySysWinMenu,                 ""),
-    OKV("KeySysDialog",                         gKeySysDialog,                  ""),
-    OKV("KeySysMenu",                           gKeySysMenu,                    ""),
-    OKV("KeySysWindowList",                     gKeySysWindowList,              ""),
-    OKV("KeySysWinListMenu",                    gKeySysWinListMenu,             ""),
-    OKV("KeySysAddressBar",                     gKeySysAddressBar,              ""),
-    OKV("KeySysWorkspacePrev",                  gKeySysWorkspacePrev,           ""),
-    OKV("KeySysWorkspaceNext",                  gKeySysWorkspaceNext,           ""),
-    OKV("KeySysWorkspaceLast",                  gKeySysWorkspaceLast,           ""),
-    OKV("KeySysWorkspacePrevTakeWin",           gKeySysWorkspacePrevTakeWin,    ""),
-    OKV("KeySysWorkspaceNextTakeWin",           gKeySysWorkspaceNextTakeWin,    ""),
-    OKV("KeySysWorkspaceLastTakeWin",           gKeySysWorkspaceLastTakeWin,    ""),
-    OKV("KeySysWorkspace1",                     gKeySysWorkspace1,              ""),
-    OKV("KeySysWorkspace2",                     gKeySysWorkspace2,              ""),
-    OKV("KeySysWorkspace3",                     gKeySysWorkspace3,              ""),
-    OKV("KeySysWorkspace4",                     gKeySysWorkspace4,              ""),
-    OKV("KeySysWorkspace5",                     gKeySysWorkspace5,              ""),
-    OKV("KeySysWorkspace6",                     gKeySysWorkspace6,              ""),
-    OKV("KeySysWorkspace7",                     gKeySysWorkspace7,              ""),
-    OKV("KeySysWorkspace8",                     gKeySysWorkspace8,              ""),
-    OKV("KeySysWorkspace9",                     gKeySysWorkspace9,              ""),
-    OKV("KeySysWorkspace10",                    gKeySysWorkspace10,             ""),
-    OKV("KeySysWorkspace11",                    gKeySysWorkspace11,             ""),
-    OKV("KeySysWorkspace12",                    gKeySysWorkspace12,             ""),
-    OKV("KeySysWorkspace1TakeWin",              gKeySysWorkspace1TakeWin,       ""),
-    OKV("KeySysWorkspace2TakeWin",              gKeySysWorkspace2TakeWin,       ""),
-    OKV("KeySysWorkspace3TakeWin",              gKeySysWorkspace3TakeWin,       ""),
-    OKV("KeySysWorkspace4TakeWin",              gKeySysWorkspace4TakeWin,       ""),
-    OKV("KeySysWorkspace5TakeWin",              gKeySysWorkspace5TakeWin,       ""),
-    OKV("KeySysWorkspace6TakeWin",              gKeySysWorkspace6TakeWin,       ""),
-    OKV("KeySysWorkspace7TakeWin",              gKeySysWorkspace7TakeWin,       ""),
-    OKV("KeySysWorkspace8TakeWin",              gKeySysWorkspace8TakeWin,       ""),
-    OKV("KeySysWorkspace9TakeWin",              gKeySysWorkspace9TakeWin,       ""),
-    OKV("KeySysWorkspace10TakeWin",             gKeySysWorkspace10TakeWin,      ""),
-    OKV("KeySysWorkspace11TakeWin",             gKeySysWorkspace11TakeWin,      ""),
-    OKV("KeySysWorkspace12TakeWin",             gKeySysWorkspace12TakeWin,      ""),
-    OKV("KeySysTileVertical",                   gKeySysTileVertical,            ""),
-    OKV("KeySysTileHorizontal",                 gKeySysTileHorizontal,          ""),
-    OKV("KeySysCascade",                        gKeySysCascade,                 ""),
-    OKV("KeySysArrange",                        gKeySysArrange,                 ""),
-    OKV("KeySysArrangeIcons",                   gKeySysArrangeIcons,            ""),
-    OKV("KeySysMinimizeAll",                    gKeySysMinimizeAll,             ""),
-    OKV("KeySysHideAll",                        gKeySysHideAll,                 ""),
-    OKV("KeySysUndoArrange",                    gKeySysUndoArrange,             ""),
-    OKV("KeySysShowDesktop",                    gKeySysShowDesktop,             ""),
-    OKV("KeySysCollapseTaskBar",                gKeySysCollapseTaskBar,         ""),
+    OKV("KeySysWinMenu",                        gKeySysWinMenu,                 "Posts the system window menu."),
+    OKV("KeySysDialog",                         gKeySysDialog,                  "Opens the IceWM system dialog in the center of the screen."),
+    OKV("KeySysMenu",                           gKeySysMenu,                    "Activates the IceWM root menu in the lower left corner."),
+    OKV("KeySysWindowList",                     gKeySysWindowList,              "Opens the IceWM system window list in the center of the screen."),
+    OKV("KeySysWinListMenu",                    gKeySysWinListMenu,             "Shows the window list menu."),
+    OKV("KeySysAddressBar",                     gKeySysAddressBar,              "Opens the address bar in the task bar where a command can be typed."),
+    OKV("KeySysWorkspacePrev",                  gKeySysWorkspacePrev,           "Goes one workspace to the left."),
+    OKV("KeySysWorkspaceNext",                  gKeySysWorkspaceNext,           "Goes one workspace to the right."),
+    OKV("KeySysWorkspaceLast",                  gKeySysWorkspaceLast,           "Goes to the previous workspace."),
+    OKV("KeySysWorkspacePrevTakeWin",           gKeySysWorkspacePrevTakeWin,    "Takes the active window one workspace to the left."),
+    OKV("KeySysWorkspaceNextTakeWin",           gKeySysWorkspaceNextTakeWin,    "Takes the active window one workspace to the right."),
+    OKV("KeySysWorkspaceLastTakeWin",           gKeySysWorkspaceLastTakeWin,    "Takes the active window to the previous workspace."),
+    OKV("KeySysWorkspace1",                     gKeySysWorkspace1,              "Goes to workspace 1."),
+    OKV("KeySysWorkspace2",                     gKeySysWorkspace2,              "Goes to workspace 2."),
+    OKV("KeySysWorkspace3",                     gKeySysWorkspace3,              "Goes to workspace 3."),
+    OKV("KeySysWorkspace4",                     gKeySysWorkspace4,              "Goes to workspace 4."),
+    OKV("KeySysWorkspace5",                     gKeySysWorkspace5,              "Goes to workspace 5."),
+    OKV("KeySysWorkspace6",                     gKeySysWorkspace6,              "Goes to workspace 6."),
+    OKV("KeySysWorkspace7",                     gKeySysWorkspace7,              "Goes to workspace 7."),
+    OKV("KeySysWorkspace8",                     gKeySysWorkspace8,              "Goes to workspace 8."),
+    OKV("KeySysWorkspace9",                     gKeySysWorkspace9,              "Goes to workspace 9."),
+    OKV("KeySysWorkspace10",                    gKeySysWorkspace10,             "Goes to workspace 10."),
+    OKV("KeySysWorkspace11",                    gKeySysWorkspace11,             "Goes to workspace 11."),
+    OKV("KeySysWorkspace12",                    gKeySysWorkspace12,             "Goes to workspace 12."),
+    OKV("KeySysWorkspace1TakeWin",              gKeySysWorkspace1TakeWin,       "Takes the active window to workspace 1."),
+    OKV("KeySysWorkspace2TakeWin",              gKeySysWorkspace2TakeWin,       "Takes the active window to workspace 2."),
+    OKV("KeySysWorkspace3TakeWin",              gKeySysWorkspace3TakeWin,       "Takes the active window to workspace 3."),
+    OKV("KeySysWorkspace4TakeWin",              gKeySysWorkspace4TakeWin,       "Takes the active window to workspace 4."),
+    OKV("KeySysWorkspace5TakeWin",              gKeySysWorkspace5TakeWin,       "Takes the active window to workspace 5."),
+    OKV("KeySysWorkspace6TakeWin",              gKeySysWorkspace6TakeWin,       "Takes the active window to workspace 6."),
+    OKV("KeySysWorkspace7TakeWin",              gKeySysWorkspace7TakeWin,       "Takes the active window to workspace 7."),
+    OKV("KeySysWorkspace8TakeWin",              gKeySysWorkspace8TakeWin,       "Takes the active window to workspace 8."),
+    OKV("KeySysWorkspace9TakeWin",              gKeySysWorkspace9TakeWin,       "Takes the active window to workspace 9."),
+    OKV("KeySysWorkspace10TakeWin",             gKeySysWorkspace10TakeWin,      "Takes the active window to workspace 10."),
+    OKV("KeySysWorkspace11TakeWin",             gKeySysWorkspace11TakeWin,      "Takes the active window to workspace 11."),
+    OKV("KeySysWorkspace12TakeWin",             gKeySysWorkspace12TakeWin,      "Takes the active window to workspace 12."),
+    OKV("KeySysTileVertical",                   gKeySysTileVertical,            "Tiles all windows from left to right maximized vertically."),
+    OKV("KeySysTileHorizontal",                 gKeySysTileHorizontal,          "Tiles all windows from top to bottom maximized horizontally."),
+    OKV("KeySysCascade",                        gKeySysCascade,                 "Makes a horizontal cascade of all windows which are maximized vertically."),
+    OKV("KeySysArrange",                        gKeySysArrange,                 "Rearranges the windows."),
+    OKV("KeySysArrangeIcons",                   gKeySysArrangeIcons,            "Rearranges icons."),
+    OKV("KeySysMinimizeAll",                    gKeySysMinimizeAll,             "Minimizes all windows."),
+    OKV("KeySysHideAll",                        gKeySysHideAll,                 "Hides all windows."),
+    OKV("KeySysUndoArrange",                    gKeySysUndoArrange,             "Undoes arrangement."),
+    OKV("KeySysShowDesktop",                    gKeySysShowDesktop,             "Unmaps all windows to show the desktop."),
+    OKV("KeySysCollapseTaskBar",                gKeySysCollapseTaskBar,         "Hides the task bar."),
 
-    OKF("WorkspaceNames", addWorkspace, ""),
-    OKF("KeyboardLayouts", addKeyboard, ""),
+    OKF("WorkspaceNames", addWorkspace, "Add a workspace"),
+    OKF("KeyboardLayouts", addKeyboard, "Add a keyboard layout"),
     OSV("WinMenuItems",                         &winMenuItems,                  "Items supported in menu window (rmsnxfhualytickw)"),
     OK0()
 };
@@ -557,6 +567,6 @@ cfoption wmapp_preferences[] = {
 #endif
 
 #include "themable.h"
-#endif /* __DEFAULT_H */
+#endif
 
 // vim: set sw=4 ts=4 et:

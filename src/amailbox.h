@@ -101,6 +101,8 @@ private:
     bool fTrace;
     mstring fReason;
     static int fInstanceCounter;
+    static int fDestructCounter;
+    static csmart openssl_path;
 
     void resolve();
     void countMessages();
@@ -126,7 +128,6 @@ public:
     virtual ~MailBoxStatus();
 
     virtual void handleClick(const XButtonEvent &up, int count);
-    virtual void handleCrossing(const XCrossingEvent &crossing);
 
     int checkDelay() const;
     void checkMail();

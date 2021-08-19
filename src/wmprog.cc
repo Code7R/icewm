@@ -5,46 +5,22 @@
  */
 #include "config.h"
 
-#define NEED_TIME_H
-
 #include "wmprog.h"
 #include "prefs.h"
 #include "wmwinmenu.h"
 #include "wmapp.h"
-#include "sysdep.h"
-#include "wmmgr.h"
 #include "themes.h"
 #include "browse.h"
 #include "appnames.h"
+#include "wmpref.h"
 #include "wmswitch.h"
-#include "ypointer.h"
-#include <regex.h>
 #include "intl.h"
+#include <sys/stat.h>
+#include <time.h>
 
-#define utf8ellipsis "\xe2\x80\xa6"
-const unsigned utf32ellipsis = 0x2026;
-extern ref<YFont> menuFont;
-
-DObjectMenuItem::DObjectMenuItem(DObject *object):
-    YMenuItem(object->getName(), -3, null, YAction(), nullptr)
+DFile::DFile(IApp *app, const mstring &name, ref<YIcon> icon, upath path):
+    DObject(app, name, icon), fPath(path)
 {
-    fObject = object;
-    if (object->getIcon() != null)
-        setIcon(object->getIcon());
-}
-
-DObjectMenuItem::~DObjectMenuItem() {
-    delete fObject;
-}
-
-void DObjectMenuItem::actionPerformed(YActionListener * /*listener*/, YAction /*action*/, unsigned int /*modifiers*/) {
-    wmapp->signalGuiEvent(geLaunchApp);
-    fObject->open();
-}
-
-DFile::DFile(IApp *app, const mstring &name, ref<YIcon> icon, upath path): DObject(app, name, icon) {
-    this->app = app;
-    fPath = path;
 }
 
 DFile::~DFile() {
@@ -52,48 +28,7 @@ DFile::~DFile() {
 
 void DFile::open() {
     const char *args[] = { openCommand, fPath.string(), nullptr };
-    app->runProgram(openCommand, args);
-}
-
-ObjectMenu::ObjectMenu(YActionListener *actionListener, YWindow *parent):
-        YMenu(parent),
-        wmActionListener(nullptr) {
-    setActionListener(actionListener);
-}
-
-void ObjectMenu::addObject(DObject *fObject) {
-    add(new DObjectMenuItem(fObject));
-}
-
-void ObjectMenu::addObject(DObject *fObject, const char *icons) {
-    add(new DObjectMenuItem(fObject), icons);
-}
-
-void ObjectMenu::addSeparator() {
-    YMenu::addSeparator();
-}
-
-void ObjectMenu::addContainer(mstring name, ref<YIcon> icon, ObjectMenu *container) {
-    if (container) {
-        YMenuItem *item =
-            addSubmenu(name, -3, container);
-
-        if (item && icon != null)
-            item->setIcon(icon);
-    }
-}
-
-DObject::DObject(IApp *app, const mstring &name, ref<YIcon> icon):
-    fName(name), fIcon(icon)
-{
-    this->app = app;
-}
-
-DObject::~DObject() {
-    fIcon = null;
-}
-
-void DObject::open() {
+    app()->runProgram(openCommand, args);
 }
 
 DProgram::DProgram(
@@ -110,10 +45,9 @@ DProgram::DProgram(
     fRes(newstr(wmclass)),
     fPid(0),
     fCmd(exe),
-    fArgs(args)
+    fArgs(args),
+    smActionListener(smActionListener)
 {
-    this->app = app;
-    this->smActionListener = smActionListener;
     if (fArgs.isEmpty() || fArgs.getString(fArgs.getCount() - 1))
         fArgs.append(nullptr);
 }
@@ -128,7 +62,7 @@ void DProgram::open() {
     else if (fRes)
         smActionListener->runOnce(fRes, &fPid, fCmd.string(), fArgs.getCArray());
     else
-        app->runProgram(fCmd.string(), fArgs.getCArray());
+        app()->runProgram(fCmd.string(), fArgs.getCArray());
 }
 
 DProgram *DProgram::newProgram(
@@ -158,8 +92,12 @@ DProgram *DProgram::newProgram(
 
 KProgramArrayType keyProgs;
 
-KProgram::KProgram(const char *key, DProgram *prog, bool bIsDynSwitchMenuProg)
-    : fKey(NoSymbol), fMod(0), bIsDynSwitchMenu(bIsDynSwitchMenuProg), fProg(prog), pSwitchWindow(nullptr)
+KProgram::KProgram(const char *key, DProgram *prog, bool bIsDynSwitchMenuProg) :
+    fKey(NoSymbol),
+    fMod(0),
+    bIsDynSwitchMenu(bIsDynSwitchMenuProg),
+    fProg(prog),
+    pSwitchWindow(nullptr)
 {
     YConfig::parseKey(key, &fKey, &fMod);
     keyProgs.append(this);
@@ -173,8 +111,8 @@ class MenuProgSwitchItems: public ISwitchItems {
     unsigned int mod;
 
 public:
-    MenuProgSwitchItems(DProgram* prog, KeySym key, unsigned keymod) : ISwitchItems()
-        , zTarget(0), key(key), mod(keymod) {
+    MenuProgSwitchItems(DProgram* prog, KeySym key, unsigned keymod) :
+        ISwitchItems(), zTarget(0), key(key), mod(keymod) {
         menu = new MenuProgMenu(wmapp, wmapp, nullptr /* no wmaction handling*/,
                 "switch popup internal menu", prog->fCmd, prog->fArgs);
     }
@@ -188,65 +126,58 @@ public:
     virtual bool isKey(KeySym k, unsigned int mod) override {
         return k == this->key && mod == this->mod;
     }
+    unsigned modifiers() override {
+        return mod;
+    }
     virtual void setWMClass(char* wmclass) override {
         if (wmclass) free(wmclass); // unimplemented
     }
+    virtual char* getWMClass() override {
+        return nullptr;
+    }
 
     // move the focused target up or down and return the new focused element
-    virtual int moveTarget(bool zdown) override {
-        int count = menu->itemCount();
+    virtual void moveTarget(bool zdown) override {
+        int count = getCount();
         zTarget += zdown ? 1 : -1;
         if (zTarget >= count)
             zTarget = 0;
         if (zTarget < 0)
             zTarget = max(0, count - 1);
         // no further gimmicks
-        return zTarget;
     }
     // move the focused target up or down and return the new focused element
-        virtual int setTarget(int where) override {
-            int count = menu->itemCount();
-            return zTarget = inrange(where, 0, count) ? zTarget : 0;
-        }
+    virtual void setTarget(int where) override {
+        zTarget = clamp(where, 0, getCount() - 1);
+    }
 
-    /// Show changed focus preview to user
-    virtual void displayFocusChange(int idxFocused) override {}
     // set target cursor and implementation specific stuff in the beginning
     virtual void begin(bool zdown) override {
         updateList();
+        zTarget = 0;
         moveTarget(zdown);
     }
-    virtual void reset() override {
-        zTarget = 0;
-    }
+
     virtual void cancel() override {
     }
-    virtual void accept(IClosablePopup *parent) override {
+    virtual void accept() override {
         YMenuItem* item = menu->getItem(zTarget);
-        if (!item) return;
-        // even through all the obscure "abstraction" it should just run DObjectMenuItem::actionPerformed
-        item->actionPerformed(nullptr, actionRun, 0);
-        parent->close();
+        if (item) {
+            menu->actionPerformed(item->getAction(), 0);
+        }
     }
 
     virtual int getActiveItem() override {
         return zTarget;
     }
     virtual mstring getTitle(int idx) override {
-        if (idx<0 || idx>=this->getCount())
-            return null;
-        return menu->getItem(idx)->getName();
+        return inrange(idx, 0, getCount() - 1) ?
+            menu->getItem(idx)->getName() : null;
     }
     virtual ref<YIcon> getIcon(int idx) override {
-        if (idx<0 || idx>=this->getCount())
-            return null;
-        return menu->getItem(idx)->getIcon();
+        return inrange(idx, 0, getCount() - 1) ?
+            menu->getItem(idx)->getIcon() : null;
     }
-
-    // Manager notification about windows disappearing under the fingers
-    virtual void destroyedItem(void* framePtr) override {
-    }
-
 };
 
 void KProgram::open(unsigned mods) {
@@ -254,7 +185,8 @@ void KProgram::open(unsigned mods) {
 
     if (bIsDynSwitchMenu) {
         if (!pSwitchWindow) {
-            pSwitchWindow = new SwitchWindow(desktop, new MenuProgSwitchItems(fProg, fKey, fMod), quickSwitchVertical);
+            ISwitchItems* items = new MenuProgSwitchItems(fProg, fKey, fMod);
+            pSwitchWindow = new SwitchWindow(desktop, items, quickSwitchVertical);
         }
         pSwitchWindow->begin(true, mods);
     }
@@ -412,314 +344,6 @@ FocusMenu::FocusMenu() {
     }
 }
 
-extern cfoption icewm_preferences[];
-
-class PrefsMenu: public YMenu, private YActionListener {
-private:
-    const int count;
-    const YAction actionSaveMod;
-    static YArray<int> mods;
-
-public:
-    PrefsMenu() :
-        count(countPrefs())
-    {
-        YMenu *fo, *qs, *tb, *sh, *al, *mz, *ke, *ks, *kw, *sc, *st;
-        YMenuItem *item;
-        bool useElps = menuFont != null && menuFont->supports(utf32ellipsis);
-
-        addSubmenu("_Focus", -2, fo = new YMenu, "focus");
-        addSubmenu("_QuickSwitch", -2, qs = new YMenu, "pref");
-        addSubmenu("_TaskBar", -2, tb = new YMenu, "pref");
-        addSubmenu("_Show", -2, sh = new YMenu, "pref");
-        addSubmenu(
-                useElps ?
-                        "_A" utf8ellipsis " - L" utf8ellipsis :
-                        "_A... - L...", -2, al = new YMenu, "pref");
-        addSubmenu(
-                useElps ?
-                        "_M" utf8ellipsis " - Z" utf8ellipsis :
-                        "_M... - Z...", -2, mz = new YMenu, "pref");
-        addSubmenu("_KeyWin", -2, ke = new YMenu, "key");
-        addSubmenu("K_eySys", -2, ks = new YMenu, "key");
-        addSubmenu("KeySys_Workspace", -2, kw = new YMenu, "key");
-        addSubmenu("S_calar", -2, sc = new YMenu, "key");
-        addSubmenu("St_ring", -2, st = new YMenu, "key");
-
-        int index[count];
-        for (int i = 0; i < count; ++i) {
-            index[i] = i;
-        }
-        qsort(index, count, sizeof(int), sortPrefs);
-
-        for (int k = 0; k < count; ++k) {
-            cfoption* o = &icewm_preferences[index[k]];
-            if (o->type == cfoption::CF_BOOL) {
-                YMenu* m = 0 == strncmp(o->name, "Task", 4) ? tb :
-                           0 == strncmp(o->name, "Quic", 4) ? qs :
-                           0 == strncmp(o->name, "Show", 4) ||
-                           0 == strncmp(o->name, "Page", 4) ? sh :
-                           nullptr != strstr(o->name, "Focus") ? fo :
-                           o->name[0] <= 'L' ? al : mz;
-                item = m->addItem(o->name, -2, null, EAction(index[k] + 1));
-                if (o->boolval()) {
-                    item->setChecked(true);
-                }
-            }
-            else if (o->type == cfoption::CF_KEY) {
-                const char* key = o->key()->name;
-                if (0 == strncmp(o->name, "KeySysWork", 10)) {
-                    kw->addItem(o->name, -2, key, actionNull);
-                } else if (0 == strncmp(o->name, "KeySys", 6)) {
-                    ks->addItem(o->name, -2, key, actionNull);
-                } else {
-                    ke->addItem(o->name, -2, key, actionNull);
-                }
-            }
-            else if (o->type == cfoption::CF_INT) {
-                int val = o->intval();
-                sc->addItem(o->name, -2, mstring(val), actionNull);
-            }
-            else if (o->type == cfoption::CF_STR) {
-                auto* str = o->str();
-                if (str) {
-                    char val[40];
-                    size_t len = strlcpy(val, str, sizeof val);
-                    auto elp = useElps ? utf8ellipsis : "...";
-                    if (len >= sizeof val)
-                        strlcpy(val + sizeof val - 4, elp, 4);
-                    if (!!(str = strstr(val, "://")) && strlen(str) > 6)
-                        strlcpy(val + (str - val) + 3, elp, 4);
-                    st->addItem(o->name, -2, val, actionNull);
-                }
-            }
-        }
-
-        addSeparator();
-        addItem(_("Save Modifications"), -2, null, actionSaveMod, "save");
-        setActionListener(this);
-    }
-
-    virtual void actionPerformed(YAction action, unsigned int modifiers) {
-        if (action == actionSaveMod)
-            return saveModified();
-
-        const int i = action.ident() - 1;
-        if (inrange(i, 0, count - 1)) {
-            cfoption* o = i + icewm_preferences;
-            if (o->type == cfoption::CF_BOOL) {
-                *o->v.b.bool_value ^= true;
-                msg("%s = %d", o->name, o->boolval());
-                int k = find(mods, i);
-                return k >= 0 ? mods.remove(k) : mods.append(i);
-            }
-        }
-    }
-
-    static int countPrefs() {
-        for (int k = 0; ; ++k)
-            if (icewm_preferences[k].type == cfoption::CF_NONE)
-                return k;
-    }
-
-    static int sortPrefs(const void* p1, const void* p2) {
-        const int i1 = *(const int *)p1;
-        const int i2 = *(const int *)p2;
-        cfoption* o1 = i1 + icewm_preferences;
-        cfoption* o2 = i2 + icewm_preferences;
-        if (o1->type == cfoption::CF_KEY &&
-            o2->type == cfoption::CF_KEY &&
-            0 == strncmp(o1->name, "KeySysWork", 10) &&
-            0 == strncmp(o2->name, "KeySysWork", 10))
-            return i1 - i2;
-        return strcmp(o1->name, o2->name);
-    }
-
-    static upath defaultPrefs(upath path) {
-        upath conf(YApplication::getConfigDir() + "/preferences");
-        if (conf.fileExists() && path.copyFrom(conf))
-            return path;
-
-        conf = YApplication::getLibDir() + "/preferences";
-        if (conf.fileExists() && path.copyFrom(conf))
-            return path;
-
-        return path;
-    }
-
-    static upath preferencesPath() {
-        const int perm = 0600;
-
-        mstring conf(wmapp->getConfigFile());
-        if (conf.nonempty() && conf != "preferences") {
-            upath path(wmapp->findConfigFile(conf));
-            if (path.isWritable())
-                return path;
-            if (!path.fileExists() && path.testWritable(perm))
-                return defaultPrefs(path);
-        }
-
-        upath priv(YApplication::getPrivConfDir() + "/preferences");
-        if (priv.isWritable())
-            return priv;
-        if (!priv.fileExists() && priv.testWritable(perm))
-            return defaultPrefs(priv);
-
-        return null;
-    }
-
-    static void saveModified() {
-        const int n = mods.getCount();
-        if (n < 1)
-            return;
-        qsort(&*mods, n, sizeof(int), sortPrefs);
-
-        upath path(preferencesPath());
-        if (path == null)
-            return fail(_("Unable to write to %s"), "preferences");
-
-        auto text(path.loadText());
-        if (!text)
-            (text = fcsmart::create(1)).data()[0] = 0;
-        size_t tlen = strlen(text);
-        for (int k = 0; k < n; ++k) {
-            const int i = mods[k];
-            cfoption* o = i + icewm_preferences;
-            if (updateOption(o, text))
-                continue;
-            if (insertOption(o, text))
-                continue;
-            csmart c(retrieveComment(o));
-            char buf[99];
-            snprintf(buf, sizeof buf, "%s=%d # 0/1\n",
-                     o->name, o->boolval());
-            size_t clen = c ? strlen(c) : 0;
-            size_t blen = strlen(buf);
-            size_t size = 1 + tlen + clen + blen;
-            char* u = new char[size];
-            memcpy(u, text, tlen);
-            memcpy(u + tlen, c, clen);
-            memcpy(u + tlen + clen, buf, blen + 1);
-            text = u;
-            tlen += clen + blen;
-        }
-        writePrefs(path, text, tlen);
-    }
-
-    static bool updateOption(cfoption* o, char* text) {
-        char buf[99];
-        snprintf(buf, sizeof buf, "^[ \t]*%s[ \t]*=", o->name);
-        regex_t pat = {};
-        int c = regcomp(&pat, buf, REG_EXTENDED | REG_NEWLINE);
-        if (c) {
-            char err[99] = "";
-            regerror(c, &pat, err, sizeof err);
-            warn("regcomp save mod %s: %s", buf, err);
-            return true;
-        }
-        char* s = text;
-        regmatch_t m = {};
-        while (0 == regexec(&pat, s, 1, &m, 0)) {
-            s += m.rm_eo;
-            if (*s) {
-                *s++ = '0' + o->boolval();
-                s = replaceComment(s, "# 0/1");
-            }
-        }
-        regfree(&pat);
-        return s > text;
-    }
-
-    static char* replaceComment(char* start, const char* comment) {
-        char* s = start;
-
-        if (*s && *s != '\n' && *s != '#' && *comment != ' ')
-            *s++ = ' ';
-        for (const char* c = comment; *s && *s != '\n' && *c; ++c)
-            *s++ = *c;
-        while (*s && *s != '\n')
-            *s++ = ' ';
-
-        return s;
-    }
-
-    static bool insertOption(cfoption* o, char* text) {
-        char buf[99];
-        snprintf(buf, sizeof buf, "^#+[ \t]*%s[ \t]*=", o->name);
-        regex_t pat = {};
-        int c = regcomp(&pat, buf, REG_EXTENDED | REG_NEWLINE);
-        if (c) {
-            char err[99] = "";
-            regerror(c, &pat, err, sizeof err);
-            warn("regcomp save mod %s: %s", buf, err);
-            return true;
-        }
-        regmatch_t m = {};
-        c = regexec(&pat, text, 1, &m, 0);
-        regfree(&pat);
-        if (c == 0) {
-            char* s = text + m.rm_so;
-            snprintf(buf, sizeof buf, "%s=%d", o->name, o->boolval());
-            size_t blen = strlen(buf);
-            memcpy(s, buf, blen);
-            s += blen;
-            s = replaceComment(s, "# 0/1");
-        }
-        return c == 0;
-    }
-
-    static char* retrieveComment(cfoption* o) {
-        static const char path[] = LIBDIR "/preferences";
-        char* res = nullptr;
-        auto text(filereader(path).read_all());
-        if (text) {
-            char buf[99];
-            snprintf(buf, sizeof buf,
-                     "(\n(#  .*\n)*)#+[ \t]*%s[ \t]*=",
-                     o->name);
-            regex_t pat = {};
-            int c = regcomp(&pat, buf, REG_EXTENDED | REG_NEWLINE);
-            if (c == 0) {
-                regmatch_t m[2] = {};
-                c = regexec(&pat, text, 2, m, 0);
-                regfree(&pat);
-                if (c == 0) {
-                    int len = m[1].rm_eo - m[1].rm_so;
-                    res = newstr(text + m[1].rm_so, len);
-                }
-            } else {
-                char err[99] = "";
-                regerror(c, &pat, err, sizeof err);
-                warn("regcomp save mod %s: %s", buf, err);
-            }
-        }
-        return res ? res : newstr("\n");
-    }
-
-    static void writePrefs(upath dest, const char* text, size_t tlen) {
-        upath temp(dest.path() + ".tmp");
-        int fd = temp.open(O_CREAT | O_WRONLY | O_TRUNC, 0600);
-        if (fd == -1) {
-            fail(_("Unable to write to %s"), temp.string());
-        } else {
-            ssize_t w = write(fd, text, tlen);
-            if (size_t(w) != tlen)
-                fail(_("Unable to write to %s"), temp.string());
-            close(fd);
-            if (size_t(w) == tlen) {
-                if (temp.renameAs(dest))
-                    fail(_("Unable to rename %s to %s"),
-                         temp.string(),
-                         dest.string());
-                else
-                    mods.clear();
-            }
-        }
-    }
-};
-
-YArray<int> PrefsMenu::mods;
-
 HelpMenu::HelpMenu(
     IApp *app,
     YSMListener *smActionListener,
@@ -770,22 +394,11 @@ void StartMenu::refresh() {
 /// TODO #warning "make this into a menuprog (ala gnome.cc), and use mime"
     if (nonempty(openCommand)) {
         upath path[] = { upath::root(), YApplication::getHomeDir() };
-        YMenu *sub;
-        ref<YIcon> folder = YIcon::getIcon("folder");
-        for (unsigned int i = 0; i < ACOUNT(path); i++) {
-            upath& p = path[i];
-
+        ObjectMenu* sub;
+        for (const upath& p : path) {
             sub = new BrowseMenu(app, smActionListener, wmActionListener, p);
             DFile *file = new DFile(app, p, null, p);
-            YMenuItem *item = add(new DObjectMenuItem(file));
-            if (item && sub) {
-                item->setSubmenu(sub);
-                if (folder != null)
-                    item->setIcon(folder);
-            }
-            else {
-                delete sub;
-            }
+            addObject(file, "folder", sub, false);
         }
         addSeparator();
     }

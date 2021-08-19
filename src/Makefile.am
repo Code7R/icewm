@@ -21,6 +21,7 @@ EXTRA_PROGRAMS = \
 	testmap \
 	testmenus \
 	testnetwmhints \
+	testpointer \
 	testwinhints \
 	iceview \
 	icesame \
@@ -46,6 +47,8 @@ bin_PROGRAMS = \
 noinst_PROGRAMS = \
 	genpref
 
+TESTS = strtest testpointer testarray
+
 if BUILD_TESTS
 noinst_PROGRAMS += \
 	testarray \
@@ -53,6 +56,7 @@ noinst_PROGRAMS += \
 	testmap \
 	testmenus \
 	testnetwmhints \
+	testpointer \
 	testwinhints \
 	iceview \
 	icesame \
@@ -92,6 +96,7 @@ libice_la_SOURCES = \
 	misc.cc \
 	mstring.cc \
 	mstring.h \
+	objmenu.cc \
 	objmenu.h \
 	prefs.h \
 	ref.cc \
@@ -135,8 +140,6 @@ libice_la_SOURCES = \
 	ymsgbox.h \
 	ypaint.cc \
 	ypaint.h \
-	ypaths.cc \
-	ypaths.h \
 	ypipereader.cc \
 	ypipereader.h \
 	ypixmap.cc \
@@ -194,6 +197,8 @@ libitk_la_SOURCES = \
 	wmconfig.h \
 	wmmgr.h \
 	wmoption.h \
+	wmsave.cc \
+	wmsave.h \
 	wmtaskbar.h \
 	workspaces.h \
 	wpixmaps.h \
@@ -211,7 +216,7 @@ libitk_la_SOURCES = \
 	yicon.cc \
 	yicon.h \
 	yimage.h \
-	yinput.cc \
+	yinputline.cc \
 	yinputline.h \
 	ykey.h \
 	ylabel.cc \
@@ -227,7 +232,6 @@ libitk_la_SOURCES = \
 	ymenuitem.h \
 	ymsgbox.h \
 	ypaint.h \
-	ypaths.h \
 	ypixmap.h \
 	ypointer.h \
 	ypoll.h \
@@ -276,6 +280,7 @@ icewm_SOURCES = \
 	yactionbutton.h \
 	objmenu.h \
 	objbutton.h \
+	objbutton.cc \
 	WinMgr.h \
 	ypoll.h \
 	ylib.h \
@@ -311,6 +316,8 @@ icewm_SOURCES = \
 	wmclient.cc \
 	MwmUtil.h \
 	wmclient.h \
+	wmdock.cc \
+	wmdock.h \
 	wmmgr.cc \
 	wmmgr.h \
 	workspaces.h \
@@ -336,6 +343,8 @@ icewm_SOURCES = \
 	wmmenu.cc \
 	wmprog.cc \
 	wmprog.h \
+	wmpref.cc \
+	wmpref.h \
 	atasks.cc \
 	atasks.h \
 	aworkspaces.cc \
@@ -385,7 +394,6 @@ icewm_session_SOURCES = \
 	intl.h \
 	sysdep.h \
 	yapp.h \
-	ytrace.h \
 	ytime.h \
 	ytimer.h \
 	icesm.cc
@@ -404,11 +412,8 @@ icewmbg_SOURCES = \
 	base.h \
 	themable.h \
 	default.h \
-	ykey.h \
-	yfull.h \
 	yxapp.h \
 	yprefs.h \
-	ypaths.h \
 	icewmbg.cc \
 	icewmbg_prefs.h
 icewmbg_LDADD = libice.la $(IMAGE_LIBS) $(CORE_LIBS) @LIBINTL@
@@ -472,11 +477,9 @@ iceclock_SOURCES = \
 iceclock_LDADD = libitk.la libice.la $(IMAGE_LIBS) $(CORE_LIBS) @LIBINTL@
 
 strtest_SOURCES = \
-	intl.h \
-	debug.h \
-	sysdep.h \
 	base.h \
 	udir.h \
+	upath.h \
 	strtest.cc \
 	mstring.h
 strtest_LDADD = libice.la
@@ -602,7 +605,7 @@ testwinhints_SOURCES = \
 	base.h \
 	WinMgr.h \
 	testwinhints.cc
-testwinhints_LDFLAGS = $(IMAGE_LIBS) $(CORE_LIBS)
+testwinhints_LDFLAGS = $(CORE_LIBS)
 
 testnetwmhints_SOURCES = \
 	intl.h \
@@ -611,7 +614,7 @@ testnetwmhints_SOURCES = \
 	base.h \
 	WinMgr.h \
 	testnetwmhints.cc
-testnetwmhints_LDFLAGS = $(IMAGE_LIBS) $(CORE_LIBS)
+testnetwmhints_LDFLAGS = libice.la $(CORE_LIBS)
 
 testmap_SOURCES = \
 	intl.h \
@@ -620,7 +623,7 @@ testmap_SOURCES = \
 	base.h \
 	WinMgr.h \
 	testmap.cc
-testmap_LDFLAGS = $(IMAGE_LIBS) $(CORE_LIBS)
+testmap_LDFLAGS = libice.la $(CORE_LIBS)
 
 testlocale_SOURCES = \
 	intl.h \
@@ -632,19 +635,22 @@ testlocale_SOURCES = \
 testlocale_LDADD = libice.la $(CORE_LIBS) @LIBINTL@
 
 testarray_SOURCES = \
-	intl.h \
-	debug.h \
-	sysdep.h \
+	mstring.h \
+	yarray.h \
 	base.h \
-	ylib.h \
+	ypointer.h \
 	testarray.cc
 testarray_LDADD = libice.la @LIBINTL@
+
+testpointer_SOURCES = \
+	ypointer.h \
+	testpointer.cc
 
 nodist_pkgdata_DATA = \
 	preferences
 
 preferences: genpref$(EXEEXT)
-	$(AM_V_GEN)./genpref$(EXEEXT) >$@
+	$(AM_V_GEN)./genpref$(EXEEXT) -o $@ -s
 
-CLEANFILES = preferences
+CLEANFILES = preferences strtest testarray testpointer
 
