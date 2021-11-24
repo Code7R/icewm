@@ -1,3 +1,10 @@
+icewm (2.9.0-1) unstable; urgency=low
+
+  * New upstream release
+  * Dropping old preference for DejaVu font with size 11 in Debian builds
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 24 Nov 2021 21:12:07 +0100
+
 icewm (2.8.0-1) unstable; urgency=low
 
   * New upstream release
