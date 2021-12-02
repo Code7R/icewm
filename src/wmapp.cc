@@ -756,7 +756,7 @@ void YWMApp::restartClient(const char *cpath, char *const *cargs) {
     manager->manageClients();
 }
 
-int YWMApp::runProgram(const char *path, const char *const *args) {
+int YWMApp::runProgram(const char *path, const char *const *args, int fd) {
     mstring command;
     YTraceProg trace;
     if (trace.tracing()) {
@@ -768,7 +768,7 @@ int YWMApp::runProgram(const char *path, const char *const *args) {
         }
         trace.init(command);
     }
-    return YApplication::runProgram(path, args);
+    return YApplication::runProgram(path, args, fd);
 }
 
 void YWMApp::runOnce(const char *resource, long *pid,
@@ -1680,6 +1680,7 @@ static void print_configured(const char *argv0) {
 static void loadStartup(const char* configFile)
 {
     rightToLeft = YLocale::RTL();
+    leftToRight = !rightToLeft;
 
     YConfig(wmapp_preferences).load(configFile);
 
