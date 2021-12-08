@@ -1485,7 +1485,7 @@ void YWMApp::afterWindowEvent(XEvent &xev) {
                 manager->popupStartMenu(desktop);
             }
             else if (k1 == xapp->Win_R && k2 == xapp->Win_R) {
-                actionPerformed(actionWindowList, 0);
+                manager->doWMAction(ICEWM_ACTION_WINDOWLIST, true);
             }
         }
     }
