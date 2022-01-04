@@ -1,3 +1,10 @@
+icewm (2.9.4-1) unstable; urgency=low
+
+  * New upstream release
+    + also includes a minor fix for strage EDID data
+
+ -- Eduard Bloch <blade@debian.org>  Tue, 04 Jan 2022 22:04:08 +0100
+
 icewm (2.9.3-1) unstable; urgency=low
 
   * New upstream release
