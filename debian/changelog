@@ -1,3 +1,9 @@
+icewm (2.9.6-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 23 Feb 2022 20:37:31 +0100
+
 icewm (2.9.5-1) unstable; urgency=low
 
   * New upstream release
