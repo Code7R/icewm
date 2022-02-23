@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icewm 1.2.26\n"
 "Report-Msgid-Bugs-To: https://github.com/bbidulock/icewm/issues\n"
-"POT-Creation-Date: 2022-01-20 02:36+0100\n"
-"PO-Revision-Date: 2022-01-08 23:11+0000\n"
-"Last-Translator: Sarah Kriesch <ada.lovelace@gmx.de>\n"
+"POT-Creation-Date: 2022-02-23 19:11+0100\n"
+"PO-Revision-Date: 2022-02-21 19:12+0000\n"
+"Last-Translator: Gemineo <vistatec@gemineo.de>\n"
 "Language-Team: German <https://l10n.opensuse.org/projects/icewm/icewm-1-4-"
 "branch/de/>\n"
 "Language: de\n"
@@ -28,12 +28,12 @@ msgstr "Konnte APM-Gerät %s nicht öffnen"
 #: src/aapm.cc:74 src/aapm.cc:92
 #, c-format
 msgid "Can't ioctl the APM device %s"
-msgstr ""
+msgstr "APM-Gerät %s kann nicht über ioctl gesteuert werden"
 
 #: src/aapm.cc:122
 #, c-format
 msgid "Unknown format used by APM device %s (%d)."
-msgstr ""
+msgstr "Unbekanntes Format von APM-Gerät %s (%d) verwendet."
 
 #: src/aapm.cc:154 src/aapm.cc:426 src/aapm.cc:636 src/aapm.cc:762
 msgid " - Power"
@@ -72,7 +72,7 @@ msgstr "Datum"
 msgid "Default"
 msgstr "Standard"
 
-#: src/aclock.cc:200 src/acpustatus.cc:687 src/amailbox.cc:964
+#: src/aclock.cc:200 src/acpustatus.cc:813 src/amailbox.cc:964
 #: src/amemstatus.cc:264
 msgid "_Disable"
 msgstr "_Deaktivieren"
@@ -81,12 +81,18 @@ msgstr "_Deaktivieren"
 msgid "_UTC"
 msgstr "_UTC"
 
-#: src/acpustatus.cc:299
+#. TRANSLATORS: Please translate the string "C" into "Celsius Temperature" in your language.
+#. TRANSLATORS: Please make sure the translated string could be shown in your non-utf8 locale.
+#: src/acpustatus.cc:266
+msgid "°C"
+msgstr "°C"
+
+#: src/acpustatus.cc:448
 #, c-format
 msgid "CPU %s Load: %3.2f %3.2f %3.2f, %u"
 msgstr "CPU %s Auslastung: %3.2f %3.2f %3.2f, %u"
 
-#: src/acpustatus.cc:305
+#: src/acpustatus.cc:454
 #, c-format
 msgid ""
 "\n"
@@ -95,7 +101,7 @@ msgstr ""
 "\n"
 "RAM (frei):\t%5.3f (%.3f) G"
 
-#: src/acpustatus.cc:310
+#: src/acpustatus.cc:459
 #, c-format
 msgid ""
 "\n"
@@ -104,7 +110,7 @@ msgstr ""
 "\n"
 "Swap (frei):\t%.3f (%.3f) G"
 
-#: src/acpustatus.cc:316
+#: src/acpustatus.cc:467
 #, c-format
 msgid ""
 "\n"
@@ -113,7 +119,7 @@ msgstr ""
 "\n"
 "ACPI-Temp.: "
 
-#: src/acpustatus.cc:335 src/acpustatus.cc:373
+#: src/acpustatus.cc:488 src/acpustatus.cc:526
 #, c-format
 msgid ""
 "\n"
@@ -122,15 +128,15 @@ msgstr ""
 "\n"
 "CPU-Takt:\t%.3f GHz"
 
-#: src/acpustatus.cc:350 src/acpustatus.cc:682
+#: src/acpustatus.cc:503 src/acpustatus.cc:808
 msgid "CPU"
 msgstr "CPU"
 
-#: src/acpustatus.cc:350
+#: src/acpustatus.cc:503
 msgid "Load: "
 msgstr "Last: "
 
-#: src/acpustatus.cc:365
+#: src/acpustatus.cc:518
 #, c-format
 msgid ""
 "\n"
@@ -139,22 +145,16 @@ msgstr ""
 "\n"
 "Ram (Benutzer)%5.3f (%.3f) G"
 
-#. TRANSLATORS: Please translate the string "C" into "Celsius Temperature" in your language.
-#. TRANSLATORS: Please make sure the translated string could be shown in your non-utf8 locale.
-#: src/acpustatus.cc:453
-msgid "°C"
-msgstr "°C"
-
-#: src/acpustatus.cc:683
+#: src/acpustatus.cc:809
 #, c-format
 msgid "CPU%d"
 msgstr "CPU%d"
 
-#: src/acpustatus.cc:689
+#: src/acpustatus.cc:815
 msgid "_Combine"
 msgstr "_Kombinieren"
 
-#: src/acpustatus.cc:691
+#: src/acpustatus.cc:817
 msgid "_Separate"
 msgstr "_Aufteilen"
 
@@ -170,25 +170,23 @@ msgstr "%s wurde durch Signal %d getötet."
 
 #: src/akeyboard.cc:98
 msgid "rules:"
-msgstr ""
+msgstr "Regeln:"
 
 #: src/akeyboard.cc:99
 msgid "model:"
-msgstr ""
+msgstr "Modell:"
 
 #: src/akeyboard.cc:100
 msgid "layout:"
-msgstr ""
+msgstr "Layout:"
 
 #: src/akeyboard.cc:101
-#, fuzzy
-#| msgid "Bad option: %s"
 msgid "options:"
-msgstr "Schlechte Option: %s"
+msgstr "Optionen:"
 
 #: src/akeyboard.cc:151
 msgid "Keyboard"
-msgstr ""
+msgstr "Tastatur"
 
 #: src/amailbox.cc:64
 #, c-format
@@ -1070,21 +1068,19 @@ msgstr "Index"
 
 #: src/icehelp.cc:1337
 msgid "Find..."
-msgstr ""
+msgstr "Suchen..."
 
 #: src/icehelp.cc:1337
-#, fuzzy
-#| msgid "Ctrl+B"
 msgid "Ctrl+F"
-msgstr "Strg+B"
+msgstr "Strg+F"
 
 #: src/icehelp.cc:1338
 msgid "Find next"
-msgstr ""
+msgstr "Weitersuchen"
 
 #: src/icehelp.cc:1338
 msgid "F3"
-msgstr ""
+msgstr "F3"
 
 #: src/icehelp.cc:1340
 msgid "Open in Browser"
@@ -1335,76 +1331,76 @@ msgstr "Für Hilfe bitte die Manpage (1) hinzuziehen.\n"
 msgid "Named symbols of the domain `%s' (numeric range: %ld-%ld):\n"
 msgstr "Benannte Symbole aus der Domain `%s` (Wertebereich: %ld-%ld):\n"
 
-#: src/icesh.cc:1605
+#: src/icesh.cc:1616
 #, c-format
 msgid "Workspace out of range: %ld"
 msgstr "Arbeitsbereich außerhalb des Wertebereichs: %ld"
 
-#: src/icesh.cc:1626
+#: src/icesh.cc:1637
 #, c-format
 msgid "Invalid workspace name: `%s'"
 msgstr "Ungültiger Name des Arbeitsbereichs: `%s`"
 
-#: src/icesh.cc:1928
+#: src/icesh.cc:1939
 msgid "GNOME window layer"
 msgstr "GNOME-Fensterebene"
 
-#: src/icesh.cc:1929
+#: src/icesh.cc:1940
 msgid "IceWM tray option"
 msgstr "IceWM-Trayoption"
 
-#: src/icesh.cc:1930
+#: src/icesh.cc:1941
 msgid "Gravity symbols"
 msgstr "Gravitationssymbole"
 
-#: src/icesh.cc:1931
+#: src/icesh.cc:1942
 msgid "Motif functions"
 msgstr "Motif-Funktionen"
 
-#: src/icesh.cc:1932
+#: src/icesh.cc:1943
 msgid "Motif decorations"
 msgstr "Motif-Ausstattung"
 
-#: src/icesh.cc:1933
+#: src/icesh.cc:1944
 msgid "EWMH window state"
 msgstr "EWMH-Fensterzustand"
 
-#: src/icesh.cc:2015 src/icesh.cc:2088
+#: src/icesh.cc:2026 src/icesh.cc:2099
 #, c-format
 msgid "workspace #%d: `%s'\n"
 msgstr "Arbeitsbereich #%d: `%s`\n"
 
-#: src/icesh.cc:2323 src/icesh.cc:3797 src/icesh.cc:4279
+#: src/icesh.cc:2334 src/icesh.cc:3808 src/icesh.cc:4290
 #, c-format
 msgid "Invalid state: `%s'."
 msgstr "Ungültiger Status: `%s'."
 
-#: src/icesh.cc:3180
+#: src/icesh.cc:3191
 #, c-format
 msgid "Cannot get geometry of window 0x%lx"
 msgstr "Geometrie von Fenster 0x%lx kann nicht abgerufen werden"
 
-#: src/icesh.cc:3205
+#: src/icesh.cc:3216
 #, c-format
 msgid "Invalid Xinerama: `%s'."
 msgstr "Ungültiges Xinemara: `%s'."
 
-#: src/icesh.cc:3370 src/icesh.cc:3420
+#: src/icesh.cc:3381 src/icesh.cc:3431
 #, c-format
 msgid "Invalid argument: `%s'"
 msgstr "Ungültiges Argument: `%s'"
 
-#: src/icesh.cc:3386
+#: src/icesh.cc:3397
 #, c-format
 msgid "Action `%s' requires at least %d arguments."
 msgstr "Aktion `%s` benötigt mindestens %d Argumente."
 
-#: src/icesh.cc:3395
+#: src/icesh.cc:3406
 #, c-format
 msgid "Invalid expression: `%s'"
 msgstr "Ungültiger Ausdruck: `%s`"
 
-#: src/icesh.cc:3406 src/icesound.cc:794 src/icewmhint.cc:37 src/wmapp.cc:1203
+#: src/icesh.cc:3417 src/icesound.cc:794 src/icewmhint.cc:37 src/wmapp.cc:1203
 #: src/yxapp.cc:1035
 #, c-format
 msgid "Can't open display: %s. X must be running and $DISPLAY set."
@@ -1412,35 +1408,35 @@ msgstr ""
 "Das Display kann nicht geöffnet werden: %s. Der X muss laufen und $DISPLAY "
 "gesetzt sein."
 
-#: src/icesh.cc:3522
+#: src/icesh.cc:3533
 #, c-format
 msgid "Unexpected: `%s'."
 msgstr "Unerwartet: '%s'."
 
-#: src/icesh.cc:3551
+#: src/icesh.cc:3562
 msgid "No windows found."
 msgstr "Keine Fenster gefunden."
 
-#: src/icesh.cc:3567
+#: src/icesh.cc:3578
 msgid "No actions specified."
 msgstr "Keine Aktionen angegeben."
 
-#: src/icesh.cc:3714
+#: src/icesh.cc:3725
 #, c-format
 msgid "Invalid window identifier: `%s'"
 msgstr "Ungültiger Fensterbezeichner: `%s`"
 
-#: src/icesh.cc:3731
+#: src/icesh.cc:3742
 #, c-format
 msgid "Invalid PID: `%s'"
 msgstr "Ungültige PID: `%s'"
 
-#: src/icesh.cc:3767
+#: src/icesh.cc:3778
 #, c-format
 msgid "Invalid layer: `%s'."
 msgstr "Ungültige Schicht: `%s'."
 
-#: src/icesh.cc:4587
+#: src/icesh.cc:4598
 #, c-format
 msgid "Unknown action: `%s'"
 msgstr "Unbekannte Aktion: `%s`"
@@ -1658,8 +1654,8 @@ msgstr ""
 " -d, --display=DISPLAY         X11 Display von IceWM verwendet (Standard: "
 "$DISPLAY).\n"
 "\n"
-" -s, --sample-dir=VERZEICHNIS  Ein Verzeichnis, das die zu spielenden\n"
-"                         Audiodateien enthält.\n"
+" -s, --sample-dir=VERZEICHNIS  Ein Verzeichnis, das die zu spielenden "
+"Audiodateien enthält.\n"
 "                         Standard ist $HOME/.config/icewm/sounds.\n"
 "\n"
 " -i, --interface=LISTE           Spezifiziert Audio-Output-Interfaces. Eins "
@@ -2041,7 +2037,7 @@ msgstr "_Menü"
 
 #: src/wmapp.cc:526
 msgid "_Above Dock"
-msgstr "_Über  Dock"
+msgstr "_Über Dock"
 
 #: src/wmapp.cc:527
 msgid "_Dock"
@@ -2065,39 +2061,39 @@ msgstr "D_esktop"
 
 #: src/wmapp.cc:564
 msgid "Left Half"
-msgstr ""
+msgstr "Linke Hälfte"
 
 #: src/wmapp.cc:565
 msgid "Right Half"
-msgstr ""
+msgstr "Rechte Hälfte"
 
 #: src/wmapp.cc:566
 msgid "Top Half"
-msgstr ""
+msgstr "Obere Hälfte"
 
 #: src/wmapp.cc:567
 msgid "Bottom Half"
-msgstr ""
+msgstr "Untere Hälfte"
 
 #: src/wmapp.cc:569
 msgid "Top Left"
-msgstr ""
+msgstr "Oben links"
 
 #: src/wmapp.cc:571
 msgid "Top Right"
-msgstr ""
+msgstr "Oben rechts"
 
 #: src/wmapp.cc:573
 msgid "Bottom Left"
-msgstr ""
+msgstr "Unten links"
 
 #: src/wmapp.cc:575
 msgid "Bottom Right"
-msgstr ""
+msgstr "Unten rechts"
 
 #: src/wmapp.cc:577
 msgid "Center"
-msgstr ""
+msgstr "Mitte"
 
 #. TRANSLATORS: This appears in a group with others items, so please make the hotkeys unique in the set: # T_ile Horizontally, Ca_scade, _Arrange, _Minimize All, _Hide All, _Undo, Arrange _Icons, _Windows, _Refresh, _About, _Logout
 #: src/wmapp.cc:579 src/wmtaskbar.cc:219 src/wmwinlist.cc:394
@@ -2165,7 +2161,7 @@ msgstr "_Ebene"
 
 #: src/wmapp.cc:625 src/wmwinlist.cc:387
 msgid "Tile"
-msgstr ""
+msgstr "Anordnen"
 
 #: src/wmapp.cc:629 src/wmwinlist.cc:389
 msgid "Move _To"
@@ -2439,9 +2435,8 @@ msgid ""
 "WARNING! All unsaved changes will be lost when\n"
 "this client is killed. Do you wish to proceed?"
 msgstr ""
-"WARNUNG! Alle nicht gesicherten Änderungen werden\n"
-"beim Töten der Anwendung verloren gehen!\n"
-"Wünschen Sie trotzdem fortzufahren?"
+"WARNUNG! Alle nicht gesicherten Änderungen werden beim\n"
+"Töten der Anwendung verloren gehen! Wünschen Sie trotzdem fortzufahren?"
 
 #
 #: src/wmframe.cc:1549
@@ -2455,7 +2450,7 @@ msgstr "Fehlendes Argument für Kommandozeilenparameter"
 #: src/wmmenu.cc:55
 #, c-format
 msgid "Bad argument %d to command '%s'"
-msgstr "Schlechtes Argument %d  zum Befehl '%s'"
+msgstr "Schlechtes Argument %d zum Befehl '%s'"
 
 #: src/wmmenu.cc:110
 #, c-format
@@ -2465,13 +2460,12 @@ msgstr "Fehler bei Schlüsselwort '%s' für %s"
 #: src/wmmenu.cc:156
 #, c-format
 msgid "Error at %s '%s'"
-msgstr "Fehler bei  %s '%s'"
+msgstr "Fehler bei %s '%s'"
 
 #: src/wmmenu.cc:222
-#, fuzzy, c-format
-#| msgid "Unknown keyword '%s'"
+#, c-format
 msgid "Unexepected menu keyword: '%s'"
-msgstr "Unbekanntes Schlüsselwort '%s'"
+msgstr "Unerwartetes Menüschlüsselwort '%s'"
 
 #: src/wmmenu.cc:276
 #, c-format
@@ -2479,20 +2473,18 @@ msgid "Error at menuprog '%s'"
 msgstr "Fehler bei menuprog '%s'"
 
 #: src/wmmenu.cc:320
-#, fuzzy, c-format
-#| msgid "Error at menuprog '%s'"
+#, c-format
 msgid "Error at menuprogreload: '%s'"
-msgstr "Fehler bei menuprog '%s'"
+msgstr "Fehler bei menuprogreload: '%s'"
 
 #: src/wmmenu.cc:347
 msgid "Missing filename argument to include statement"
 msgstr "Fehlendes Dateinamen-Argument um einen Bericht hinzuzufügen"
 
 #: src/wmmenu.cc:365
-#, fuzzy, c-format
-#| msgid "Error at menuprog '%s'"
+#, c-format
 msgid "Error at includeprog '%s'"
-msgstr "Fehler bei menuprog '%s'"
+msgstr "Fehler bei includeprog '%s'"
 
 #: src/wmmenu.cc:408
 #, c-format
@@ -2511,18 +2503,18 @@ msgstr ""
 #: src/wmmenu.cc:498
 #, c-format
 msgid "'%s' timed out!"
-msgstr ""
+msgstr "Zeitüberschreitung bei '%s'!"
 
 #: src/wmmenu.cc:509
 #, c-format
 msgid "'%s' produces no output"
 msgstr "'%s' produziert keine Ausgabe"
 
-#: src/wmmgr.cc:3377
+#: src/wmmgr.cc:3384
 msgid "Missing program setxkbmap"
 msgstr "Fehlendes Program: 'setxkbmap'"
 
-#: src/wmmgr.cc:3378
+#: src/wmmgr.cc:3385
 msgid "For keyboard switching, please install setxkbmap."
 msgstr "Um die Tastatur zu ändern, installieren Sie bitte setxkbmap."
 
@@ -2543,7 +2535,7 @@ msgstr "Änderungen speichern"
 #: src/wmpref.cc:178
 #, c-format
 msgid "Enter a new value for %s: "
-msgstr ""
+msgstr "Geben Sie einen neuen Wert für %s ein: "
 
 #: src/wmprog.cc:331
 msgid "_Click to focus"
@@ -2722,10 +2714,9 @@ msgid "%s: select failed"
 msgstr "%s: Auswahl fehlgeschlagen"
 
 #: src/ycolor.cc:229 src/ycolor.cc:240
-#, fuzzy, c-format
-#| msgid "Could not load font \"%s\"."
+#, c-format
 msgid "Could not parse color \"%s\""
-msgstr "Die Schriftart \"%s\" konnte nicht geladen werden."
+msgstr "Farbe \"%s\" konnte nicht geparst werden"
 
 #: src/yconfig.cc:113
 #, c-format
@@ -2767,7 +2758,7 @@ msgstr ""
 #: src/ycursor.cc:215
 #, c-format
 msgid "BUG? Unexpected character but Imlib was able to parse \"%s\""
-msgstr "BUG? Unerwartetes Zeichen, aber Imlib konnte die Datei \"%s\"  parsen"
+msgstr "BUG? Unerwartetes Zeichen, aber Imlib konnte die Datei \"%s\" parsen"
 
 #: src/yfontcore.cc:121 src/yfontxft.cc:117
 #, c-format
@@ -2872,26 +2863,22 @@ msgstr ""
 "  --sync              Synchronisation von X11-Befehlen.\n"
 
 #: src/yximage.cc:157
-#, fuzzy
-#| msgid "Support for the %s interface not compiled."
 msgid "Support for PNG images was not enabled"
-msgstr "Die Unterstützung für das %s-Interface wurde nicht kompiliert."
+msgstr "Unterstützung für PNG-Bilder wurde nicht aktiviert"
 
 #: src/yximage.cc:165
 msgid "Support for JPEG images was not enabled"
-msgstr ""
+msgstr "Unterstützung für JPEG-Bilder wurde nicht aktiviert"
 
 #: src/yximage.cc:171
-#, fuzzy, c-format
-#| msgid "Unsupported interface: %s."
+#, c-format
 msgid "Unsupported file format: %s"
-msgstr "Nicht unterstütztes Interface: %s."
+msgstr "Nicht unterstütztes Dateiformat: %s"
 
 #: src/yximage.cc:175 src/yximage.cc:198
-#, fuzzy, c-format
-#| msgid "Could not find image %s"
+#, c-format
 msgid "Could not load image \"%s\""
-msgstr "Bild %s konnte nicht gefunden werden"
+msgstr "Bild \"%s\" konnte nicht geladen werden"
 
 #~ msgid "Loading of fallback font \"%s\" failed."
 #~ msgstr "Rückgriff auf die Schriftart \"%s\" ist fehlgeschlagen."

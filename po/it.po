@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IceWM 1.2.31\n"
 "Report-Msgid-Bugs-To: https://github.com/bbidulock/icewm/issues\n"
-"POT-Creation-Date: 2022-01-20 02:36+0100\n"
-"PO-Revision-Date: 2022-01-15 10:12+0000\n"
-"Last-Translator: Paolo Za <zapaolo@email.it>\n"
+"POT-Creation-Date: 2022-02-23 19:11+0100\n"
+"PO-Revision-Date: 2022-02-21 13:12+0000\n"
+"Last-Translator: Davide Aiello <davide.aiello@novilingulists.com>\n"
 "Language-Team: Italian <https://l10n.opensuse.org/projects/icewm/icewm-1-4-"
 "branch/it/>\n"
 "Language: it\n"
@@ -23,15 +23,14 @@ msgstr ""
 "X-Generator: Weblate 4.9.1\n"
 
 #: src/aapm.cc:66
-#, fuzzy, c-format
-#| msgid "Could not open APM device %s"
+#, c-format
 msgid "Can't open the APM device %s"
 msgstr "Impossibile aprire il dispositivo APM %s"
 
 #: src/aapm.cc:74 src/aapm.cc:92
 #, c-format
 msgid "Can't ioctl the APM device %s"
-msgstr ""
+msgstr "Ioctl non riuscito sul dispositivo APM %s"
 
 #: src/aapm.cc:122
 #, c-format
@@ -75,7 +74,7 @@ msgstr "Data"
 msgid "Default"
 msgstr "Predefinito"
 
-#: src/aclock.cc:200 src/acpustatus.cc:687 src/amailbox.cc:964
+#: src/aclock.cc:200 src/acpustatus.cc:813 src/amailbox.cc:964
 #: src/amemstatus.cc:264
 msgid "_Disable"
 msgstr "_Disabilita"
@@ -84,12 +83,18 @@ msgstr "_Disabilita"
 msgid "_UTC"
 msgstr "_UTC"
 
-#: src/acpustatus.cc:299
+#. TRANSLATORS: Please translate the string "C" into "Celsius Temperature" in your language.
+#. TRANSLATORS: Please make sure the translated string could be shown in your non-utf8 locale.
+#: src/acpustatus.cc:266
+msgid "°C"
+msgstr "°C"
+
+#: src/acpustatus.cc:448
 #, c-format
 msgid "CPU %s Load: %3.2f %3.2f %3.2f, %u"
 msgstr "Carico CPU %s: %3.2f %3.2f %3.2f, %u"
 
-#: src/acpustatus.cc:305
+#: src/acpustatus.cc:454
 #, c-format
 msgid ""
 "\n"
@@ -98,7 +103,7 @@ msgstr ""
 "\n"
 "RAM (libera): %5.3f (%.3f) G"
 
-#: src/acpustatus.cc:310
+#: src/acpustatus.cc:459
 #, c-format
 msgid ""
 "\n"
@@ -107,7 +112,7 @@ msgstr ""
 "\n"
 "Swap (libero): %.3f (%.3f) G"
 
-#: src/acpustatus.cc:316
+#: src/acpustatus.cc:467
 #, c-format
 msgid ""
 "\n"
@@ -116,7 +121,7 @@ msgstr ""
 "\n"
 "Temp ACPI: "
 
-#: src/acpustatus.cc:335 src/acpustatus.cc:373
+#: src/acpustatus.cc:488 src/acpustatus.cc:526
 #, c-format
 msgid ""
 "\n"
@@ -125,15 +130,15 @@ msgstr ""
 "\n"
 "Freq CPU: %.3f GHz"
 
-#: src/acpustatus.cc:350 src/acpustatus.cc:682
+#: src/acpustatus.cc:503 src/acpustatus.cc:808
 msgid "CPU"
 msgstr "CPU"
 
-#: src/acpustatus.cc:350
+#: src/acpustatus.cc:503
 msgid "Load: "
 msgstr "Carico: "
 
-#: src/acpustatus.cc:365
+#: src/acpustatus.cc:518
 #, c-format
 msgid ""
 "\n"
@@ -142,22 +147,16 @@ msgstr ""
 "\n"
 "RAM (utente): %5.3f (%.3f) G"
 
-#. TRANSLATORS: Please translate the string "C" into "Celsius Temperature" in your language.
-#. TRANSLATORS: Please make sure the translated string could be shown in your non-utf8 locale.
-#: src/acpustatus.cc:453
-msgid "°C"
-msgstr "°C"
-
-#: src/acpustatus.cc:683
+#: src/acpustatus.cc:809
 #, c-format
 msgid "CPU%d"
 msgstr "CPU%d"
 
-#: src/acpustatus.cc:689
+#: src/acpustatus.cc:815
 msgid "_Combine"
 msgstr "_Combina"
 
-#: src/acpustatus.cc:691
+#: src/acpustatus.cc:817
 msgid "_Separate"
 msgstr "_Separa"
 
@@ -615,7 +614,7 @@ msgstr "Trasferimento file"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: System
 #: src/fdospecgen.h:151
 msgid "Filesystem"
-msgstr "Filesystem"
+msgstr "File system"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
 #: src/fdospecgen.h:153
@@ -1247,7 +1246,7 @@ msgid ""
 msgstr ""
 "Uso: %s [OPZIONI] [ NOME FILE | URL ]\n"
 "\n"
-"IceHelp è un browser HTML molto semplice per il window manger IceWM.\n"
+"IceHelp è un browser HTML molto semplice per il window manager IceWM.\n"
 "Consente di visualizzare un documento HTML da file o navigare su un sito "
 "Web.\n"
 "Memorizza le pagine visitate in una cronologia navigabile\n"
@@ -1259,6 +1258,7 @@ msgstr ""
 "da %s.\n"
 "\n"
 "Opzioni:\n"
+"\n"
 "  -d, --display=NOME  NOME del server X da usare.\n"
 "  --sync              Sincronizza i comandi X11.\n"
 "\n"
@@ -1276,11 +1276,11 @@ msgstr ""
 "  -t, --theme         Mostra la Guida ai temi di IceWM.\n"
 "  -w, --website       Mostra il sito web di IceWM.\n"
 "\n"
-"  -V, --version       Mostra le informazioni sulla versione ed esce.\n"
+"  -V, --version       Stampa le informazioni sulla versione ed esce.\n"
 "  -h, --help          Stampa questa schermata d'uso ed esce.\n"
 "\n"
 "Variabili di ambiente:\n"
-"  DISPLAY=NOME        NOME del server X da utilizzare.\n"
+"  DISPLAY=NOME        Nome del server X da utilizzare.\n"
 "\n"
 "Per segnalazione di errori, richieste di supporto, commenti visitare:\n"
 "%s\n"
@@ -1336,76 +1336,76 @@ msgstr "Per assistenza consultare la manpage icesh(1).\n"
 msgid "Named symbols of the domain `%s' (numeric range: %ld-%ld):\n"
 msgstr "Simboli con nome del dominio '%s' (intervallo numerico: %ld-%ld):\n"
 
-#: src/icesh.cc:1605
+#: src/icesh.cc:1616
 #, c-format
 msgid "Workspace out of range: %ld"
 msgstr "Spazio di lavoro fuori intervallo: %ld"
 
-#: src/icesh.cc:1626
+#: src/icesh.cc:1637
 #, c-format
 msgid "Invalid workspace name: `%s'"
 msgstr "Nome spazio di lavoro non valido: '%s'"
 
-#: src/icesh.cc:1928
+#: src/icesh.cc:1939
 msgid "GNOME window layer"
 msgstr "Livello della finestra di GNOME"
 
-#: src/icesh.cc:1929
+#: src/icesh.cc:1940
 msgid "IceWM tray option"
 msgstr "Opzione vassoio di IceWM"
 
-#: src/icesh.cc:1930
+#: src/icesh.cc:1941
 msgid "Gravity symbols"
 msgstr "Simboli di gravità"
 
-#: src/icesh.cc:1931
+#: src/icesh.cc:1942
 msgid "Motif functions"
 msgstr "Funzioni Motif"
 
-#: src/icesh.cc:1932
+#: src/icesh.cc:1943
 msgid "Motif decorations"
 msgstr "Decorazioni Motif"
 
-#: src/icesh.cc:1933
+#: src/icesh.cc:1944
 msgid "EWMH window state"
 msgstr "Stato della finestra di EWMH"
 
-#: src/icesh.cc:2015 src/icesh.cc:2088
+#: src/icesh.cc:2026 src/icesh.cc:2099
 #, c-format
 msgid "workspace #%d: `%s'\n"
 msgstr "spazio di lavoro #%d: '%s'\n"
 
-#: src/icesh.cc:2323 src/icesh.cc:3797 src/icesh.cc:4279
+#: src/icesh.cc:2334 src/icesh.cc:3808 src/icesh.cc:4290
 #, c-format
 msgid "Invalid state: `%s'."
 msgstr "Stato non valido: '%s'."
 
-#: src/icesh.cc:3180
+#: src/icesh.cc:3191
 #, c-format
 msgid "Cannot get geometry of window 0x%lx"
 msgstr "Impossibile ottenere geometria della finestra 0x%lx"
 
-#: src/icesh.cc:3205
+#: src/icesh.cc:3216
 #, c-format
 msgid "Invalid Xinerama: `%s'."
 msgstr "Xinerama non valida: '%s'."
 
-#: src/icesh.cc:3370 src/icesh.cc:3420
+#: src/icesh.cc:3381 src/icesh.cc:3431
 #, c-format
 msgid "Invalid argument: `%s'"
 msgstr "Argomento non valido: '%s'"
 
-#: src/icesh.cc:3386
+#: src/icesh.cc:3397
 #, c-format
 msgid "Action `%s' requires at least %d arguments."
 msgstr "L'azione '%s' richiede almeno %d argomenti."
 
-#: src/icesh.cc:3395
+#: src/icesh.cc:3406
 #, c-format
 msgid "Invalid expression: `%s'"
 msgstr "Espressione non valida: '%s'"
 
-#: src/icesh.cc:3406 src/icesound.cc:794 src/icewmhint.cc:37 src/wmapp.cc:1203
+#: src/icesh.cc:3417 src/icesound.cc:794 src/icewmhint.cc:37 src/wmapp.cc:1203
 #: src/yxapp.cc:1035
 #, c-format
 msgid "Can't open display: %s. X must be running and $DISPLAY set."
@@ -1413,35 +1413,35 @@ msgstr ""
 "Impossibile aprire il display: %s. X deve essere in esecuzione e la "
 "variabile $DISPLAY deve essere impostata."
 
-#: src/icesh.cc:3522
+#: src/icesh.cc:3533
 #, c-format
 msgid "Unexpected: `%s'."
 msgstr "Imprevisto: `%s'."
 
-#: src/icesh.cc:3551
+#: src/icesh.cc:3562
 msgid "No windows found."
 msgstr "Nessuna finestra trovata."
 
-#: src/icesh.cc:3567
+#: src/icesh.cc:3578
 msgid "No actions specified."
 msgstr "Nessuna azione specificata."
 
-#: src/icesh.cc:3714
+#: src/icesh.cc:3725
 #, c-format
 msgid "Invalid window identifier: `%s'"
 msgstr "Identificatore della finestra non valido: '%s'"
 
-#: src/icesh.cc:3731
+#: src/icesh.cc:3742
 #, c-format
 msgid "Invalid PID: `%s'"
 msgstr "PID non valido: '%s'"
 
-#: src/icesh.cc:3767
+#: src/icesh.cc:3778
 #, c-format
 msgid "Invalid layer: `%s'."
 msgstr "Strato non valido: '%s'."
 
-#: src/icesh.cc:4587
+#: src/icesh.cc:4598
 #, c-format
 msgid "Unknown action: `%s'"
 msgstr "Azione sconosciuta: '%s'"
@@ -1669,8 +1669,8 @@ msgstr ""
 " -O, --oss=DEVICE             Specifica il dispositivo OSS (predefinito: \"%s"
 "\").\n"
 "\n"
-" -A, --alsa=DEVICE            Specifica il dispositvo ALSA (predefinito: \"%s"
-"\").\n"
+" -A, --alsa=DEVICE            Specifica il dispositivo ALSA (predefinito: "
+"\"%s\").\n"
 "\n"
 " -z, --snooze=millisec        Specifica l'intervallo di ritardo tra gli "
 "eventi audio\n"
@@ -2061,19 +2061,19 @@ msgstr "D_esktop"
 
 #: src/wmapp.cc:564
 msgid "Left Half"
-msgstr ""
+msgstr "Metà sinistra"
 
 #: src/wmapp.cc:565
 msgid "Right Half"
-msgstr ""
+msgstr "Metà destra"
 
 #: src/wmapp.cc:566
 msgid "Top Half"
-msgstr ""
+msgstr "Metà superiore"
 
 #: src/wmapp.cc:567
 msgid "Bottom Half"
-msgstr ""
+msgstr "Metà inferiore"
 
 #: src/wmapp.cc:569
 msgid "Top Left"
@@ -2457,10 +2457,9 @@ msgid "Error at %s '%s'"
 msgstr "Errore in %s '%s'"
 
 #: src/wmmenu.cc:222
-#, fuzzy, c-format
-#| msgid "Unknown keyword '%s'"
+#, c-format
 msgid "Unexepected menu keyword: '%s'"
-msgstr "Parola chiave sconosciuta: '%s'"
+msgstr "Parola chiave del menu imprevista: '%s'"
 
 #: src/wmmenu.cc:276
 #, c-format
@@ -2498,18 +2497,18 @@ msgstr ""
 #: src/wmmenu.cc:498
 #, c-format
 msgid "'%s' timed out!"
-msgstr ""
+msgstr "Time out di '%s'."
 
 #: src/wmmenu.cc:509
 #, c-format
 msgid "'%s' produces no output"
 msgstr "'%s' non produce alcun risultato"
 
-#: src/wmmgr.cc:3377
+#: src/wmmgr.cc:3384
 msgid "Missing program setxkbmap"
 msgstr "Programma mancante setxkbmap"
 
-#: src/wmmgr.cc:3378
+#: src/wmmgr.cc:3385
 msgid "For keyboard switching, please install setxkbmap."
 msgstr "Per cambiare tastiera, installare setxkbmap."
 
