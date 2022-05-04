@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icewm 1.2.26\n"
 "Report-Msgid-Bugs-To: https://github.com/bbidulock/icewm/issues\n"
-"POT-Creation-Date: 2022-02-23 19:11+0100\n"
-"PO-Revision-Date: 2022-02-21 19:12+0000\n"
+"POT-Creation-Date: 2022-05-02 00:41+0200\n"
+"PO-Revision-Date: 2022-03-04 13:12+0000\n"
 "Last-Translator: Gemineo <vistatec@gemineo.de>\n"
 "Language-Team: German <https://l10n.opensuse.org/projects/icewm/icewm-1-4-"
 "branch/de/>\n"
@@ -23,7 +23,7 @@ msgstr ""
 #: src/aapm.cc:66
 #, c-format
 msgid "Can't open the APM device %s"
-msgstr "Konnte APM-Gerät %s nicht öffnen"
+msgstr "Kann OSS-Gerät %s nicht öffnen"
 
 #: src/aapm.cc:74 src/aapm.cc:92
 #, c-format
@@ -1400,8 +1400,8 @@ msgstr "Aktion `%s` benötigt mindestens %d Argumente."
 msgid "Invalid expression: `%s'"
 msgstr "Ungültiger Ausdruck: `%s`"
 
-#: src/icesh.cc:3417 src/icesound.cc:794 src/icewmhint.cc:37 src/wmapp.cc:1203
-#: src/yxapp.cc:1035
+#: src/icesh.cc:3417 src/icesound.cc:794 src/icewmbg.cc:975 src/icewmhint.cc:37
+#: src/wmapp.cc:1203 src/yxapp.cc:1035
 #, c-format
 msgid "Can't open display: %s. X must be running and $DISPLAY set."
 msgstr ""
@@ -1893,12 +1893,12 @@ msgstr ""
 "beibehalten\n"
 "\n"
 
-#: src/icewmbg.cc:1058 src/wmapp.cc:1782
+#: src/icewmbg.cc:1106 src/wmapp.cc:1782
 #, c-format
 msgid "Unrecognized option '%s'."
 msgstr "Unbekannte Option: '%s'."
 
-#: src/icewmbg.cc:1085
+#: src/icewmbg.cc:1136
 msgid "Cannot start, because another icewmbg is still running."
 msgstr "Kann nicht starten, weil ein anderes icewmbg schon läuft."
 
@@ -2397,12 +2397,12 @@ msgstr "Unbekannter Wert '%s' für Option '%s'."
 msgid "Unable to create directory %s"
 msgstr "Kann Verzeichnis %s nicht erstellen"
 
-#: src/wmconfig.cc:148 src/wmsave.cc:65 src/wmsave.cc:297 src/wmsave.cc:300
+#: src/wmconfig.cc:148 src/wmsave.cc:65 src/wmsave.cc:298 src/wmsave.cc:301
 #, c-format
 msgid "Unable to write to %s"
 msgstr "Kann nicht in %s schreiben"
 
-#: src/wmconfig.cc:184 src/wmsave.cc:305
+#: src/wmconfig.cc:184 src/wmsave.cc:306
 #, c-format
 msgid "Unable to rename %s to %s"
 msgstr "Kann %s nicht in %s umbenennen"
@@ -2510,11 +2510,11 @@ msgstr "Zeitüberschreitung bei '%s'!"
 msgid "'%s' produces no output"
 msgstr "'%s' produziert keine Ausgabe"
 
-#: src/wmmgr.cc:3384
+#: src/wmmgr.cc:3390
 msgid "Missing program setxkbmap"
 msgstr "Fehlendes Program: 'setxkbmap'"
 
-#: src/wmmgr.cc:3385
+#: src/wmmgr.cc:3391
 msgid "For keyboard switching, please install setxkbmap."
 msgstr "Um die Tastatur zu ändern, installieren Sie bitte setxkbmap."
 
