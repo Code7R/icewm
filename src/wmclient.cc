@@ -10,7 +10,6 @@
 #include "yrect.h"
 #include "wmframe.h"
 #include "wmmgr.h"
-#include "yxapp.h"
 #include "sysdep.h"
 #include "yxcontext.h"
 #include "workspaces.h"

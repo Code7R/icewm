@@ -9,7 +9,6 @@
 #include "yinputline.h"
 #include "wmmgr.h"
 #include "yrect.h"
-#include "ypaint.h"
 #include "sysdep.h"
 #include "yicon.h"
 #include "udir.h"

@@ -33,7 +33,6 @@
 #include "prefs.h"
 #include "yprefs.h"
 #include "wpixmaps.h"
-#include "aapm.h"
 
 #include "intl.h"
 

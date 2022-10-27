@@ -6,7 +6,6 @@
 #include "wmoption.h"
 #include "ymenu.h"
 #include "ymenuitem.h"
-#include "yxapp.h"
 #include "yxcontext.h"
 #include <X11/Xatom.h>
 

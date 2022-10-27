@@ -17,7 +17,6 @@
  */
 #include "config.h"
 #include "wmapp.h"
-#include "applet.h"
 #include "acpustatus.h"
 
 #if IWM_STATES

@@ -12,7 +12,6 @@
 
 #include "config.h"
 #include "ywindow.h"
-#include "applet.h"
 #include "aapm.h"
 
 #ifdef MAX_ACPI_BATTERY_NUM

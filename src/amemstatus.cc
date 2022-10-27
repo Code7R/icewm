@@ -8,12 +8,10 @@
 #include "config.h"
 #include "ylib.h"
 #include "wmapp.h"
-#include "applet.h"
 #include "amemstatus.h"
 #include "ymenuitem.h"
 #include "sysdep.h"
 #include "default.h"
-#include "ytimer.h"
 #include "intl.h"
 
 #if MEM_STATES

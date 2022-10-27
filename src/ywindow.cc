@@ -9,7 +9,6 @@
 #include "ykey.h"
 
 #include "ytooltip.h"
-#include "yxapp.h"
 #include "sysdep.h"
 #include "yprefs.h"
 #include "yrect.h"

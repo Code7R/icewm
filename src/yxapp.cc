@@ -1,5 +1,4 @@
 #include "config.h"
-#include "yxapp.h"
 #include "yfull.h"
 #include "ymenu.h"
 #include "wmmgr.h"

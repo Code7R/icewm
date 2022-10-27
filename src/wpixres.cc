@@ -1,7 +1,6 @@
 #include "config.h"
 #include "wpixres.h"
 #include "udir.h"
-#include "ypixmap.h"
 #include "yimage.h"
 #include "ref.h"
 #include "ymenu.h"
