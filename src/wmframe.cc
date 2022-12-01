@@ -30,6 +30,7 @@ static YColorName inactiveBorderBg(&clrInactiveBorder);
 
 lazy<YTimer> YFrameWindow::fAutoRaiseTimer;
 lazy<YTimer> YFrameWindow::fDelayFocusTimer;
+lazy<YTimer> YFrameWindow::fEdgeSwitchTimer;
 YArray<YFrameWindow::GroupModal> YFrameWindow::groupModals;
 YArray<YFrameWindow*> YFrameWindow::tabbedFrames;
 YArray<YFrameWindow*> YFrameWindow::namedFrames;
@@ -71,6 +72,7 @@ YFrameWindow::YFrameWindow(
     fFrameIcon(null),
     fTabs(1),
     fKillMsgBox(nullptr),
+    fNameMsgBox(nullptr),
     wmActionListener(wmActionListener),
     fWinWorkspace(manager->activeWorkspace()),
     fWinRequestedLayer(WinLayerNormal),
@@ -97,6 +99,8 @@ YFrameWindow::YFrameWindow(
     fShapeBorderY(-1),
     fShapeTabCount(0),
     fShapeDecors(0),
+    fShapeLessTabs(false),
+    fShapeMoreTabs(false),
     fHaveStruts(false),
     indicatorsCreated(false),
     fWindowType(wtNormal)
@@ -117,6 +121,10 @@ YFrameWindow::~YFrameWindow() {
         delete fKillMsgBox;
         fKillMsgBox = nullptr;
     }
+    if (fNameMsgBox) {
+        delete fNameMsgBox;
+        fNameMsgBox = nullptr;
+    }
     if (fWindowType == wtDialog)
         wmapp->signalGuiEvent(geDialogClosed);
     else
@@ -125,6 +133,8 @@ YFrameWindow::~YFrameWindow() {
         fDelayFocusTimer->disableTimerListener(this);
     if (fAutoRaiseTimer)
         fAutoRaiseTimer->disableTimerListener(this);
+    if (fEdgeSwitchTimer)
+        fEdgeSwitchTimer->disableTimerListener(this);
     if (movingWindow || sizingWindow)
         endMoveSize();
     if (fPopupActive)
@@ -188,13 +198,21 @@ bool YFrameWindow::hasTab(YFrameClient* client) {
     return 0 <= find(fTabs, client);
 }
 
-void YFrameWindow::mergeTabs(YFrameWindow* source) {
-    bool focus = source->focused();
+bool YFrameWindow::lessTabs() {
+    return fClient && fClient != fTabs[0];
+}
+
+bool YFrameWindow::moreTabs() {
+    return fClient && fClient != fTabs.last();
+}
+
+void YFrameWindow::mergeTabs(YFrameWindow* frame) {
+    bool focus = frame->focused();
     if (focus)
-        manager->switchFocusFrom(source);
-    if (1 < source->tabCount())
-        findRemove(tabbedFrames, source);
-    for (YFrameClient* client : source->fTabs) {
+        manager->switchFocusFrom(frame);
+    if (1 < frame->tabCount())
+        findRemove(tabbedFrames, frame);
+    for (YFrameClient* client : frame->fTabs) {
         client->setFrame(nullptr);
         client->hide();
         YClientContainer* conter = client->getContainer();
@@ -206,12 +224,13 @@ void YFrameWindow::mergeTabs(YFrameWindow* source) {
         fTabs.append(client);
         if (tabCount() == 2)
             tabbedFrames.append(this);
+        manager->clientTransfered(client, this);
     }
-    source->fTabs.clear();
-    source->fClient = nullptr;
-    source->fContainer = nullptr;
-    delete source->fTitleBar; source->fTitleBar = nullptr;
-    delete source;
+    frame->fTabs.clear();
+    frame->fClient = nullptr;
+    frame->fContainer = nullptr;
+    delete frame->fTitleBar; frame->fTitleBar = nullptr;
+    delete frame;
     if (fTitleBar)
         layoutShape();
     if (focus)
@@ -248,40 +267,68 @@ void YFrameWindow::selectTab(YFrameClient* tab) {
     if (hasTab(tab) == false || tab == fClient)
         return;
 
+    XSizeHints *sh = client()->sizeHints();
+    int nw = sh ? sh->base_width + normalW * max(1, sh->width_inc) : normalW;
+    int nh = sh ? sh->base_height + normalH * max(1, sh->height_inc) : normalH;
+
     bool focus = hasState(WinStateFocused);
     if (focus) {
         fWinState &= ~WinStateFocused;
-        client()->setStateHint();
+        client()->setStateHint(getState());
     }
-    if (container())
-        container()->hide();
-    if (client()) {
-        client()->hide();
-        client()->setFrame(nullptr);
-    }
+    YClientContainer* formerConter = container();
+    formerConter->lower();
+    YFrameClient* formerClient = client();
+    formerClient->setFrame(nullptr);
+
     fClient = tab;
     fClient->setFrame(this);
     fContainer = tab->getContainer();
     fContainer->raise();
-    updateNormalSize();
-    layoutClient();
-    updateIcon();
+
+    if (client()->getNetWMWindowType(&fWindowType) == false)
+        fWindowType = client()->isTransient() ? wtDialog : wtNormal;
+    getFrameHints();
+
+    client()->constrainSize(nw, nh, YFrameClient::csRound);
+    sh = client()->sizeHints();
+    if (sh && sh->base_width && sh->base_height && !isResizable()) {
+        normalW = normalH = 0;
+    } else if (sh) {
+        int winc = max(1, sh->width_inc);
+        int hinc = max(1, sh->height_inc);
+        normalW = max(0, (nw - sh->base_width + (winc / 2)) / winc);
+        normalH = max(0, (nh - sh->base_height + (hinc / 2)) / hinc);
+    } else {
+        normalW = nw;
+        normalH = nh;
+    }
+
+    updateDerivedSize(getState() & WinStateMaximizedBoth);
+    updateLayout();
     if (focus) {
         fWinState |= WinStateFocused;
         fDelayFocusTimer->setTimer(0, this, true);
     }
-    client()->setStateHint();
+    performLayout();
+    updateIcon();
     if (visible()) {
         client()->show();
         container()->show();
-        if (fTitleBar && manager->notShutting())
+        container()->regrabMouse();
+        if (fTitleBar)
             fTitleBar->repaint();
     }
+    client()->setStateHint(getState());
+
+    formerConter->hide();
+    formerClient->hide();
 }
 
 void YFrameWindow::createTab(YFrameClient* client, int place) {
     YClientContainer* conter = allocateContainer(client);
     manage(client, conter);
+    updateProperties(client);
     if (0 <= place && place <= tabCount())
         fTabs.insert(place, client);
     else
@@ -292,6 +339,8 @@ void YFrameWindow::createTab(YFrameClient* client, int place) {
         layoutShape();
         fTitleBar->repaint();
     }
+    manager->updateClientList();
+    addToWindowList();
 }
 
 void YFrameWindow::removeTab(YFrameClient* client) {
@@ -301,10 +350,13 @@ void YFrameWindow::removeTab(YFrameClient* client) {
         YClientContainer* conter = client->getContainer();
         independer(client);
         delete conter;
-        if (fTitleBar && manager->notShutting())
+        if (fTitleBar && manager->notShutting()) {
+            layoutShape();
             fTitleBar->repaint();
+        }
         if (tabCount() < 2)
             findRemove(tabbedFrames, this);
+        manager->clientDestroyed(client);
     }
 }
 
@@ -321,9 +373,15 @@ void YFrameWindow::untab(YFrameClient* client) {
             YClientContainer* conter = client->getContainer();
             independer(client);
             delete conter;
-            manager->manageClient(client);
+            manager->manageClient(client, true);
             if (tabCount() < 2)
                 findRemove(tabbedFrames, this);
+            if (fTitleBar) {
+                layoutShape();
+                fTitleBar->repaint();
+            }
+            if (client->getClientItem())
+                client->getClientItem()->update();
         }
     }
 }
@@ -479,7 +537,7 @@ void YFrameWindow::doManage(YFrameClient *clientw, bool &doActivate, bool &reque
     if (mo)
         setWorkspace(mo->getWorkspace());
 
-    if (isHidden() || isMinimized() || client() == taskBar) {
+    if (isUnmapped() || client() == taskBar) {
         doActivate = false;
         requestFocus = false;
     }
@@ -623,6 +681,13 @@ void YFrameWindow::independer(YFrameClient* client) {
     if (client->destroyed())
         client->unmanageWindow();
     else {
+        if (client == fClient && (isMaximized() || isFullscreen())) {
+            int x, y, w, h;
+            getNormalGeometryInner(&x, &y, &w, &h);
+            if (w < int(client->width()) || h < int(client->height()))
+                client->setSize(w, h);
+        }
+
         int gx, gy;
         client->gravityOffsets(gx, gy);
         client->setBorderWidth(client->getBorder());
@@ -1056,25 +1121,43 @@ bool YFrameWindow::handleTimer(YTimer *t) {
             focus(false);
         }
         else if (t == fFocusEventTimer) {
-            if (manager->getFocus() != this && client()->visible()) {
+            if (focused() == false && client()->visible()) {
                 Window win = 0; int rev = 0;
-                XGetInputFocus(xapp->display(), &win, &rev);
-                while (win != client()->handle()) {
-                    YWindow* found = windowContext.find(win);
-                    if (found) {
-                        break;
-                    } else {
-                        Window par = xapp->parent(win);
-                        if (par == None || par == xapp->root()) {
-                            break;
-                        } else {
-                            win = par;
-                        }
+                if (XGetInputFocus(xapp->display(), &win, &rev) && 1 < win) {
+                    Window ch = client()->handle();
+                    while (ch != win && 1 < win && win != xapp->root())
+                        win = xapp->parent(win);
+                    if (win == ch)
+                        manager->switchFocusTo(this);
+                }
+            }
+            else if (focused() && client()->visible()) {
+                Window win = None; int rev = 0;
+                if (XGetInputFocus(xapp->display(), &win, &rev) && !win) {
+                    if (getInputFocusHint()) {
+                        XSetInputFocus(xapp->display(), client()->handle(),
+                                       RevertToNone,
+                                       xapp->getEventTime("setFocus"));
                     }
                 }
-                if (win == client()->handle()) {
-                    manager->switchFocusTo(this);
+            }
+            fFocusEventTimer = null;
+        }
+        else if (t == fEdgeSwitchTimer) {
+            int rx, ry;
+            xapp->queryMouse(&rx, &ry);
+            int ws = manager->edgeWorkspace(rx, ry);
+            if (0 <= ws) {
+                if (focused())
+                    manager->switchToWorkspace(ws, true);
+                else if (isAllWorkspaces())
+                    manager->switchToWorkspace(ws, false);
+                else {
+                    setWorkspace(AllWorkspaces);
+                    manager->switchToWorkspace(ws, false);
+                    setWorkspace(ws);
                 }
+                return edgeContWorkspaceSwitching;
             }
         }
     }
@@ -1140,6 +1223,8 @@ YFrameWindow *YFrameWindow::findWindow(int flags) {
             goto next;
         if ((flags & fwfWorkspace) && !p->visibleNow())
             goto next;
+        if (p == this && !(flags & fwfSame))
+            goto next;
         if (!p->client()->adopted() || p->client()->destroyed())
             goto next;
 
@@ -1154,9 +1239,13 @@ YFrameWindow *YFrameWindow::findWindow(int flags) {
             if (!(flags & fwfCycle))
                 return nullptr;
             else if (flags & fwfBackward)
-                p = (flags & fwfLayers) ? manager->bottomLayer() : manager->bottom(getActiveLayer());
+                p = (flags & fwfLayers)
+                  ? manager->bottomLayer()
+                  : manager->bottom(getActiveLayer());
             else
-                p = (flags & fwfLayers) ? manager->topLayer() : manager->top(getActiveLayer());
+                p = (flags & fwfLayers)
+                  ? manager->topLayer()
+                  : manager->top(getActiveLayer());
         }
     } while (p != this);
 
@@ -1280,6 +1369,14 @@ void YFrameWindow::actionPerformed(YAction action, unsigned int modifiers) {
         break;
     case actionToggleTray:
         wmToggleTray();
+        break;
+    case actionRename:
+        delete fNameMsgBox;
+        fNameMsgBox = new YMsgBox(YMsgBox::mbAll,
+                                  _("Rename"),
+                                  _("Rename the window title"),
+                                  this,
+                                  "rename");
         break;
     case actionUntab:
         untab(fClient);
@@ -1411,7 +1508,7 @@ void YFrameWindow::wmSetLayer(int layer) {
     int previous = fWinState;
     setRequestedLayer(layer);
     if (hasbit(previous ^ fWinState, WinStateAbove | WinStateBelow)) {
-        client()->setStateHint();
+        client()->setStateHint(getState());
     }
 }
 
@@ -1715,8 +1812,8 @@ void YFrameWindow::wmCloseClient(YFrameClient* client, bool* confirm) {
     if (client->protocol(YFrameClient::wpDeleteWindow))
         client->sendDelete();
     else if (frameOption(foForcedClose))
-        XKillClient(xapp->display(), client->handle());
-    else
+        client->forceClose();
+    else if (client->adopted())
         *confirm = true;
 }
 
@@ -1726,9 +1823,14 @@ void YFrameWindow::wmClose() {
 
     manager->grabServer();
     bool confirm = false;
-    for (IterType client = fTabs.reverseIterator(); ++client; ) {
-        wmCloseClient(*client, &confirm);
+    if (1 < tabCount()) {
+        for (IterType client = fTabs.reverseIterator(); ++client; ) {
+            if (*client != fClient)
+                wmCloseClient(*client, &confirm);
+        }
+        xapp->sync();
     }
+    wmCloseClient(fClient, &confirm);
     if (confirm)
         wmConfirmKill();
     manager->ungrabServer();
@@ -1754,12 +1856,14 @@ void YFrameWindow::wmKill() {
         msg("No WM_DELETE_WINDOW protocol");
 #endif
     for (YFrameClient* cli : fTabs)
-        if (cli->adopted())
-            XKillClient(xapp->display(), cli->handle());
+        cli->forceClose();
 }
 
 void YFrameWindow::wmPrevWindow() {
-    if (1 < tabCount()) {
+    if (this != manager->getFocus() && manager->getFocus())
+        return manager->getFocus()->wmPrevWindow();
+
+    if (1 < tabCount() && isMapped() && visible()) {
         int i = find(fTabs, client());
         if (0 < i) {
             selectTab(fTabs[i - 1]);
@@ -1777,7 +1881,10 @@ void YFrameWindow::wmPrevWindow() {
 }
 
 void YFrameWindow::wmNextWindow() {
-    if (1 < tabCount()) {
+    if (this != manager->getFocus() && manager->getFocus())
+        return manager->getFocus()->wmNextWindow();
+
+    if (1 < tabCount() && isMapped() && visible()) {
         int i = find(fTabs, client());
         if (0 <= i && i + 1 < tabCount()) {
             selectTab(fTabs[i + 1]);
@@ -2707,14 +2814,11 @@ bool YFrameWindow::hasModal() {
 }
 
 bool YFrameWindow::canFocus() {
-    if (hasModal())
-        return false;
-
-    return true;
+    return !hasModal() && !avoidFocus();
 }
 
 bool YFrameWindow::canFocusByMouse() {
-    return canFocus() && !avoidFocus();
+    return canFocus();
 }
 
 bool YFrameWindow::avoidFocus() {
@@ -2948,7 +3052,7 @@ void YFrameWindow::updateState() {
     if (!isManaged() || !client() || client()->destroyed())
         return ;
 
-    client()->setStateHint();
+    client()->setStateHint(getState());
 
     // some code is probably against the ICCCM.
     // some applications misbehave either way.
@@ -3333,7 +3437,7 @@ void YFrameWindow::setState(int mask, int state) {
     }
     if ((deltaState & WinStateRollup) &&
         (clickFocus || !strongPointerFocus) &&
-        this == manager->getFocus()) {
+        focused()) {
         manager->setFocus(this);
     }
     if (deltaState & fNewState & WinStateFullscreen) {
@@ -3343,7 +3447,7 @@ void YFrameWindow::setState(int mask, int state) {
         }
     }
     if (deltaState & fNewState & WinStateFocused) {
-        if (this != manager->getFocus())
+        if (focused() == false)
             manager->setFocus(this);
     }
 
@@ -3449,10 +3553,12 @@ ref<YIcon> YFrameWindow::getIcon() const {
     return wmapp->getDefaultAppIcon();
 }
 
-void YFrameWindow::updateProperties() {
-    client()->setWorkspaceHint(fWinWorkspace);
-    client()->setLayerHint(fWinActiveLayer);
-    client()->setStateHint();
+void YFrameWindow::updateProperties(YFrameClient* client) {
+    if (client || (client = fClient) != nullptr) {
+        client->setWorkspaceHint(fWinWorkspace);
+        client->setLayerHint(fWinActiveLayer);
+        client->setStateHint(getState());
+    }
 }
 
 void YFrameWindow::updateTaskBar() {
@@ -3532,10 +3638,22 @@ void YFrameWindow::handleMsgBox(YMsgBox* msgbox, int operation) {
         delete fKillMsgBox;
         fKillMsgBox = nullptr;
         if (operation == YMsgBox::mbOK && !client()->destroyed()) {
-            if ( !client()->timedOut() || !client()->killPid()) {
+            if ( !client()->timedOut()) {
                 wmKill();
             }
         }
+    }
+    else if (msgbox == fNameMsgBox) {
+        mstring input;
+        if (operation == YMsgBox::mbOK && msgbox->input())
+            input = msgbox->input()->getText();
+        if (input.nonempty()) {
+            client()->fixWindowTitle(false);
+            client()->setWindowTitle(input);
+            client()->setIconTitle(input);
+            client()->fixWindowTitle(true);
+        }
+        delete fNameMsgBox; fNameMsgBox = nullptr;
     }
 }
 
@@ -3641,10 +3759,10 @@ void YFrameWindow::updateNetWMFullscreenMonitors(int t, int b, int l, int r) {
 }
 
 void YFrameWindow::setWmUrgency(bool wmUrgency) {
-    if ( !frameOption(foIgnoreUrgent)) {
+    if ( !frameOption(foIgnoreUrgent) || !wmUrgency) {
         if (wmUrgency != hasState(WinStateUrgent)) {
             fWinState ^= WinStateUrgent;
-            client()->setStateHint();
+            client()->setStateHint(getState());
             updateTaskBar();
         }
     }

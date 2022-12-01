@@ -334,6 +334,10 @@ Include windows from all workspaces in Alt+Tab.
 
 Group windows by workspace together in Alt+Tab.
 
+=item B<QuickSwitchPersistence>=0
+
+Time in seconds to remember the state of Alt+Tab.
+
 =item B<QuickSwitchRaiseCandidate>=0
 
 Raise a selected window while Alt+Tabbing in the QuickSwitch.
@@ -1060,9 +1064,9 @@ Command to run for address bar entries.
 
 =over
 
-=item B<WinMenuItems>="rmsnxfhualyticw"
+=item B<WinMenuItems>="rmsnxfhualytiecw"
 
-Items supported in menu window (rmsnxfhualytickw)
+Items supported in menu window (rmsnxfhualytieckw)
 
 =item B<RolloverButtonsSupported>=0
 

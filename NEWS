@@ -1,11 +1,142 @@
-icewm -- history of user-visible changes.  2022-10-24
+icewm -- history of user-visible changes.  2022-11-14
+
+Release icewm-3.2.2 released 2022-11-14
+---------------------------------------
+
+git shortlog -e -n -w80,6,8 3.2.1...3.2.2
+
+Bert Gijsbers <gijsbers@science.uva.nl> (21):
+      Freeze the task pane layout while Alt is pressed for #549.
+      Also sort Alt+Tab on 'order' winoption.
+      Faster find.
+      Find item within bounds.
+      Menu add after, haveCommand and removeCommand.
+      Add client actions close, kill and untab.
+      Update window list after an untab. Preserve non-fullscreen geometry across
+        restarts. Try harder to avoid a non-focused situation.
+      Restore winoption named frame tabs when recovering from a crash.
+      Much improved sorting in the window list window. Make the window list more
+        tab-savvy.
+      Adapt absolute paths in .desktop files to install prefix for #684.
+      Only sort Alt+Tab on WM_CLASS when persistent for #685.
+      Move all calls to XKillClient in one place.
+      Adapt absolute paths in .desktop files for CMake build.
+      Add menu entry to rename the window title manually for #644.
+      Let Escape cancel the entire menu chain and closes #677.
+      Fix for GCC 4.8.5.
+      One suffices.
+      Update pot files.
+      Use AM_V_GEN before the sed desktop files.
+      Merge remote-tracking branch 'upstream/icewm-1-4-BRANCH' into
+        icewm-1-4-BRANCH
+      Merge branch 'icewm-1-4-BRANCH'
+
+Naveen <172697+naveensrinivasan@users.noreply.github.com> (1):
+      Include githubactions in the dependabot config (#655)
+
+Pino Toscano <toscano.pino@tiscali.it> (1):
+      Drop LSM file (#660)
+
+
+Release icewm-3.2.1 released 2022-11-08
+---------------------------------------
+
+git shortlog -e -n -w80,6,8 3.2.0...3.2.1
+
+Bert Gijsbers <gijsbers@science.uva.nl> (13):
+      Update version to 3.2.0.
+      Close other tabs first.
+      Fix KeySysSwitchClass history for issue #673.
+      Update the quick switch list after changing workspace when
+        QuickSwitchToAllWorkspaces=0 for issue #683.
+      Demarcate workspaces in Alt+Tab for QuickSwitchToAllWorkspaces. Fix the
+        quick switch vertical size calculations.
+      Add QuickSwitchPersistence pref to enable stateful Alt+Tab for issue #683.
+      Don't attempt to focus NoInput windows.
+      Check that active Alt+Tab item is visible. Also sort Alt+Tab items on
+        WM_CLASS. Fix GCC 4.8.5 compile error and closes ice-wm/icewm#99.
+      When moving a tab to a new frame, activate it.
+      Add array moveto to reduce copying.
+      Merge remote-tracking branch 'upstream/icewm-1-4-BRANCH' into
+        icewm-1-4-BRANCH
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 3.2.1 release
+
+Stéphane LASSALVY <stephane.lassalvy@laposte.net> (2):
+      Translated using Weblate (French)
+      Translated using Weblate (French)
+
+Kukuh Syafaat <syafaatkukuh@gmail.com> (1):
+      Translated using Weblate (Indonesian)
+
+Victor hck <correohck@gmail.com> (1):
+      Translated using Weblate (Spanish)
+
+Wallon <franckjl@hotmail.com> (1):
+      Translated using Weblate (French)
+
+
+Release icewm-3.2.0 released 2022-11-02
+---------------------------------------
+
+git shortlog -e -n -w80,6,8 3.1.0...3.2.0
+
+Bert Gijsbers <gijsbers@science.uva.nl> (26):
+      Update _NET_CLIENT_LIST when adding more tabs.
+      Show the time of day when reporting an unknown window option.
+      Update the title bar shape when switching to a different tab and when
+        removing a tab. Set the desktop, the layer and the state window
+        properties when creating a tab. Always add a new tab to the window list.
+      Add the icesh command "tabto" to move a number of windows as tabs to a new
+        frame.
+      Update a visible quick switch when a frame removes one of its tabs.
+      Only popup the grouping menu on a task button on the first button click
+        without key modifiers. This makes it easier to immediately select or
+        minimize the active application by using the shift or control modifier.
+      Fix maximize and fullscreen for tabs with different normal sizes.
+      When switching to a tab with size limitations, adapt the frame geometry.
+        Prevent the flashing when switching tabs.
+      Support edge switching when dragging a window for issue #681.
+      Add "stacking" and "reverse" commands to icesh for issue ice-wm/icewm#98.
+      Add "stacking" and "reverse" commands to icesh for issue ice-wm/icewm#98.
+      Explain cursors.
+      Let icesh check all atoms in the -Property filter. Improve the window
+        synchronization in icesh.
+      Let the Alt+Tab preserve a history for 30 seconds for issue #673. The next
+        Alt+Tab will then continue where the previous one left off.
+      Fix Alt+Tab prioritization for issue #673.
+      Add "untab" command to icesh to give each client its own frame.
+      Mention Alt+Tab raise candidate in the icewm manpage.
+      Permit a rolled up frame to take focus even if its client has a globally
+        active focus model for issue ice-wm/icewm#98.
+      When activating a rolled up window, set focus to IceTopWin, for issue
+        ice-wm/icewm#98.
+      Ensure KeySysWinNext and KeySysWinPrev work for rolled up windows for
+        issue ice-wm/icewm#98.
+      Force fullscreen windows as focused, even if their input hint is False,
+        for TaskBarFullscreenAutoShow in issue ice-wm/icewm#73.
+      Merge remote-tracking branch 'upstream/icewm-1-4-BRANCH' into
+        icewm-1-4-BRANCH
+      Add missing override.
+      Merge remote-tracking branch 'upstream/icewm-1-4-BRANCH' into
+        icewm-1-4-BRANCH
+      Merge branch 'icewm-1-4-BRANCH'
+      Prepare 3.2.0 release
+
+Eduard Bloch <blade@debian.org> (2):
+      DRY, simplify, some flags/folders separation
+      feature: special filtered view and flat rendering
+
+Kristijan Fremen Velkovski <me@krisfremen.com> (1):
+      Translated using Weblate (Macedonian)
+
 
 Release icewm-3.1.0 released 2022-10-24
 ---------------------------------------
 
 git shortlog -e -n -w80,6,8 3.0.1...3.1.0
 
-Bert Gijsbers <gijsbers@science.uva.nl> (17):
+Bert Gijsbers <gijsbers@science.uva.nl> (18):
       Let the window list support tabs.
       Add MouseWinTabbing button preference for merging frame tabs for issue
         ice-wm/icewm#95.
@@ -27,6 +158,7 @@ Bert Gijsbers <gijsbers@science.uva.nl> (17):
       Merge remote-tracking branch 'upstream/icewm-1-4-BRANCH' into
         icewm-1-4-BRANCH
       Merge branch 'icewm-1-4-BRANCH'
+      Prepare 3.1.0 release
 
 Eduard Bloch <blade@debian.org> (2):
       Revisiting header files and making them self-sufficient
@@ -153,149 +285,4 @@ Bert Gijsbers <gijsbers@science.uva.nl> (21):
         icewm-1-4-BRANCH
       Merge branch 'icewm-1-4-BRANCH'
       Prepare 2.9.9 release
-
-
-Release icewm-2.9.8 released 2022-07-18
----------------------------------------
-
-git shortlog -e -n -w80,6,8 2.9.7...2.9.8
-
-Bert Gijsbers <gijsbers@science.uva.nl> (22):
-      Omit trailing dot in CPU temperature and add centigrade symbol for issue
-        #652.
-      If there is no WM active, then a restart will start icewm.
-      Don't create ~/.icewm, unless required to save a file.
-      When showing the desktop, also minimize a focused fullscreen window.
-      Remove unused setTitle from YMsgBox.
-      Add support for COMPOUND_TEXT title names and for non-ascii characters in
-        WM_NAME strings for issue #26.
-      Support COMPOUND_TEXT title names and non-ascii characters in WM_NAME
-        strings in icesh. Limit window dimensions to 32732 in icesh.
-      Prevent warnings.
-      Let TaskBarShowAllWindows influence TaskBarTaskGrouping for issue #560.
-        Improve truncation of titles for TaskBarTaskGrouping in issue #658.
-      Do without pair array.
-      Update the grouping menu when tasks are added or removed.
-      Don't convert XA_STRING names to current locale for issue #26.
-      Update grouping menu when removing a task.
-      Restore 2.5.0 container handling of button presses for issue #649.
-      Don't convert XA_STRING in icesh.
-      Make TaskBarGraphHeight themable for issue #659.
-      Restore prettyClock as false.
-      Preserve errno in testOnce.
-      Clarify which preferences are themable in icewm-preferences(5).
-      Merge remote-tracking branch 'upstream/icewm-1-4-BRANCH' into
-        icewm-1-4-BRANCH
-      Merge branch 'icewm-1-4-BRANCH'
-      Prepare 2.9.8 release
-
-Kristijan Fremen Velkovski <me@krisfremen.com> (2):
-      Translated using Weblate (Macedonian)
-      Translated using Weblate (Macedonian)
-
-Luna  Jernberg <bittin@opensuse.org> (1):
-      Translated using Weblate (Swedish)
-
-nathannaveen <42319948+nathannaveen@users.noreply.github.com> (1):
-      chore: Set permissions for GitHub actions (#654)
-
-
-Release icewm-2.9.7 released 2022-05-02
----------------------------------------
-
-git shortlog -e -n -w80,6,8 2.9.6...2.9.7
-
-Bert Gijsbers <gijsbers@science.uva.nl> (15):
-      Fix format string in da.po.
-      Add -g,--generic and -o,--output options to icewm-menu-fdo for issue #646.
-        Document all icewm-menu-fdo options.
-      Prefer head2 over head1 in pod files.
-      Update help usage for icewm-menu-fdo.
-      Check if the case insensitive GenericName is not in the Name field, for
-        issue #646.
-      Handle right-to-left languages in icewm-menu-fdo.
-      Document alternative keypad handling in icewm-keys(1).
-      Use the ColorClockText for keyboard status for issue ice-wm/icewm#90.
-      Add KeySysKeyboardNext to switch to next keyboard layout for issue
-        ice-wm/icewm#90.
-      Add themable ColorKeyboardLayoutText.
-      Faster and more reliable restart of icewmbg.
-      Fix for saving keyboard layouts in --rewrite-preferences.
-      Merge remote-tracking branch 'upstream/icewm-1-4-BRANCH' into
-        icewm-1-4-BRANCH
-      Merge branch 'icewm-1-4-BRANCH'
-      Prepare 2.9.7 release
-
-Mehmet Akif 9oglu <madanadam@gmail.com> (3):
-      Translated using Weblate (Turkish)
-      Translated using Weblate (Turkish)
-      Translated using Weblate (Turkish)
-
-Alexander Mortensen <Mortensen.alexander@gmail.com> (2):
-      Translated using Weblate (Danish)
-      Translated using Weblate (Danish)
-
-Tommi Nieminen <software@legisign.org> (2):
-      Translated using Weblate (Finnish)
-      Translated using Weblate (Finnish)
-
-Gemineo <vistatec@gemineo.de> (1):
-      Translated using Weblate (German)
-
-Jan Papež <honyczek@centrum.cz> (1):
-      Translated using Weblate (Czech)
-
-Sergey Mashkov <cy6ergn0m@gmail.com> (1):
-      Translated using Weblate (Russian)
-
-Sophie Leroy <sophie@stoquart.com> (1):
-      Translated using Weblate (French)
-
-
-Release icewm-2.9.6 released 2022-02-23
----------------------------------------
-
-git shortlog -e -n -w80,6,8 2.9.5...2.9.6
-
-Bert Gijsbers <gijsbers@science.uva.nl> (12):
-      Lower a fullscreen window below the window which is to be activated.
-      Start a new fullscreen client in the fullscreen layer for issue
-        ice-wm/icewm#85.
-      Fix format string in zh_CN to restore build and closes #639.
-      Fix format string in zh_TW to restore build.
-      Prioritize the thermal zones when showing CPU temperature.
-      Share a single temperature object and free it on exit.
-      Let CPUs share a single timer. Adjust to changes to taskBarCPUSamples.
-      Support workspace names "next" and "prev" in icesh for issue #640.
-      Update keys.
-      Merge remote-tracking branch 'upstream/icewm-1-4-BRANCH' into
-        icewm-1-4-BRANCH
-      Merge branch 'icewm-1-4-BRANCH'
-      Prepare 2.9.6 release
-
-Grace Yu <grace.yu@excel-gits.com> (4):
-      Translated using Weblate (Chinese (China) (zh_CN))
-      Translated using Weblate (Chinese (China) (zh_CN))
-      Translated using Weblate (Chinese (China) (zh_CN))
-      Translated using Weblate (Chinese (Taiwan) (zh_TW))
-
-Davide Aiello <davide.aiello@novilingulists.com> (3):
-      Translated using Weblate (Italian)
-      Translated using Weblate (Italian)
-      Translated using Weblate (Italian)
-
-Gemineo <vistatec@gemineo.de> (3):
-      Translated using Weblate (German)
-      Translated using Weblate (German)
-      Translated using Weblate (German)
-
-marcelo cripe <marcelocripe@gmail.com> (2):
-      Translated using Weblate (Portuguese (Brazil))
-      Translated using Weblate (Portuguese (Brazil))
-
-Antonio Simón <antonio@trans-mission.com> (1):
-      Translated using Weblate (Spanish)
-
-Luiz Fernando Ranghetti <elchevive68@gmail.com> (1):
-      Translated using Weblate (Portuguese (Brazil))
 

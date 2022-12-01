@@ -32,7 +32,7 @@ XIV(bool, warpPointerOnEdgeSwitch,              false)
 XIV(bool, opaqueMove,                           true)
 XIV(bool, opaqueResize,                         true)
 XIV(bool, hideTitleBarWhenMaximized,            false)
-XSV(const char *, winMenuItems,                 "rmsnxfhualyticw")
+XSV(const char *, winMenuItems,                 "rmsnxfhualytiecw")
 XIV(bool, showTaskBar,                          true)
 XIV(bool, taskBarAtTop,                         false)
 XIV(bool, taskBarKeepBelow,                     false)
@@ -99,6 +99,7 @@ XIV(bool, quickSwitchToHidden,                  true)
 XIV(bool, quickSwitchToUrgent,                  true)
 XIV(bool, quickSwitchToAllWorkspaces,           false)
 XIV(bool, quickSwitchGroupWorkspaces,           true)
+XIV(int,  quickSwitchPersistence,               0)
 XIV(bool, quickSwitchRaiseCandidate,            false)
 XIV(bool, quickSwitchAllIcons,                  true)
 XIV(bool, quickSwitchTextFirst,                 false)
@@ -283,6 +284,7 @@ cfoption icewm_preferences[] = {
     OBV("QuickSwitchToUrgent",                  &quickSwitchToUrgent,           "Prioritize Alt+Tab to urgent windows"),
     OBV("QuickSwitchToAllWorkspaces",           &quickSwitchToAllWorkspaces,    "Include windows from all workspaces in Alt+Tab"),
     OBV("QuickSwitchGroupWorkspaces",           &quickSwitchGroupWorkspaces,    "Group windows by workspace together in Alt+Tab"),
+    OIV("QuickSwitchPersistence",               &quickSwitchPersistence, 0, 86400, "Time in seconds to remember the state of Alt+Tab"),
     OBV("QuickSwitchRaiseCandidate",            &quickSwitchRaiseCandidate,     "Raise a selected window while Alt+Tabbing in the QuickSwitch"),
     OBV("QuickSwitchAllIcons",                  &quickSwitchAllIcons,           "Show all reachable icons when quick switching"),
     OBV("QuickSwitchTextFirst",                 &quickSwitchTextFirst,          "Show the window title above (all reachable) icons"),
@@ -553,7 +555,7 @@ cfoption icewm_preferences[] = {
 
     OKF("WorkspaceNames",                       addWorkspace, "Add a workspace"),
     OKF("KeyboardLayouts",                      addKeyboard, "Add a keyboard layout"),
-    OSV("WinMenuItems",                         &winMenuItems,                  "The list of items to be supported in the menu window (rmsnxfhualytickw)"),
+    OSV("WinMenuItems",                         &winMenuItems,                  "The list of items to be supported in the menu window (rmsnxfhualytieckw)"),
     OK0()
 };
 
