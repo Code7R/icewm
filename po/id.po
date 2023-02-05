@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icewm 1.0.9\n"
 "Report-Msgid-Bugs-To: https://github.com/bbidulock/icewm/issues\n"
-"POT-Creation-Date: 2022-12-20 20:11+0100\n"
-"PO-Revision-Date: 2022-11-04 06:13+0000\n"
+"POT-Creation-Date: 2023-01-23 22:04+0100\n"
+"PO-Revision-Date: 2023-01-02 05:13+0000\n"
 "Last-Translator: Kukuh Syafaat <syafaatkukuh@gmail.com>\n"
 "Language-Team: Indonesian <https://l10n.opensuse.org/projects/icewm/"
 "icewm-1-4-branch/id/>\n"
@@ -159,12 +159,12 @@ msgstr "_Gabung"
 msgid "_Separate"
 msgstr "Pi_sahkan"
 
-#: src/akeyboard.cc:83 src/icesm.cc:466 src/wmmenu.cc:503
+#: src/akeyboard.cc:83 src/icesm.cc:467 src/wmmenu.cc:503
 #, c-format
 msgid "%s exited with status %d."
 msgstr "%s keluar dengan status %d."
 
-#: src/akeyboard.cc:86 src/icesm.cc:472 src/icesm.cc:626
+#: src/akeyboard.cc:86 src/icesm.cc:473 src/icesm.cc:627
 #, c-format
 msgid "%s was killed by signal %d."
 msgstr "%s dibunuh oleh sinyal %d."
@@ -185,7 +185,7 @@ msgstr "tata letak:"
 msgid "options:"
 msgstr "opsi:"
 
-#: src/akeyboard.cc:151
+#: src/akeyboard.cc:157
 msgid "Keyboard"
 msgstr "Papan Tik"
 
@@ -1327,115 +1327,121 @@ msgstr "Permainan yang Sama"
 msgid "For help please consult the man page icesh(1).\n"
 msgstr "Untuk bantuan silahkan baca halaman manual icesh(1).\n"
 
-#: src/icesh.cc:1637
+#: src/icesh.cc:1642
 #, c-format
 msgid "Named symbols of the domain `%s' (numeric range: %ld-%ld):\n"
 msgstr "Nama simbol dari domain `%s' (rentang numerik: %ld-%ld):\n"
 
-#: src/icesh.cc:1706
+#: src/icesh.cc:1711
 #, c-format
 msgid "Workspace out of range: %ld"
 msgstr "Ruang kerja di luar jangkauan: %ld"
 
-#: src/icesh.cc:1727
+#: src/icesh.cc:1732
 #, c-format
 msgid "Invalid workspace name: `%s'"
 msgstr "Nama ruang kerja tidak valid: `%s'"
 
-#: src/icesh.cc:2140
+#: src/icesh.cc:2145
 msgid "GNOME window layer"
 msgstr "Lapisan jendela GNOME"
 
-#: src/icesh.cc:2141
+#: src/icesh.cc:2146
 msgid "IceWM tray option"
 msgstr "Opsi baki IceWM"
 
-#: src/icesh.cc:2142
+#: src/icesh.cc:2147
 msgid "Gravity symbols"
 msgstr "Simbol gravitasi"
 
-#: src/icesh.cc:2143
+#: src/icesh.cc:2148
 msgid "Motif functions"
 msgstr "Fungsi motif"
 
-#: src/icesh.cc:2144
+#: src/icesh.cc:2149
 msgid "Motif decorations"
 msgstr "Hiasan motif"
 
-#: src/icesh.cc:2145
+#: src/icesh.cc:2150
 msgid "EWMH window state"
 msgstr "Keadaan jendela EWMH"
 
-#: src/icesh.cc:2227 src/icesh.cc:2300
+#: src/icesh.cc:2232 src/icesh.cc:2305
 #, c-format
 msgid "workspace #%d: `%s'\n"
 msgstr "ruang kerja #%d: `%s'\n"
 
-#: src/icesh.cc:2551 src/icesh.cc:4249 src/icesh.cc:4752
+#: src/icesh.cc:2556 src/icesh.cc:4261 src/icesh.cc:4873
 #, c-format
 msgid "Invalid state: `%s'."
 msgstr "Keadaan tidak valid: '%s'."
 
-#: src/icesh.cc:3472
+#: src/icesh.cc:3477
 #, c-format
 msgid "Cannot get geometry of window 0x%lx"
 msgstr "Tidak dapat mendapatkan geometri jendela 0x%lx"
 
-#: src/icesh.cc:3497
+#: src/icesh.cc:3502
 #, c-format
 msgid "Invalid Xinerama: `%s'."
 msgstr "Xinerama tidak valid: `%s'."
 
-#: src/icesh.cc:3835 src/icesh.cc:3885 src/icesh.cc:5066
+#: src/icesh.cc:3624 src/icesh.cc:3632 src/wmconfig.cc:148 src/wmsave.cc:65
+#: src/wmsave.cc:298 src/wmsave.cc:301
+#, c-format
+msgid "Unable to write to %s"
+msgstr "Tidak dapat menulis ke %s"
+
+#: src/icesh.cc:3847 src/icesh.cc:3897 src/icesh.cc:5187
 #, c-format
 msgid "Invalid argument: `%s'"
 msgstr "Argumen tidak valid: '%s'"
 
-#: src/icesh.cc:3851
+#: src/icesh.cc:3863
 #, c-format
 msgid "Action `%s' requires at least %d arguments."
 msgstr "Aksi '%s' memerlukan setidaknya argumen %d."
 
-#: src/icesh.cc:3860
+#: src/icesh.cc:3872
 #, c-format
 msgid "Invalid expression: `%s'"
 msgstr "Ekspresi tidak valid: '%s'"
 
-#: src/icesh.cc:3871 src/icesound.cc:794 src/icewmbg.cc:978 src/icewmhint.cc:37
+#: src/icesh.cc:3883 src/icesound.cc:794 src/icewmbg.cc:978 src/icewmhint.cc:37
 #: src/wmapp.cc:1238 src/yxapp.cc:1039
 #, c-format
 msgid "Can't open display: %s. X must be running and $DISPLAY set."
 msgstr "Tidak dapat membuka tampilan: %s. X harus berjalan dan atur $DISPLAY."
 
-#: src/icesh.cc:3987
+#: src/icesh.cc:3999
 #, c-format
 msgid "Unexpected: `%s'."
 msgstr "Tak diharapkan: `%s'."
 
-#: src/icesh.cc:4016
+#: src/icesh.cc:4028
 msgid "No windows found."
 msgstr "Tidak ada jendela yang ditemukan."
 
-#: src/icesh.cc:4032
+#: src/icesh.cc:4044
 msgid "No actions specified."
 msgstr "Tidak ada aksi yang ditentukan."
 
-#: src/icesh.cc:4173
+#: src/icesh.cc:4185
 #, c-format
 msgid "Invalid window identifier: `%s'"
 msgstr "Pengidentifikasi jendela tidak valid: '%s'"
 
-#: src/icesh.cc:4189
+#: src/icesh.cc:4201
 #, c-format
 msgid "Invalid PID: `%s'"
 msgstr "PID tidak valid: '%s'"
 
-#: src/icesh.cc:4222
+#: src/icesh.cc:4234
 #, c-format
 msgid "Invalid layer: `%s'."
 msgstr "Lapisan tidak valid: `%s'."
 
-#: src/icesh.cc:5194
+#: src/icesh.cc:5315
 #, c-format
 msgid "Unknown action: `%s'"
 msgstr "Aksi tidak diketahui: '%s'"
@@ -1494,12 +1500,12 @@ msgstr ""
 msgid "Unknown option '%s'"
 msgstr "Opsi tidak diketahui '%s'"
 
-#: src/icesm.cc:460 src/icesm.cc:620
+#: src/icesm.cc:461 src/icesm.cc:621
 #, c-format
 msgid "restart %s."
 msgstr "mulai ulang %s."
 
-#: src/icesm.cc:511
+#: src/icesm.cc:512
 msgid ""
 " IceWM crashed for the second time in 10 seconds. \n"
 " Do you wish to:\n"
@@ -1515,7 +1521,7 @@ msgstr ""
 "\t2: Gugurkan sesi ini?\n"
 "\t3: Jalankan terminal?\n"
 
-#: src/icesm.cc:517
+#: src/icesm.cc:518
 msgid "IceWM crash response"
 msgstr "Respon kres IceWM"
 
@@ -1879,7 +1885,7 @@ msgstr ""
 " center:0 scaled:1 = isi kedua dimensi dan pertahankan rasio aspek\n"
 "\n"
 
-#: src/icewmbg.cc:1109 src/wmapp.cc:1821
+#: src/icewmbg.cc:1109 src/wmapp.cc:1823
 #, c-format
 msgid "Unrecognized option '%s'."
 msgstr "Opsi yang tidak dikenali '%s'."
@@ -2171,7 +2177,7 @@ msgstr "_Ikon baki"
 
 #: src/wmapp.cc:667 src/wmwinlist.cc:458
 msgid "R_ename title"
-msgstr ""
+msgstr "G_anti judul"
 
 #: src/wmapp.cc:672 src/wmwinlist.cc:473 src/wmwinlist.cc:481
 msgid "_Close"
@@ -2214,14 +2220,14 @@ msgstr ""
 msgid "<none>"
 msgstr "<NIHIL>"
 
-#: src/wmapp.cc:1562
+#: src/wmapp.cc:1564
 msgid ""
 "  --client-id=ID      Client id to use when contacting session manager.\n"
 msgstr ""
 "  --client-id=ID      Klien id yang digunakan saat menghubungi pengelola "
 "sesi.\n"
 
-#: src/wmapp.cc:1568
+#: src/wmapp.cc:1570
 msgid ""
 "\n"
 "  --debug             Print generic debug messages.\n"
@@ -2231,7 +2237,7 @@ msgstr ""
 "  --debug             Cetak pesan awakutu umum.\n"
 "  --debug-z           Cetak pesan awakutu tentang penumpukan jendela.\n"
 
-#: src/wmapp.cc:1576
+#: src/wmapp.cc:1578
 msgid ""
 "\n"
 "  -a, --alpha         Use a 32-bit visual for translucency.\n"
@@ -2251,7 +2257,7 @@ msgstr ""
 "  --rewrite-preferences  Mutakhirkan berkas preferensi yang ada.\n"
 "  --trace=conf,icon   Path jejak yang digunakan untuk memuat konfigurasi.\n"
 
-#: src/wmapp.cc:1586
+#: src/wmapp.cc:1588
 #, c-format
 msgid ""
 "Usage: %s [OPTIONS]\n"
@@ -2311,21 +2317,21 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: src/wmapp.cc:1652
+#: src/wmapp.cc:1654
 #, c-format
 msgid "%s configuration directories:\n"
 msgstr "Direktori konfigurasi %s:\n"
 
-#: src/wmapp.cc:1737
+#: src/wmapp.cc:1739
 #, c-format
 msgid "%s configured options:%s\n"
 msgstr "Opsi %s yang dikonfigurasi: %s\n"
 
-#: src/wmapp.cc:1871
+#: src/wmapp.cc:1873
 msgid "Confirm Logout"
 msgstr "Konfirmasi Log Keluar"
 
-#: src/wmapp.cc:1872
+#: src/wmapp.cc:1874
 msgid ""
 "Logout will close all active applications.\n"
 "Proceed?"
@@ -2361,7 +2367,7 @@ msgstr "Gulung bawah"
 msgid "Rollup"
 msgstr "Gulung atas"
 
-#: src/wmclient.cc:461
+#: src/wmclient.cc:462
 #, c-format
 msgid ""
 "Client %s with PID %ld fails to respond.\n"
@@ -2384,11 +2390,6 @@ msgstr "Nilai '%s' yang tidak diketahui untuk opsi '%s'."
 #, c-format
 msgid "Unable to create directory %s"
 msgstr "Tidak dapat membuat direktori %s"
-
-#: src/wmconfig.cc:148 src/wmsave.cc:65 src/wmsave.cc:298 src/wmsave.cc:301
-#, c-format
-msgid "Unable to write to %s"
-msgstr "Tidak dapat menulis ke %s"
 
 #: src/wmconfig.cc:184 src/wmsave.cc:306
 #, c-format
@@ -2418,15 +2419,15 @@ msgstr "Mu_lai ulang icewm"
 msgid "_About"
 msgstr "Tent_ang"
 
-#: src/wmframe.cc:1375
+#: src/wmframe.cc:1377
 msgid "Rename"
-msgstr ""
+msgstr "Ganti nama"
 
-#: src/wmframe.cc:1376
+#: src/wmframe.cc:1378
 msgid "Rename the window title"
-msgstr ""
+msgstr "Ganti nama judul jendela"
 
-#: src/wmframe.cc:1844
+#: src/wmframe.cc:1846
 msgid ""
 "WARNING! All unsaved changes will be lost when\n"
 "this client is killed. Do you wish to proceed?"
@@ -2434,7 +2435,7 @@ msgstr ""
 "PERINGATAN! Semua perubahan yang belum disimpan akan hilang saat\n"
 "klien ini terbunuh. Apakah Anda ingin melanjutkan?"
 
-#: src/wmframe.cc:1849
+#: src/wmframe.cc:1851
 msgid "Kill Client: "
 msgstr "Bunuh Klien: "
 
@@ -2505,11 +2506,11 @@ msgstr "'%s' waktunya habis!"
 msgid "'%s' produces no output"
 msgstr "'%s' tidak menghasilkan keluaran"
 
-#: src/wmmgr.cc:3624
+#: src/wmmgr.cc:3631
 msgid "Missing program setxkbmap"
 msgstr "Tak ada program setxkbmap"
 
-#: src/wmmgr.cc:3625
+#: src/wmmgr.cc:3632
 msgid "For keyboard switching, please install setxkbmap."
 msgstr "Untuk mengubah papan tik, silakan instal setxkbmap."
 
@@ -2645,7 +2646,7 @@ msgstr "Atur _Ikon"
 msgid "_Refresh"
 msgstr "Sega_rkan"
 
-#: src/wmtaskbar.cc:314 src/wmtaskbar.cc:1007
+#: src/wmtaskbar.cc:314 src/wmtaskbar.cc:1009
 msgid "Hide Taskbar"
 msgstr "Sembunyikan bilah tugas"
 
@@ -2661,7 +2662,7 @@ msgstr "Menu Daftar Jendela"
 msgid "Show Desktop"
 msgstr "Tampilkan Destop"
 
-#: src/wmtaskbar.cc:1007
+#: src/wmtaskbar.cc:1009
 msgid "Show Taskbar"
 msgstr "Tampilkan bilah tugas"
 
