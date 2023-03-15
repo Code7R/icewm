@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icewm 1.2.15pre3\n"
 "Report-Msgid-Bugs-To: https://github.com/bbidulock/icewm/issues\n"
-"POT-Creation-Date: 2023-01-23 22:04+0100\n"
-"PO-Revision-Date: 2022-12-22 14:13+0000\n"
-"Last-Translator: Vincent Legoll <vincent.legoll@gmail.com>\n"
+"POT-Creation-Date: 2023-03-13 22:28+0100\n"
+"PO-Revision-Date: 2023-02-09 15:14+0000\n"
+"Last-Translator: Sophie Leroy <sophie@stoquart.com>\n"
 "Language-Team: French <https://l10n.opensuse.org/projects/icewm/icewm-1-4-"
 "branch/fr/>\n"
 "Language: fr\n"
@@ -157,12 +157,12 @@ msgstr "_Combiner"
 msgid "_Separate"
 msgstr "_Séparer"
 
-#: src/akeyboard.cc:83 src/icesm.cc:467 src/wmmenu.cc:503
+#: src/akeyboard.cc:83 src/icesm.cc:475 src/wmmenu.cc:503
 #, c-format
 msgid "%s exited with status %d."
 msgstr "%s s'est terminé avec le statut %d."
 
-#: src/akeyboard.cc:86 src/icesm.cc:473 src/icesm.cc:627
+#: src/akeyboard.cc:86 src/icesm.cc:481 src/icesm.cc:635
 #, c-format
 msgid "%s was killed by signal %d."
 msgstr "%s a été arrêté par le signal %d."
@@ -660,7 +660,7 @@ msgstr "Graphiques"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network or Audio
 #: src/fdospecgen.h:169
 msgid "HamRadio"
-msgstr "Radio amateur - HamRadio"
+msgstr "Radio amateur"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings
 #: src/fdospecgen.h:171
@@ -810,7 +810,7 @@ msgstr "Gestionnaire de paquets"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education;ComputerScience or Science;ComputerScience
 #: src/fdospecgen.h:229
 msgid "ParallelComputing"
-msgstr "Calculs en parallèle"
+msgstr "Informatique parallèle"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics or Office
 #: src/fdospecgen.h:231
@@ -855,7 +855,7 @@ msgstr "Publication"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics;2DGraphics
 #: src/fdospecgen.h:247
 msgid "RasterGraphics"
-msgstr "Mode matriciel Raster"
+msgstr "Infographie par quadrillage"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Audio or Video or AudioVideo
 #: src/fdospecgen.h:249
@@ -1000,7 +1000,7 @@ msgstr "Utilitaire"
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics;2DGraphics
 #: src/fdospecgen.h:305
 msgid "VectorGraphics"
-msgstr "Graphiques vectoriels adaptables SVG"
+msgstr "Graphisme vectoriel"
 
 #. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
 #: src/fdospecgen.h:307
@@ -1047,7 +1047,7 @@ msgstr "Alt+Gauche"
 
 #: src/icehelp.cc:1350
 msgid "Forward"
-msgstr "Devant"
+msgstr "Avancer"
 
 #: src/icehelp.cc:1350
 msgid "Alt+Right"
@@ -1327,127 +1327,127 @@ msgstr "Redémarrer"
 msgid "Same Game"
 msgstr "Même jeu"
 
-#: src/icesh.cc:75
+#: src/icesh.cc:76
 msgid "For help please consult the man page icesh(1).\n"
 msgstr "Pour obtenir de l'aide, consultez la page de manuel icesh(1).\n"
 
-#: src/icesh.cc:1642
+#: src/icesh.cc:1667
 #, c-format
 msgid "Named symbols of the domain `%s' (numeric range: %ld-%ld):\n"
 msgstr "Symboles nommés du domaine `%s' (intervalle numérique : %ld-%ld) :\n"
 
-#: src/icesh.cc:1711
+#: src/icesh.cc:1736
 #, c-format
 msgid "Workspace out of range: %ld"
-msgstr "Bureau hors limites : %ld"
+msgstr "Espace de travail hors limites : %ld"
 
-#: src/icesh.cc:1732
+#: src/icesh.cc:1757
 #, c-format
 msgid "Invalid workspace name: `%s'"
 msgstr "Nom de bureau incorrect : \"%s\""
 
-#: src/icesh.cc:2145
+#: src/icesh.cc:2204
 msgid "GNOME window layer"
 msgstr "Couche de fenêtre GNOME"
 
-#: src/icesh.cc:2146
+#: src/icesh.cc:2205
 msgid "IceWM tray option"
 msgstr "Option du \"tray\" IceWM"
 
-#: src/icesh.cc:2147
+#: src/icesh.cc:2206
 msgid "Gravity symbols"
 msgstr "Symboles de gravité"
 
-#: src/icesh.cc:2148
+#: src/icesh.cc:2207
 msgid "Motif functions"
 msgstr "Fonctions Motif"
 
-#: src/icesh.cc:2149
+#: src/icesh.cc:2208
 msgid "Motif decorations"
 msgstr "Motifs de décoration"
 
-#: src/icesh.cc:2150
+#: src/icesh.cc:2209
 msgid "EWMH window state"
 msgstr "État de fenêtre EWMH"
 
-#: src/icesh.cc:2232 src/icesh.cc:2305
+#: src/icesh.cc:2291 src/icesh.cc:2364
 #, c-format
 msgid "workspace #%d: `%s'\n"
 msgstr "Bureau n°%d : \"%s\"\n"
 
-#: src/icesh.cc:2556 src/icesh.cc:4261 src/icesh.cc:4873
+#: src/icesh.cc:2615 src/icesh.cc:4411 src/icesh.cc:5040
 #, c-format
 msgid "Invalid state: `%s'."
 msgstr "État non valide : '%s'."
 
-#: src/icesh.cc:3477
+#: src/icesh.cc:2644 src/icesh.cc:3996 src/icesh.cc:4046 src/icesh.cc:5351
+#, c-format
+msgid "Invalid argument: `%s'"
+msgstr "Argument non valide : `%s'"
+
+#: src/icesh.cc:3626
 #, c-format
 msgid "Cannot get geometry of window 0x%lx"
 msgstr "Impossible d'obtenir la géométrie de la fenêtre 0x%lx"
 
-#: src/icesh.cc:3502
+#: src/icesh.cc:3651
 #, c-format
 msgid "Invalid Xinerama: `%s'."
 msgstr "Xinerama non valide : `%s'."
 
-#: src/icesh.cc:3624 src/icesh.cc:3632 src/wmconfig.cc:148 src/wmsave.cc:65
+#: src/icesh.cc:3773 src/icesh.cc:3781 src/wmconfig.cc:148 src/wmsave.cc:65
 #: src/wmsave.cc:298 src/wmsave.cc:301
 #, c-format
 msgid "Unable to write to %s"
 msgstr "Impossible d'écrire dans %s"
 
-#: src/icesh.cc:3847 src/icesh.cc:3897 src/icesh.cc:5187
-#, c-format
-msgid "Invalid argument: `%s'"
-msgstr "Argument non valide : `%s'"
-
-#: src/icesh.cc:3863
+#: src/icesh.cc:4012
 #, c-format
 msgid "Action `%s' requires at least %d arguments."
 msgstr "L'action \"%s\" nécessite au moins %d paramètre(s)."
 
-#: src/icesh.cc:3872
+#: src/icesh.cc:4021
 #, c-format
 msgid "Invalid expression: `%s'"
 msgstr "Expression incorrecte : \"%s\""
 
-#: src/icesh.cc:3883 src/icesound.cc:794 src/icewmbg.cc:978 src/icewmhint.cc:37
-#: src/wmapp.cc:1238 src/yxapp.cc:1039
+#: src/icesh.cc:4032 src/icesound.cc:794 src/icewmbg.cc:978 src/icewmhint.cc:37
+#: src/wmapp.cc:1233 src/yxapp.cc:1039
 #, c-format
 msgid "Can't open display: %s. X must be running and $DISPLAY set."
 msgstr ""
-"Impossible d'ouvrir le display %s. X doit être lancé et $DISPLAY doit être "
-"défini."
+"Impossible d'ouvrir l'affichage : %s. X doit être en cours d'exécution et "
+"$DISPLAY doit être défini."
 
-#: src/icesh.cc:3999
+#: src/icesh.cc:4148
 #, c-format
 msgid "Unexpected: `%s'."
 msgstr "Inattendu : `%s'."
 
-#: src/icesh.cc:4028
+#: src/icesh.cc:4178
 msgid "No windows found."
 msgstr "Pas de fenêtre trouvée."
 
-#: src/icesh.cc:4044
+#: src/icesh.cc:4194
 msgid "No actions specified."
 msgstr "Pas d'action spécifiée."
 
-#: src/icesh.cc:4185
+#: src/icesh.cc:4335
 #, c-format
 msgid "Invalid window identifier: `%s'"
 msgstr "Identifiant de fenêtre incorrect : \"%s\""
 
-#: src/icesh.cc:4201
+#: src/icesh.cc:4351
 #, c-format
 msgid "Invalid PID: `%s'"
 msgstr "PID non valide : '%s'"
 
-#: src/icesh.cc:4234
+#: src/icesh.cc:4384
 #, c-format
 msgid "Invalid layer: `%s'."
 msgstr "Couche non valide : '%s'."
 
-#: src/icesh.cc:5315
+#: src/icesh.cc:5481
 #, c-format
 msgid "Unknown action: `%s'"
 msgstr "Action inconnue : \"%s\""
@@ -1509,12 +1509,12 @@ msgstr ""
 msgid "Unknown option '%s'"
 msgstr "Option inconnue : '%s'"
 
-#: src/icesm.cc:461 src/icesm.cc:621
+#: src/icesm.cc:469 src/icesm.cc:629
 #, c-format
 msgid "restart %s."
 msgstr "redémarrer %s."
 
-#: src/icesm.cc:512
+#: src/icesm.cc:520
 msgid ""
 " IceWM crashed for the second time in 10 seconds. \n"
 " Do you wish to:\n"
@@ -1530,7 +1530,7 @@ msgstr ""
 "\t2 : Abandonner cette session ?\n"
 "\t3 : Exécuter un terminal ?\n"
 
-#: src/icesm.cc:518
+#: src/icesm.cc:526
 msgid "IceWM crash response"
 msgstr "Réponse en cas d'arrêt brutal d'IceWM"
 
@@ -1914,7 +1914,7 @@ msgstr ""
 " center:0 scaled:1 = deux dimensions complètes et respect des proportions\n"
 "\n"
 
-#: src/icewmbg.cc:1109 src/wmapp.cc:1823
+#: src/icewmbg.cc:1109 src/wmapp.cc:1818
 #, c-format
 msgid "Unrecognized option '%s'."
 msgstr "Option non reconnue '%s'."
@@ -1938,7 +1938,7 @@ msgstr "Mémoire saturée (len=%d)."
 msgid "Warning: "
 msgstr "Attention : "
 
-#: src/misc.cc:387
+#: src/misc.cc:385
 #, c-format
 msgid ""
 "Usage: %s [OPTIONS]\n"
@@ -1959,7 +1959,7 @@ msgstr ""
 "  -h, --help          Imprime cet écran de syntaxe et ferme la fenêtre.\n"
 "\n"
 
-#: src/movesize.cc:904
+#: src/movesize.cc:905
 #, c-format
 msgid "Unknown direction in move/resize request: %d"
 msgstr ""
@@ -1991,7 +1991,7 @@ msgstr "Langue :"
 
 #: src/wmabout.cc:56
 msgid "DoubleBuffer"
-msgstr "DoubleBuffer"
+msgstr "Double tampon"
 
 #: src/wmabout.cc:57
 msgid "AlphaBlending"
@@ -2009,7 +2009,7 @@ msgstr "IceWM - À propos"
 #: src/wmapp.cc:90
 msgid "A window manager is already running, use --replace to replace it"
 msgstr ""
-"Un gestionnaire de fenêtres est déjà en cours d'exécution, utilisez --"
+"Un gestionnaire de fenêtres est déjà en cours d'exécution. Utilisez --"
 "replace pour le remplacer"
 
 #: src/wmapp.cc:106
@@ -2213,7 +2213,7 @@ msgstr "Icône de barre de tâche"
 
 #: src/wmapp.cc:667 src/wmwinlist.cc:458
 msgid "R_ename title"
-msgstr ""
+msgstr "R_enommer le titre"
 
 #: src/wmapp.cc:672 src/wmwinlist.cc:473 src/wmwinlist.cc:481
 msgid "_Close"
@@ -2230,7 +2230,8 @@ msgstr "_Liste des fenêtres"
 #
 #: src/wmapp.cc:716
 msgid "Another window manager already running, exiting..."
-msgstr "Un autre gestionnaire de fenêtre est déjà en cours. Fermeture ..."
+msgstr ""
+"Un autre gestionnaire de fenêtres est déjà en cours d'exécution. Fermeture..."
 
 #: src/wmapp.cc:791
 #, c-format
@@ -2253,18 +2254,18 @@ msgstr ""
 "Annulez la gestion de toutes les applications et redémarrez\n"
 "en tant que terminal. Continuer ?"
 
-#: src/wmapp.cc:1239 src/yxapp.cc:1040
+#: src/wmapp.cc:1234 src/yxapp.cc:1040
 msgid "<none>"
 msgstr "<aucun>"
 
-#: src/wmapp.cc:1564
+#: src/wmapp.cc:1559
 msgid ""
 "  --client-id=ID      Client id to use when contacting session manager.\n"
 msgstr ""
 "  --client-id=ID      ID de client à utiliser lors du contact avec le  "
 "gestionnaire de session.\n"
 
-#: src/wmapp.cc:1570
+#: src/wmapp.cc:1565
 msgid ""
 "\n"
 "  --debug             Print generic debug messages.\n"
@@ -2275,7 +2276,7 @@ msgstr ""
 "  --debug-z           Imprimer les messages de débogage concernant la pile "
 "de fenêtres.\n"
 
-#: src/wmapp.cc:1578
+#: src/wmapp.cc:1573
 msgid ""
 "\n"
 "  -a, --alpha         Use a 32-bit visual for translucency.\n"
@@ -2297,7 +2298,7 @@ msgstr ""
 "  --trace=conf,icon   Trace les chemins utilisés pour charger la "
 "configuration.\n"
 
-#: src/wmapp.cc:1588
+#: src/wmapp.cc:1583
 #, c-format
 msgid ""
 "Usage: %s [OPTIONS]\n"
@@ -2360,21 +2361,21 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: src/wmapp.cc:1654
+#: src/wmapp.cc:1649
 #, c-format
 msgid "%s configuration directories:\n"
 msgstr "Répertoires de configuration de %s :\n"
 
-#: src/wmapp.cc:1739
+#: src/wmapp.cc:1734
 #, c-format
 msgid "%s configured options:%s\n"
 msgstr "%s options configurées : %s\n"
 
-#: src/wmapp.cc:1873
+#: src/wmapp.cc:1868
 msgid "Confirm Logout"
 msgstr "Confirmer la déconnexion"
 
-#: src/wmapp.cc:1874
+#: src/wmapp.cc:1869
 msgid ""
 "Logout will close all active applications.\n"
 "Proceed?"
@@ -2463,15 +2464,15 @@ msgstr "_Redémarrer IceWM"
 msgid "_About"
 msgstr "À _propos"
 
-#: src/wmframe.cc:1377
+#: src/wmframe.cc:1372
 msgid "Rename"
 msgstr "Renommer"
 
-#: src/wmframe.cc:1378
+#: src/wmframe.cc:1373
 msgid "Rename the window title"
 msgstr "Renommer le titre de la fenêtre"
 
-#: src/wmframe.cc:1846
+#: src/wmframe.cc:1851
 msgid ""
 "WARNING! All unsaved changes will be lost when\n"
 "this client is killed. Do you wish to proceed?"
@@ -2480,7 +2481,7 @@ msgstr ""
 "perdus quand ce processus sera clos. Souhaitez-vous continuer ?"
 
 #
-#: src/wmframe.cc:1851
+#: src/wmframe.cc:1856
 msgid "Kill Client: "
 msgstr "Fermer le client : "
 
@@ -2551,11 +2552,11 @@ msgstr "'%s' a expiré !"
 msgid "'%s' produces no output"
 msgstr "'%s' ne produit aucune sortie"
 
-#: src/wmmgr.cc:3631
+#: src/wmmgr.cc:3632
 msgid "Missing program setxkbmap"
 msgstr "Programme setxkbmap manquant"
 
-#: src/wmmgr.cc:3632
+#: src/wmmgr.cc:3633
 msgid "For keyboard switching, please install setxkbmap."
 msgstr "Pour le changement de clavier, installez setxkbmap."
 
@@ -2691,7 +2692,7 @@ msgstr "Arranger les _icônes"
 msgid "_Refresh"
 msgstr "_Rafraîchir"
 
-#: src/wmtaskbar.cc:314 src/wmtaskbar.cc:1009
+#: src/wmtaskbar.cc:314 src/wmtaskbar.cc:1012
 msgid "Hide Taskbar"
 msgstr "Masquer la barre de tâche"
 
@@ -2707,7 +2708,7 @@ msgstr "Menu Liste des fenêtres"
 msgid "Show Desktop"
 msgstr "Montrer le bureau"
 
-#: src/wmtaskbar.cc:1009
+#: src/wmtaskbar.cc:1012
 msgid "Show Taskbar"
 msgstr "Afficher la barre de tâche"
 
