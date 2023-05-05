@@ -2,10 +2,10 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([icewm],[3.3.3],
+AC_INIT([icewm],[3.3.4],
         [https://github.com/bbidulock/icewm/issues],
         [icewm],[https://ice-wm.org])
-AC_REVISION([3.3.3])
+AC_REVISION([3.3.4])
 
 # set better defaults
 AC_PREFIX_DEFAULT([/usr])
@@ -22,13 +22,13 @@ AC_CONFIG_AUX_DIR([scripts])
 AC_USE_SYSTEM_EXTENSIONS
 AC_CANONICAL_TARGET
 
-DATE='2023-04-09'
+DATE='2023-05-03'
 AC_SUBST([DATE])
 
-MDOCDATE='April 9, 2023'
+MDOCDATE='May 3, 2023'
 AC_SUBST([MDOCDATE])
 
-BRANCH='3.3.3'
+BRANCH='3.3.4'
 AC_SUBST([BRANCH])
 
 APPLICATIONS='icewm icewm-session icesh icewmhint icewmbg icehelp'
@@ -96,6 +96,8 @@ if test x$enable_i18n != xno; then
     AC_DEFINE([CONFIG_I18N], [1], [Define to enable internationalization.])
     features="$features i18n"
     AM_ICONV
+else
+    unset LIBICONV LTLIBICONV
 fi
 
 AC_ARG_WITH([unicode-set],
@@ -112,6 +114,9 @@ case "${target_os}" in
     *solaris*)
         AC_CHECK_LIB(socket, socketpair)
         AC_CHECK_LIB(nsl, gethostbyname)
+        ;;
+    *openbsd*)
+        test x$enable_i18n = xyes -a -z "$EXTRA_LIBS" && EXTRA_LIBS=-liconv
         ;;
     *)
         :
