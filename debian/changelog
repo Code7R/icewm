@@ -1,3 +1,9 @@
+icewm (3.3.4-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Eduard Bloch <blade@debian.org>  Fri, 05 May 2023 18:17:48 +0200
+
 icewm (3.3.3-1) unstable; urgency=low
 
   * New upstream release
