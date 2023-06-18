@@ -487,6 +487,23 @@ void YWMApp::initPointers() {
     }
 }
 
+void YWMApp::keyboardRemap() {
+    fixupPreferences();
+    for (KProgramIterType p = keyProgs.iterator(); ++p; ) {
+        p->parse();
+    }
+}
+
+void YWMApp::fixupPreferences() {
+    extern cfoption icewm_preferences[];
+    for (cfoption* op = icewm_preferences; op->type; ++op) {
+        if (op->type == cfoption::CF_KEY) {
+            WMKey* key = op->v.k.key_value;
+            xapp->unshift(&key->key, &key->mod);
+        }
+    }
+}
+
 void LogoutMenu::updatePopup() {
     if (itemCount())
         return;
@@ -1267,6 +1284,7 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName,
     WMConfig::loadConfiguration("prefoverride");
     if (focusMode != FocusCustom)
         initFocusMode();
+    fixupPreferences();
 
     DEPRECATE(xrrDisable == true);
     DEPRECATE(warpPointer == true);
