@@ -190,11 +190,13 @@ XSV(const char *, logoutCancelCommand,          0)
 #if __linux__
 XSV(const char *, shutdownCommand,              "test -e /run/systemd/system && systemctl poweroff || sudo -n /sbin/poweroff")
 XSV(const char *, rebootCommand,                "test -e /run/systemd/system && systemctl reboot || sudo -n /sbin/reboot")
-XSV(const char *, suspendCommand,               "test -e /run/systemd/system && systemctl suspend || sudon -n /usr/sbin/pm-suspend")
+XSV(const char *, suspendCommand,               "test -e /run/systemd/system && systemctl suspend || sudo -n /usr/sbin/pm-suspend")
+XSV(const char *, hibernateCommand,             "test -e /run/systemd/system && systemctl hibernate || sudo -n /usr/sbin/pm-hibernate")
 #else
 XSV(const char *, shutdownCommand,              0)
 XSV(const char *, rebootCommand,                0)
 XSV(const char *, suspendCommand,               0)
+XSV(const char *, hibernateCommand,             0)
 #endif
 XIV(int, taskBarCPUDelay,                       500)
 XIV(int, taskBarMEMDelay,                       500)
@@ -442,6 +444,7 @@ cfoption icewm_preferences[] = {
     OSV("ShutdownCommand",                      &shutdownCommand,               "Command to shutdown the system"),
     OSV("RebootCommand",                        &rebootCommand,                 "Command to reboot the system"),
     OSV("SuspendCommand",                       &suspendCommand,                "Command to send the system to standby mode"),
+    OSV("HibernateCommand",                     &hibernateCommand,              "Command to hibernate the system"),
     OSV("CPUStatusCommand",                     &cpuCommand,                    "Command to run on CPU status"),
     OSV("CPUStatusClassHint",                   &cpuClassHint,                  "WM_CLASS to allow runonce for CPUStatusCommand"),
     OBV("CPUStatusCombine",                     &cpuCombine,                    "Combine all CPUs to one"),
@@ -566,6 +569,7 @@ cfoption icewm_preferences[] = {
 
 static bool alphaBlending;
 static bool synchronizeX11;
+static const char* outputFile;
 static const char* splashFile(ICESPLASH);
 static const char* tracingModules;
 extern bool loggingEvents;
@@ -574,6 +578,7 @@ cfoption wmapp_preferences[] = {
     OBV("Alpha",        &alphaBlending,  "Use a 32-bit visual for alpha blending"),
     OBV("Synchronize",  &synchronizeX11, "Synchronize X11 for debugging (slow)"),
     OBV("LogEvents",    &loggingEvents,  "Enable event logging for debugging"),
+    OSV("OutputFile",   &outputFile,     "Redirect all icewm output to FILE"),
     OSV("Splash",       &splashFile,     "Splash image on startup (IceWM.jpg)"),
     OSV("Trace",        &tracingModules, "Enable tracing for the given modules"),
     OSV("Theme",        &themeName,      "The name of the theme"),

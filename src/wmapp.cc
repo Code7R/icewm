@@ -525,7 +525,8 @@ void LogoutMenu::updatePopup() {
                 addItem(_("Shut_down"), -2, null, actionShutdown, "shutdown");
             if (canSuspend())
                 addItem(_("_Sleep mode"), -2, null, actionSuspend, "suspend");
-
+            if (canHibernate())
+                addItem(_("_Hibernate"), -2, null, actionHibernate, "hibernate");
             if (itemCount() != oldItemCount)
                 addSeparator();
 
@@ -946,6 +947,8 @@ void YWMApp::actionPerformed(YAction action, unsigned int /*modifiers*/) {
         doLogout(Shutdown);
     } else if (action == actionSuspend) {
         runCommand(suspendCommand);
+    } else if (action == actionHibernate) {
+        runCommand(hibernateCommand);
     } else if (action == actionReboot) {
         doLogout(Reboot);
     } else if (action == actionRestart) {
@@ -956,6 +959,15 @@ void YWMApp::actionPerformed(YAction action, unsigned int /*modifiers*/) {
         else
 #endif
             restartClient(nullptr, nullptr);
+    }
+    else if (action == actionIcewmbg) {
+        if (notifyParent && notifiedParent && kill(notifiedParent, SIGUSR2) == 0)
+            ;
+        else {
+            const char* bg[] = { ICEWMBGEXE, "-r", nullptr };
+            int pid = runProgram(bg[0], bg);
+            waitProgram(pid);
+        }
     }
     else if (action == actionRestartXterm) {
         delete fRestartMsgBox;
@@ -1284,6 +1296,12 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName,
     WMConfig::loadConfiguration("prefoverride");
     if (focusMode != FocusCustom)
         initFocusMode();
+
+    if (post_preferences)
+        WMConfig::printPrefs(focusMode, wmapp_preferences);
+    if (show_extensions)
+        showExtensions();
+
     fixupPreferences();
 
     DEPRECATE(xrrDisable == true);
@@ -1311,11 +1329,6 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName,
     actionPerformed(actionReloadKeys, 0);
 
     initPointers();
-
-    if (post_preferences)
-        WMConfig::printPrefs(focusMode, wmapp_preferences);
-    if (show_extensions)
-        showExtensions();
 
     delete desktop;
 
@@ -1470,6 +1483,8 @@ int YWMApp::mainLoop() {
             notifyParent = false;
             fail("notify parent");
         }
+        else
+            kill(notifiedParent, SIGUSR2);
     }
 
     int rc = super::mainLoop();
@@ -1601,6 +1616,12 @@ static void print_usage(const char *argv0) {
              "  --rewrite-preferences  Update an existing preferences file.\n"
              "  --trace=conf,icon   Trace paths used to load configuration.\n"
              );
+    const char* output_preferences =
+             _(
+             "  -o, --output=FILE   Redirect all output to FILE.\n"
+             );
+    char* joint_preferences = cstrJoin(usage_preferences, output_preferences,
+                                       nullptr);
 
     printf(_("Usage: %s [OPTIONS]\n"
              "Starts the IceWM window manager.\n"
@@ -1633,11 +1654,12 @@ static void print_usage(const char *argv0) {
              "%s\n\n"),
              argv0,
              usage_client_id,
-             usage_preferences,
+             joint_preferences,
              usage_debug,
              PACKAGE_BUGREPORT[0] ? PACKAGE_BUGREPORT :
              PACKAGE_URL[0] ? PACKAGE_URL :
              "https://ice-wm.org/");
+    delete[] joint_preferences;
     exit(0);
 }
 
@@ -1758,12 +1780,16 @@ static void print_configured(const char *argv0) {
     exit(0);
 }
 
-static void loadStartup(const char* configFile)
+static void loadStartup(const char* configFile, const char* outputArg)
 {
     rightToLeft = YLocale::RTL();
     leftToRight = !rightToLeft;
 
     YConfig(wmapp_preferences).load(configFile);
+    if (nonempty(outputArg))
+        upath::redirectOutput(outputArg);
+    else if (nonempty(outputFile) && !(post_preferences | show_extensions))
+        upath::redirectOutput(outputFile);
 
     YXApplication::alphaBlending |= alphaBlending;
     YXApplication::synchronizeX11 |= synchronizeX11;
@@ -1782,6 +1808,7 @@ int main(int argc, char **argv) {
     bool rewrite_prefs(false);
     bool notify_parent(false);
     const char* configFile(nullptr);
+    const char* outputFile(nullptr);
     const char* displayName(nullptr);
     const char* overrideTheme(nullptr);
 
@@ -1832,6 +1859,8 @@ int main(int argc, char **argv) {
                 YXApplication::alphaBlending = true;
             else if (GetArgument(value, "d", "display", arg, argv+argc))
                 displayName = value;
+            else if (GetArgument(value, "o", "output", arg, argv+argc))
+                outputFile = value;
             else if (GetArgument(value, "s", "splash", arg, argv+argc))
                 splashFile = value;
             else if (GetLongArgument(value, "trace", arg, argv+argc))
@@ -1853,7 +1882,7 @@ int main(int argc, char **argv) {
 
     if (isEmpty(configFile))
         configFile = "preferences";
-    loadStartup(configFile);
+    loadStartup(configFile, outputFile);
 
     if (nonempty(overrideTheme)) {
         unsigned last = ACOUNT(wmapp_preferences) - 2;
@@ -1958,8 +1987,11 @@ void YWMApp::handleSMAction(WMAction message) {
         { ICEWM_ACTION_WINDOWLIST,    actionWindowList },
         { ICEWM_ACTION_RESTARTWM,     actionRestart },
         { ICEWM_ACTION_SUSPEND,       actionSuspend },
+        { ICEWM_ACTION_HIBERNATE,     actionHibernate },
         { ICEWM_ACTION_WINOPTIONS,    actionWinOptions },
         { ICEWM_ACTION_RELOADKEYS,    actionReloadKeys },
+        { ICEWM_ACTION_ICEWMBG,       actionIcewmbg },
+        { ICEWM_ACTION_REFRESH,       actionRefresh },
     };
     for (auto p : pairs)
         if (message == p.left)
