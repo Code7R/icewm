@@ -1,6 +1,8 @@
 icewm (3.4.3-1) unstable; urgency=medium
 
   * New upstream release
+  * icewm-menu-xrandr: minor fix to avoid warnings where no custom
+    configuration was added, also including the configuration example
 
  -- Eduard Bloch <blade@debian.org>  Sat, 07 Oct 2023 14:24:57 +0200
 

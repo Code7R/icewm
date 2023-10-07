@@ -3,3 +3,4 @@ debian/examples/preferences.noClickToFocus
 debian/examples/focus_mode.noClickToFocus
 debian/examples/startup
 debian/examples/menu
+contrib/xrandr_menu
