@@ -2,10 +2,10 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([icewm],[3.4.3],
+AC_INIT([icewm],[3.4.4],
         [https://github.com/bbidulock/icewm/issues],
         [icewm],[https://ice-wm.org])
-AC_REVISION([3.4.3])
+AC_REVISION([3.4.4])
 
 # set better defaults
 AC_PREFIX_DEFAULT([/usr])
@@ -22,13 +22,13 @@ AC_CONFIG_AUX_DIR([scripts])
 AC_USE_SYSTEM_EXTENSIONS
 AC_CANONICAL_TARGET
 
-DATE='2023-10-02'
+DATE='2023-11-02'
 AC_SUBST([DATE])
 
-MDOCDATE='October 2, 2023'
+MDOCDATE='November 2, 2023'
 AC_SUBST([MDOCDATE])
 
-BRANCH='3.4.3'
+BRANCH='3.4.4'
 AC_SUBST([BRANCH])
 
 APPLICATIONS='icewm icewm-session icesh icewmhint icewmbg icehelp'
@@ -353,7 +353,7 @@ AC_SUBST([GIO_CFLAGS])
 AC_SUBST([GIO_LIBS])
 
 AC_ARG_ENABLE([rsvg],
-    AS_HELP_STRING([--disable-rsvg],[Disable SVG using librsvg.]))
+    AS_HELP_STRING([--disable-librsvg],[Disable SVG using librsvg.]))
 AC_ARG_ENABLE([imlib2],
     AS_HELP_STRING([--disable-imlib2],[Disable imlib2 rendering.
         @<:@default=enabled@:>@]))
@@ -417,7 +417,7 @@ then
     fi
 
     if test "x$enable_nanosvg" != xyes &&
-       test "x$enable_rsvg" != xno
+       test "x$enable_librsvg" != xno
     then
         PKG_CHECK_MODULES([LIBRSVG],[librsvg-2.0],[
             IMAGE_CFLAGS="$LIBRSVG_CFLAGS $IMAGE_CFLAGS"
