@@ -101,10 +101,31 @@ const char* rtls[] = {
     "ur",   // urdu
 };
 
-struct tListMeta {
-    LPCSTR title, key, icon;
-    LPCSTR const * const parent_sec;
-    enum eLoadFlags {
+struct tStaticMenuDescription {
+    LPCSTR key, icon;
+    const char ** parent_sec;
+};
+
+/*
+ * Two relevant columns from https://specifications.freedesktop.org/menu-spec/latest/apas02.html
+ * exported as CSV with , delimiter and with manual fix of HardwareSettings order.
+ *
+ * Powered by PERL! See contrib/conv_cat.pl
+ */
+
+#include "fdospecgen.h"
+
+
+char const * const par_sec_dummy[] = { nullptr };
+class tDesktopInfo;
+
+// shim class which describes the Menu related attributes, which can be fetched from static data or adjusted with localized or additional things from filesystem
+class tListMeta {
+    LPCSTR title = nullptr, icon = nullptr, key = nullptr;
+    tStaticMenuDescription *builtin_data = nullptr;
+    tListMeta() {}
+    /*
+    enum eLoadFlags :char {
         NONE = 0,
         DEFAULT_TRANSLATED = 1,
         SYSTEM_TRANSLATED = 2,
@@ -113,18 +134,41 @@ struct tListMeta {
         SYSTEM_ICON = 16,
     };
     short load_state_icon, load_state_title;
+*/
 
+    std::unordered_map<std::string, const tListMeta*> meta_lookup_data;
+    std::unordered_map<std::string, std::string> known_directory_files;
+
+public:
+    tListMeta(const tDesktopInfo&);
+    static tListMeta make_dummy() { return tListMeta();}
+    LPCSTR get_key() const {
+        if (key)
+            return key;
+        if (builtin_data && builtin_data->key)
+            return builtin_data->key;
+        return "<UNKNOWN>";
+    }
+    LPCSTR get_icon() const {
+        if (icon)
+            return icon;
+        if (builtin_data && builtin_data->icon)
+            return builtin_data->icon;
+        return "-";
+    }
     LPCSTR get_title() const {
-        auto ret = title ? title : key;
-        //printf("gt: %s\n", ret);
-        if (!load_state_title) {
-            return gettext(ret);
-        }
-        return ret;
+        if (title)
+            return title;
+        if (builtin_data && builtin_data->key)
+            return builtin_data->key;
+        return "<UNKNOWN>";
+    }
+    decltype(tStaticMenuDescription::parent_sec) get_parent_secs() const {
+        if (builtin_data)
+            return builtin_data->parent_sec;
+        return (const char**) &par_sec_dummy;
     }
 };
-
-std::unordered_map<std::string, const void*> meta_lookup_data, gh_directory_files;
 
 tListMeta* lookup_category(const std::string& key)
 {
@@ -134,8 +178,8 @@ tListMeta* lookup_category(const std::string& key)
     auto* ret = (tListMeta*) it->second;
 #ifdef CONFIG_I18N
         // auto-translate the default title for the user's language
-    if (ret && !ret->title)
-        ret->title = gettext(ret->key);
+    //if (ret && !ret->title)
+    //    ret->title = gettext(ret->key);
     //printf("Got title? %s -> %s\n", ret->key, ret->title);
 #endif
     return ret;
@@ -228,14 +272,14 @@ public:
                 if (nonempty(generic) && !strcasestr(title, generic)) {
                     if (right_to_left) {
                         printf("prog \"(%s) %s%s\" %s %s\n",
-                                generic, flat_pfx(), title, meta->icon, progCmd);
+                                generic, flat_pfx(), title, meta->get_icon(), progCmd);
                     } else {
                         printf("prog \"%s%s (%s)\" %s %s\n",
-                                flat_pfx(), title, generic, meta->icon, progCmd);
+                                flat_pfx(), title, generic, meta->get_icon(), progCmd);
                     }
                 }
                 else
-                    printf("prog \"%s%s\" %s %s\n", flat_pfx(), title, meta->icon, progCmd);
+                    printf("prog \"%s%s\" %s %s\n", flat_pfx(), title, meta->get_icon(), progCmd);
             }
             ctx->count++;
             return;
@@ -244,7 +288,8 @@ public:
         // else: render as menu
 
         if (ctx->level == 1 && !no_sep_others
-                && 0 == strcmp(meta->key, "Other")) {
+                && 0 == strcmp(meta->get_key(), "Other")) {
+
             ctx->print_separated = this;
             return;
         }
@@ -257,7 +302,7 @@ public:
             if (flat_output)
                 flat_add_level(title);
             else
-                printf("menu \"%s\" %s {\n", title, meta->icon);
+                printf("menu \"%s\" %s {\n", title, meta->get_icon());
         }
         ctx->level++;
 
@@ -328,7 +373,7 @@ public:
         tListMeta* pNewCatInfo = nullptr;
         tListMeta** ppLastMainCat = nullptr;
 
-        for (auto pSubCatName = subCatCandidate->parent_sec;
+        for (auto pSubCatName = subCatCandidate->get_parent_secs();
                 *pSubCatName; ++pSubCatName) {
             // stop nesting, add to the last visited/created submenu
             bool store_here = **pSubCatName == '|';
@@ -356,7 +401,7 @@ public:
 
                 // empty filter means ANY
                 if (**pSubCatName == '\0'
-                        || 0 == strcmp(*pSubCatName, (**ppMainCat).key)) {
+                    || 0 == strcmp(*pSubCatName, (**ppMainCat).get_key())) {
                     // the category is enabled!
                     skipping = false;
                     pTree = &root;
@@ -385,7 +430,7 @@ public:
             tListMeta *pResolved = lookup_category(*pCatKey);
             if (!pResolved)
                 continue;
-            if (!pResolved->parent_sec)
+            if (!pResolved->get_parent_secs())
                 matched_main_cats.add(pResolved);
             else
                 matched_sub_cats.add(pResolved);
@@ -407,15 +452,6 @@ public:
         }
     }
 };
-
-/*
- * Two relevant columns from https://specifications.freedesktop.org/menu-spec/latest/apas02.html
- * exported as CSV with , delimiter and with manual fix of HardwareSettings order.
- *
- * Powered by PERL! See contrib/conv_cat.pl
- */
-
-#include "fdospecgen.h"
 
 bool checkSuffix(const char* szFilename, const char* szFileSfx)
 {
@@ -469,23 +505,24 @@ public:
     }
 };
 
-tListMeta no_description = {nullptr,nullptr,nullptr,nullptr};
+tListMeta::tListMeta(const tDesktopInfo& dinfo) {
+    icon = Elvis((const char*) dinfo.get_icon_path(), "-");
+    title = key = Elvis(dinfo.get_name(), "<UNKNOWN>");
+}
 
-t_menu_node root(&no_description);
+t_menu_node root(tListMeta::make_dummy());
 
 // variant with local description data
 struct t_menu_node_app : t_menu_node
 {
     tListMeta description;
+
     t_menu_node_app(const tDesktopInfo& dinfo) : t_menu_node(&description),
-            description(no_description) {
-        description.icon = Elvis((const char*) dinfo.get_icon_path(), "-");
+            description(dinfo) {
 
         LPCSTR cmdraw = g_app_info_get_commandline((GAppInfo*) dinfo.pInfo);
         if (!cmdraw || !*cmdraw)
             return;
-
-        description.title = description.key = Elvis(dinfo.get_name(), "<UNKNOWN>");
 
         // if the strings contains the exe and then only file/url tags that we wouldn't
         // set anyway, THEN create a simplified version and use it later (if bSimpleCmd is true)
@@ -758,12 +795,9 @@ static void init() {
     //meta_lookup_data = g_hash_table_new(g_str_hash, g_str_equal);
     //gh_directory_files = g_hash_table_new(g_str_hash, g_str_equal);
 
-    for (unsigned i = 0; i < ACOUNT(spec::menuinfo); ++i) {
-        tListMeta& what = spec::menuinfo[i];
+    for (auto& what: spec::menuinfo) {
         if (no_sub_cats && what.parent_sec)
             continue;
-        // enforce non-const since we are not destroying that data ever, no key_destroy_func set!
-//        g_hash_table_insert(meta_lookup_data, (gpointer) what.key, &what);
         meta_lookup_data[what.key] = &what;
     }
 

@@ -25,17 +25,19 @@ for(<>)
 
 }
 
-print "LPCSTR $_\[\] = { \"$grps{$_}\", \"|\", NULL };\n" for(sort keys %grps);
 # start of the list, the end of the list are 
-print <<LSTART
-
+print "
+#include \"intl.h\"
 namespace spec {
+";
 
+print "const char* $_\[\] = { \"$grps{$_}\", \"|\", nullptr };\n" for(sort keys %grps);
+
+print "
 // statically presorted list of categories. See fdomenu.cc for details.
-tListMeta menuinfo[] =
+const tStaticMenuDescription menuinfo[] =
 {
-LSTART
-;
+";
 
 my @cats = sort(keys %secs,
 "Accessibility",
@@ -61,9 +63,9 @@ my @cats = sort(keys %secs,
 );
 for(@cats)
 {
-	my $ptr = $secs{$_} ? "(char**) &$secs{$_}" : "NULL";
-	print "// TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.".($hints{$_} ? " Context: $hints{$_}\n" : "\n");
-	print "    { N_(\"$_\"), \"$_\", \"folder\", $ptr, 0, 0}";
+	my $ptr = $secs{$_} ? "&$secs{$_}" : "nullptr";
+	print "// TRANSLATORS: This is a menu category name from https://specifications.freedesktop.org/menu-spec/menu-spec-1.0.html#category-registry . Please add spaces as needed but no double-quotes.".($hints{$_} ? " Context: $hints{$_}\n" : "\n");
+	print "    { N_(\"$_\"), \"folder\", (const char**) $ptr}";
 	print $_ eq $cats[-1] ? "\n" : ",\n";
 }
 print "};
