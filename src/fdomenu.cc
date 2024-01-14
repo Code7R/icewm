@@ -29,6 +29,7 @@
 #include <stack>
 #include <string>
 #include <algorithm>
+#include <unordered_map>
 
 char const* ApplicationName;
 
@@ -105,10 +106,15 @@ struct tListMeta {
     };
     short load_state_icon, load_state_title;
 };
-GHashTable* meta_lookup_data;
-tListMeta* lookup_category(LPCSTR key)
+
+std::unordered_map<std::string, const void*> meta_lookup_data, gh_directory_files;
+
+tListMeta* lookup_category(const std::string& key)
 {
-    auto* ret = (tListMeta*) g_hash_table_lookup(meta_lookup_data, key);
+    auto it = meta_lookup_data.find(key);
+    if (it == meta_lookup_data.end())
+        return nullptr;
+    auto* ret = (tListMeta*) it->second;
 #ifdef CONFIG_I18N
         // auto-translate the default title for the user's language
     if (ret && !ret->title)
@@ -310,7 +316,7 @@ public:
         tListMeta* pNewCatInfo = nullptr;
         tListMeta** ppLastMainCat = nullptr;
 
-        for (const char * const *pSubCatName = subCatCandidate->parent_sec;
+        for (auto pSubCatName = subCatCandidate->parent_sec;
                 *pSubCatName; ++pSubCatName) {
             // stop nesting, add to the last visited/created submenu
             bool store_here = **pSubCatName == '|';
@@ -445,20 +451,9 @@ public:
     }
 
     char * get_icon_path() const {
-        GIcon *pIcon = g_app_info_get_icon((GAppInfo*) pInfo);
+        auto pIcon = g_app_info_get_icon((GAppInfo*) pInfo);
         auto_gunref free_icon((GObject*) pIcon);
-
-        if (pIcon) {
-            char *icon_path = g_icon_to_string(pIcon);
-            if (!icon_path)
-                return nullptr;
-            // if absolute then we are done here
-            if (icon_path[0] == '/')
-                return icon_path;
-            // err, not owned! auto_gfree free_orig_icon_path(icon_path);
-            return icon_path;
-        }
-        return nullptr;
+        return pIcon ? g_icon_to_string(pIcon) : nullptr;
     }
 };
 
@@ -543,6 +538,14 @@ struct t_menu_node_app : t_menu_node
     }
 };
 
+gchar* get_stem(const gchar* full_path) {
+    gchar* bn(g_path_get_basename(full_path));
+    char* dot = strchr(bn, '.');
+    if (dot)
+        *dot = 0x0;
+    return bn;
+}
+
 struct tFromTo { LPCSTR from; LPCSTR to;};
 // match transformations applied by some DEs
 const tFromTo SameCatMap[] = {
@@ -574,14 +577,10 @@ void pickup_folder_info(LPCSTR szDesktopFile) {
     tListMeta* pCat = lookup_category(cat_name);
     if (!pCat)
     {
-        gchar* bn(g_path_get_basename(szDesktopFile));
+        auto bn = get_stem(szDesktopFile);
         auto_gfree cleanr(bn);
-        char* dot = strchr(bn, '.');
-        if (dot)
-        {
-            *dot = 0x0;
+        if (bn)
             pCat = lookup_category(bn);
-        }
     }
     for (const tFromTo* p = SameCatMap;
             !pCat && p < SameCatMap+ACOUNT(SameCatMap);
@@ -604,12 +603,14 @@ void pickup_folder_info(LPCSTR szDesktopFile) {
     if (pCat->load_state_title < tListMeta::SYSTEM_TRANSLATED) {
         char* cat_title = g_key_file_get_locale_string(kf, "Desktop Entry",
                                                        "Name", nullptr, nullptr);
-        if (!cat_title) return;
+        if (!cat_title)
+            return;
         pCat->title = cat_title;
         char* cat_title_c = g_key_file_get_string(kf, "Desktop Entry",
                                                   "Name", nullptr);
         bool same_trans = 0 == strcmp (cat_title_c, cat_title);
-        if (!same_trans) pCat->load_state_title = tListMeta::SYSTEM_TRANSLATED;
+        if (!same_trans)
+            pCat->load_state_title = tListMeta::SYSTEM_TRANSLATED;
         // otherwise: not sure, keep searching for a better translation
     }
     // something special, donate the icon to similar items unless they have a better one
@@ -626,10 +627,23 @@ void pickup_folder_info(LPCSTR szDesktopFile) {
             t->icon = pCat->icon;
             t->load_state_icon = tListMeta::FALLBACK_ICON;
         }
-
     }
 }
-
+/*
+void record_folder_info(LPCSTR szDesktopFile) {
+    LPCSTR dot(szDesktopFile), start(szDesktopFile);
+    for(auto p = szDesktopFile; *p; ++p)
+    {
+        if ('/' == *p)
+            start = p + 1;
+        else if ('.' == *p) {
+            dot = p;
+        }
+    }
+    // enforce non-const since we are not destroying that data ever, no key_destroy_func set!
+    g_hash_table_insert(meta_lookup_data, (gpointer) g_strndup(start, dot - start), g_strdup(szDesktopFile));
+}
+*/
 void insert_app_info(const char* szDesktopFile) {
     tDesktopInfo dinfo(szDesktopFile);
     if (!dinfo.pInfo)
@@ -651,7 +665,7 @@ void insert_app_info(const char* szDesktopFile) {
 }
 
 void proc_dir_rec(LPCSTR syspath, unsigned depth,
-        tFuncInsertInfo process_keyfile, LPCSTR szSubfolder,
+        tFuncInsertInfo cb, LPCSTR szSubfolder,
         LPCSTR szFileSfx) {
     gchar *path = g_strjoin("/", syspath, szSubfolder, NULL);
     auto_gfree relmem_path(path);
@@ -678,7 +692,7 @@ void proc_dir_rec(LPCSTR syspath, unsigned depth,
             }
             if (depth < ACOUNT(reclog)) {
                 reclog[++depth] = buf.st_ino;
-                proc_dir_rec(szFullName, depth, process_keyfile, szSubfolder,
+                proc_dir_rec(szFullName, depth, cb, szSubfolder,
                         szFileSfx);
                 --depth;
             }
@@ -688,7 +702,7 @@ void proc_dir_rec(LPCSTR syspath, unsigned depth,
         if (!S_ISREG(buf.st_mode))
             continue;
 
-        process_keyfile(szFullName);
+        cb(szFullName);
     }
 }
 
@@ -731,14 +745,16 @@ static void init() {
 
 #endif
 
-    meta_lookup_data = g_hash_table_new(g_str_hash, g_str_equal);
+    //meta_lookup_data = g_hash_table_new(g_str_hash, g_str_equal);
+    //gh_directory_files = g_hash_table_new(g_str_hash, g_str_equal);
 
     for (unsigned i = 0; i < ACOUNT(spec::menuinfo); ++i) {
         tListMeta& what = spec::menuinfo[i];
         if (no_sub_cats && what.parent_sec)
             continue;
         // enforce non-const since we are not destroying that data ever, no key_destroy_func set!
-        g_hash_table_insert(meta_lookup_data, (gpointer) what.key, &what);
+//        g_hash_table_insert(meta_lookup_data, (gpointer) what.key, &what);
+        meta_lookup_data[what.key] = &what;
     }
 
     const char* terminals[] = { terminal_option, getenv("TERMINAL"), TERM,
