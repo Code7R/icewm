@@ -21,7 +21,7 @@
 
 #include "config.h"
 #include "base.h"
-#include "sysdep.h"
+//#include "sysdep.h"
 #include "intl.h"
 #include "appnames.h"
 #include "ylocale.h"
@@ -30,6 +30,7 @@
 #include <string>
 #include <algorithm>
 #include <unordered_map>
+#include <map>
 
 char const* ApplicationName;
 
@@ -76,9 +77,16 @@ struct auto_raii {
 typedef auto_raii<gpointer, g_free> auto_gfree;
 typedef auto_raii<gpointer, g_object_unref> auto_gunref;
 
+/*
 static int cmpUtf8(const void *p1, const void *p2) {
     return g_utf8_collate((LPCSTR ) p1, (LPCSTR ) p2);
 }
+*/
+struct tLtUtf8 {
+    bool operator() (const std::string& a, const std::string& b) {
+        return g_utf8_collate(a.c_str(), b.c_str()) < 0;
+    }
+} lessThanUtf8;
 
 class tDesktopInfo;
 typedef YVec<const gchar*> tCharVec;
@@ -105,6 +113,12 @@ struct tListMeta {
         SYSTEM_ICON = 16,
     };
     short load_state_icon, load_state_title;
+
+    LPCSTR get_title() const {
+        auto ret = title ? title : key;
+        //printf("gt: %s\n", ret);
+        return ret;
+    }
 };
 
 std::unordered_map<std::string, const void*> meta_lookup_data, gh_directory_files;
@@ -182,28 +196,25 @@ extern t_menu_node root;
 struct t_menu_node {
 protected:
     // for leafs -> NULL, otherwise sub-menu contents
-    GTree* store;
+    std::map<std::string, const t_menu_node*, tLtUtf8> store;
     char* progCmd;
     const char* generic;
 public:
     const tListMeta *meta;
     t_menu_node(const tListMeta* desc):
-        store(nullptr), progCmd(nullptr), generic(nullptr), meta(desc) {}
+        progCmd(nullptr), generic(nullptr), meta(desc) {}
 
-    struct t_print_meta {
+    struct t_print_visitor {
         int count, level;
         t_menu_node* print_separated;
     };
-    static gboolean print_node(gpointer /*key*/, gpointer value, gpointer pr_meta) {
-        ((t_menu_node*) value)->print((t_print_meta*) pr_meta);
-        return FALSE;
-    }
 
-    void print(t_print_meta *ctx) {
-        if (!meta) return;
-        LPCSTR title = Elvis(meta->title, meta->key);
+    void print(t_print_visitor *ctx) {
+        if (!meta)
+            return;
+        auto title = meta->get_title();
 
-        if (!store)
+        if (store.empty())
         {
             if (title && progCmd &&
                     filter_matched(title, flat_pfxes.empty()
@@ -227,8 +238,7 @@ public:
             return;
         }
 
-        if (!g_tree_nnodes(store))
-            return;
+        // else: render as menu
 
         if (ctx->level == 1 && !no_sep_others
                 && 0 == strcmp(meta->key, "Other")) {
@@ -247,7 +257,11 @@ public:
                 printf("menu \"%s\" %s {\n", title, meta->icon);
         }
         ctx->level++;
-        g_tree_foreach(store, print_node, ctx);
+
+        for(auto& it: this->store) {
+            ((t_menu_node*) it.second)->print(ctx);
+        }
+
         if (ctx->level == 1 && ctx->print_separated)
         {
             fflush(stdout);
@@ -276,15 +290,15 @@ public:
      * Usual print method for the root node
      */
     void print() {
-        t_print_meta ctx = {0,0,nullptr};
+        t_print_visitor ctx = {0,0,nullptr};
         print(&ctx);
     }
 
-    void add(t_menu_node* node) {
-        if (!store)
-            store = g_tree_new(cmpUtf8);
-        if (node->meta->title || node->meta->key)
-            g_tree_replace(store, (gpointer) Elvis(node->meta->title, node->meta->key), (gpointer) node);
+    t_menu_node* add(t_menu_node* node) {
+        auto nam = node->meta->get_title();
+        if (nam)
+            store[nam] = node;
+        return node;
     }
 
     /**
@@ -292,15 +306,10 @@ public:
      * Creates one as needed or finds existing one.
      */
     t_menu_node* get_subtree(const tListMeta* info) {
-        const char* title = Elvis(info->title, info->key);
-        if (store) {
-            void* existing = g_tree_lookup(store, title);
-            if (existing)
-                return (t_menu_node*) existing;
-        }
-        t_menu_node* tree = new t_menu_node(info);
-        add(tree);
-        return tree;
+        auto title = info->get_title();
+        auto it = store.find(title);
+        return (it != store.end()) ? (t_menu_node*) it->second
+                                   : add(new t_menu_node(info));
     }
 
     /**
@@ -420,11 +429,11 @@ public:
         pInfo = g_desktop_app_info_new_from_filename(szFileName);
         if (!pInfo)
             return;
-// tear down if not permitted
+
+        // tear down if not permitted
         if (!g_app_info_should_show(*this)) {
             g_object_unref(pInfo);
             pInfo = nullptr;
-            return;
         }
     }
 
@@ -538,12 +547,25 @@ struct t_menu_node_app : t_menu_node
     }
 };
 
-gchar* get_stem(const gchar* full_path) {
-    gchar* bn(g_path_get_basename(full_path));
-    char* dot = strchr(bn, '.');
-    if (dot)
-        *dot = 0x0;
-    return bn;
+std::string get_stem(const std::string& full_path) {
+    LPCSTR dot(nullptr), start(full_path.c_str());
+    for(auto p = start; ; ++p)
+    {
+        if ('/' == *p)
+            start = p + 1;
+        else if ('.' == *p) {
+            dot = p;
+        }
+        else if (!*p) {
+            if (!dot)
+                dot = p;
+            else if (dot < start)
+                dot = p;
+
+            break;
+        }
+    }
+    return std::string(start, dot-start);
 }
 
 struct tFromTo { LPCSTR from; LPCSTR to;};
@@ -562,6 +584,7 @@ const tFromTo SameIconMap[] = {
         { "AudioVideo", "Audio" },
         { "AudioVideo", "Video" }
 };
+
 typedef void (*tFuncInsertInfo)(LPCSTR szDesktopFile);
 void pickup_folder_info(LPCSTR szDesktopFile) {
     GKeyFile *kf = g_key_file_new();
@@ -573,13 +596,12 @@ void pickup_folder_info(LPCSTR szDesktopFile) {
     // looks like bad data
     if (!cat_name || !*cat_name)
         return;
-    // try a perfect match by name or file name
-    tListMeta* pCat = lookup_category(cat_name);
+    // try a perfect match by path or file name
+    auto pCat = lookup_category(cat_name);
     if (!pCat)
     {
         auto bn = get_stem(szDesktopFile);
-        auto_gfree cleanr(bn);
-        if (bn)
+        if (!bn.empty())
             pCat = lookup_category(bn);
     }
     for (const tFromTo* p = SameCatMap;
@@ -615,8 +637,7 @@ void pickup_folder_info(LPCSTR szDesktopFile) {
     }
     // something special, donate the icon to similar items unless they have a better one
 
-    for (const tFromTo* p = SameIconMap; p < SameIconMap + ACOUNT(SameIconMap);
-            ++p) {
+    for (auto p = SameIconMap; p < SameIconMap + ACOUNT(SameIconMap); ++p) {
 
         if (strcmp (pCat->key, p->from))
             continue;
@@ -629,21 +650,7 @@ void pickup_folder_info(LPCSTR szDesktopFile) {
         }
     }
 }
-/*
-void record_folder_info(LPCSTR szDesktopFile) {
-    LPCSTR dot(szDesktopFile), start(szDesktopFile);
-    for(auto p = szDesktopFile; *p; ++p)
-    {
-        if ('/' == *p)
-            start = p + 1;
-        else if ('.' == *p) {
-            dot = p;
-        }
-    }
-    // enforce non-const since we are not destroying that data ever, no key_destroy_func set!
-    g_hash_table_insert(meta_lookup_data, (gpointer) g_strndup(start, dot - start), g_strdup(szDesktopFile));
-}
-*/
+
 void insert_app_info(const char* szDesktopFile) {
     tDesktopInfo dinfo(szDesktopFile);
     if (!dinfo.pInfo)
@@ -906,6 +913,8 @@ int main(int argc, char** argv) {
     }
 
     root.print();
+
+    //printf("What? %s\n", gettext("Building"));
 
     if (nonempty(usershare) && usershare != getenv("XDG_DATA_HOME"))
         g_free(usershare);
