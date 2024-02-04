@@ -1,0 +1,119 @@
+Building,Development
+Debugger,Development
+IDE,Development
+GUIDesigner,Development
+Profiling,Development
+RevisionControl,Development
+Translation,Development
+Calendar,Office
+ContactManagement,Office
+Database,Office or Development or Audio or Video
+Dictionary,Office or TextTools
+Chart,Office
+Email,Office or Network
+Finance,Office
+FlowChart,Office
+PDA,Office
+ProjectManagement,Office or Development
+Presentation,Office
+Spreadsheet,Office
+WordProcessor,Office
+2DGraphics,Graphics
+VectorGraphics,Graphics;2DGraphics
+RasterGraphics,Graphics;2DGraphics
+3DGraphics,Graphics
+Scanning,Graphics
+OCR,Graphics;Scanning
+Photography,Graphics or Office
+Publishing,Graphics or Office
+Viewer,Graphics or Office
+TextTools,Utility
+DesktopSettings,Settings
+HardwareSettings,Settings
+Printing,Settings;HardwareSettings
+PackageManager,Settings
+Dialup,Network
+InstantMessaging,Network
+Chat,Network
+IRCClient,Network
+Feed,Network
+FileTransfer,Network
+HamRadio,Network or Audio
+News,Network
+P2P,Network
+RemoteAccess,Network
+Telephony,Network
+TelephonyTools,Utility
+VideoConference,Network
+WebBrowser,Network
+WebDevelopment,Network or Development
+Midi,Audio or Video;Audio
+Mixer,Audio or Video;Audio
+Sequencer,Audio or Video;Audio
+Tuner,Audio or Video;Audio
+TV,Audio or Video;Video
+AudioVideoEditing,Audio or Video
+Player,Audio or Video
+Recorder,Audio or Video
+DiscBurning,Audio or Video
+ActionGame,Game
+AdventureGame,Game
+ArcadeGame,Game
+BoardGame,Game
+BlocksGame,Game
+CardGame,Game
+KidsGame,Game
+LogicGame,Game
+RolePlaying,Game
+Shooter,Game
+Simulation,Game
+SportsGame,Game
+StrategyGame,Game
+Art,Education or Science
+Construction,Education or Science
+Music,Audio or Video or Education
+Languages,Education or Science
+ArtificialIntelligence,Education or Science
+Astronomy,Education or Science
+Biology,Education or Science
+Chemistry,Education or Science
+ComputerScience,Education or Science
+DataVisualization,Education or Science
+Economy,Education or Science
+Electricity,Education or Science
+Geography,Education or Science
+Geology,Education or Science
+Geoscience,Education or Science
+History,Education or Science
+Humanities,Education or Science
+ImageProcessing,Education or Science
+Literature,Education or Science
+Maps,Education or Science or Utility
+Math,Education or Science
+NumericalAnalysis,Education;Math or Science;Math
+MedicalSoftware,Education or Science
+Physics,Education or Science
+Robotics,Education or Science
+Spirituality,Education or Science or Utility
+Sports,Education or Science
+ParallelComputing,Education;ComputerScience or Science;ComputerScience
+Amusement,
+Archiving,Utility
+Compression,Utility or Archiving
+Electronics,
+Emulator,System or Game
+Engineering,
+FileTools,Utility or System
+FileManager,System;FileTools
+TerminalEmulator,System
+Filesystem,System
+Monitor,System or Network
+Security,Settings or System
+Accessibility,Settings or Utility
+Calculator,Utility
+Clock,Utility
+TextEditor,Utility
+Documentation,
+Adult,
+Core,
+ConsoleOnly,

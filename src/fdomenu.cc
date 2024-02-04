@@ -101,11 +101,6 @@ const char* rtls[] = {
     "ur",   // urdu
 };
 
-struct tStaticMenuDescription {
-    LPCSTR key, icon;
-    const char ** parent_sec;
-};
-
 /*
  * Two relevant columns from https://specifications.freedesktop.org/menu-spec/latest/apas02.html
  * exported as CSV with , delimiter and with manual fix of HardwareSettings order.
@@ -118,6 +113,157 @@ struct tStaticMenuDescription {
 
 char const * const par_sec_dummy[] = { nullptr };
 class tDesktopInfo;
+
+
+void decorate_and_print();
+
+
+// little adapter class to extract information we get from desktop files using GLib methods
+class tDesktopInfo {
+    GDesktopAppInfo *pInfo = nullptr;
+    LPCSTR d_file = nullptr;
+    char* found_name = nullptr;
+public:
+    tDesktopInfo(LPCSTR szFileName) : d_file(strdup(szFileName))  {
+        pInfo = g_desktop_app_info_new_from_filename(szFileName);
+        if (!pInfo)
+            return;
+
+        // tear down if not permitted
+        if (!g_app_info_should_show(*this)) {
+            g_object_unref(pInfo);
+            pInfo = nullptr;
+        }
+    }
+
+    inline operator GAppInfo*() {
+        return (GAppInfo*) pInfo;
+    }
+
+    inline operator GDesktopAppInfo*() {
+        return pInfo;
+    }
+
+    ~tDesktopInfo() {
+        // XXX: call g_free on pInfo? free on d_file?
+     }
+
+    LPCSTR get_name() const {
+        if (!pInfo)
+            return nullptr;
+        if (found_name)
+            return found_name;
+        found_name = g_app_info_get_display_name((GAppInfo*) pInfo);
+        if (found_name)
+            return found_name;
+        return found_name = g_desktop_app_info_get_generic_name(pInfo);
+    }
+#if 0
+    LPCSTR get_generic() const {
+        if (!pInfo || !generic_name)
+            return nullptr;
+        return g_desktop_app_info_get_generic_name(pInfo);
+    }
+    #endif
+
+    char * get_icon_path() const {
+        auto pIcon = g_app_info_get_icon((GAppInfo*) pInfo);
+        auto_gunref free_icon((GObject*) pIcon);
+        return pIcon ? g_icon_to_string(pIcon) : nullptr;
+    }
+
+    // split tokens into a list, to be cleared by g_strfreev
+    gchar** get_cat_tokens() {
+
+        LPCSTR pCats = g_desktop_app_info_get_categories(pInfo);
+        if (!pCats)
+            pCats = "Other";
+        if (0 == strncmp(pCats, "X-", 2))
+            return (gchar**) malloc(0);
+
+        return g_strsplit(pCats, ";", -1);
+    }
+
+#error FIXME, memory cleanup
+    std::unique_ptr<LPCSTR, free_functor> get_launch_cmd() {
+
+        LPCSTR cmdraw = g_app_info_get_commandline((GAppInfo*) pInfo);
+        if (!cmdraw || !*cmdraw)
+            return g_strdup("-");
+
+        // if the strings contains the exe and then only file/url tags that we wouldn't
+        // set anyway, THEN create a simplified version and use it later (if bSimpleCmd is true)
+        // OR use the original command through a wrapper (if bSimpleCmd is false)
+        bool bUseSimplifiedCmd = true;
+        gchar * cmdMod = g_strdup(cmdraw);
+        gchar *pcut = strpbrk(cmdMod, " \f\n\r\t\v");
+
+        if (pcut) {
+            bool bExpectXchar = false;
+            for (gchar *p = pcut; *p && bUseSimplifiedCmd; ++p) {
+                int c = (unsigned) *p;
+                if (bExpectXchar) {
+                    if (strchr("FfuU", c))
+                        bExpectXchar = false;
+                    else
+                        bUseSimplifiedCmd = false;
+                    continue;
+                } else if (c == '%') {
+                    bExpectXchar = true;
+                    continue;
+                } else {
+                    if (isspace(unsigned(c)))
+                        continue;
+                    else {
+                        if (!strchr(p, '%'))
+                            goto cmdMod_is_good_as_is;
+                        else
+                            bUseSimplifiedCmd = false;
+                    }
+                }
+            }
+
+            if (bExpectXchar)
+                bUseSimplifiedCmd = false;
+            if (bUseSimplifiedCmd)
+                *pcut = '\0';
+            cmdMod_is_good_as_is: ;
+        }
+
+        bool bForTerminal = false;
+    #if GLIB_VERSION_CUR_STABLE >= G_ENCODE_VERSION(2, 36)
+        bForTerminal = g_desktop_app_info_get_boolean(pInfo, "Terminal");
+    #else
+        // cannot check terminal property, callback is as safe bet
+        bUseSimplifiedCmd = false;
+    #endif
+
+        char *alt = nullptr;
+        if (bUseSimplifiedCmd && !bForTerminal) // best case
+            return cmdMod;
+        else if (bForTerminal && nonempty(terminal_command))
+            progCmd = g_strjoin(" ", terminal_command, "-e", cmdMod, NULL);
+        else
+            // not simple command or needs a terminal started via launcher callback, or both
+            progCmd = g_strdup_printf("%s \"%s\"", ApplicationName, dinfo.d_file);
+        if (cmdMod && cmdMod != progCmd)
+            g_free(cmdMod), cmdMod = nullptr;
+    }
+};
+
+struct tMenuAnchor {
+    // list of application elements, ordered by the translated names
+    std::map<LPCSTR, tDesktopInfo*, lessThanUtf8> translated_apps;
+    bool is_localized_builtin = false;
+    bool is_localized_system = false;
+    std::string icon_name = "folder";
+};
+
+
+struct tStaticMenuDescription {
+    LPCSTR key, icon;
+    const char ** parent_sec;
+};
 
 // shim class which describes the Menu related attributes, which can be fetched from static data or adjusted with localized or additional things from filesystem
 class tListMeta {
@@ -170,8 +316,11 @@ public:
     }
 };
 
+
 tListMeta* lookup_category(const std::string& key)
 {
+            #ifdef OLD_IMP
+
     auto it = meta_lookup_data.find(key);
     if (it == meta_lookup_data.end())
         return nullptr;
@@ -183,6 +332,9 @@ tListMeta* lookup_category(const std::string& key)
     //printf("Got title? %s -> %s\n", ret->key, ret->title);
 #endif
     return ret;
+    #else
+return nullptr;
+    #endif
 }
 
 std::stack<std::string> flat_pfxes;
@@ -459,58 +611,16 @@ bool checkSuffix(const char* szFilename, const char* szFileSfx)
     return pSfx && 0 == strcmp(pSfx+1, szFileSfx);
 }
 
-// for short-living objects describing the information we get from desktop files
-class tDesktopInfo {
-public:
-    GDesktopAppInfo *pInfo;
-    LPCSTR d_file;
-    tDesktopInfo(LPCSTR szFileName) : d_file(szFileName)  {
-        pInfo = g_desktop_app_info_new_from_filename(szFileName);
-        if (!pInfo)
-            return;
-
-        // tear down if not permitted
-        if (!g_app_info_should_show(*this)) {
-            g_object_unref(pInfo);
-            pInfo = nullptr;
-        }
-    }
-
-    inline operator GAppInfo*() {
-        return (GAppInfo*) pInfo;
-    }
-
-    inline operator GDesktopAppInfo*() {
-        return pInfo;
-    }
-
-    ~tDesktopInfo() { }
-
-    LPCSTR get_name() const {
-        if (!pInfo)
-            return nullptr;
-        return g_app_info_get_display_name((GAppInfo*) pInfo);
-    }
-
-    LPCSTR get_generic() const {
-        if (!pInfo || !generic_name)
-            return nullptr;
-        return g_desktop_app_info_get_generic_name(pInfo);
-    }
-
-    char * get_icon_path() const {
-        auto pIcon = g_app_info_get_icon((GAppInfo*) pInfo);
-        auto_gunref free_icon((GObject*) pIcon);
-        return pIcon ? g_icon_to_string(pIcon) : nullptr;
-    }
-};
 
 tListMeta::tListMeta(const tDesktopInfo& dinfo) {
     icon = Elvis((const char*) dinfo.get_icon_path(), "-");
     title = key = Elvis(dinfo.get_name(), "<UNKNOWN>");
 }
 
+        #ifdef OLD_IMP
+
 t_menu_node root(tListMeta::make_dummy());
+#endif
 
 // variant with local description data
 struct t_menu_node_app : t_menu_node
@@ -579,7 +689,7 @@ struct t_menu_node_app : t_menu_node
             // not simple command or needs a terminal started via launcher callback, or both
             progCmd = g_strdup_printf("%s \"%s\"", ApplicationName, dinfo.d_file);
         if (cmdMod && cmdMod != progCmd)
-            g_free(cmdMod);
+            g_free(cmdMod), cmdMod = nullptr;
         generic = dinfo.get_generic();
     }
     ~t_menu_node_app() {
@@ -654,6 +764,8 @@ void pickup_folder_info(LPCSTR szDesktopFile) {
 
     if (!pCat)
         return;
+
+        #ifdef OLD_IMP
     if (pCat->load_state_icon < tListMeta::SYSTEM_ICON) {
         LPCSTR icon_name = g_key_file_get_string (kf, "Desktop Entry",
                                                        "Icon", nullptr);
@@ -673,6 +785,7 @@ void pickup_folder_info(LPCSTR szDesktopFile) {
         bool same_trans = 0 == strcmp (cat_title_c, cat_title);
         if (!same_trans)
             pCat->load_state_title = tListMeta::SYSTEM_TRANSLATED;
+
         // otherwise: not sure, keep searching for a better translation
     }
     // something special, donate the icon to similar items unless they have a better one
@@ -689,6 +802,8 @@ void pickup_folder_info(LPCSTR szDesktopFile) {
             t->load_state_icon = tListMeta::FALLBACK_ICON;
         }
     }
+                #endif
+
 }
 
 void insert_app_info(const char* szDesktopFile) {
@@ -795,12 +910,14 @@ static void init() {
     //meta_lookup_data = g_hash_table_new(g_str_hash, g_str_equal);
     //gh_directory_files = g_hash_table_new(g_str_hash, g_str_equal);
 
+#ifdef OLD_IMP
+
     for (auto& what: spec::menuinfo) {
         if (no_sub_cats && what.parent_sec)
             continue;
         meta_lookup_data[what.key] = &what;
     }
-
+#endif
     const char* terminals[] = { terminal_option, getenv("TERMINAL"), TERM,
                                 "urxvt", "alacritty", "roxterm", "xterm",
                                 "x-terminal-emulator", "terminator" };
@@ -938,18 +1055,20 @@ int main(int argc, char** argv) {
     split_folders(usershare, home_folders);
 
     for(auto& where: sys_home_folders) {
+        for (auto p = where->data; p < where->data + where->size; ++p)
+            proc_dir_rec(*p, 0, insert_app_info, "applications", "desktop");
+    }
+
+
+    for(auto& where: sys_home_folders) {
         for (auto p = where->data; p < where->data + where->size; ++p) {
             proc_dir_rec(*p, 0, pickup_folder_info, "desktop-directories",
                     "directory");
         }
     }
 
-    for(auto& where: sys_home_folders) {
-        for (auto p = where->data; p < where->data + where->size; ++p)
-            proc_dir_rec(*p, 0, insert_app_info, "applications", "desktop");
-    }
-
-    root.print();
+    //root.print();
+    decorate_and_print();
 
     //printf("What? %s\n", gettext("Building"));
 
