@@ -30,7 +30,24 @@
 #include <string>
 #include <algorithm>
 #include <unordered_map>
+#include <unordered_set>
 #include <map>
+#include <set>
+#include <memory>
+#include <array>
+#include <locale>
+#include <vector>
+
+using namespace std;
+
+/*
+ * Two relevant columns from https://specifications.freedesktop.org/menu-spec/latest/apas02.html
+ * exported as CSV with , delimiter and with manual fix of HardwareSettings order.
+ *
+ * Powered by PERL! See contrib/conv_cat.pl
+ */
+
+#include "fdospecgen.h"
 
 char const* ApplicationName;
 
@@ -77,21 +94,42 @@ struct auto_raii {
 typedef auto_raii<gpointer, g_free> auto_gfree;
 typedef auto_raii<gpointer, g_object_unref> auto_gunref;
 
+auto cstr_deleter = [](char* ptr)
+{
+    free((void*) ptr);
+};
+using cstr_unique = std::unique_ptr<char*, decltype(cstr_deleter)>;
+
 /*
 static int cmpUtf8(const void *p1, const void *p2) {
     return g_utf8_collate((LPCSTR ) p1, (LPCSTR ) p2);
 }
 */
+
+/*
 struct tLtUtf8 {
     bool operator() (const std::string& a, const std::string& b) {
-        return g_utf8_collate(a.c_str(), b.c_str()) < 0;
+        //return g_utf8_collate(a.c_str(), b.c_str()) < 0;
+        //static auto& f = std::use_facet<std::collate<const char>>(std::locale::classic);
+
     }
 } lessThanUtf8;
+*/
+struct tLessOp4Localized {
+    std::locale loc; // default locale
+    const std::collate<char>& coll = std::use_facet<std::collate<char> >(loc);
+    bool operator() (const std::string& a, const std::string& b) {
+        return coll.compare (a.data(), a.data() + a.size(), 
+                                     b.data(), b.data()+b.size()) < 0;
+    }
+} locStringComper;
 
 class tDesktopInfo;
 typedef YVec<const gchar*> tCharVec;
 tCharVec sys_folders, home_folders;
-tCharVec* sys_home_folders[] = { &sys_folders, &home_folders };
+std::array<tCharVec*, 2> sys_home_folders = { &sys_folders, &home_folders };
+std::array<tCharVec*, 2> home_sys_folders = { &home_folders, &sys_folders };
+
 const char* rtls[] = {
     "ar",   // arabic
     "fa",   // farsi
@@ -101,19 +139,8 @@ const char* rtls[] = {
     "ur",   // urdu
 };
 
-/*
- * Two relevant columns from https://specifications.freedesktop.org/menu-spec/latest/apas02.html
- * exported as CSV with , delimiter and with manual fix of HardwareSettings order.
- *
- * Powered by PERL! See contrib/conv_cat.pl
- */
-
-#include "fdospecgen.h"
-
 
 char const * const par_sec_dummy[] = { nullptr };
-class tDesktopInfo;
-
 
 void decorate_and_print();
 
@@ -121,10 +148,9 @@ void decorate_and_print();
 // little adapter class to extract information we get from desktop files using GLib methods
 class tDesktopInfo {
     GDesktopAppInfo *pInfo = nullptr;
-    LPCSTR d_file = nullptr;
-    char* found_name = nullptr;
+    mutable std::string found_name;
 public:
-    tDesktopInfo(LPCSTR szFileName) : d_file(strdup(szFileName))  {
+    tDesktopInfo(LPCSTR szFileName) {
         pInfo = g_desktop_app_info_new_from_filename(szFileName);
         if (!pInfo)
             return;
@@ -134,6 +160,9 @@ public:
             g_object_unref(pInfo);
             pInfo = nullptr;
         }
+        found_name = g_app_info_get_display_name((GAppInfo*) pInfo);
+        if (found_name.empty())
+            found_name = g_desktop_app_info_get_generic_name(pInfo);
     }
 
     inline operator GAppInfo*() {
@@ -144,27 +173,21 @@ public:
         return pInfo;
     }
 
-    ~tDesktopInfo() {
-        // XXX: call g_free on pInfo? free on d_file?
-     }
+    inline operator bool() {
+        return pInfo;
+    }
 
-    LPCSTR get_name() const {
-        if (!pInfo)
-            return nullptr;
-        if (found_name)
-            return found_name;
-        found_name = g_app_info_get_display_name((GAppInfo*) pInfo);
-        if (found_name)
-            return found_name;
-        return found_name = g_desktop_app_info_get_generic_name(pInfo);
+    //~tDesktopInfo() {
+        // XXX: call g_free on pInfo? free on d_file?
+     //}
+
+    const std::string& get_name() const {
+        return found_name;
     }
-#if 0
-    LPCSTR get_generic() const {
-        if (!pInfo || !generic_name)
-            return nullptr;
-        return g_desktop_app_info_get_generic_name(pInfo);
+
+    bool operator<(const tDesktopInfo& other) const {
+        return locStringComper.operator()(get_name(), other.get_name());
     }
-    #endif
 
     char * get_icon_path() const {
         auto pIcon = g_app_info_get_icon((GAppInfo*) pInfo);
@@ -184,80 +207,146 @@ public:
         return g_strsplit(pCats, ";", -1);
     }
 
-#error FIXME, memory cleanup
-    std::unique_ptr<LPCSTR, free_functor> get_launch_cmd() {
-
+    std::string get_launch_cmd() {
         LPCSTR cmdraw = g_app_info_get_commandline((GAppInfo*) pInfo);
         if (!cmdraw || !*cmdraw)
-            return g_strdup("-");
+            return "-";
+        using namespace std;
+        string ret(cmdraw);
+        auto p = ret.find_first_not_of(" \f\n\r\t\v");
+        if (p != string::npos)
+            ret = ret.substr(p);
+        
+        // detect URLs and expansion patterns which wouldn't work with plain exec
+        auto use_direct_call = ret.find_first_of(":%") == string::npos;
 
-        // if the strings contains the exe and then only file/url tags that we wouldn't
-        // set anyway, THEN create a simplified version and use it later (if bSimpleCmd is true)
-        // OR use the original command through a wrapper (if bSimpleCmd is false)
-        bool bUseSimplifiedCmd = true;
-        gchar * cmdMod = g_strdup(cmdraw);
-        gchar *pcut = strpbrk(cmdMod, " \f\n\r\t\v");
-
-        if (pcut) {
-            bool bExpectXchar = false;
-            for (gchar *p = pcut; *p && bUseSimplifiedCmd; ++p) {
-                int c = (unsigned) *p;
-                if (bExpectXchar) {
-                    if (strchr("FfuU", c))
-                        bExpectXchar = false;
-                    else
-                        bUseSimplifiedCmd = false;
-                    continue;
-                } else if (c == '%') {
-                    bExpectXchar = true;
-                    continue;
-                } else {
-                    if (isspace(unsigned(c)))
-                        continue;
-                    else {
-                        if (!strchr(p, '%'))
-                            goto cmdMod_is_good_as_is;
-                        else
-                            bUseSimplifiedCmd = false;
-                    }
-                }
-            }
-
-            if (bExpectXchar)
-                bUseSimplifiedCmd = false;
-            if (bUseSimplifiedCmd)
-                *pcut = '\0';
-            cmdMod_is_good_as_is: ;
-        }
-
-        bool bForTerminal = false;
+        auto bForTerminal = false;
     #if GLIB_VERSION_CUR_STABLE >= G_ENCODE_VERSION(2, 36)
         bForTerminal = g_desktop_app_info_get_boolean(pInfo, "Terminal");
     #else
         // cannot check terminal property, callback is as safe bet
-        bUseSimplifiedCmd = false;
+        use_direct_call = false;
     #endif
 
-        char *alt = nullptr;
-        if (bUseSimplifiedCmd && !bForTerminal) // best case
-            return cmdMod;
-        else if (bForTerminal && nonempty(terminal_command))
-            progCmd = g_strjoin(" ", terminal_command, "-e", cmdMod, NULL);
-        else
-            // not simple command or needs a terminal started via launcher callback, or both
-            progCmd = g_strdup_printf("%s \"%s\"", ApplicationName, dinfo.d_file);
-        if (cmdMod && cmdMod != progCmd)
-            g_free(cmdMod), cmdMod = nullptr;
+        if (use_direct_call && !bForTerminal) // best case
+            return ret;
+        
+        if (bForTerminal && nonempty(terminal_command))
+            return std::string(terminal_command) + " -e " + ret;
+        
+        // not simple command or needs a terminal started via launcher callback, or both
+        return std::string(ApplicationName) + " \"" + g_desktop_app_info_get_filename(pInfo) + "\"";
     }
 };
 
 struct tMenuAnchor {
     // list of application elements, ordered by the translated names
-    std::map<LPCSTR, tDesktopInfo*, lessThanUtf8> translated_apps;
+    std::set<tDesktopInfo> translated_apps;
     bool is_localized_builtin = false;
     bool is_localized_system = false;
     std::string icon_name = "folder";
+
+    static tMenuAnchor& find_menu_anchor(tDesktopInfo& dinfo);
+    void add(tDesktopInfo&& app) { translated_apps.emplace(std::move(app)); }
 };
+
+// helper to collect everything later
+//struct tMenuAnchorKey {
+//    std::array<LPCSTR, 4> levels = {0, 0, 0, 0};
+//};
+
+using tMenuAnchorKey = std::array<LPCSTR, 4>;
+
+// all pointer ordered which is okay, we operate on static entries
+std::unordered_map<tMenuAnchorKey, tMenuAnchor> all_content;
+std::unordered_set<LPCSTR> seen_cats;
+tMenuAnchor garbage_bin;
+
+tMenuAnchor& setup_anchor(tMenuAnchorKey key) {
+    for(auto x: key) if(x) seen_cats.emplace(x);
+    return all_content[key];
+}
+/*
+tMenuAnchor& setup_anchor(LPCSTR main_cat, LPCSTR sub_cat = nullptr,
+                         LPCSTR sub_sub_cat = nullptr,
+                         LPCSTR sub_sub_sub_cat = nullptr) {
+return setup_anchor({main_cat, sub_cat, sub_sub_cat, sub_sub_sub_cat});
+}
+*/
+LPCSTR dig_key(tMenuAnchorKey& key, LPCSTR prev_key, unsigned depth) {
+    
+
+       
+            spec::mapping wanted(scat, nullptr, nullptr);
+            auto from_to = equal_range(spec::subcat_to_maincat, spec::subcat_to_maincat + ACOUNT(spec::subcat_to_maincat),
+             wanted, 
+                [](const spec::mapping &a, const spec::mapping &b) { return strcmp(get<0>(a), get<0>(b)) < 0; } );
+
+
+    depth++;
+    if(depth >= key.size())
+        return;
+    key[depth] = dig_key(key, depth);
+}
+
+tMenuAnchor& tMenuAnchor::find_menu_anchor(tDesktopInfo& dinfo) {
+
+    LPCSTR pCats = g_desktop_app_info_get_categories(dinfo);
+    
+    if (!pCats)
+        pCats = "Other";
+    if (0 == strncmp(pCats, "X-", 2))
+        return garbage_bin;
+
+    auto ppCats = dinfo.get_cat_tokens();
+    if (!ppCats)
+        return garbage_bin;
+
+    // Pigeonholing roughly by guessed menu structure
+    using namespace std;
+    static vector<LPCSTR> mcats, scats;
+    mcats.clear();
+    scats.clear();
+
+    for(auto p = *ppCats; *p; p++) {
+        auto endex = spec::mcat::sall + ACOUNT(spec::mcat::sall);
+        auto is_mcat = binary_search(spec::mcat::sall, endex,
+             [](LPCSTR a, LPCSTR b) { return strcmp(a, b) < 0; } );
+        (is_mcat ? mcats : scats).push_back(p);
+    }
+
+    auto endex = spec::subcat_to_maincat + ACOUNT(spec::subcat_to_maincat);
+    bool found_subcat = false;
+    for(auto &mcat: mcats) {
+        for (auto &scat: scats) {
+            spec::mapping wanted(scat, nullptr, nullptr);
+            auto from_to = equal_range(spec::subcat_to_maincat, endex, wanted, 
+                [](const spec::mapping &a, const spec::mapping &b) { return strcmp(get<0>(a), get<0>(b)) < 0; } );
+            if (from_to.first == endex)
+                continue;
+            found_subcat = true;
+
+            for(auto it = from_to.first; it != from_to.second; ++it) {
+                auto mc = get<0>(*it);
+                auto sc = get<1>(*it);
+                auto altsc = get<2>(*it);
+                if (mc) {
+                    // perfect match, fast path
+                    setup_anchor({mc, sc, 0, 0}).add(move(dinfo));
+                }
+                else {
+                    tMenuAnchorKey key = {}
+                    for(unsigned i = 0; i < 4; ++i) {
+
+                    }
+                }
+            }
+        }
+    }
+
+
+    g_strfreev(ppCats);
+}
 
 
 struct tStaticMenuDescription {
@@ -808,22 +897,11 @@ void pickup_folder_info(LPCSTR szDesktopFile) {
 
 void insert_app_info(const char* szDesktopFile) {
     tDesktopInfo dinfo(szDesktopFile);
-    if (!dinfo.pInfo)
+    if (!dinfo)
         return;
 
-    LPCSTR pCats = g_desktop_app_info_get_categories(dinfo.pInfo);
-    if (!pCats)
-        pCats = "Other";
-    if (0 == strncmp(pCats, "X-", 2))
-        return;
-
-    t_menu_node* pNode = new t_menu_node_app(dinfo);
-    // Pigeonholing roughly by guessed menu structure
-
-    gchar **ppCats = g_strsplit(pCats, ";", -1);
-    root.add_by_categories(pNode, ppCats);
-    g_strfreev(ppCats);
-
+    auto& to_where = tMenuAnchor::find_menu_anchor(dinfo);
+    to_where.translated_apps.insert(std::move(dinfo));
 }
 
 void proc_dir_rec(LPCSTR syspath, unsigned depth,
@@ -1054,15 +1132,15 @@ int main(int argc, char** argv) {
     split_folders(sysshare, sys_folders);
     split_folders(usershare, home_folders);
 
-    for(auto& where: sys_home_folders) {
-        for (auto p = where->data; p < where->data + where->size; ++p)
-            proc_dir_rec(*p, 0, insert_app_info, "applications", "desktop");
+    for(auto& where: home_sys_folders) {
+        for (auto p: *where)
+            proc_dir_rec(p, 0, insert_app_info, "applications", "desktop");
     }
 
 
-    for(auto& where: sys_home_folders) {
-        for (auto p = where->data; p < where->data + where->size; ++p) {
-            proc_dir_rec(*p, 0, pickup_folder_info, "desktop-directories",
+    for(auto& where: home_sys_folders) {
+        for (auto p: *where) {
+            proc_dir_rec(p, 0, pickup_folder_info, "desktop-directories",
                     "directory");
         }
     }
