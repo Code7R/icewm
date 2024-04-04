@@ -193,6 +193,11 @@ XSV(const char *, shutdownCommand,              "test -e /run/systemd/system && 
 XSV(const char *, rebootCommand,                "test -e /run/systemd/system && systemctl reboot || sudo -n /sbin/reboot")
 XSV(const char *, suspendCommand,               "test -e /run/systemd/system && systemctl suspend || sudo -n /usr/sbin/pm-suspend")
 XSV(const char *, hibernateCommand,             "test -e /run/systemd/system && systemctl hibernate || sudo -n /usr/sbin/pm-hibernate")
+#elif __OpenBSD__ || __NetBSD__ || __FreeBSD__
+XSV(const char *, shutdownCommand,              "shutdown -p now")
+XSV(const char *, rebootCommand,                "shutdown -r now")
+XSV(const char *, suspendCommand,               "zzz")
+XSV(const char *, hibernateCommand,             0)
 #else
 XSV(const char *, shutdownCommand,              0)
 XSV(const char *, rebootCommand,                0)
