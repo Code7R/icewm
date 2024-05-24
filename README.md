@@ -1,4 +1,4 @@
-[icewm -- read me first file.  2022-12-20]: #
+[icewm -- read me first file.  2024-03-25]: #
 
 Ice Window Manager (IceWM)
 ==========================
@@ -19,7 +19,7 @@ list, and various other GitHub forks.
 Release
 -------
 
-This is the `icewm-3.4.7` package, released 2024-03-25.  This release, and
+This is the `icewm-3.5.0` package, released 2024-05-20.  This release, and
 the latest version, can be obtained from [GitHub][1], using a command such as:
 
     $> git clone https://github.com/bbidulock/icewm.git
@@ -167,30 +167,30 @@ translations.  If you have difficulties using the tools, just send me the update
 
 [1]: https://github.com/bbidulock/icewm
 [2]: https://github.com/bbidulock/icewm/issues
-[3]: https://github.com/ice-wm/icewm/blob/3.4.7/NEWS
-[4]: https://github.com/ice-wm/icewm/blob/3.4.7/ChangeLog
-[5]: https://github.com/ice-wm/icewm/blob/3.4.7/TODO
-[6]: https://github.com/ice-wm/icewm/blob/3.4.7/COMPLIANCE
-[7]: https://github.com/ice-wm/icewm/blob/3.4.7/INSTALL
-[8]: https://github.com/ice-wm/icewm/blob/3.4.7/BUGS
-[9]: https://github.com/ice-wm/icewm/blob/3.4.7/COPYING
+[3]: https://github.com/ice-wm/icewm/blob/3.5.0/NEWS
+[4]: https://github.com/ice-wm/icewm/blob/3.5.0/ChangeLog
+[5]: https://github.com/ice-wm/icewm/blob/3.5.0/TODO
+[6]: https://github.com/ice-wm/icewm/blob/3.5.0/COMPLIANCE
+[7]: https://github.com/ice-wm/icewm/blob/3.5.0/INSTALL
+[8]: https://github.com/ice-wm/icewm/blob/3.5.0/BUGS
+[9]: https://github.com/ice-wm/icewm/blob/3.5.0/COPYING
 [10]: https://github.com/
 [11]: https://l10n.opensuse.org/projects/icewm/icewm-1-4-branch/
 [12]: https://sourceforge.net/projects/icewm/
 [13]: https://ice-wm.org/
 [14]: https://ice-wm.org/FAQ/
-[15]: https://github.com/ice-wm/icewm/blob/3.4.7/doc/icewm.adoc
+[15]: https://ice-wm.org/manual/
 [16]: https://github.com/bbidulock/bbkeys/
-[17]: https://github.com/ice-wm/icewm/blob/3.4.7/lib/icewm.desktop
-[18]: https://github.com/ice-wm/icewm/blob/3.4.7/lib/icewm-session.desktop
-[19]: https://github.com/ice-wm/icewm/blob/3.4.7/INSTALL-cmakebuild.md
-[20]: https://github.com/bbidulock/xde-menu/
-[21]: https://github.com/ice-wm/icewm/blob/3.4.7/man/icesound.pod
-[22]: https://github.com/ice-wm/icewm/blob/3.4.7/man/icewmbg.pod
-[23]: https://github.com/ice-wm/icewm/blob/3.4.7/man/icewmhint.pod
-[24]: https://github.com/ice-wm/icewm/blob/3.4.7/man/icewm-menu-fdo.pod
-[25]: https://github.com/ice-wm/icewm/blob/3.4.7/man/icesh.pod
-[26]: https://github.com/ice-wm/icewm/blob/3.4.7/man/icewm.pod
-[27]: https://github.com/ice-wm/icewm/blob/3.4.7/man/icewm-session.pod
+[17]: https://github.com/ice-wm/icewm/blob/master/lib/icewm.desktop
+[18]: https://github.com/ice-wm/icewm/blob/master/lib/icewm-session.desktop
+[19]: https://github.com/ice-wm/icewm/blob/master/INSTALL-cmakebuild.md
+[20]: https://github.com/ice-wm/xde-menu/
+[21]: https://ice-wm.org/man/icesound
+[22]: https://ice-wm.org/man/icewmbg
+[23]: https://ice-wm.org/man/icewmhint
+[24]: https://ice-wm.org/man/icewm-menu-fdo
+[25]: https://ice-wm.org/man/icesh
+[26]: https://ice-wm.org/man/icewm
+[27]: https://ice-wm.org/man/icewm-session
 
 [ vim: set ft=markdown sw=4 tw=80 nocin nosi fo+=tcqlorn spell: ]: #
