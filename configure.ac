@@ -2,10 +2,10 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([icewm],[3.5.0],
+AC_INIT([icewm],[3.6.0],
         [https://github.com/bbidulock/icewm/issues],
         [icewm],[https://ice-wm.org])
-AC_REVISION([3.5.0])
+AC_REVISION([3.6.0])
 
 # set better defaults
 AC_PREFIX_DEFAULT([/usr])
@@ -22,13 +22,13 @@ AC_CONFIG_AUX_DIR([scripts])
 AC_USE_SYSTEM_EXTENSIONS
 AC_CANONICAL_TARGET
 
-DATE='2024-05-20'
+DATE='2024-06-16'
 AC_SUBST([DATE])
 
-MDOCDATE='May 20, 2024'
+MDOCDATE='June 16, 2024'
 AC_SUBST([MDOCDATE])
 
-BRANCH='3.5.0'
+BRANCH='3.6.0'
 AC_SUBST([BRANCH])
 
 APPLICATIONS='icewm icewm-session icesh icewmhint icewmbg icehelp'
@@ -125,9 +125,6 @@ esac
 
 # Checks for header files.
 AS_BOX([Header Files])
-AC_HEADER_STDC
-AC_HEADER_DIRENT
-AC_HEADER_SYS_WAIT
 AC_PATH_X
 AC_PATH_XTRA
 AC_CHECK_HEADERS([execinfo.h sched.h sys/sched.h])
@@ -139,7 +136,6 @@ AC_CHECK_HEADER_STDBOOL
 AC_C_INLINE
 AC_TYPE_PID_T
 AC_TYPE_SIZE_T
-AC_HEADER_TIME
 AC_STRUCT_TM
 
 AC_CHECK_SIZEOF(char, 1)

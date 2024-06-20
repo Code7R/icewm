@@ -22,7 +22,7 @@ protected:
 
 class YInputLine:
     public YWindow,
-    private YTimerListener,
+    protected YTimerListener,
     private YActionListener,
     private YPopDownListener
 {
@@ -55,6 +55,7 @@ public:
     bool move(unsigned pos, bool extend);
     bool hasSelection() const { return curPos != markPos; }
     void replaceSelection(const char* str, int len);
+    void replaceSelection(wchar_t* str, int len);
     bool deleteSelection();
     bool deleteNextChar();
     bool deletePreviousChar();
@@ -70,13 +71,17 @@ public:
     bool copySelection();
     void complete();
 
-private:
+protected:
     virtual bool handleTimer(YTimer *timer);
+private:
     virtual bool handleAutoScroll(const XMotionEvent &mouse);
 
     void limit();
     void autoScroll(int delta, const XMotionEvent *mouse);
     unsigned offsetToPos(int offset);
+    static mstring completeVariable(mstring var);
+    static mstring completeUsername(mstring user);
+    int getWCharFromEvent(const XKeyEvent& key, wchar_t* s, int maxLen);
 
     YWideString fText;
     unsigned markPos;
@@ -90,6 +95,7 @@ private:
     unsigned fKeyPressed;
     YInputListener* fListener;
 
+    XIC inputContext;
     YFont inputFont;
     YColorName inputBg;
     YColorName inputFg;

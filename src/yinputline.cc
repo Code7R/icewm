@@ -41,6 +41,7 @@ YInputLine::YInputLine(YWindow *parent, YInputListener *listener):
     fBlinkTime(333),
     fKeyPressed(0),
     fListener(listener),
+    inputContext(nullptr),
     inputFont(inputFontName),
     inputBg(&clrInput),
     inputFg(&clrInputText),
@@ -53,6 +54,8 @@ YInputLine::YInputLine(YWindow *parent, YInputListener *listener):
 }
 
 YInputLine::~YInputLine() {
+    if (inputContext)
+        XDestroyIC(inputContext);
 }
 
 void YInputLine::setText(mstring text, bool asMarked) {
@@ -322,13 +325,16 @@ bool YInputLine::handleKey(const XKeyEvent &key) {
                 fListener->inputReturn(this, control);
                 return true;
             }
-            else
-            {
-                char s[16];
+            else {
+                const int n = 16;
+                wchar_t* s = new wchar_t[n];
 
-                if (getCharFromEvent(key, s, sizeof(s))) {
-                    replaceSelection(s, strlen(s));
+                int len = getWCharFromEvent(key, s, n);
+                if (len) {
+                    replaceSelection(s, len);
                     return true;
+                } else {
+                    delete[] s;
                 }
             }
         }
@@ -342,6 +348,29 @@ bool YInputLine::handleKey(const XKeyEvent &key) {
         }
     }
     return YWindow::handleKey(key);
+}
+
+int YInputLine::getWCharFromEvent(const XKeyEvent& key, wchar_t* s, int maxLen) {
+    if (inputContext) {
+        KeySym keysym = None;
+        Status status = None;
+        int len = XwcLookupString(inputContext, const_cast<XKeyEvent*>(&key),
+                                  s, maxLen, &keysym, &status);
+
+        if (inrange(len, 0, maxLen - 1)) {
+            s[len] = None;
+        }
+        return len;
+    } else {
+        int len = 0;
+        char buf[16];
+        if (getCharFromEvent(key, buf, 16)) {
+            len = int(strlen(buf));
+            YWideString w(buf, len);
+            memcpy(s, w.data(), w.length() * sizeof(wchar_t));
+        }
+        return len;
+    }
 }
 
 void YInputLine::handleButton(const XButtonEvent &button) {
@@ -429,6 +458,9 @@ void YInputLine::handleClick(const XButtonEvent &up, int /*count*/) {
         inputMenu->setPopDownListener(this);
     } else if (up.button == 2 && xapp->isButton(up.state, Button2Mask)) {
         requestSelection(true);
+    } else if (up.button == 1 && xapp->isButton(up.state, Button1Mask)) {
+        if (fHasFocus == false)
+            gotFocus();
     }
 }
 
@@ -466,18 +498,18 @@ unsigned YInputLine::offsetToPos(int offset) {
 }
 
 void YInputLine::handleFocus(const XFocusChangeEvent &focus) {
+    if (focus.mode == NotifyGrab || focus.mode == NotifyUngrab)
+        return;
+
     if (focus.type == FocusIn &&
         focus.detail != NotifyPointer &&
         focus.detail != NotifyPointerRoot)
     {
-        fHasFocus = true;
         selectAll();
-        cursorBlinkTimer->setTimer(fBlinkTime, this, true);
+        gotFocus();
     }
     else if (focus.type == FocusOut/* && fHasFocus == true*/) {
-        fHasFocus = false;
-        repaint();
-        cursorBlinkTimer = null;
+        lostFocus();
         if (inputMenu && inputMenu == xapp->popup()) {
         }
         else if (fListener) {
@@ -560,6 +592,16 @@ void YInputLine::replaceSelection(const char* insert, int amount) {
     unsigned from = min(curPos, markPos);
     unsigned to = max(curPos, markPos);
     YWideString wide(insert, amount);
+    fText.replace(from, to - from, wide);
+    curPos = markPos = from + wide.length();
+    limit();
+    repaint();
+}
+
+void YInputLine::replaceSelection(wchar_t* insert, int amount) {
+    unsigned from = min(curPos, markPos);
+    unsigned to = max(curPos, markPos);
+    YWideString wide(amount, insert);
     fText.replace(from, to - from, wide);
     curPos = markPos = from + wide.length();
     limit();
@@ -708,25 +750,53 @@ void YInputLine::autoScroll(int delta, const XMotionEvent *motion) {
 }
 
 void YInputLine::complete() {
-    char* res = nullptr;
     mstring mstr(fText);
+    if (mstr[0] == '~' && mstr.length() > 1
+        && mstr.lastIndexOf(' ') == -1
+        && mstr.lastIndexOf('/') == -1) {
+        mstring var = mstr.substring(1);
+        mstring exp = completeUsername(var);
+        if (exp != var) {
+            setText(mstr.substring(0, 1) + exp, false);
+            return;
+        }
+    }
+    csmart res;
     int res_count = globit_best(mstr, &res, nullptr, nullptr);
     // directory is not a final match
     if (res_count == 1 && upath(res).dirExists())
         res_count++;
     if (1 <= res_count)
-        setText(res, res_count == 1);
+        setText(mstring(res), res_count == 1);
     else {
         int i = mstr.lastIndexOf(' ');
         if (i > 0 && size_t(i + 1) < mstr.length()) {
+            mstring pre(mstr.substring(0, i + 1));
             mstring sub(mstr.substring(i + 1));
-            YStringArray list;
-            if (sub[0] == '~' && upath::glob(sub, list, "/ST") &&
-                list.getCount() == 1) {
-                mstring found(mstr.substring(0, i + 1) + list[0]);
-                setText(found, true);
+            if (sub[0] == '$' || sub[0] == '~') {
+                mstring exp = upath(sub).expand();
+                if (exp != sub && exp != null) {
+                    setText(pre + exp, false);
+                }
+                else if (sub.indexOf('/') == -1) {
+                    mstring var = sub.substring(1);
+                    if (var.nonempty()) {
+                        if (sub[0] == '$') {
+                            exp = completeVariable(var);
+                        } else {
+                            exp = completeUsername(var);
+                        }
+                        if (exp != var) {
+                            char doti[] = { char(sub[0]), '\0' };
+                            setText(pre + doti + exp, false);
+                        }
+                    }
+                }
+                return;
             }
-            else if (upath::glob(sub + "*", list, "/S") && list.nonempty()) {
+
+            YStringArray list;
+            if (upath::glob(sub + "*", list, "/S") && list.nonempty()) {
                 if (list.getCount() == 1) {
                     mstring found(mstr.substring(0, i + 1) + list[0]);
                     setText(found, true);
@@ -748,8 +818,72 @@ void YInputLine::complete() {
                 }
             }
         }
+        else if (i == -1 && mstr.length() > 1 && mstr.indexOf('/') == -1) {
+            if (mstr[0] == '$') {
+                mstring var = completeVariable(mstr.substring(1));
+                if (var != mstr.substring(1))
+                    setText(mstr.substring(0, 1) + var, false);
+            }
+        }
     }
-    free(res);
+}
+
+static size_t commonPrefix(const char* s, const char* t) {
+    size_t i = 0;
+    while (s[i] && s[i] == t[i])
+        i++;
+    return i;
+}
+
+mstring YInputLine::completeVariable(mstring var) {
+    extern char** environ;
+    char* best = nullptr;
+    size_t len = 0;
+    for (int i = 0; environ[i]; ++i) {
+        if ( !strncmp(environ[i], var, var.length())) {
+            char* eq = strchr(environ[i], '=');
+            size_t k = eq - environ[i];
+            if (eq && k >= var.length()) {
+                if (best == nullptr) {
+                    best = environ[i];
+                    len = k;
+                } else {
+                    size_t c = commonPrefix(best, environ[i]);
+                    if (len > c)
+                        len = c;
+                }
+            }
+        }
+    }
+    return (len > var.length()) ? mstring(best, len) : var;
+}
+
+mstring YInputLine::completeUsername(mstring var) {
+    FILE* fp = fopen("/etc/passwd", "r");
+    if (fp == nullptr)
+        return var;
+    char line[1024], best[1024];
+    size_t len = 0;
+    *best = '\0';
+    while (fgets(line, sizeof line, fp)) {
+        if ( !strncmp(line, var, var.length())) {
+            char* sep = strchr(line, ':');
+            if (sep && sep - line >= (ptrdiff_t) var.length()) {
+                *sep = '\0';
+                size_t k = sep - line;
+                if (*best == '\0') {
+                    memcpy(best, line, k + 1);
+                    len = k;
+                } else {
+                    size_t c = commonPrefix(best, line);
+                    if (len > c)
+                        len = c;
+                }
+            }
+        }
+    }
+    fclose(fp);
+    return (len > var.length()) ? mstring(best, len) : var;
 }
 
 bool YInputLine::isFocusTraversable() {
@@ -757,20 +891,46 @@ bool YInputLine::isFocusTraversable() {
 }
 
 void YInputLine::gotFocus() {
-    if (fHasFocus == false) {
-        fHasFocus = true;
-        fCursorVisible = true;
-        cursorBlinkTimer->setTimer(fBlinkTime, this, true);
+    fHasFocus = true;
+    fCursorVisible = true;
+    cursorBlinkTimer->setTimer(fBlinkTime, this, true);
+
+    if (focused() || (YWindow::gotFocus(), focused() == false))
         repaint();
+
+    if (inputContext == nullptr) {
+        inputContext =
+            XCreateIC(xapp->xim(),
+                      XNInputStyle,   XIMPreeditNothing | XIMStatusNothing,
+                      XNClientWindow, handle(),
+                      XNFocusWindow,  handle(),
+                      nullptr);
+        if (inputContext) {
+            unsigned long mask = None;
+            const char* name = XGetICValues(inputContext,
+                                            XNFilterEvents, &mask, nullptr);
+            if (name == nullptr && mask) {
+                addEventMask(mask);
+            }
+        }
+    }
+    if (inputContext) {
+        XSetICFocus(inputContext);
+        XwcResetIC(inputContext);
     }
 }
 
 void YInputLine::lostFocus() {
-    if (cursorBlinkTimer) {
-        cursorBlinkTimer = null;
-        fHasFocus = false;
+    cursorBlinkTimer = null;
+    fCursorVisible = false;
+    fHasFocus = false;
+    if (focused())
+        YWindow::lostFocus();
+    else
         repaint();
-    }
+
+    if (inputContext)
+        XUnsetICFocus(inputContext);
 }
 
 // vim: set sw=4 ts=4 et:
