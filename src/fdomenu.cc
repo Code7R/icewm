@@ -20,6 +20,8 @@
 #define _GNU_SOURCE
 #endif
 
+#include <regex.h>
+
 #include "base.h"
 #include "config.h"
 #include "appnames.h"
@@ -35,11 +37,11 @@
 #include <iostream>
 #include <locale>
 #include <map>
-#include <regex>
 #include <set>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+#include <functional>
 
 #include <dirent.h>
 #include <fcntl.h>
@@ -244,11 +246,9 @@ void replace_all(std::string &str, const std::string &from,
     }
 }
 
-auto line_matcher =
-    std::regex("^\\s*(Terminal|Type|Name|GenericName|Exec|TryExec|Icon|"
-               "Categories|NoDisplay)"
-               "(\\[((\\w\\w)(_\\w\\w)?)\\])?\\s*=\\s*(.*){0,1}?\\s*$",
-               std::regex_constants::ECMAScript);
+#define LINE_MATCH_PATTERN "^\\s*(Terminal|Type|Name|GenericName|Exec|TryExec|Icon|" \
+        "Categories|NoDisplay)(\\[((\\w\\w)(_\\w\\w)?)\\])?\\s*=\\s*(.*){0,1}?\\s*$"
+regex_t line_matcher;
 
 struct DesktopFile : public tLintRefcounted {
     bool Terminal = false, IsApp = true, NoDisplay = false,
@@ -307,22 +307,28 @@ struct DesktopFile : public tLintRefcounted {
         std::ifstream dfile;
         dfile.open(filePath);
         string line;
-        std::smatch m;
+        regmatch_t m[10];
+        auto rmstr = [&line](const regmatch_t rm) {
+            if (rm.rm_so < 0) return string();
+            return string(line.data() + rm.rm_so, rm.rm_eo - rm.rm_so);
+        };
+
         bool reading = false;
 
         auto take_loc_best = [&langWanted,
-                              &langWantShort](decltype(m[0]) &value,
-                                              decltype(m[0]) &langLong,
-                                              decltype(m[0]) &langShort,
+                              &langWantShort,
+                              &line, &rmstr](const regmatch_t &value,
+                                              const regmatch_t &langLong,
+                                              const regmatch_t &langShort,
                                               string &out, string &outLoc) {
-            if (langWanted.size() > 3 && langLong == langWanted) {
+            if (langWanted.size() > 3 && rmstr(langLong) == langWanted) {
                 // perfect hit always takes preference
-                outLoc = value;
-            } else if (langShort.matched && langShort == langWantShort) {
+                outLoc = rmstr(value);
+            } else if (langShort.rm_so >=0 && rmstr(langShort) == langWantShort) {
                 if (outLoc.empty())
-                    outLoc = value;
-            } else if (!langLong.matched) {
-                out = value;
+                    outLoc = rmstr(value);
+            } else if (langLong.rm_so <0) {
+                out = rmstr(value);
             }
         };
 
@@ -344,39 +350,40 @@ struct DesktopFile : public tLintRefcounted {
             if (!reading)
                 continue;
 
-            std::regex_search(line, m, line_matcher);
-            if (m.empty())
+            if (regexec(&line_matcher, line.c_str(), ACOUNT(m), m, 0))
                 continue;
 
             // for(auto x: m) cout << x << " - "; cout << " = " << m.size() <<
             // endl;
 
-            const auto &value = m[6], key = m[1], langLong = m[3],
+            const auto &val = m[6], key = m[1], langLong = m[3],
                        langShort = m[4];
             // cerr << "val: " << value << ", key: " << key << ", langLong: " <<
             // langLong << ", langShort: " << langShort << endl;
+            #define keymatch(r) (key.rm_so >=0 && (sizeof(r)-1) == (key.rm_eo-key.rm_so) && 0 == strncmp(line.c_str()+key.rm_so, r, sizeof(r)-1) )
+            #define _LINE_VAL rmstr(val)
 
-            if (key == "Terminal")
-                Terminal = value.compare("true") == 0;
-            else if (key == "NoDisplay")
-                NoDisplay = value.compare("true") == 0;
-            else if (key == "Icon")
-                Icon = value;
-            else if (key == "Categories")
-                Tokenize(value, ";", Categories);
-            else if (key == "Exec")
-                Exec = value;
-            else if (key == "TryExec")
-                TryExec = value;
-            else if (key == "Type") {
-                if (value == "Application")
+            if (keymatch("Terminal"))
+                Terminal = _LINE_VAL.compare("true") == 0;
+            else if (keymatch("NoDisplay"))
+                NoDisplay = _LINE_VAL.compare("true") == 0;
+            else if (keymatch("Icon"))
+                Icon = _LINE_VAL;
+            else if (keymatch("Categories"))
+                Tokenize(_LINE_VAL, ";", Categories);
+            else if (keymatch("Exec"))
+                Exec = _LINE_VAL;
+            else if (keymatch("TryExec"))
+                TryExec = _LINE_VAL;
+            else if (keymatch("Type")) {
+                if (_LINE_VAL == "Application")
                     IsApp = true;
-                else if (value == "Directory")
+                else if (_LINE_VAL == "Directory")
                     IsApp = false;
-            } else if (key == "Name")
-                take_loc_best(value, langLong, langShort, Name, NameLoc);
-            else if (generic_name && key == "GenericName")
-                take_loc_best(value, langLong, langShort, GenericName,
+            } else if (keymatch("Name"))
+                take_loc_best(val, langLong, langShort, Name, NameLoc);
+            else if (generic_name && keymatch("GenericName"))
+                take_loc_best(val, langLong, langShort, GenericName,
                               GenericNameLoc);
         }
     }
@@ -568,6 +575,10 @@ int main(int argc, char **argv) {
     ApplicationName = my_basename(argv[0]);
 
     std::ios_base::sync_with_stdio(false);
+
+    auto r = regcomp(&line_matcher, LINE_MATCH_PATTERN, REG_EXTENDED);
+    if (r)
+        return r;
 
 #ifdef CONFIG_I18N
     setlocale(LC_ALL, "");

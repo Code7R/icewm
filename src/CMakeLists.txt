@@ -488,6 +488,8 @@ IF(CONFIG_FDO_MENUS)
     ADD_EXECUTABLE(${_tgt} fdomenu.cc)
     TARGET_LINK_LIBRARIES(${_tgt} ice)
     # XXX: static linking or LTO make it actually slower
+    #target_compile_options(${_tgt} PUBLIC -pg)
+    #target_link_options(${_tgt} PUBLIC -pg)
     #target_compile_options(${_tgt} PUBLIC -flto)
     #target_link_options(${_tgt} PUBLIC -flto)
     #target_compile_options(${_tgt} PUBLIC -static)
