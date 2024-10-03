@@ -92,6 +92,9 @@ else()
     endif()
 endif()
 
+#list(APPEND CXXFLAGS_COMMON    -fsanitize=address -fsanitize=undefined)
+#list(APPEND EXTRA_LINKER_FLAGS -fsanitize=address -fsanitize=undefined)
+
 option(CONFIG_IMLIB2 "Imlib2 image loader" on)
 option(CONFIG_LIBPNG "PNGLIB image loader" off)
 option(CONFIG_LIBJPEG "JPEGLIB image loader" off)
@@ -198,7 +201,7 @@ set(HINT_IMG_LOADERS
 # image configuration error check
 if(CONFIG_IMLIB2 OR CONFIG_GDK_PIXBUF_XLIB)
     if (NOT CONFIG_LIBRSVG AND NOT CONFIG_NANOSVG)
-        message(WARNING "Support for SVG icons was not enabled")
+        message(WARNING "Support for SVG icons was not enabled (requires either CONFIG_LIBRSVG or CONFIG_NANOSVG)")
     endif()
 elseif(CONFIG_XPM AND CONFIG_LIBPNG)
     if (NOT CONFIG_LIBJPEG)
@@ -377,11 +380,6 @@ if(CONFIG_FRIBIDI)
     endif()
 endif()
 option(CONFIG_FDO_MENUS "Define to support freedesktop.org style menus" on)
-if(CONFIG_FDO_MENUS)
-    set(hint "Freedesktop style menus enabled (-DCONFIG_FDO_MENUS=on) but libglib2.0-dev or similar package not found")
-    pkg_check_or_fail(gio gio-2.0 gio-unix-2.0 ${hint})
-    pkg_check_or_fail(gio_unix gio-unix-2.0 ${hint})
-endif()
 
 option(DEBUG "Define if you want to debug IceWM" off)
 option(PRECON "Define to enable assertions in IceWM" off)
@@ -421,7 +419,8 @@ SET(ICE_COMMON_SRCS udir.cc upath.cc yapp.cc yxapp.cc ytimer.cc yprefs.cc
                     ypipereader.cc yxembed.cc yconfig.cc yfont.cc ysvg.cc
                     ypixmap.cc yimage2.cc yimage_gdk.cc yximage.cc ycolor.cc
                     ytooltip.cc ylocale.cc yarray.cc yfileio.cc ytime.cc
-                    ystring.cc mstring.cc ref.cc keysyms.cc logevent.cc misc.cc)
+                    ystring.cc mstring.cc ref.cc bindkey.cc keysyms.cc
+                    logevent.cc misc.cc)
 
 if(CONFIG_XFREETYPE)
     list(APPEND ICE_COMMON_SRCS yfontxft.cc)
@@ -485,12 +484,16 @@ if(BUILD_TESTING)
 endif()
 
 IF(CONFIG_FDO_MENUS)
-    ADD_EXECUTABLE(icewm-menu-fdo${EXEEXT} fdomenu.cc ycollections.cc)
-    target_compile_options(icewm-menu-fdo${EXEEXT} PUBLIC ${gio_CFLAGS_OTHER} ${gio_unix_CFLAGS_OTHER})
-    target_include_directories(icewm-menu-fdo${EXEEXT} PUBLIC ${gio_INCLUDE_DIRS} ${gio_unix_INCLUDE_DIRS})
-    TARGET_LINK_LIBRARIES(icewm-menu-fdo${EXEEXT} ice ${x11_LDFLAGS}
-                          ${gio_LDFLAGS} ${nls_LIBS})
-    INSTALL(TARGETS icewm-menu-fdo${EXEEXT} DESTINATION ${BINDIR})
+    set(_tgt icewm-menu-fdo${EXEEXT})
+    ADD_EXECUTABLE(${_tgt} fdomenu.cc)
+    TARGET_LINK_LIBRARIES(${_tgt} ice)
+    # XXX: static linking or LTO make it actually slower
+    #target_compile_options(${_tgt} PUBLIC -flto)
+    #target_link_options(${_tgt} PUBLIC -flto)
+    #target_compile_options(${_tgt} PUBLIC -static)
+    #target_compile_options(${_tgt} PUBLIC -Os)
+    #target_link_options(${_tgt} PUBLIC -static)
+    INSTALL(TARGETS ${_tgt} DESTINATION ${BINDIR})
 ENDIF()
 
 add_executable(icewm-session${EXEEXT} icesm.cc)

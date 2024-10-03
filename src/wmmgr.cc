@@ -247,8 +247,7 @@ void YWindowManager::grabKeys() {
         grab(gKeySysKeyboardNext);
 
     {
-        KProgramIterType k = keyProgs.iterator();
-        while (++k) {
+        for (KProgram* k : keyProgs) {
             grabVKey(k->key(), k->modifiers());
         }
     }
@@ -336,77 +335,77 @@ bool YWindowManager::switchWindowVisible() const {
 bool YWindowManager::handleSwitchWorkspaceKey(const XKeyEvent& key,
         KeySym k, unsigned vm)
 {
-    if (IS_WMKEY(k, vm, gKeySysWorkspacePrev)) {
+    if (gKeySysWorkspacePrev.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToPrevWorkspace(false);
         return true;
     }
-    else if (IS_WMKEY(k, vm, gKeySysWorkspaceNext)) {
+    else if (gKeySysWorkspaceNext.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToNextWorkspace(false);
         return true;
     }
-    else if (IS_WMKEY(k, vm, gKeySysWorkspaceLast)) {
+    else if (gKeySysWorkspaceLast.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToLastWorkspace(false);
         return true;
     }
-    else if (IS_WMKEY(k, vm, gKeySysWorkspace1)) {
+    else if (gKeySysWorkspace1.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(0, false);
         return true;
     }
-    else if (IS_WMKEY(k, vm, gKeySysWorkspace2)) {
+    else if (gKeySysWorkspace2.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(1, false);
         return true;
     }
-    else if (IS_WMKEY(k, vm, gKeySysWorkspace3)) {
+    else if (gKeySysWorkspace3.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(2, false);
         return true;
     }
-    else if (IS_WMKEY(k, vm, gKeySysWorkspace4)) {
+    else if (gKeySysWorkspace4.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(3, false);
         return true;
     }
-    else if (IS_WMKEY(k, vm, gKeySysWorkspace5)) {
+    else if (gKeySysWorkspace5.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(4, false);
         return true;
     }
-    else if (IS_WMKEY(k, vm, gKeySysWorkspace6)) {
+    else if (gKeySysWorkspace6.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(5, false);
         return true;
     }
-    else if (IS_WMKEY(k, vm, gKeySysWorkspace7)) {
+    else if (gKeySysWorkspace7.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(6, false);
         return true;
     }
-    else if (IS_WMKEY(k, vm, gKeySysWorkspace8)) {
+    else if (gKeySysWorkspace8.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(7, false);
         return true;
     }
-    else if (IS_WMKEY(k, vm, gKeySysWorkspace9)) {
+    else if (gKeySysWorkspace9.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(8, false);
         return true;
     }
-    else if (IS_WMKEY(k, vm, gKeySysWorkspace10)) {
+    else if (gKeySysWorkspace10.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(9, false);
         return true;
     }
-    else if (IS_WMKEY(k, vm, gKeySysWorkspace11)) {
+    else if (gKeySysWorkspace11.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(10, false);
         return true;
     }
-    else if (IS_WMKEY(k, vm, gKeySysWorkspace12)) {
+    else if (gKeySysWorkspace12.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(11, false);
         return true;
@@ -417,7 +416,7 @@ bool YWindowManager::handleSwitchWorkspaceKey(const XKeyEvent& key,
 bool YWindowManager::handleWMKey(const XKeyEvent &key, KeySym k, unsigned vm) {
     YFrameWindow *frame = getFocus();
 
-    for (KProgramIterType p = keyProgs.iterator(); ++p; ) {
+    for (KProgram* p : keyProgs) {
         if (p->isKey(k, vm)) {
             XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
             p->open(key.state);
@@ -425,13 +424,13 @@ bool YWindowManager::handleWMKey(const XKeyEvent &key, KeySym k, unsigned vm) {
         }
     }
 
-    if (IS_WMKEY(k, vm, gKeySysSwitchNext)) {
+    if (gKeySysSwitchNext.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         if (getSwitchWindow())
             getSwitchWindow()->begin(true, key.state);
         return true;
     }
-    else if (IS_WMKEY(k, vm, gKeySysSwitchLast)) {
+    else if (gKeySysSwitchLast.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         if (getSwitchWindow())
             getSwitchWindow()->begin(false, key.state);
@@ -446,31 +445,31 @@ bool YWindowManager::handleWMKey(const XKeyEvent &key, KeySym k, unsigned vm) {
         }
         return true;
     }
-    else if (IS_WMKEY(k, vm, gKeySysWinNext)) {
+    else if (gKeySysWinNext.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         if (frame) frame->wmNextWindow();
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysWinPrev)) {
+    } else if (gKeySysWinPrev.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         if (frame) frame->wmPrevWindow();
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysWinMenu)) {
+    } else if (gKeySysWinMenu.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         if (frame) frame->popupSystemMenu(this);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysDialog)) {
+    } else if (gKeySysDialog.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         wmActionListener->actionPerformed(actionSysDialog);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysWinListMenu)) {
+    } else if (gKeySysWinListMenu.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         popupWindowListMenu(this);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysMenu)) {
+    } else if (gKeySysMenu.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         popupStartMenu(this);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysWindowList)) {
+    } else if (gKeySysWindowList.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         wmActionListener->actionPerformed(actionWindowList, 0);
         return true;
@@ -478,129 +477,129 @@ bool YWindowManager::handleWMKey(const XKeyEvent &key, KeySym k, unsigned vm) {
     else if (handleSwitchWorkspaceKey(key, k, vm)) {
         return true;
     }
-    else if (IS_WMKEY(k, vm, gKeySysWorkspacePrevTakeWin)) {
+    else if (gKeySysWorkspacePrevTakeWin.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToPrevWorkspace(true);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysWorkspaceNextTakeWin)) {
+    } else if (gKeySysWorkspaceNextTakeWin.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToNextWorkspace(true);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysWorkspaceLastTakeWin)) {
+    } else if (gKeySysWorkspaceLastTakeWin.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToLastWorkspace(true);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysWorkspace1TakeWin)) {
+    } else if (gKeySysWorkspace1TakeWin.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(0, true);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysWorkspace2TakeWin)) {
+    } else if (gKeySysWorkspace2TakeWin.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(1, true);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysWorkspace3TakeWin)) {
+    } else if (gKeySysWorkspace3TakeWin.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(2, true);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysWorkspace4TakeWin)) {
+    } else if (gKeySysWorkspace4TakeWin.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(3, true);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysWorkspace5TakeWin)) {
+    } else if (gKeySysWorkspace5TakeWin.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(4, true);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysWorkspace6TakeWin)) {
+    } else if (gKeySysWorkspace6TakeWin.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(5, true);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysWorkspace7TakeWin)) {
+    } else if (gKeySysWorkspace7TakeWin.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(6, true);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysWorkspace8TakeWin)) {
+    } else if (gKeySysWorkspace8TakeWin.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(7, true);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysWorkspace9TakeWin)) {
+    } else if (gKeySysWorkspace9TakeWin.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(8, true);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysWorkspace10TakeWin)) {
+    } else if (gKeySysWorkspace10TakeWin.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(9, true);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysWorkspace11TakeWin)) {
+    } else if (gKeySysWorkspace11TakeWin.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(10, true);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysWorkspace12TakeWin)) {
+    } else if (gKeySysWorkspace12TakeWin.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         switchToWorkspace(11, true);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysTileVertical)) {
+    } else if (gKeySysTileVertical.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         wmActionListener->actionPerformed(actionTileVertical, 0);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysTileHorizontal)) {
+    } else if (gKeySysTileHorizontal.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         wmActionListener->actionPerformed(actionTileHorizontal, 0);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysCascade)) {
+    } else if (gKeySysCascade.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         wmActionListener->actionPerformed(actionCascade, 0);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysArrange)) {
+    } else if (gKeySysArrange.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         wmActionListener->actionPerformed(actionArrange, 0);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysUndoArrange)) {
+    } else if (gKeySysUndoArrange.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         wmActionListener->actionPerformed(actionUndoArrange, 0);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysArrangeIcons)) {
+    } else if (gKeySysArrangeIcons.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         wmActionListener->actionPerformed(actionArrangeIcons, 0);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysMinimizeAll)) {
+    } else if (gKeySysMinimizeAll.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         wmActionListener->actionPerformed(actionMinimizeAll, 0);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysHideAll)) {
+    } else if (gKeySysHideAll.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         wmActionListener->actionPerformed(actionHideAll, 0);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysAddressBar)) {
+    } else if (gKeySysAddressBar.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         if (taskBar) {
             taskBar->showAddressBar();
             return true;
         }
-    } else if (IS_WMKEY(k, vm, gKeySysShowDesktop)) {
+    } else if (gKeySysShowDesktop.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         wmActionListener->actionPerformed(actionShowDesktop, 0);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysCollapseTaskBar)) {
+    } else if (gKeySysCollapseTaskBar.eq(k, vm)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         wmActionListener->actionPerformed(actionCollapseTaskbar, 0);
         return true;
-    } else if (IS_WMKEY(k, vm, gKeyTaskBarSwitchPrev)) {
+    } else if (gKeyTaskBarSwitchPrev.eq(k, vm)) {
         if (taskBar)
             taskBar->switchToPrev();
         return true;
-    } else if (IS_WMKEY(k, vm, gKeyTaskBarSwitchNext)) {
+    } else if (gKeyTaskBarSwitchNext.eq(k, vm)) {
         if (taskBar)
             taskBar->switchToNext();
         return true;
-    } else if (IS_WMKEY(k, vm, gKeyTaskBarMovePrev)) {
+    } else if (gKeyTaskBarMovePrev.eq(k, vm)) {
         if (taskBar)
             taskBar->movePrev();
         return true;
-    } else if (IS_WMKEY(k, vm, gKeyTaskBarMoveNext)) {
+    } else if (gKeyTaskBarMoveNext.eq(k, vm)) {
         if (taskBar)
             taskBar->moveNext();
         return true;
-    } else if (IS_WMKEY(k, vm, gKeySysKeyboardNext)) {
+    } else if (gKeySysKeyboardNext.eq(k, vm)) {
         if (configKeyboards.nonempty())
             setKeyboard((fDefaultKeyboard + 1) % configKeyboards.getCount());
         return true;
@@ -690,8 +689,7 @@ void YWindowManager::handleButton(const XButtonEvent &button) {
             KeySym k = button.button - Button1 + XK_Pointer_Button1;
             unsigned int m = KEY_MODMASK(button.state);
             unsigned int vm = VMod(m);
-            KProgramIterType p = keyProgs.iterator();
-            while (++p) {
+            for (KProgram* p : keyProgs) {
                 if (p->isKey(k, vm)) {
                     p->open(m);
                     break;
@@ -2133,11 +2131,7 @@ YFrameWindow *YWindowManager::getLastFocus(bool skipAllWorkspaces, int workspace
     if (workspace == AllWorkspaces)
         workspace = activeWorkspace();
 
-    YFrameWindow *toFocus = nullptr;
-
-    if (toFocus == nullptr) {
-        toFocus = workspaces[workspace].focused;
-    }
+    YFrameWindow *toFocus = workspaces[workspace].focused;
 
     if (toFocus != nullptr) {
         if (toFocus->isUnmapped() ||
@@ -2152,6 +2146,25 @@ YFrameWindow *YWindowManager::getLastFocus(bool skipAllWorkspaces, int workspace
 
     if (toFocus == nullptr && clickFocus == false) {
         toFocus = getFrameUnderMouse(workspace);
+        YFrameWindow* previous = nullptr;
+        while (toFocus != previous) {
+            previous = toFocus;
+            for (YFrameClient* trans = toFocus->transient();
+                 trans; trans = trans->nextTransient()) {
+                YFrameWindow* frame = trans->getFrame();
+                if (frame && frame != toFocus &&
+                    frame->isUnmapped() == false &&
+                    frame->visibleOn(workspace) &&
+                    frame->avoidFocus() == false &&
+                    trans->destroyed() == false &&
+                    trans != taskBar &&
+                    (frame->getActiveLayer() > toFocus->getActiveLayer() ||
+                     (frame->getActiveLayer() == toFocus->getActiveLayer()
+                      && frame->isBefore(toFocus)))) {
+                    toFocus = frame;
+                }
+            }
+        }
     }
 
     if (toFocus == nullptr) {
@@ -2496,6 +2509,20 @@ bool YWindowManager::updateWorkAreaInner() {
     }
 
     debugWorkArea("before");
+    if (limitByDockLayer && fDockApp && fDockApp->layer() == WinLayerDock) {
+        if (fDockApp->visible()) {
+            int s = fDockApp->getScreen();
+            int x = xiInfo[s].x_org;
+            int y = xiInfo[s].y_org;
+            int w = x + xiInfo[s].width;
+            int h = y + xiInfo[s].height;
+            if (fDockApp->rightside())
+                w -= fDockApp->width();
+            else
+                x += fDockApp->width();
+            updateArea(WinWorkspaceInvalid, s, x, y, w, h);
+        }
+    }
 
     for (YFrameWindow *w = topLayer(); w; w = w->nextLayer()) {
         if (w->isUnmapped()) {

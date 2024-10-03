@@ -271,6 +271,7 @@ void YFrameWindow::changeTab(int delta) {
 void YFrameWindow::selectTab(YFrameClient* tab) {
     if (hasTab(tab) == false || tab == fClient)
         return;
+    notMoveSize();
 
     XSizeHints *sh = client()->sizeHints();
     int nw = sh ? sh->base_width + normalW * max(1, sh->width_inc) : normalW;
@@ -352,7 +353,7 @@ void YFrameWindow::createTab(YFrameClient* client, int place) {
 void YFrameWindow::removeTab(YFrameClient* client) {
     bool found = findRemove(fTabs, client);
     PRECONDITION(found);
-    if (found) {
+    if (found && notMoveSize()) {
         YClientContainer* conter = client->getContainer();
         independer(client);
         delete conter;
@@ -367,7 +368,7 @@ void YFrameWindow::removeTab(YFrameClient* client) {
 }
 
 void YFrameWindow::untab(YFrameClient* client) {
-    if (1 < tabCount()) {
+    if (1 < tabCount() && notMoveSize()) {
         int i = find(fTabs, client);
         PRECONDITION(0 <= i);
         if (0 <= i) {
@@ -1699,18 +1700,21 @@ YFrameClient* YFrameWindow::transient() const {
 }
 
 void YFrameWindow::minimizeTransients() {
+    YArray<YFrameWindow*> trans;
     for (YFrameClient* t = transient(); t; t = t->nextTransient()) {
         YFrameWindow* w = t->getFrame();
         if (w) {
-            MSG(("> isMinimized: %d\n", w->isMinimized()));
             if (w->isMinimized()) {
                 w->fWinState |= WinStateWasMinimized;
-            } else {
+            }
+            else if (find(trans, w) < 0 && w != this) {
                 w->fWinState &= ~WinStateWasMinimized;
-                w->wmMinimize();
+                trans += w;
             }
         }
     }
+    for (YFrameWindow* w : trans)
+        w->wmMinimize();
 }
 
 void YFrameWindow::restoreMinimizedTransients() {
@@ -1724,18 +1728,21 @@ void YFrameWindow::restoreMinimizedTransients() {
 }
 
 void YFrameWindow::hideTransients() {
+    YArray<YFrameWindow*> trans;
     for (YFrameClient* t = transient(); t; t = t->nextTransient()) {
         YFrameWindow* w = t->getFrame();
         if (w) {
-            MSG(("> isHidden: %d\n", w->isHidden()));
             if (w->isHidden()) {
                 w->fWinState |= WinStateWasHidden;
-            } else {
+            }
+            else if (find(trans, w) < 0 && w != this) {
                 w->fWinState&= ~WinStateWasHidden;
-                w->wmHide();
+                trans += w;
             }
         }
     }
+    for (YFrameWindow* w : trans)
+        w->wmHide();
 }
 
 void YFrameWindow::restoreHiddenTransients() {
@@ -1849,8 +1856,13 @@ void YFrameWindow::wmRaise() {
     if (canRaise()) {
         doRaise();
         manager->restackWindows();
-        if (focused() && container()->buttoned())
-            container()->releaseButtons();
+        if (focused()) {
+            if (container()->buttoned()) {
+                container()->releaseButtons();
+            }
+        } else {
+            manager->focusOverlap();
+        }
     }
 }
 
@@ -1931,6 +1943,8 @@ void YFrameWindow::wmCloseClient(YFrameClient* client, bool* confirm) {
 void YFrameWindow::wmClose() {
     if (!canClose())
         return ;
+    if (hasMoveSize())
+        endMoveSize();
 
     manager->grabServer();
     bool confirm = false;
@@ -1962,6 +1976,8 @@ void YFrameWindow::wmConfirmKill(const char* message) {
 void YFrameWindow::wmKill() {
     if (!canClose())
         return ;
+    if (hasMoveSize())
+        endMoveSize();
 #ifdef DEBUG
     if (debug)
         msg("No WM_DELETE_WINDOW protocol");
@@ -2977,7 +2993,7 @@ bool YFrameWindow::getInputFocusHint() {
 void YFrameWindow::setWorkspace(int workspace) {
     if ( ! inrange(workspace, -1, workspaceCount - 1))
         return ;
-    if (workspace != fWinWorkspace) {
+    if (workspace != fWinWorkspace && notMoveSize()) {
         int previous = fWinWorkspace;
         int activeWS = int(manager->activeWorkspace());
         int oldState = fWinState;
@@ -3525,6 +3541,9 @@ void YFrameWindow::setState(int mask, int state) {
          fWinState, fWinState ^ flip, gain, lose));
     fWinState ^= flip;
 
+    if (gain & (WinStateUnmapped | WinStateFullscreen | WinStateMaximizedBoth))
+        if (hasMoveSize())
+            endMoveSize();
     if (flip & WinStateMinimized) {
         MSG(("WinStateMinimized: %d", isMinimized()));
         if (gain & WinStateMinimized)
