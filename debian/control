@@ -2,7 +2,7 @@ Source: icewm
 Section: x11
 Priority: optional
 Maintainer: Eduard Bloch <blade@debian.org>
-Build-Depends: debhelper (>= 10), libxrender-dev, gettext, libxft-dev (>> 2.1.1) | libxft2-dev, libsndfile1-dev, libao-dev, libsm-dev, libx11-dev, libxext-dev, libxinerama-dev, libxrandr-dev, x11proto-core-dev | x-dev, dpkg-dev (>= 1.16.1~), cmake, asciidoctor, libglib2.0-dev, libfribidi-dev, librsvg2-dev, libxcomposite-dev, libxdamage-dev, pandoc, libimlib2-dev
+Build-Depends: debhelper (>= 10), libxrender-dev, gettext, libxft-dev (>> 2.1.1) | libxft2-dev, libsndfile1-dev, libao-dev, libsm-dev, libx11-dev, libxext-dev, libxinerama-dev, libxrandr-dev, x11proto-core-dev | x-dev, dpkg-dev (>= 1.16.1~), cmake, asciidoctor, libfribidi-dev, libnanosvg-dev, libjpeg-dev, libxcomposite-dev, libxdamage-dev, pandoc
 Build-Conflicts: libttf-dev, libesd0-dev
 Standards-Version: 4.5.0
 Vcs-Git: https://github.com/Code7R/icewm.git
