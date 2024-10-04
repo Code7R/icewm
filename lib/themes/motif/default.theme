@@ -24,3 +24,6 @@ ColorActiveTaskBarAppText="rgb:00/00/00"
 ColorScrollBar="rgb:C0/C0/C0"
 ColorScrollBarSlider="rgb:C0/C0/C0"
 ColorScrollBarButtonArrow="rgb:C0/C0/C0"
+
+DesktopBackgroundImage="/usr/share/desktop-base/active-theme/wallpaper/contents/images/1920x1080.svg"
+

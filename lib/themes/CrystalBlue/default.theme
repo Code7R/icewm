@@ -157,3 +157,6 @@ ClockFontNameXft=                       "sans-serif:size=8:bold"
 #Desktop
 DesktopBackgroundColor=                 "rgb:25/33/79"
 DesktopTransparencyColor=               "rgb:25/33/79"
+
+DesktopBackgroundImage="/usr/share/desktop-base/active-theme/wallpaper/contents/images/1920x1080.svg"
+
