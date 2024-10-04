@@ -1,8 +1,9 @@
-icewm (3.6.1~git20241003.37e5381792668c0cda6702d8d425608f86e9cc07-1) experimental; urgency=low
+icewm (3.6.1~git20241004.295c80c2fb54231c4ec06b3903a04bccd5016ca4-1) experimental; urgency=low
 
-  * Experimental build with proposed new FDO menu generator.
+  * Experimental build with proposed new FDO menu generator and nanosvg
+    image loader.
 
- -- Eduard Bloch <blade@debian.org>  Thu, 03 Oct 2024 21:27:55 +0200
+ -- Eduard Bloch <blade@debian.org>  Fri, 04 Oct 2024 14:34:24 +0200
 
 icewm (3.6.0-1) unstable; urgency=low
 

@@ -2,7 +2,32 @@ Source: icewm
 Section: x11
 Priority: optional
 Maintainer: Eduard Bloch <blade@debian.org>
-Build-Depends: debhelper (>= 10), libxrender-dev, gettext, libxft-dev (>> 2.1.1) | libxft2-dev, libsndfile1-dev, libao-dev, libsm-dev, libx11-dev, libxext-dev, libxinerama-dev, libxrandr-dev, x11proto-core-dev | x-dev, dpkg-dev (>= 1.16.1~), cmake, asciidoctor, libglib2.0-dev, libfribidi-dev, librsvg2-dev, libxcomposite-dev, libxdamage-dev, pandoc, libimlib2-dev
+Build-Depends: debhelper (>= 10),
+# misc. build tools
+  gettext,
+  pandoc (>> 2),
+  cmake (>> 3.12),
+  asciidoctor,
+  dpkg-dev (>= 1.16.1~),
+# sound libs
+  libsndfile1-dev,
+  libao-dev,
+# image loaders
+  libimlib2-dev,
+  libnanosvg-dev,
+# font processor(s)
+  libxft-dev (>> 2.1.1) | libxft2-dev,
+# X11 libs
+  x11proto-core-dev | x-dev,
+  libsm-dev,
+  libx11-dev,
+  libxext-dev,
+  libxinerama-dev,
+  libxrender-dev,
+  libxrandr-dev,
+  libfribidi-dev,
+  libxcomposite-dev,
+  libxdamage-dev,
 Build-Conflicts: libttf-dev, libesd0-dev
 Standards-Version: 4.5.0
 Vcs-Git: https://github.com/Code7R/icewm.git
@@ -25,7 +50,10 @@ Description: wonderful Win95-OS/2-Motif-like window manager
 
 Package: icewm
 Architecture: any
-Depends: icewm-common (= ${binary:Version}), ${shlibs:Depends}, fonts-dejavu-core | ttf-dejavu-core | custom-icewm-font, sensible-utils, ${misc:Depends}
+Depends: icewm-common (= ${binary:Version}), ${shlibs:Depends},
+  fonts-dejavu-core | custom-icewm-font,
+  fonts-dejavu-mono | custom-icewm-font,
+  ${misc:Depends}
 Conflicts: icewm-common (<< 1.3.8-3)
 Provides: x-window-manager
 Description: wonderful Win95-OS/2-Motif-like window manager
@@ -37,7 +65,7 @@ Description: wonderful Win95-OS/2-Motif-like window manager
 
 Package: icewm-lite
 Architecture: any
-Depends: icewm (= ${binary:Version}), icewm-common (= ${binary:Version}), ${misc:Depends}
+Depends: icewm (= ${binary:Version})
 Section: oldlibs
 Description: transitional package for icewm
  IceWm is a Window Manager for X Window System. It is fast and
@@ -50,7 +78,7 @@ Description: transitional package for icewm
 
 Package: icewm-experimental
 Architecture: any
-Depends: icewm (= ${binary:Version}), icewm-common (= ${binary:Version}), ${misc:Depends}
+Depends: icewm (= ${binary:Version})
 Provides: x-window-manager
 Description: wonderful Win95-OS/2-Motif-like window manager
  IceWm is a Window Manager for X Window System. It is fast and
