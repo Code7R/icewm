@@ -1,4 +1,4 @@
-icewm (3.6.1~git20241004.295c80c2fb54231c4ec06b3903a04bccd5016ca4-1) experimental; urgency=low
+icewm (3.6.1~pre1-1) UNRELEASED; urgency=low
 
   * Experimental build with proposed new FDO menu generator and nanosvg
     image loader.
