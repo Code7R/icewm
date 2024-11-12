@@ -77,8 +77,9 @@ void YScrollView::configure(const YRect2& r) {
 }
 
 bool YScrollView::handleScrollKeys(const XKeyEvent& key) {
-    return int(scrollVert->handleScrollKeys(key))
-        | int(scrollHoriz->handleScrollKeys(key));
+    const int v = scrollVert->handleScrollKeys(key);
+    const int h = scrollHoriz->handleScrollKeys(key);
+    return bool(v | h);
 }
 
 void YScrollView::handleExpose(const XExposeEvent& expose) {
