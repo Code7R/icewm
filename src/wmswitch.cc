@@ -247,11 +247,13 @@ public:
     }
 
     void accept() override {
-        ZItem active = fActiveItem;
-        if (active) {
-            active.frame->activateWindow(true, false);
-            if (active.frame->isFullscreen())
-                active.frame->updateLayer();
+        ZItem act = fActiveItem;
+        if (act) {
+            if (act.client != act.frame->client())
+                act.frame->selectTab(act.client);
+            act.frame->activateWindow(true, false);
+            if (act.frame->isFullscreen())
+                act.frame->updateLayer();
         } else {
             cancel();
         }
@@ -326,9 +328,8 @@ public:
         return fActiveItem.frame;
     }
 
-    bool isKey(KeySym k, unsigned vm) override {
-        return gKeySysSwitchNext.eq(k, vm) || (fWMClass &&
-               gKeySysSwitchClass.eq(k, vm));
+    bool isKey(const XKeyEvent& x) override {
+        return gKeySysSwitchNext == x || (fWMClass && gKeySysSwitchClass == x);
     }
 
     unsigned modifiers() override {
@@ -448,6 +449,7 @@ SwitchWindow::SwitchWindow(YWindow *parent, ISwitchItems *items,
     fWorkspace(WorkspaceInvalid),
     switchFg(&clrQuickSwitchText),
     switchBg(&clrQuickSwitch),
+    switchBc(&clrQuickSwitchBorder),
     switchHl(&clrQuickSwitchActive),
     switchMfg(&clrActiveTitleBarText),
     switchFont(switchFontName),
@@ -511,16 +513,19 @@ void SwitchWindow::resize(int xiscreen, bool reposition) {
 
     int tWidth = 0;
     if (quickSwitchMaxWidth && switchFont) {
-        int space = (int) switchFont->textWidth(" ");   /* make entries one space character wider */
-        int zCount = zItems->getCount();
+        const int space = int(switchFont->textWidth(" "));
+        const int zCount = zItems->getCount();
         for (int i = 0; i < zCount; i++) {
             mstring title = zItems->getTitle(i);
-            int oWidth = title != null ? (int) switchFont->textWidth(title) + space : 0;
-            if (oWidth > tWidth)
-                tWidth = oWidth;
+            if (title.nonempty()) {
+                int oWidth = (int) switchFont->textWidth(title) + space;
+                if (tWidth < oWidth)
+                    tWidth = oWidth;
+            }
         }
-    } else {
-        tWidth = cTitle != null && switchFont ? switchFont->textWidth(cTitle) : 0;
+    }
+    else if (cTitle.nonempty() && switchFont) {
+        tWidth = switchFont->textWidth(cTitle);
     }
 
     if (m_verticalStyle || !quickSwitchAllIcons)
@@ -590,29 +595,31 @@ void SwitchWindow::repaint() {
 }
 
 void SwitchWindow::paint(Graphics &g, const YRect &/*r*/) {
-    int b1 = (wmLook != lookFlat);
-    int b2 = b1 * 2;
-    int b3 = b1 * 3;
-
     if (switchbackPixbuf != null &&
         (fGradient == null ||
-         fGradient->width() != width() - b2 ||
-         fGradient->height() != height() - b2))
+         fGradient->width() != width() - 2 ||
+         fGradient->height() != height() - 2))
     {
-        fGradient = switchbackPixbuf->scale(width() - b2, height() - b2);
+        fGradient = switchbackPixbuf->scale(width() - 2, height() - 2);
     }
 
-    g.setColor(switchBg);
-    if (b1)
+    if (switchBc) {
+        g.setColor(switchBc);
+        g.setLineWidth(1);
+        g.drawRect(0, 0, width() - 1, height() - 1);
+    } else {
+        g.setColor(switchBg);
         g.drawBorderW(0, 0, width() - 1, height() - 1, true);
+    }
 
     if (fGradient != null)
-        g.drawImage(fGradient, b1, b1, width() - b2, height() - b2, b1, b1);
-    else
-    if (switchbackPixmap != null)
-        g.fillPixmap(switchbackPixmap, b1, b1, width() - b3, height() - b3);
-    else
-        g.fillRect(b1, b1, width() - b3, height() - b3);
+        g.drawImage(fGradient, 0, 0, width() - 2, height() - 2, 1, 1);
+    else if (switchbackPixmap != null)
+        g.fillPixmap(switchbackPixmap, 1, 1, width() - 2, height() - 2);
+    else {
+        g.setColor(switchBg);
+        g.fillRect(1, 1, width() - 3, height() - 3);
+    }
 
     m_verticalStyle ? paintVertical(g) : paintHorizontal(g);
 }
@@ -947,24 +954,21 @@ void SwitchWindow::target(int delta) {
 
 bool SwitchWindow::handleKey(const XKeyEvent &key) {
     KeySym k = keyCodeToKeySym(key.keycode);
-    unsigned m = KEY_MODMASK(key.state);
-    unsigned vm = VMod(m);
-
     if (key.type == KeyPress) {
         keyPressed = k;
-        if (isKey(k, vm)) {
+        if (isKey(key)) {
             target(+1);
         }
-        else if (gKeySysSwitchLast.eq(k, vm)) {
+        else if (gKeySysSwitchLast == key) {
             target(-1);
         }
-        else if (gKeyWinClose.eq(k, vm)) {
+        else if (gKeyWinClose == key) {
             zItems->destroyTarget();
         }
         else if (k == XK_Return) {
             accept();
         }
-        else if (manager->handleSwitchWorkspaceKey(key, k, vm)) {
+        else if (manager->handleSwitchWorkspaceKey(key)) {
             bool change = (fWorkspace != manager->activeWorkspace());
             fWorkspace = manager->activeWorkspace();
             if ((change && !quickSwitchToAllWorkspaces) ||
@@ -1008,12 +1012,12 @@ bool SwitchWindow::handleKey(const XKeyEvent &key) {
             if (index < zItems->getCount())
                 target(index - zItems->getActiveItem());
         }
-        else if (zItems->isKey(k, vm) && !modDown(m)) {
+        else if (zItems->isKey(key) && !modDown(key.state)) {
             accept();
         }
     }
     else if (key.type == KeyRelease) {
-        if ((isKey(k, vm) && !modDown(m)) || isModKey(key.keycode)) {
+        if ((isKey(key) && !modDown(key.state)) || isModKey(key.keycode)) {
             accept();
         }
         else if (k == XK_Escape && k == keyPressed) {
@@ -1024,8 +1028,8 @@ bool SwitchWindow::handleKey(const XKeyEvent &key) {
     return true;
 }
 
-bool SwitchWindow::isKey(KeySym k, unsigned vm) {
-    return zItems->isKey(k, vm);
+bool SwitchWindow::isKey(const XKeyEvent& key) {
+    return zItems->isKey(key);
 }
 
 unsigned SwitchWindow::modifiers() {

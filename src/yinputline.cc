@@ -62,6 +62,8 @@ YInputLine::YInputLine(YWindow *parent, YInputListener *listener):
     fHasFocus(false),
     fCursorVisible(true),
     fSelecting(false),
+    fReturnPressed(false),
+    fReturnControl(false),
     fBlinkTime(333),
     fKeyPressed(0),
     fListener(listener),
@@ -192,6 +194,7 @@ bool YInputLine::handleKey(const XKeyEvent &key) {
     if (key.type == KeyPress) {
         KeySym k = keyCodeToKeySym(key.keycode);
         fKeyPressed = k;
+        fReturnPressed = fReturnControl = false;
 
         switch (k) {
         case XK_KP_Home:
@@ -363,10 +366,10 @@ bool YInputLine::handleKey(const XKeyEvent &key) {
                  (k == XK_j && m == ControlMask) ||
                  (k == XK_m && m == ControlMask)))
             {
-                bool control =
+                fReturnPressed = true;
+                fReturnControl =
                     (k == XK_Return || k == XK_KP_Enter)
                     && (m == ControlMask);
-                fListener->inputReturn(this, control);
                 return true;
             }
             else {
@@ -421,6 +424,15 @@ bool YInputLine::handleKey(const XKeyEvent &key) {
             fListener->inputEscape(this);
             return true;
         }
+        if (fReturnPressed &&
+            ((k == XK_Return && (m & ~ControlMask) == 0) ||
+             (k == XK_KP_Enter && (m & ~ControlMask) == 0) ||
+             (k == XK_j && m == ControlMask) ||
+             (k == XK_m && m == ControlMask)))
+        {
+            fReturnPressed = false;
+            fListener->inputReturn(this, fReturnControl);
+        }
     }
     return YWindow::handleKey(key);
 }
@@ -452,7 +464,7 @@ void YInputLine::handleButton(const XButtonEvent &button) {
     if (button.type == ButtonPress) {
         if (button.button == 1) {
             if (fHasFocus == false) {
-                setWindowFocus();
+                setInputFocus("inputLine");
                 requestFocus(false);
             } else {
                 fSelecting = true;
@@ -1040,6 +1052,7 @@ void YInputLine::gotFocus() {
 void YInputLine::lostFocus() {
     cursorBlinkTimer = null;
     fCursorVisible = false;
+    fReturnPressed = false;
     fHasFocus = false;
     setToolTip(null);
     toolTipVisibility(false);

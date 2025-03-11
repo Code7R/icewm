@@ -20,11 +20,6 @@
 #define _GNU_SOURCE
 #endif
 
-#include "appnames.h"
-#include "base.h"
-#include "config.h"
-#include "intl.h"
-
 #include <algorithm>
 #include <chrono>
 #include <cstring>
@@ -39,7 +34,9 @@
 #include <utility> // For std::move
 #include <vector>
 
+#if __cplusplus >= 201103L && (!defined(__GNUC__) || (__GNUC__ >= 5))
 #include <codecvt>
+#endif
 
 #include <functional>
 #include <initializer_list>
@@ -49,6 +46,11 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+
+#include "appnames.h"
+#include "base.h"
+#include "config.h"
+#include "intl.h"
 
 using namespace std;
 
@@ -266,13 +268,13 @@ class DesktopFile {
     /// Translate with built-in l10n if needed, and cache it
     const string &GetTranslatedName() {
         if (NameLoc.empty() && !Name.empty())
-            NameLoc = gettext(Name.c_str());
+            NameLoc = _(Name.c_str());
         return NameLoc;
     }
 
     const string &GetTranslatedGenericName() {
         if (GenericNameLoc.empty() && !GenericName.empty())
-            GenericNameLoc = gettext(GenericName.c_str());
+            GenericNameLoc = _(GenericName.c_str());
         return GenericNameLoc;
     }
 
@@ -303,7 +305,7 @@ class DesktopFile {
 };
 
 inline string safeTrans(DesktopFilePtr &node, const string &altRaw) {
-    return node ? node->GetTranslatedName() : gettext(altRaw.c_str());
+    return node ? node->GetTranslatedName() : _(altRaw.c_str());
 }
 
 const string &DesktopFile::GetCommand() {
@@ -380,6 +382,9 @@ DesktopFile::DesktopFile(string filePath, const string &langWanted) {
     while (dfile) {
         line.clear();
         std::getline(dfile, line);
+        while (line.empty() == false && line.back() == '\r') {
+            line.pop_back();
+        }
         if (line.empty()) {
             if (dfile.eof())
                 break;
@@ -552,6 +557,7 @@ struct AppEntry {
                 }
         }
         if (prog_name_cut > 0 && ret.size() > prog_name_cut) {
+#if __cplusplus >= 201103L && (!defined(__GNUC__) || (__GNUC__ >= 5))
             auto u16_conv =
                 wstring_convert<codecvt_utf8_utf16<char16_t>, char16_t>{}
                     .from_bytes(ret);
@@ -562,6 +568,11 @@ struct AppEntry {
                 trimBack(ret);
                 ret += ellipsis;
             }
+#else
+            ret.erase(prog_name_cut);
+            trimBack(ret);
+            ret += ellipsis;
+#endif
         }
 
         return ret;
@@ -735,9 +746,10 @@ void MenuNode::print(std::ostream &prt_strm) {
     for (auto &m : sorted) {
         auto &deco = m.pNode->deco;
 
-        prt_strm << indent_hint << "menu \"" << m.translated << "\" "
+        prt_strm << indent_hint
+                 << "menu \"" << m.translated << "\" \""
                  << ((deco && !deco->Icon.empty()) ? deco->Icon : ICON_FOLDER)
-                 << " {\n";
+                 << "\" {\n";
 
         indent_hint += "\t";
         m.pNode->print(prt_strm);
@@ -750,8 +762,10 @@ void MenuNode::print(std::ostream &prt_strm) {
     for (auto &p : sortedApps) {
         auto &pi = p.pAppEntry->deco;
         pi->print_comment(prt_strm)
-            << indent_hint << "prog \"" << p.pAppEntry->TransWithSfx() << "\" "
-            << pi->Icon << " " << pi->GetCommand() << "\n";
+            << indent_hint
+            << "prog \"" << p.pAppEntry->TransWithSfx()
+            << "\" \"" << pi->Icon << "\" "
+            << pi->GetCommand() << "\n";
     }
 }
 
@@ -774,7 +788,7 @@ void MenuNode::print_flat(std::ostream &prt_strm, const string &pfx_before) {
         else
             prt_strm << pfx_before << p.pAppEntry->TransWithSfx();
 
-        prt_strm << "\" " << pi->Icon << " " << pi->GetCommand() << "\n";
+        prt_strm << "\" \"" << pi->Icon << "\" " << pi->GetCommand() << "\n";
     }
 }
 
@@ -953,10 +967,11 @@ int main(int argc, char **argv) {
 
     std::ios_base::sync_with_stdio(false);
 
+    const char* msglang = nullptr;
 #ifdef CONFIG_I18N
     setlocale(LC_ALL, "");
 
-    auto msglang = getCheckedExplicitLocale(false);
+    msglang = getCheckedExplicitLocale(false);
     right_to_left =
         msglang && *msglang &&
         std::any_of(rtls, rtls + ACOUNT(rtls), [&](const char *rtl) {
@@ -1096,8 +1111,8 @@ int main(int argc, char **argv) {
 
         // also need to preload gettext (preheat the cache), otherwise the
         // remaining runtime on printing becomes unpredictable
-        b += (strlen(gettext("Audio")) > 1234) +
-             (strlen(gettext("Zarathustra")) > 5678);
+        b += (strlen(_("Audio")) > 1234) +
+             (strlen(_("Zarathustra")) > 5678);
 
         auto now = std::chrono::steady_clock::now();
         deadline_apps = now + std::chrono::milliseconds(a);

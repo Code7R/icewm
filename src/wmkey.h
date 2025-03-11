@@ -1,22 +1,35 @@
 #ifndef WMKEY_H
 #define WMKEY_H
 
+#include <X11/Xlib.h>
+
 struct WMKey {
-    KeySym key;
-    unsigned mod;
     const char* name;
+    unsigned key;
+    unsigned short mod, xm[2];
+    unsigned char kc[2];
     bool initial;
+    bool supered;
 
-    WMKey() : key(NoSymbol), mod(0), name(""), initial(true) { }
-    WMKey(char* s) : key(NoSymbol), mod(0), name(s), initial(false) { parse(); }
-    WMKey(KeySym k, unsigned m, const char* s) :
-        key(k), mod(m), name(s), initial(true) { }
+    WMKey() : name(""), key(0), mod(0), initial(true), supered(false) {
+        xm[0] = xm[1] = kc[0] = kc[1] = 0;
+    }
+    WMKey(char* s) : name(s), key(0), mod(0), initial(false), supered(false) {
+        xm[0] = xm[1] = kc[0] = kc[1] = 0;
+        parse();
+    }
+    WMKey(unsigned k, unsigned short m, const char* s) :
+        name(s), key(k), mod(m), initial(true), supered(false) {
+        xm[0] = xm[1] = kc[0] = kc[1] = 0;
+    }
 
-    bool eq(KeySym k, unsigned m) const { return key == k && mod == m; }
-    bool operator==(const WMKey& o) const { return eq(o.key, o.mod); }
-    bool operator!=(const WMKey& o) const { return !eq(o.key, o.mod); }
+    bool operator==(const WMKey& o) const { return key == o.key && mod == o.mod; }
+    bool operator!=(const WMKey& o) const { return key != o.key || mod != o.mod; }
+    bool operator==(const XKeyEvent& x) const;
+    bool operator==(const XButtonEvent& b) const;
     bool parse();
     bool set(const char* arg);
+    void grab(int handle);
 };
 
 #endif

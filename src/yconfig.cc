@@ -37,8 +37,12 @@ char *YConfig::getArgument(Argument *dest, char *source, bool comma) {
             ++p;
             *dest += *p;
         }
-        else if (ASCII::isWhiteSpace(*p) || (*p == ',' && comma))
-            break;
+        else if (ASCII::isWhiteSpace(*p) || (*p == ',' && comma)) {
+            if (*p == '\r')
+                continue;
+            else
+                break;
+        }
         else {
             *dest += *p;
         }
@@ -47,7 +51,7 @@ char *YConfig::getArgument(Argument *dest, char *source, bool comma) {
 }
 
 // FIXME: P1 - parse keys later, not when loading
-bool YConfig::parseKey(const char *arg, KeySym *key, unsigned int *mod) {
+bool YConfig::parseKey(const char* arg, unsigned* key, unsigned short* mod) {
     const char *const orig_arg = arg;
     static const struct {
         const char key[7];
@@ -86,7 +90,7 @@ bool YConfig::parseKey(const char *arg, KeySym *key, unsigned int *mod) {
     return true;
 }
 
-KeySym YConfig::parseKeySym(const char* arg) {
+unsigned YConfig::parseKeySym(const char* arg) {
     if (*arg == 0)
         return NoSymbol;
     if (strcmp(arg, "Esc") == 0)
@@ -130,7 +134,7 @@ KeySym YConfig::parseKeySym(const char* arg) {
             }
         }
         if (ch) {
-            KeySym ks;
+            unsigned ks;
             if (inrange(ch, 0xa0, 0xff))
                 ks = ch;
             else if (ch < 0x100)
@@ -144,7 +148,7 @@ KeySym YConfig::parseKeySym(const char* arg) {
         }
     }
 
-    KeySym ks = XStringToKeysym(arg);
+    unsigned ks = unsigned(XStringToKeysym(arg));
     if (ks)
         return ks;
 

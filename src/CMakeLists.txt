@@ -251,31 +251,21 @@ endif()
 
 if (CONFIG_NANOSVG)
     set(hub https://raw.githubusercontent.com/memononen/nanosvg/master/src)
-    find_package(NanoSVG)
-    if (NanoSVG_FOUND)
-        if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/nanosvg.h OR EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/nanosvgrast.h)
-            message(WARNING "nanosvg headers installed on the system but shadowed by src/nano*.h headers")
-        else()
-            message(STATUS "Using nanosvg headers from the system")
-            LIST(APPEND icewm_img_libs NanoSVG::nanosvg NanoSVG::nanosvgrast)
-        endif()
-    else()
-        foreach(nano src/nanosvg.h src/nanosvgrast.h)
-            message(STATUS "Checking for src/${nano}")
-            set(src ${CMAKE_SOURCE_DIR}/src/${nano})
-            if (NOT EXISTS ${src})
-                set(url ${hub}/${nano})
-                file(DOWNLOAD ${url} ${src} INACTIVITY_TIMEOUT 3 STATUS down)
-                list(GET down 0 stat)
-                list(GET down 1 mesg)
-                if(NOT ${stat} EQUAL 0 OR NOT EXISTS ${src})
-                    message(WARNING "Cannot download ${url} to ${src}: ${mesg}")
-                    set(CONFIG_NANOSVG off)
-                    break()
-                endif()
+    foreach(nano nanosvg.h nanosvgrast.h)
+        message(STATUS "Checking for src/${nano}")
+        set(src ${CMAKE_SOURCE_DIR}/src/${nano})
+        if (NOT EXISTS ${src})
+            set(url ${hub}/${nano})
+            file(DOWNLOAD ${url} ${src} INACTIVITY_TIMEOUT 3 STATUS down)
+            list(GET down 0 stat)
+            list(GET down 1 mesg)
+            if(NOT ${stat} EQUAL 0 OR NOT EXISTS ${src})
+                message(WARNING "Cannot download ${url} to ${src}: ${mesg}")
+                set(CONFIG_NANOSVG off)
+                break()
             endif()
-        endforeach()
-    endif()
+        endif()
+    endforeach()
 endif()
 
 # cursor configuration error check
@@ -434,7 +424,7 @@ SET(ICE_COMMON_SRCS udir.cc upath.cc yapp.cc yxapp.cc ytimer.cc yprefs.cc
                     ypipereader.cc yxembed.cc yconfig.cc yfont.cc ysvg.cc
                     ypixmap.cc yimage2.cc yimage_gdk.cc yximage.cc ycolor.cc
                     ytooltip.cc ylocale.cc yarray.cc yfileio.cc ytime.cc
-                    ystring.cc mstring.cc ref.cc bindkey.cc keysyms.cc
+                    ystring.cc mstring.cc ref.cc keysyms.cc wmkey.cc
                     logevent.cc misc.cc)
 
 if(CONFIG_XFREETYPE)
@@ -451,11 +441,8 @@ add_library(ice STATIC ${ICE_COMMON_SRCS})
 target_compile_options(ice PUBLIC ${icewm_pc_flags})
 # even if not linking against some libs directly, require their include paths to be considered
 target_include_directories(ice PUBLIC ${Intl_INCLUDE_DIRS})
-if(TARGET NanoSVG::nanosvg)
-    target_link_libraries(ice NanoSVG::nanosvg)
-endif()
 
-SET(ITK_SRCS ymenu.cc ylabel.cc yscrollview.cc ymenuitem.cc
+SET(ITK_SRCS ymenu.cc ylabel.cc yscrollview.cc ymenuitem.cc bindkey.cc
              yscrollbar.cc ybutton.cc ylistbox.cc yinputline.cc
              globit.cc yicon.cc wmconfig.cc wmsave.cc wpixres.cc)
 
@@ -505,7 +492,7 @@ endif()
 IF(CONFIG_FDO_MENUS)
     set(_tgt icewm-menu-fdo${EXEEXT})
     ADD_EXECUTABLE(${_tgt} fdomenu.cc)
-    TARGET_LINK_LIBRARIES(${_tgt} ice)
+    TARGET_LINK_LIBRARIES(${_tgt} ice ${nls_LIBS})
     # XXX: static linking or LTO make it actually slower
     #target_compile_options(${_tgt} PUBLIC -flto)
     #target_link_options(${_tgt} PUBLIC -flto)

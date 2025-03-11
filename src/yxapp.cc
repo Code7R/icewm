@@ -24,6 +24,7 @@ YContext<YWindow> windowContext("windowContext", false);
 
 bool YXApplication::synchronizeX11;
 bool YXApplication::alphaBlending;
+bool YXApplication::xkbExtension;
 Window YXApplication::ignorable;
 
 Atom _XA_WM_CHANGE_STATE;
@@ -580,14 +581,6 @@ void YXApplication::initModifiers() {
 
     ButtonKeyMask = KeyMask | ButtonMask;
 
-#if 0
-    KeySym wl = XKeycodeToKeysym(app->display(), 115, 0);
-    KeySym wr = XKeycodeToKeysym(app->display(), 116, 0);
-
-    if (wl == XK_Super_L) {
-    } else if (wl == XK_Meta_L) {
-    }
-#endif
     // this will do for now, but we should actualy check the keycodes
     Win_L = Win_R = 0;
 
@@ -828,42 +821,49 @@ bool YXApplication::filterEvent(const XEvent &xev) {
     return false;
 }
 
-void YXApplication::saveEventTime(const XEvent &xev) {
+void YXApplication::saveEventTime(const XEvent& xev) {
+    Time time = 0L;
     switch (xev.type) {
     case ButtonPress:
     case ButtonRelease:
-        lastEventTime = xev.xbutton.time;
+        time = xev.xbutton.time;
         break;
 
     case MotionNotify:
-        lastEventTime = xev.xmotion.time;
+        time = xev.xmotion.time;
         break;
 
     case KeyPress:
     case KeyRelease:
-        lastEventTime = xev.xkey.time;
+        time = xev.xkey.time;
         break;
 
     case EnterNotify:
     case LeaveNotify:
-        lastEventTime = xev.xcrossing.time;
+        time = xev.xcrossing.time;
         break;
 
     case PropertyNotify:
-        lastEventTime = xev.xproperty.time;
+        time = xev.xproperty.time;
         break;
 
     case SelectionClear:
-        lastEventTime = xev.xselectionclear.time;
+        time = xev.xselectionclear.time;
         break;
 
     case SelectionRequest:
-        lastEventTime = xev.xselectionrequest.time;
+        time = xev.xselectionrequest.time;
         break;
 
     case SelectionNotify:
-        lastEventTime = xev.xselection.time;
+        time = xev.xselection.time;
         break;
+    }
+    if (time) {
+        if (lastEventTime < time ||
+            lastEventTime - time > 30000 ||
+            lastEventTime == CurrentTime)
+            lastEventTime = time;
     }
 }
 
@@ -1149,6 +1149,9 @@ void YXApplication::initExtensions(Display* dpy) {
 #endif
 
     xshm.init(dpy, XShmQueryExtension, XShmQueryVersion);
+
+    int op = 0, ev = 0, er = 0, ma = XkbMajorVersion, mi = XkbMinorVersion;
+    xkbExtension = (XkbQueryExtension(dpy, &op, &ev, &er, &ma, &mi) == True);
 }
 
 YXApplication::~YXApplication() {
@@ -1395,38 +1398,7 @@ void YXApplication::queryMouse(int* x, int* y) {
         *x = *y = 0;
 }
 
-bool WMKey::set(const char* arg) {
-    bool change = false;
-    if (isEmpty(arg)) {
-        key = mod = 0;
-        if (nonempty(name)) {
-            name = "";
-            change = true;
-            initial = true;
-        }
-    }
-    else if (xapp->parseKey(arg, &key, &mod)) {
-        if (initial == false)
-            delete[] const_cast<char *>(name);
-        name = newstr(arg);
-        initial = false;
-        change = true;
-    }
-    return change;
-}
-
-bool WMKey::parse() {
-    return (nonempty(name) && xapp->parseKey(name, &key, &mod));
-}
-
-bool YXApplication::parseKey(const char* arg, KeySym* key, unsigned* mod) {
-    bool yes = YConfig::parseKey(arg, key, mod);
-    if (yes)
-        unshift(key, mod);
-    return yes;
-}
-
-void YXApplication::unshift(KeySym* ksym, unsigned* mod) {
+void YXApplication::unshift(unsigned* ksym, unsigned short* mod) {
     const unsigned key = unsigned(*ksym);
     if ((' ' < key && key < 'a') || ('z' < key && key <= 0xFF) ||
         (0x1008FE01U <= key && key <= 0x1008FFFFU)) /*XF86keysyms*/
@@ -1454,8 +1426,33 @@ void YXApplication::unshift(KeySym* ksym, unsigned* mod) {
     }
 }
 
-KeySym YXApplication::keyCodeToKeySym(unsigned keycode, unsigned index) {
-    return XkbKeycodeToKeysym(display(), KeyCode(keycode), 0, index);
+unsigned YXApplication::keyCodeToKeySym(unsigned keycode, unsigned index) {
+    return unsigned(XkbKeycodeToKeysym(display(), KeyCode(keycode), 0, index));
+}
+
+YKeycodeMap YXApplication::getKeycodeMap() {
+    if (fKeycodeMap == nullptr) {
+        XDisplayKeycodes(xapp->display(), &fKeycodeMin, &fKeycodeMax);
+        fKeycodeMap = XGetKeyboardMapping(xapp->display(), fKeycodeMin,
+                                          fKeycodeMax - fKeycodeMin + 1,
+                                          &fKeysymsPer);
+        if (fKeycodeMap) {
+            fKeycodeTimer->setTimer(2000L, this, true);
+        }
+    }
+    return YKeycodeMap(fKeycodeMap, fKeysymsPer, fKeycodeMin, fKeycodeMax);
+}
+
+bool YXApplication::handleTimer(YTimer* timer) {
+    if (timer == fKeycodeTimer) {
+        fKeycodeTimer = null;
+        if (fKeycodeMap) {
+            XFree(fKeycodeMap);
+            fKeycodeMap = nullptr;
+            fKeycodeMin = fKeycodeMax = fKeysymsPer = 0;
+        }
+    }
+    return false;
 }
 
 bool YXApplication::windowExists(Window handle) const {

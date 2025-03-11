@@ -507,16 +507,6 @@ void YWMApp::reparseKeyPrefs() {
     }
 }
 
-void YWMApp::fixupPreferences() {
-    extern cfoption icewm_preferences[];
-    for (cfoption* op = icewm_preferences; op->type; ++op) {
-        if (op->type == cfoption::CF_KEY) {
-            WMKey* key = op->v.k.key_value;
-            xapp->unshift(&key->key, &key->mod);
-        }
-    }
-}
-
 void LogoutMenu::updatePopup() {
     if (itemCount())
         return;
@@ -727,6 +717,9 @@ bool YWMApp::handleTimer(YTimer *timer) {
         resourcePaths.clear();
         themeOnlyPath.clear();
         pathsTimer = null;
+    }
+    else {
+        return super::handleTimer(timer);
     }
 
     return false;
@@ -1257,6 +1250,19 @@ static void showExtensions() {
             printf("%-9s unsupported\n", s);
         }
     }
+    int ka = XkbMajorVersion, ki = XkbMinorVersion;
+    if (XkbLibraryVersion(&ka, &ki)) {
+        ka = XkbMajorVersion, ki = XkbMinorVersion;
+        int ev = 0, er = 0;
+        if (XkbQueryExtension(xapp->display(), NULL, &ev, &er, &ka, &ki)) {
+            printf("%-9s %d.%-2d (%2d, %3d)\n", "xkeyboard", ka, ki, ev, er);
+        } else {
+            printf("%-9s unsupported\n", "xkeyboard");
+        }
+    } else {
+        printf("incompatible XKEYBOARD library %d.%d vs. %d.%d!\n",
+                ka, ki, XkbMajorVersion, XkbMinorVersion);
+    }
 }
 
 static int restartWM(const char* displayName, const char* overrideTheme) {
@@ -1330,8 +1336,6 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName,
         WMConfig::printPrefs(focusMode, wmapp_preferences);
     if (show_extensions)
         showExtensions();
-
-    fixupPreferences();
 
     DEPRECATE(xrrDisable == true);
     DEPRECATE(warpPointer == true);
