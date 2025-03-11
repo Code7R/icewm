@@ -1,7 +1,6 @@
-icewm (3.6.1~pre1-1) UNRELEASED; urgency=low
+icewm (3.7.2-1) UNRELEASED; urgency=low
 
-  * Experimental build with proposed new FDO menu generator and nanosvg
-    image loader.
+  * build with nanosvg image loader from the Debian package
 
  -- Eduard Bloch <blade@debian.org>  Fri, 04 Oct 2024 14:34:24 +0200
 
