@@ -233,6 +233,8 @@ XSV(const char *, fmtTimeAlt,                   NULL)
 XSV(const char *, fmtDate,                      "%Y-%m-%d %H:%M:%S %z %B %A")
 #endif
 
+XSV(const char *, inputIgnorePfx,               "nohup|(nice[[:space:]]+-n[[:space:]]*[[:digit:]]+)|sudo|(LANG|LC_[[:alnum:]]]*)(=|=[^[:space:]]+)")
+
 #ifdef CFGDEF
 
 cfoption icewm_preferences[] = {
@@ -462,7 +464,7 @@ cfoption icewm_preferences[] = {
     OSV("TimeFormat",                           &fmtTime,                       "Clock Time format (strftime format string)"),
     OSV("TimeFormatAlt",                        &fmtTimeAlt,                    "Alternate Clock Time format for blinking effects"),
     OSV("DateFormat",                           &fmtDate,                       "Clock Date format for tooltip (strftime format string)"),
-    OSV("DockApps",                             &dockApps,                       "Support DockApps (right, left, center, down, high, above, below, desktop, or empty to disable). Control with Ctrl+Mouse."),
+    OSV("DockApps",                             &dockApps,                       "Support DockApps (right, left, center, down, high, above, dock, ontop, normal, below, desktop, or empty to disable). The first five control positioning, while the next six set the layer. Control with Ctrl+Mouse."),
     OSV("XRRPrimaryScreenName",                 &xineramaPrimaryScreenName,     "screen/output name of the primary screen"),
     OSV("AcpiIgnoreBatteries",                  &acpiIgnoreBatteries,           "List of battery names (directories) in /proc/acpi/battery to ignore. Useful when more slots are built-in, but only one battery is used"),
 
@@ -567,6 +569,8 @@ cfoption icewm_preferences[] = {
     OKF("WorkspaceNames",                       addWorkspace, "Add a workspace"),
     OKF("KeyboardLayouts",                      addKeyboard, "Add a keyboard layout"),
     OSV("WinMenuItems",                         &winMenuItems,                  "The list of items to be supported in the menu window (rmsnxfhualytieckw)"),
+
+    OSV("InputIgnorePrefix",                    &inputIgnorePfx,                "Prefix to ignore while tab-completing (POSIX Extended Regular Expression)"),
     OK0()
 };
 

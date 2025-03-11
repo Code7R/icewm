@@ -29,6 +29,7 @@ struct ZItem {
     bool operator==(YFrameWindow* f) const { return f == frame && f; }
     bool operator==(YFrameClient* c) const { return c == client && c; }
     bool operator==(bool b) const { return bool(*this) == b; }
+    bool operator!=(bool b) const { return bool(*this) != b; }
     bool operator!() const { return bool(*this) == false; }
 
     static int compare(const void* p1, const void* p2) {
@@ -591,7 +592,7 @@ void SwitchWindow::repaint() {
 void SwitchWindow::paint(Graphics &g, const YRect &/*r*/) {
     int b1 = (wmLook != lookFlat);
     int b2 = b1 * 2;
-    int b3 = b2 + 1;
+    int b3 = b1 * 3;
 
     if (switchbackPixbuf != null &&
         (fGradient == null ||

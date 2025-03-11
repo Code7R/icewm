@@ -684,8 +684,9 @@ Clock Date format for tooltip (strftime format string).
 
 =item B<DockApps>="right high desktop"
 
-Support DockApps (right, left, center, down, high, above, below,
-desktop, or empty to disable). Control with Ctrl+Mouse.
+Support DockApps (right, left, center, down, high, above, dock, ontop,
+normal, below, desktop, or empty to disable). The first five control
+positioning, while the next six set the layer. Control with Ctrl+Mouse.
 
 =item B<XRRPrimaryScreenName>=""
 
@@ -1199,6 +1200,13 @@ Dimension of the large icons.
 =item B<HugeIconSize>=48  [8-128]
 
 Dimension of the large icons.
+
+=item B<InputIgnorePrefix>="nohup|(nice[[:space:]]+-n[[:space:]]*[[:digit:]]+)|sudo|(LANG|LC_[[:alnum:]]]*)(=|=[^[:space:]]+)"
+
+Regular expression (POSIX Extended flavor) which marks the begin of a
+command line in command input fields. Such prefixes are ignored while
+the auto-completion action is performed, typically for commands acting
+as pass-through wrapper, executing the specified command.
 
 =item B<QuickSwitchHorzMargin>=3  [0-64]
 

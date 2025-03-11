@@ -13,7 +13,7 @@ CornerSizeY=22
 DlgBorderSizeX=2
 DlgBorderSizeY=2
 
-DesktopBackgroundImage=""
+DesktopBackgroundImage="/usr/share/desktop-base/active-theme/wallpaper/contents/images/1920x1080.svg"
 DesktopBackgroundColor="rgb:40/a0/c0"
 
 ColorNormalBorder="rgb:C0/C0/C0"

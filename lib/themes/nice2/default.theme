@@ -30,3 +30,6 @@ ColorActiveTaskBarAppText="rgb:00/00/00"
 ColorMinimizedTaskBarApp="rgb:00/80/C0"
 ColorMinimizedTaskBarAppText="rgb:00/00/00"
 ColorListBox="rgb:FF/FF/FF"
+
+DesktopBackgroundImage="/usr/share/desktop-base/active-theme/wallpaper/contents/images/1920x1080.svg"
+

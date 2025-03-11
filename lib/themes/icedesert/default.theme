@@ -50,3 +50,6 @@ ColorApmText="rgb:ef/d0/97"
 ColorCPUStatusIdle="rgb:18/18/38"
 ColorNetIdle="rgb:18/18/38"
 ColorMEMStatusFree="rgb:18/18/38"
+
+DesktopBackgroundImage="/usr/share/desktop-base/active-theme/wallpaper/contents/images/1920x1080.svg"
+

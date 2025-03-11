@@ -577,7 +577,9 @@ void YFrameWindow::manualPlace() {
     drawMoveSizeFX(xx, yy, width(), height());
 
     MoveState state = MoveMoving;
-    while (state != MoveAccept && state != MoveCancel) {
+    while (state != MoveAccept && state != MoveCancel &&
+           client()->testDestroyed() == false)
+    {
         XEvent xev;
         XMaskEvent(xapp->display(),
                    KeyPressMask |
@@ -704,77 +706,77 @@ bool YFrameWindow::handleKey(const XKeyEvent &key) {
                 key.window != handle())
                 return true;
 
-            if (IS_WMKEY(k, vm, gKeyWinClose)) {
+            if (gKeyWinClose.eq(k, vm)) {
                 actionPerformed(actionClose);
-            } else if (IS_WMKEY(k, vm, gKeyWinPrev)) {
+            } else if (gKeyWinPrev.eq(k, vm)) {
                 wmPrevWindow();
-            } else if (IS_WMKEY(k, vm, gKeyWinMaximizeVert)) {
+            } else if (gKeyWinMaximizeVert.eq(k, vm)) {
                 actionPerformed(actionMaximizeVert);
-            } else if (IS_WMKEY(k, vm, gKeyWinMaximizeHoriz)) {
+            } else if (gKeyWinMaximizeHoriz.eq(k, vm)) {
                 actionPerformed(actionMaximizeHoriz);
-            } else if (IS_WMKEY(k, vm, gKeyWinRaise)) {
+            } else if (gKeyWinRaise.eq(k, vm)) {
                 actionPerformed(actionRaise);
-            } else if (IS_WMKEY(k, vm, gKeyWinOccupyAll)) {
+            } else if (gKeyWinOccupyAll.eq(k, vm)) {
                 actionPerformed(actionOccupyAllOrCurrent);
-            } else if (IS_WMKEY(k, vm, gKeyWinLower)) {
+            } else if (gKeyWinLower.eq(k, vm)) {
                 actionPerformed(actionLower);
-            } else if (IS_WMKEY(k, vm, gKeyWinRestore)) {
+            } else if (gKeyWinRestore.eq(k, vm)) {
                 actionPerformed(actionRestore);
-            } else if (IS_WMKEY(k, vm, gKeyWinNext)) {
+            } else if (gKeyWinNext.eq(k, vm)) {
                 wmNextWindow();
-            } else if (IS_WMKEY(k, vm, gKeyWinMove)) {
+            } else if (gKeyWinMove.eq(k, vm)) {
                 actionPerformed(actionMove);
-            } else if (IS_WMKEY(k, vm, gKeyWinSize)) {
+            } else if (gKeyWinSize.eq(k, vm)) {
                 actionPerformed(actionSize);
-            } else if (IS_WMKEY(k, vm, gKeyWinMinimize)) {
+            } else if (gKeyWinMinimize.eq(k, vm)) {
                 actionPerformed(actionMinimize);
-            } else if (IS_WMKEY(k, vm, gKeyWinMaximize)) {
+            } else if (gKeyWinMaximize.eq(k, vm)) {
                 actionPerformed(actionMaximize);
-            } else if (IS_WMKEY(k, vm, gKeyWinHide)) {
+            } else if (gKeyWinHide.eq(k, vm)) {
                 actionPerformed(actionHide);
-            } else if (IS_WMKEY(k, vm, gKeyWinRollup)) {
+            } else if (gKeyWinRollup.eq(k, vm)) {
                 actionPerformed(actionRollup);
-            } else if (IS_WMKEY(k, vm, gKeyWinFullscreen)) {
+            } else if (gKeyWinFullscreen.eq(k, vm)) {
                 actionPerformed(actionFullscreen);
-            } else if (IS_WMKEY(k, vm, gKeyWinMenu)) {
+            } else if (gKeyWinMenu.eq(k, vm)) {
                 popupSystemMenu(this);
-            } else if (IS_WMKEY(k, vm, gKeyWinArrangeN)) {
+            } else if (gKeyWinArrangeN.eq(k, vm)) {
                 if (canMove()) wmArrange(waTop, waCenter);
-            } else if (IS_WMKEY(k, vm, gKeyWinArrangeNE)) {
+            } else if (gKeyWinArrangeNE.eq(k, vm)) {
                 if (canMove()) wmArrange(waTop, waRight);
-            } else if (IS_WMKEY(k, vm, gKeyWinArrangeE)) {
+            } else if (gKeyWinArrangeE.eq(k, vm)) {
                 if (canMove()) wmArrange(waCenter, waRight);
-            } else if (IS_WMKEY(k, vm, gKeyWinArrangeSE)) {
+            } else if (gKeyWinArrangeSE.eq(k, vm)) {
                 if (canMove()) wmArrange(waBottom, waRight);
-            } else if (IS_WMKEY(k, vm, gKeyWinArrangeS)) {
+            } else if (gKeyWinArrangeS.eq(k, vm)) {
                 if (canMove()) wmArrange(waBottom, waCenter);
-            } else if (IS_WMKEY(k, vm, gKeyWinArrangeSW)) {
+            } else if (gKeyWinArrangeSW.eq(k, vm)) {
                 if (canMove()) wmArrange(waBottom, waLeft);
-            } else if (IS_WMKEY(k, vm, gKeyWinArrangeW)) {
+            } else if (gKeyWinArrangeW.eq(k, vm)) {
                 if (canMove()) wmArrange(waCenter, waLeft);
-            } else if (IS_WMKEY(k, vm, gKeyWinArrangeNW)) {
+            } else if (gKeyWinArrangeNW.eq(k, vm)) {
                 if (canMove()) wmArrange(waTop, waLeft);
-            } else if (IS_WMKEY(k, vm, gKeyWinArrangeC)) {
+            } else if (gKeyWinArrangeC.eq(k, vm)) {
                 if (canMove()) wmArrange(waCenter, waCenter);
-            } else if (IS_WMKEY(k, vm, gKeyWinTileLeft)) {
+            } else if (gKeyWinTileLeft.eq(k, vm)) {
                 wmTile(actionTileLeft);
-            } else if (IS_WMKEY(k, vm, gKeyWinTileRight)) {
+            } else if (gKeyWinTileRight.eq(k, vm)) {
                 wmTile(actionTileRight);
-            } else if (IS_WMKEY(k, vm, gKeyWinTileTop)) {
+            } else if (gKeyWinTileTop.eq(k, vm)) {
                 wmTile(actionTileTop);
-            } else if (IS_WMKEY(k, vm, gKeyWinTileBottom)) {
+            } else if (gKeyWinTileBottom.eq(k, vm)) {
                 wmTile(actionTileBottom);
-            } else if (IS_WMKEY(k, vm, gKeyWinTileTopLeft)) {
+            } else if (gKeyWinTileTopLeft.eq(k, vm)) {
                 wmTile(actionTileTopLeft);
-            } else if (IS_WMKEY(k, vm, gKeyWinTileTopRight)) {
+            } else if (gKeyWinTileTopRight.eq(k, vm)) {
                 wmTile(actionTileTopRight);
-            } else if (IS_WMKEY(k, vm, gKeyWinTileBottomLeft)) {
+            } else if (gKeyWinTileBottomLeft.eq(k, vm)) {
                 wmTile(actionTileBottomLeft);
-            } else if (IS_WMKEY(k, vm, gKeyWinTileBottomRight)) {
+            } else if (gKeyWinTileBottomRight.eq(k, vm)) {
                 wmTile(actionTileBottomRight);
-            } else if (IS_WMKEY(k, vm, gKeyWinTileCenter)) {
+            } else if (gKeyWinTileCenter.eq(k, vm)) {
                 wmTile(actionTileCenter);
-            } else if (IS_WMKEY(k, vm, gKeyWinSmartPlace)) {
+            } else if (gKeyWinSmartPlace.eq(k, vm)) {
                 if (canMove()) {
                     int newX = x();
                     int newY = y();
@@ -832,13 +834,17 @@ bool YFrameWindow::canSize(bool horiz, bool vert) {
 
 void YFrameWindow::netMoveSize(int x, int y, int direction)
 {
-    if (movingWindow || sizingWindow)
+    if (hasMoveSize()) {
+        if (direction == _NET_WM_MOVERESIZE_CANCEL)
+            endMoveSize();
         return;
+    }
 
-    int sx[] = { -1, 0, 1, 1, 1, 0, -1, -1, };
-    int sy[] = { -1, -1, -1, 0, 1, 1, 1, 0, };
+    const int size = 8;
+    int sx[size] = { -1, 0, 1, 1, 1, 0, -1, -1, };
+    int sy[size] = { -1, -1, -1, 0, 1, 1, 1, 0, };
 
-    if (inrange(direction, 0, int ACOUNT(sx) - 1)) {
+    if (inrange(direction, 0, size - 1)) {
         MSG(("move size %d %d direction %d", x, y, direction));
         startMoveSize(false, true, sx[direction], sy[direction], x, y);
     }
@@ -862,6 +868,9 @@ void YFrameWindow::netMoveSize(int x, int y, int direction)
 void YFrameWindow::startMoveSize(bool doMove, bool byMouse,
                                  int sideX, int sideY,
                                  int mouseXroot, int mouseYroot) {
+    if (isMinimized() || isHidden() || isFullscreen() || hasMoveSize())
+        return;
+
     Cursor grabPointer = None;
 
     grabX = sideX;
@@ -942,6 +951,10 @@ void YFrameWindow::startMoveSize(bool doMove, bool byMouse,
         outlineResize();
         endMoveSize();
     }
+}
+
+bool YFrameWindow::notMoveSize() {
+    return hasMoveSize() == false || (endMoveSize(), true);
 }
 
 void YFrameWindow::endMoveSize() {
@@ -1056,7 +1069,7 @@ void YFrameWindow::handleButton(const XButtonEvent &button) {
                 wmRaise();
         }
     } else if (button.type == ButtonRelease) {
-        if (movingWindow || sizingWindow) {
+        if (hasMoveSize()) {
             endMoveSize();
             return ;
         }

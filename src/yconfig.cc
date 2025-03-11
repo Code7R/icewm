@@ -4,7 +4,6 @@
 #include "ykey.h"
 #include "yconfig.h"
 #include "yprefs.h"
-#include "sysdep.h"
 #include "yapp.h"
 #include "intl.h"
 #include "ascii.h"
@@ -151,7 +150,7 @@ KeySym YConfig::parseKeySym(const char* arg) {
 
     if (strncmp(arg, "Pointer_Button", 14) == 0) {
         int button = 0;
-        if (sscanf(arg + 14, "%d", &button) == 1 && 0 < button)
+        if (sscanf(arg + 14, "%d", &button) == 1 && inrange(button, 1, 8))
             return button + XK_Pointer_Button1 - 1;
         return NoSymbol;
     }
@@ -206,14 +205,7 @@ void YConfig::setOption(char* arg, bool append, cfoption* opt) {
             break;
         case cfoption::CF_KEY:
             if (opt->v.k.key_value) {
-                WMKey *wk = opt->v.k.key_value;
-
-                if (YConfig::parseKey(arg, &wk->key, &wk->mod)) {
-                    if (!wk->initial)
-                        delete[] const_cast<char *>(wk->name);
-                    wk->name = newstr(arg);
-                    wk->initial = false;
-                }
+                opt->v.k.key_value->set(arg);
             }
             break;
         case cfoption::CF_FUNC:

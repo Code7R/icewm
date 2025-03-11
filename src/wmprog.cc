@@ -93,19 +93,18 @@ DProgram *DProgram::newProgram(
 KProgramArrayType keyProgs;
 
 KProgram::KProgram(const char *key, DProgram *prog, bool bIsDynSwitchMenuProg) :
-    fDef(newstr(key)),
-    fKey(NoSymbol),
-    fMod(0),
+    wm(newstr(key)),
     bIsDynSwitchMenu(bIsDynSwitchMenuProg),
     fProg(prog),
     pSwitchWindow(nullptr)
 {
-    parse();
-    keyProgs.append(this);
 }
 
-void KProgram::parse() {
-    xapp->parseKey(fDef, &fKey, &fMod);
+KProgram::~KProgram() {
+    delete fProg;
+    if (wm.initial == false)
+        delete[] const_cast<char *>(wm.name);
+    delete pSwitchWindow;
 }
 
 class MenuProgSwitchItems: public ISwitchItems {
@@ -120,6 +119,9 @@ public:
         ISwitchItems(), zTarget(0), key(key), mod(keymod) {
         menu = new MenuProgMenu(wmapp, wmapp, nullptr /* no wmaction handling*/,
                 "switch popup internal menu", prog->cmd(), prog->args());
+    }
+    ~MenuProgSwitchItems() {
+        delete menu;
     }
     virtual void updateList() override {
         menu->refresh();
@@ -194,7 +196,7 @@ void KProgram::open(unsigned mods) {
 
     if (bIsDynSwitchMenu) {
         if (!pSwitchWindow) {
-            ISwitchItems* items = new MenuProgSwitchItems(fProg, fKey, fMod);
+            ISwitchItems* items = new MenuProgSwitchItems(fProg, wm.key, wm.mod);
             pSwitchWindow = new SwitchWindow(desktop, items, quickSwitchVertical);
         }
         pSwitchWindow->begin(true, mods);
