@@ -1,8 +1,9 @@
-icewm (3.7.2-1) UNRELEASED; urgency=low
+icewm (3.7.2-1) unstable; urgency=medium
 
-  * build with nanosvg image loader from the Debian package
+  * New upstream release
+  * Built with nanosvg image loader from the Debian package
 
- -- Eduard Bloch <blade@debian.org>  Fri, 04 Oct 2024 14:34:24 +0200
+ -- Eduard Bloch <blade@debian.org>  Sat, 15 Mar 2025 21:33:38 +0100
 
 icewm (3.6.0-1) unstable; urgency=low
 
