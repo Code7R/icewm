@@ -1432,8 +1432,6 @@ YWMApp::YWMApp(int *argc, char ***argv, const char *displayName,
 
     manager->grabKeys();
 
-    manager->setupRootProxy();
-
 #ifdef CONFIG_SESSION
     if (haveSessionManager())
         loadWindowInfo();
