@@ -1,6 +1,7 @@
-icewm (3.7.4-1) UNRELEASED; urgency=medium
+icewm (3.7.4-1) unstable; urgency=medium
 
   * New upstream release
+  * Stop building additional test executables (closes: Bug#1103314)
 
  -- Eduard Bloch <blade@debian.org>  Sat, 26 Apr 2025 14:48:22 +0200
 
