@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icewm 1.2.30\n"
 "Report-Msgid-Bugs-To: https://github.com/bbidulock/icewm/issues\n"
-"POT-Creation-Date: 2025-03-30 22:06+0200\n"
-"PO-Revision-Date: 2024-03-04 11:42+0000\n"
-"Last-Translator: Grace Yu <grace.yu@excel-gits.com>\n"
+"POT-Creation-Date: 2025-04-21 20:34+0200\n"
+"PO-Revision-Date: 2025-04-08 10:56+0000\n"
+"Last-Translator: Emily Dong <Emily.Dong@excel-gits.com>\n"
 "Language-Team: Chinese (Taiwan) <https://l10n.opensuse.org/projects/icewm/"
 "icewm-1-4-branch/zh_TW/>\n"
 "Language: zh_TW\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.9.1\n"
+"X-Generator: Weblate 5.10.3\n"
 
 #: src/aapm.cc:113
 #, c-format
@@ -158,12 +158,12 @@ msgstr "合併(_C)"
 msgid "_Separate"
 msgstr "獨立(_S)"
 
-#: src/akeyboard.cc:78 src/icesm.cc:468 src/wmmenu.cc:507
+#: src/akeyboard.cc:78 src/icesm.cc:476 src/wmmenu.cc:507
 #, c-format
 msgid "%s exited with status %d."
 msgstr "%s 已離開，狀態為 %d。"
 
-#: src/akeyboard.cc:81 src/icesm.cc:474 src/icesm.cc:628 src/wmmenu.cc:510
+#: src/akeyboard.cc:81 src/icesm.cc:482 src/icesm.cc:636 src/wmmenu.cc:510
 #, c-format
 msgid "%s was killed by signal %d."
 msgstr "%s 被訊號 %d 強行中止。"
@@ -382,6 +382,36 @@ msgid ""
 "This program also listens to environment variables defined by\n"
 "the XDG Base Directory Specification:\n"
 msgstr ""
+"用法：icewm-menu-fdo [選項] [檔案名稱]\n"
+"選項：\n"
+"-g、--generic\t\t在程式的括弧中包含通用名稱\n"
+"-o、--output=FILE\t將輸出寫入至 FILE\n"
+"-t、--terminal=NAME\t使用 NAME 指定帶有 '-e' 選項的終端機\n"
+"-s、--no-lone-app\t將孤立元素移至父功能表中\n"
+"-S、--no-lone-hint\t與 -s 相似，但會附加原始子功能表\n"
+"-d、--deadline-apps=N\t經過 N 毫秒後停止載入應用程式資訊\n"
+"-D、--deadline-all=N\t停止所有載入作業並列印目前為止獲得的資訊\n"
+"-m、--match=PAT\t\t僅顯示名稱中包含 PAT 的應用程式\n"
+"-M、--imatch=PAT\t與 --match 相似，但不區分大小寫\n"
+"-L、--limit-max-len=N\t截斷長度超過 N 個字元的應用程式名稱，可新增以下旗"
+"標：\n"
+"--seps  \t在相關內容前後列印分隔符號\n"
+"--sep-before\t在相關內容前列印分隔符號\n"
+"--sep-after\t僅在相關內容後列印分隔符號\n"
+"--no-sep-others\t遺留旗標，沒有任何作用\n"
+"--no-sub-cats\t不包含額外的子目錄，只列印一層功能表\n"
+"--flat\t\t在一層目錄提示中顯示所有應用程式\n"
+"--flat-sep=STR\t在平面模式下使用的目錄分隔符號 (預設為 ' / ')\n"
+"--match-sec\t將 --match 或 --imatch 套用於應用程式和區段\n"
+"--match-osec\t僅將 --match 或 --imatch 套用於區段\n"
+"--orig-comment\t將源 .desktop 檔案列印為備註\n"
+"-C、--copying\t列印著作權資訊\n"
+"-V、--version\t列印版本資訊\n"
+"-h、--help\t列印此用法畫面並結束。\n"
+"\n"
+"檔案名稱\t用於啟動相應應用程式執行指令的任何 .desktop 檔案。\n"
+"\n"
+"此程式還會監聽 XDG 基本目錄規格定義的環境變數：\n"
 
 #. TRANSLATORS: This is a SHORT category menu name from freedesktop.org. Please add compact punctuation if needed but no double-quotes! Hint for the content inside: An audio application
 #: src/fdomenu.cc:1117 src/fdospecgen.h:64 src/fdospecgen.h:72
@@ -393,15 +423,15 @@ msgstr "音訊"
 
 #: src/fdomenu.cc:1118
 msgid "Zarathustra"
-msgstr ""
+msgstr "Zarathustra"
 
 #: src/fdomenu.cc:1218
 msgid "System too slow! Failed to load menu content!"
-msgstr ""
+msgstr "系統太慢！無法載入功能表內容！"
 
 #: src/fdomenu.cc:1221
 msgid "Please push HERE and retry after some seconds."
-msgstr ""
+msgstr "請按一下此處，稍後再試。"
 
 #. TRANSLATORS: This is a SHORT category menu name from freedesktop.org. Please add compact punctuation if needed but no double-quotes! Hint for the content inside: A tool to manage printers
 #: src/fdospecgen.h:24
@@ -639,7 +669,6 @@ msgstr "繪圖"
 
 #. TRANSLATORS: This is a SHORT category menu name from freedesktop.org. Please add compact punctuation if needed but no double-quotes! Hint for the content inside: Artificial Intelligence software
 #: src/fdospecgen.h:234 src/fdospecgen.h:240
-#, fuzzy
 msgid "Artificialtelligence"
 msgstr "人工智慧"
 
@@ -739,7 +768,7 @@ msgstr "時鐘"
 #. TRANSLATORS: This is a SHORT category menu name from freedesktop.org. Please add compact punctuation if needed but no double-quotes! Hint for the content inside: Application that only works inside a terminal (text-based or command line application)
 #: src/fdospecgen.h:366
 msgid "ConsoleOnly"
-msgstr ""
+msgstr "僅限主控台"
 
 #. TRANSLATORS: This is a SHORT category menu name from freedesktop.org. Please add compact punctuation if needed but no double-quotes! Hint for the content inside:  
 #: src/fdospecgen.h:372 src/fdospecgen.h:378
@@ -1394,125 +1423,125 @@ msgstr "重新啟動"
 msgid "Same Game"
 msgstr "Same 遊戲"
 
-#: src/icesh.cc:76
+#: src/icesh.cc:80
 msgid "For help please consult the man page icesh(1).\n"
 msgstr "若要取得說明，請參考 man 頁面 icesh(1)。\n"
 
-#: src/icesh.cc:1690
+#: src/icesh.cc:1794
 #, c-format
 msgid "Named symbols of the domain `%s' (numeric range: %ld-%ld):\n"
 msgstr "網域「%s」的命名符號（數值範圍：%ld-%ld）：\n"
 
-#: src/icesh.cc:1759
+#: src/icesh.cc:1863
 #, c-format
 msgid "Workspace out of range: %ld"
 msgstr "工作區超出範圍︰%ld"
 
-#: src/icesh.cc:1780
+#: src/icesh.cc:1884
 #, c-format
 msgid "Invalid workspace name: `%s'"
 msgstr "無效的工作區名稱：「%s」"
 
-#: src/icesh.cc:2291
+#: src/icesh.cc:2397
 msgid "GNOME window layer"
 msgstr "GNOME 視窗層次"
 
-#: src/icesh.cc:2292
+#: src/icesh.cc:2398
 msgid "IceWM tray option"
 msgstr "IceWM 系統列選項"
 
-#: src/icesh.cc:2293
+#: src/icesh.cc:2399
 msgid "Gravity symbols"
 msgstr "Gravity 符號"
 
-#: src/icesh.cc:2294
+#: src/icesh.cc:2400
 msgid "Motif functions"
 msgstr "Motif 功能"
 
-#: src/icesh.cc:2295
+#: src/icesh.cc:2401
 msgid "Motif decorations"
 msgstr "Motif 修飾"
 
-#: src/icesh.cc:2296
+#: src/icesh.cc:2402
 msgid "EWMH window state"
 msgstr "EWMH 視窗狀態"
 
-#: src/icesh.cc:2387 src/icesh.cc:2460
+#: src/icesh.cc:2493 src/icesh.cc:2566
 #, c-format
 msgid "workspace #%d: `%s'\n"
 msgstr "工作區 #%d：「%s」\n"
 
-#: src/icesh.cc:2711 src/icesh.cc:4588 src/icesh.cc:5188
+#: src/icesh.cc:2817 src/icesh.cc:4702 src/icesh.cc:5302
 #, c-format
 msgid "Invalid state: `%s'."
 msgstr "無效狀態：`%s'。"
 
-#: src/icesh.cc:2740 src/icesh.cc:4162 src/icesh.cc:4212 src/icesh.cc:5509
+#: src/icesh.cc:2848 src/icesh.cc:4271 src/icesh.cc:4321 src/icesh.cc:5623
 #, c-format
 msgid "Invalid argument: `%s'"
 msgstr "引數無效：「%s」"
 
-#: src/icesh.cc:3782
+#: src/icesh.cc:3891
 #, c-format
 msgid "Cannot get geometry of window 0x%lx"
 msgstr "無法獲取視窗 0x%lx 的記憶體"
 
-#: src/icesh.cc:3807
+#: src/icesh.cc:3916
 #, c-format
 msgid "Invalid Xinerama: `%s'."
 msgstr "無效 Xinerama：`%s'。"
 
-#: src/icesh.cc:3939 src/icesh.cc:3947 src/wmconfig.cc:139 src/wmsave.cc:65
+#: src/icesh.cc:4048 src/icesh.cc:4056 src/wmconfig.cc:139 src/wmsave.cc:65
 #: src/wmsave.cc:298 src/wmsave.cc:301
 #, c-format
 msgid "Unable to write to %s"
 msgstr "無法寫入 %s"
 
-#: src/icesh.cc:4178
+#: src/icesh.cc:4287
 #, c-format
 msgid "Action `%s' requires at least %d arguments."
 msgstr "動作「%s」需要至少 %d 個引數。"
 
-#: src/icesh.cc:4187
+#: src/icesh.cc:4296
 #, c-format
 msgid "Invalid expression: `%s'"
 msgstr "表示式無效：「%s」"
 
-#: src/icesh.cc:4198 src/icesound.cc:800 src/icewmbg.cc:1088
-#: src/icewmhint.cc:37 src/wmapp.cc:1296 src/yxapp.cc:1049
+#: src/icesh.cc:4307 src/icesound.cc:800 src/icewmbg.cc:1088
+#: src/icewmhint.cc:37 src/wmapp.cc:1298 src/yxapp.cc:1049
 #, c-format
 msgid "Can't open display: %s. X must be running and $DISPLAY set."
 msgstr "無法開啟顯示：%s。X 必須正在執行且需設定 $DISPLAY。"
 
-#: src/icesh.cc:4314
+#: src/icesh.cc:4423
 #, c-format
 msgid "Unexpected: `%s'."
 msgstr "非預期：`%s'。"
 
-#: src/icesh.cc:4346
+#: src/icesh.cc:4455
 msgid "No windows found."
 msgstr "找不到視窗。"
 
-#: src/icesh.cc:4362
+#: src/icesh.cc:4471
 msgid "No actions specified."
 msgstr "未指定動作。"
 
-#: src/icesh.cc:4512
+#: src/icesh.cc:4626
 #, c-format
 msgid "Invalid window identifier: `%s'"
 msgstr "無效的視窗識別碼：「%s」"
 
-#: src/icesh.cc:4528
+#: src/icesh.cc:4642
 #, c-format
 msgid "Invalid PID: `%s'"
 msgstr "無效 PID：`%s'"
 
-#: src/icesh.cc:4561
+#: src/icesh.cc:4675
 #, c-format
 msgid "Invalid layer: `%s'."
 msgstr "無效層：`%s'。"
 
-#: src/icesh.cc:5648
+#: src/icesh.cc:5762
 #, c-format
 msgid "Unknown action: `%s'"
 msgstr "未知動作：「%s」"
@@ -1568,17 +1597,17 @@ msgstr ""
 "  -g, --catchsegv     讓 \"/usr/bin/catchsegv\" 執行 icewm。\n"
 "                      如果 icewm 發生記憶體區段錯誤，則進行回溯。\n"
 
-#: src/icesm.cc:188
+#: src/icesm.cc:193
 #, c-format
 msgid "Unknown option '%s'"
 msgstr "未知選項「%s」"
 
-#: src/icesm.cc:462 src/icesm.cc:622
+#: src/icesm.cc:470 src/icesm.cc:630
 #, c-format
 msgid "restart %s."
 msgstr "重新啟動 %s。"
 
-#: src/icesm.cc:513
+#: src/icesm.cc:521
 msgid ""
 " IceWM crashed for the second time in 10 seconds. \n"
 " Do you wish to:\n"
@@ -1594,7 +1623,7 @@ msgstr ""
 "\t2: 中止此工作階段？\n"
 "\t3: 執行終端機?\n"
 
-#: src/icesm.cc:519
+#: src/icesm.cc:527
 msgid "IceWM crash response"
 msgstr "IceWM 當機回應"
 
@@ -1948,7 +1977,7 @@ msgstr ""
 " center:1 scaled:1 = 沿兩個方向填充並保持長寬比率\n"
 "\n"
 
-#: src/icewmbg.cc:1249 src/wmapp.cc:1901
+#: src/icewmbg.cc:1249 src/wmapp.cc:1906
 #, c-format
 msgid "Unrecognized option '%s'."
 msgstr "無法識別選項「%s」。"
@@ -2031,11 +2060,11 @@ msgstr "DoubleBuffer"
 msgid "AlphaBlending"
 msgstr "AlphaBlending"
 
-#: src/wmabout.cc:63
+#: src/wmabout.cc:64
 msgid "Renderer:"
 msgstr "轉譯器："
 
-#: src/wmabout.cc:71
+#: src/wmabout.cc:72
 msgid "icewm - About"
 msgstr "icewm - 關於"
 
@@ -2285,16 +2314,16 @@ msgstr ""
 "取消管理所有應用程式并做為\n"
 "終端機重新啟動。是否繼續？"
 
-#: src/wmapp.cc:1297 src/yxapp.cc:1050
+#: src/wmapp.cc:1299 src/yxapp.cc:1050
 msgid "<none>"
 msgstr "<無>"
 
-#: src/wmapp.cc:1625
+#: src/wmapp.cc:1627
 msgid ""
 "  --client-id=ID      Client id to use when contacting session manager.\n"
 msgstr "  --client-id=ID      聯絡工作階段管理程式時要使用的用戶端 ID。\n"
 
-#: src/wmapp.cc:1631
+#: src/wmapp.cc:1633
 msgid ""
 "\n"
 "  --debug             Print generic debug messages.\n"
@@ -2304,7 +2333,7 @@ msgstr ""
 "  --debug             列印一般除錯訊息。\n"
 "  --debug-z           列印有關視窗堆疊的除錯訊息。\n"
 
-#: src/wmapp.cc:1639
+#: src/wmapp.cc:1641
 msgid ""
 "\n"
 "  -a, --alpha         Use a 32-bit visual for translucency.\n"
@@ -2324,15 +2353,15 @@ msgstr ""
 "  --rewrite-preferences  更新現有優先設定檔案。\n"
 "  --trace=conf,icon   追蹤用於載入組態的路徑。\n"
 
-#: src/wmapp.cc:1650
+#: src/wmapp.cc:1652
 msgid "  -o, --output=FILE   Redirect all output to FILE.\n"
 msgstr "  -o、--output=FILE   將所有輸出重新導向至 FILE。\n"
 
-#: src/wmapp.cc:1656
+#: src/wmapp.cc:1658
 msgid "  -i, --install=THEME Install THEME from extra or 'list'.\n"
-msgstr ""
+msgstr "  -i、--install=THEME 從 extra 或 'list' 安裝 THEME。\n"
 
-#: src/wmapp.cc:1659
+#: src/wmapp.cc:1661
 #, c-format
 msgid ""
 "Usage: %s [OPTIONS]\n"
@@ -2391,21 +2420,21 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: src/wmapp.cc:1725
+#: src/wmapp.cc:1727
 #, c-format
 msgid "%s configuration directories:\n"
 msgstr "%s 組態目錄︰\n"
 
-#: src/wmapp.cc:1810
+#: src/wmapp.cc:1815
 #, c-format
 msgid "%s configured options:%s\n"
 msgstr "%s 設定的選項：%s\n"
 
-#: src/wmapp.cc:1951
+#: src/wmapp.cc:1956
 msgid "Confirm Logout"
 msgstr "確定登出"
 
-#: src/wmapp.cc:1952
+#: src/wmapp.cc:1957
 msgid ""
 "Logout will close all active applications.\n"
 "Proceed?"
@@ -2441,7 +2470,7 @@ msgstr "向下循環"
 msgid "Rollup"
 msgstr "向上循環"
 
-#: src/wmclient.cc:475
+#: src/wmclient.cc:478
 #, c-format
 msgid ""
 "Client %s with PID %ld fails to respond.\n"
@@ -2483,28 +2512,34 @@ msgstr "登出(_L)..."
 msgid "_Restart icewm"
 msgstr "重新啟動 icewm(_R)"
 
-#. TRANSLATORS: This appears in a group with others items, so please make the hotkeys unique in the set: # T_ile Horizontally, Ca_scade, _Arrange, _Minimize All, _Hide All, _Undo, Arrange _Icons, _Windows, _Refresh, _About, _Logout
-#: src/wmdialog.cc:94 src/wmprog.cc:434 src/wmtaskbar.cc:238
-msgid "_About"
-msgstr "關於(_A)"
-
-#: src/wmdialog.cc:95
-msgid "Reload win_options"
-msgstr "重新載入視窗選項(_O)"
-
-#: src/wmdialog.cc:96
+#: src/wmdialog.cc:94
 msgid "Reload ke_ys"
 msgstr "重新載入金鑰(_K)"
 
-#: src/wmframe.cc:1452
+#: src/wmdialog.cc:95
+#, fuzzy
+#| msgid "Reload win_options"
+msgid "Reload _toolbar"
+msgstr "重新載入視窗選項(_O)"
+
+#: src/wmdialog.cc:96
+msgid "Reload win_options"
+msgstr "重新載入視窗選項(_O)"
+
+#. TRANSLATORS: This appears in a group with others items, so please make the hotkeys unique in the set: # T_ile Horizontally, Ca_scade, _Arrange, _Minimize All, _Hide All, _Undo, Arrange _Icons, _Windows, _Refresh, _About, _Logout
+#: src/wmdialog.cc:97 src/wmprog.cc:434 src/wmtaskbar.cc:238
+msgid "_About"
+msgstr "關於(_A)"
+
+#: src/wmframe.cc:1454
 msgid "Rename"
 msgstr "重新命名"
 
-#: src/wmframe.cc:1453
+#: src/wmframe.cc:1455
 msgid "Rename the window title"
 msgstr "重新命名視窗標題"
 
-#: src/wmframe.cc:1960
+#: src/wmframe.cc:1962
 msgid ""
 "WARNING! All unsaved changes will be lost when\n"
 "this client is killed. Do you wish to proceed?"
@@ -2512,7 +2547,7 @@ msgstr ""
 "【警告】！當這個客戶端程式被砍掉時，將會失去所有未儲存的變更。\n"
 "您希望繼續進行嗎？"
 
-#: src/wmframe.cc:1965
+#: src/wmframe.cc:1967
 msgid "Kill Client: "
 msgstr "砍掉客戶端："
 
@@ -2583,11 +2618,11 @@ msgstr "\"%s\" 已逾時！"
 msgid "'%s' produces no output"
 msgstr "「%s」未產生任何輸出"
 
-#: src/wmmgr.cc:3695
+#: src/wmmgr.cc:3681
 msgid "Missing program setxkbmap"
 msgstr "缺少程式 setxkbmap"
 
-#: src/wmmgr.cc:3696
+#: src/wmmgr.cc:3682
 msgid "For keyboard switching, please install setxkbmap."
 msgstr "若要進行鍵盤切換，請安裝 setxkbmap。"
 
@@ -2723,7 +2758,7 @@ msgstr "排列圖示(_I)"
 msgid "_Refresh"
 msgstr "重新整理(_R)"
 
-#: src/wmtaskbar.cc:313 src/wmtaskbar.cc:1030
+#: src/wmtaskbar.cc:313 src/wmtaskbar.cc:1044
 msgid "Hide Taskbar"
 msgstr "隱藏工作列"
 
@@ -2731,15 +2766,15 @@ msgstr "隱藏工作列"
 msgid "Favorite Applications"
 msgstr "喜愛的應用程式"
 
-#: src/wmtaskbar.cc:362
+#: src/wmtaskbar.cc:351
 msgid "Window List Menu"
 msgstr "視窗列表選單"
 
-#: src/wmtaskbar.cc:372
+#: src/wmtaskbar.cc:361
 msgid "Show Desktop"
 msgstr "顯示桌面"
 
-#: src/wmtaskbar.cc:1030
+#: src/wmtaskbar.cc:1044
 msgid "Show Taskbar"
 msgstr "顯示工作列"
 
