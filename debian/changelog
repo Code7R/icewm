@@ -1,9 +1,11 @@
 icewm (3.7.4-1) unstable; urgency=medium
 
   * New upstream release
+    + cherry-picked fixes of https://github.com/bbidulock/icewm/issues/800
+      (3.7.4..4603a667999d81b2e88a51dedd1b9e761d384b74)
   * Stop building additional test executables (closes: Bug#1103314)
 
- -- Eduard Bloch <blade@debian.org>  Sat, 26 Apr 2025 14:48:22 +0200
+ -- Eduard Bloch <blade@debian.org>  Sat, 03 May 2025 14:48:22 +0200
 
 icewm (3.7.3-1) unstable; urgency=low
 
