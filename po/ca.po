@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icewm 1.0.9\n"
 "Report-Msgid-Bugs-To: https://github.com/bbidulock/icewm/issues\n"
-"POT-Creation-Date: 2025-04-21 20:34+0200\n"
-"PO-Revision-Date: 2024-10-07 19:48+0000\n"
+"POT-Creation-Date: 2025-05-25 21:09+0200\n"
+"PO-Revision-Date: 2025-05-09 09:59+0000\n"
 "Last-Translator: David Medina <medipas@gmail.com>\n"
 "Language-Team: Catalan <https://l10n.opensuse.org/projects/icewm/icewm-1-4-"
 "branch/ca/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8 bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7.2\n"
+"X-Generator: Weblate 5.11.4\n"
 
 #: src/aapm.cc:113
 #, c-format
@@ -346,7 +346,7 @@ msgstr "Espai de treball: "
 msgid "Tabs"
 msgstr "Pestanyes"
 
-#: src/fdomenu.cc:928
+#: src/fdomenu.cc:976
 msgid ""
 "USAGE: icewm-menu-fdo [OPTIONS] [FILENAME]\n"
 "OPTIONS:\n"
@@ -420,22 +420,22 @@ msgstr ""
 "l'especificació del directori base XDG:\n"
 
 #. TRANSLATORS: This is a SHORT category menu name from freedesktop.org. Please add compact punctuation if needed but no double-quotes! Hint for the content inside: An audio application
-#: src/fdomenu.cc:1117 src/fdospecgen.h:64 src/fdospecgen.h:72
+#: src/fdomenu.cc:1164 src/fdospecgen.h:64 src/fdospecgen.h:72
 #: src/fdospecgen.h:128 src/fdospecgen.h:144 src/fdospecgen.h:260
 #: src/fdospecgen.h:614 src/fdospecgen.h:830 src/fdospecgen.h:884
 #: src/fdospecgen.h:1090
 msgid "Audio"
 msgstr "Àudio"
 
-#: src/fdomenu.cc:1118
+#: src/fdomenu.cc:1165
 msgid "Zarathustra"
 msgstr "Zaratustra"
 
-#: src/fdomenu.cc:1218
+#: src/fdomenu.cc:1261
 msgid "System too slow! Failed to load menu content!"
 msgstr "Sistema massa lent! Ha fallat carregar el contingut del menú!"
 
-#: src/fdomenu.cc:1221
+#: src/fdomenu.cc:1264
 msgid "Please push HERE and retry after some seconds."
 msgstr "Premeu AQUÍ i torneu-ho a provar al cap d'uns segons."
 
@@ -1480,79 +1480,79 @@ msgstr "Estat de la finestra de l'EWMH"
 msgid "workspace #%d: `%s'\n"
 msgstr "Escriptori #%d: \"%s\"\n"
 
-#: src/icesh.cc:2817 src/icesh.cc:4702 src/icesh.cc:5302
+#: src/icesh.cc:2817 src/icesh.cc:4701 src/icesh.cc:5301
 #, c-format
 msgid "Invalid state: `%s'."
 msgstr "Estat no vàlid: %s."
 
-#: src/icesh.cc:2848 src/icesh.cc:4271 src/icesh.cc:4321 src/icesh.cc:5623
+#: src/icesh.cc:2848 src/icesh.cc:4270 src/icesh.cc:4320 src/icesh.cc:5622
 #, c-format
 msgid "Invalid argument: `%s'"
 msgstr "Argument no vàlid: %s"
 
-#: src/icesh.cc:3891
+#: src/icesh.cc:3890
 #, c-format
 msgid "Cannot get geometry of window 0x%lx"
 msgstr "No es pot obtenir una geometria de finestra de 0x%lx."
 
-#: src/icesh.cc:3916
+#: src/icesh.cc:3915
 #, c-format
 msgid "Invalid Xinerama: `%s'."
 msgstr "Xinerama no vàlid: %s."
 
-#: src/icesh.cc:4048 src/icesh.cc:4056 src/wmconfig.cc:139 src/wmsave.cc:65
+#: src/icesh.cc:4047 src/icesh.cc:4055 src/wmconfig.cc:139 src/wmsave.cc:65
 #: src/wmsave.cc:298 src/wmsave.cc:301
 #, c-format
 msgid "Unable to write to %s"
 msgstr "No es pot escriure a %s"
 
-#: src/icesh.cc:4287
+#: src/icesh.cc:4286
 #, c-format
 msgid "Action `%s' requires at least %d arguments."
 msgstr "L'acció \"%s\" necessita com a mínim %d arguments."
 
-#: src/icesh.cc:4296
+#: src/icesh.cc:4295
 #, c-format
 msgid "Invalid expression: `%s'"
 msgstr "Expressió no vàlida: %s"
 
-#: src/icesh.cc:4307 src/icesound.cc:800 src/icewmbg.cc:1088
-#: src/icewmhint.cc:37 src/wmapp.cc:1298 src/yxapp.cc:1049
+#: src/icesh.cc:4306 src/icesound.cc:800 src/icewmbg.cc:1089
+#: src/icewmhint.cc:37 src/wmapp.cc:1317 src/yxapp.cc:1049
 #, c-format
 msgid "Can't open display: %s. X must be running and $DISPLAY set."
 msgstr ""
 "No es pot obrir la pantalla: %s. X ha d'estar funcionant i $DISPLAY "
 "configurat."
 
-#: src/icesh.cc:4423
+#: src/icesh.cc:4422
 #, c-format
 msgid "Unexpected: `%s'."
 msgstr "No esperat: %s."
 
-#: src/icesh.cc:4455
+#: src/icesh.cc:4454
 msgid "No windows found."
 msgstr "No s'ha trobat cap finestra."
 
-#: src/icesh.cc:4471
+#: src/icesh.cc:4470
 msgid "No actions specified."
 msgstr "No s'ha especificat cap acció."
 
-#: src/icesh.cc:4626
+#: src/icesh.cc:4625
 #, c-format
 msgid "Invalid window identifier: `%s'"
 msgstr "Identificador de finestra no vàlid: %s"
 
-#: src/icesh.cc:4642
+#: src/icesh.cc:4641
 #, c-format
 msgid "Invalid PID: `%s'"
 msgstr "PID no vàlid: %s"
 
-#: src/icesh.cc:4675
+#: src/icesh.cc:4674
 #, c-format
 msgid "Invalid layer: `%s'."
 msgstr "Capa no vàlida: %s."
 
-#: src/icesh.cc:5762
+#: src/icesh.cc:5761
 #, c-format
 msgid "Unknown action: `%s'"
 msgstr "Acció desconeguda: \"%s\""
@@ -1895,12 +1895,12 @@ msgstr "Expandeix les pestanyes"
 msgid "Wrap Lines"
 msgstr "Ajusta les línies"
 
-#: src/icewmbg.cc:35 src/icewmbg.cc:373
+#: src/icewmbg.cc:35 src/icewmbg.cc:374
 #, c-format
 msgid "Failed to load image '%s'."
 msgstr "Ha fallat carregar la imatge \"%s\"."
 
-#: src/icewmbg.cc:970
+#: src/icewmbg.cc:971
 msgid ""
 "Usage: icewmbg [OPTIONS]\n"
 "Where multiple values can be given they are separated by commas.\n"
@@ -1999,12 +1999,12 @@ msgstr ""
 " center:0 scaled:1 = omple ambdues dimensions i mantén la ràtio d'aspecte\n"
 "\n"
 
-#: src/icewmbg.cc:1249 src/wmapp.cc:1906
+#: src/icewmbg.cc:1250 src/wmapp.cc:1923
 #, c-format
 msgid "Unrecognized option '%s'."
 msgstr "Opció no reconeguda: \"%s\"."
 
-#: src/icewmbg.cc:1336
+#: src/icewmbg.cc:1337
 msgid "Cannot start, because another icewmbg is still running."
 msgstr "No es pot iniciar, perquè encara s'executa un altre icewmbg."
 
@@ -2017,11 +2017,11 @@ msgstr "Usage: icewmhint classe.instància opció arg\n"
 msgid "Out of memory (len=%d)."
 msgstr "Sense memòria (len=%d)."
 
-#: src/misc.cc:71 src/misc.cc:83
+#: src/misc.cc:70 src/misc.cc:82
 msgid "Warning: "
 msgstr "Atenció: "
 
-#: src/misc.cc:394
+#: src/misc.cc:393
 #, c-format
 msgid ""
 "Usage: %s [OPTIONS]\n"
@@ -2336,18 +2336,18 @@ msgstr ""
 "Deixa de gestionar totes les aplicacions\n"
 "i reinicia com a terminal. Endavant?"
 
-#: src/wmapp.cc:1299 src/yxapp.cc:1050
+#: src/wmapp.cc:1318 src/yxapp.cc:1050
 msgid "<none>"
 msgstr "<cap>"
 
-#: src/wmapp.cc:1627
+#: src/wmapp.cc:1646
 msgid ""
 "  --client-id=ID      Client id to use when contacting session manager.\n"
 msgstr ""
 "  --client-id=ID      Id de client per usar quan es contacti amb el gestor "
 "de sessions.\n"
 
-#: src/wmapp.cc:1633
+#: src/wmapp.cc:1652
 msgid ""
 "\n"
 "  --debug             Print generic debug messages.\n"
@@ -2358,7 +2358,7 @@ msgstr ""
 "  --debug-z           Imprimeix els missatges de depuració sobre l'apilament "
 "de finestres.\n"
 
-#: src/wmapp.cc:1641
+#: src/wmapp.cc:1660
 msgid ""
 "\n"
 "  -a, --alpha         Use a 32-bit visual for translucency.\n"
@@ -2379,15 +2379,15 @@ msgstr ""
 "  --rewrite-preferences  Actualitza un fitxer de preferències existent.\n"
 "  --trace=conf,icon   Traça els camins usats per carregar la configuració.\n"
 
-#: src/wmapp.cc:1652
+#: src/wmapp.cc:1671
 msgid "  -o, --output=FILE   Redirect all output to FILE.\n"
 msgstr "  -o, --output=FITXER Redirigeix tota la sortida al FITXER.\n"
 
-#: src/wmapp.cc:1658
+#: src/wmapp.cc:1677
 msgid "  -i, --install=THEME Install THEME from extra or 'list'.\n"
 msgstr "  -i, --install=TEMA Instal·la el TEMA des de l'extra o llista.\n"
 
-#: src/wmapp.cc:1661
+#: src/wmapp.cc:1680
 #, c-format
 msgid ""
 "Usage: %s [OPTIONS]\n"
@@ -2447,21 +2447,21 @@ msgstr ""
 "%s.\n"
 "\n"
 
-#: src/wmapp.cc:1727
+#: src/wmapp.cc:1746
 #, c-format
 msgid "%s configuration directories:\n"
 msgstr "%s directoris de configuració:\n"
 
-#: src/wmapp.cc:1815
+#: src/wmapp.cc:1834
 #, c-format
 msgid "%s configured options:%s\n"
 msgstr "%s opcions configurades:%s\n"
 
-#: src/wmapp.cc:1956
+#: src/wmapp.cc:1973
 msgid "Confirm Logout"
 msgstr "Confirmació de la sortida"
 
-#: src/wmapp.cc:1957
+#: src/wmapp.cc:1974
 msgid ""
 "Logout will close all active applications.\n"
 "Proceed?"
@@ -2558,15 +2558,15 @@ msgstr "Torna a carregar les opcions de la finestra"
 msgid "_About"
 msgstr "_Quant a"
 
-#: src/wmframe.cc:1454
+#: src/wmframe.cc:1436
 msgid "Rename"
 msgstr "Canvia'n el nom"
 
-#: src/wmframe.cc:1455
+#: src/wmframe.cc:1437
 msgid "Rename the window title"
 msgstr "Canvia de nom el títol de la finestra"
 
-#: src/wmframe.cc:1962
+#: src/wmframe.cc:1933
 msgid ""
 "WARNING! All unsaved changes will be lost when\n"
 "this client is killed. Do you wish to proceed?"
@@ -2574,7 +2574,7 @@ msgstr ""
 "ATENCIÓ! Tots els canvis no desats es perdran en\n"
 "matar el client. Encara voleu continuar?"
 
-#: src/wmframe.cc:1967
+#: src/wmframe.cc:1938
 msgid "Kill Client: "
 msgstr "Mata el client: "
 
@@ -2645,11 +2645,11 @@ msgstr "%s ha assolit el temps d'espera!"
 msgid "'%s' produces no output"
 msgstr "\"%s\" no produeix cap sortida"
 
-#: src/wmmgr.cc:3681
+#: src/wmmgr.cc:3688
 msgid "Missing program setxkbmap"
 msgstr "Manca el programa setxkbmap."
 
-#: src/wmmgr.cc:3682
+#: src/wmmgr.cc:3689
 msgid "For keyboard switching, please install setxkbmap."
 msgstr "Per canviar el teclat, si us plau, instal·leu setxkbmap."
 
@@ -2897,7 +2897,7 @@ msgstr "ERROR? Caràcter imprevist, però Imlib ha pogut analitzar \"%s\""
 #: src/yfontcore.cc:121 src/yfontxft.cc:137
 #, c-format
 msgid "Could not load font \"%s\"."
-msgstr "No s'ha pogut carregar la lletra \"%s\"."
+msgstr "No s'ha pogut carregar la lletra %s."
 
 #: src/yfontcore.cc:233
 #, c-format
@@ -2907,7 +2907,7 @@ msgstr "No s'ha trobat codificació per a la lletra \"%s\":"
 #: src/yfontcore.cc:261
 #, c-format
 msgid "Could not load fontset \"%s\"."
-msgstr "No s'ha pogut carregar la lletra \"%s\"."
+msgstr "No s'ha pogut carregar la lletra %s."
 
 #: src/yinputline.cc:42
 msgid "_Copy"

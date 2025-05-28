@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icewm 1.2.23\n"
 "Report-Msgid-Bugs-To: https://github.com/bbidulock/icewm/issues\n"
-"POT-Creation-Date: 2025-04-21 20:34+0200\n"
-"PO-Revision-Date: 2024-05-10 00:56+0000\n"
-"Last-Translator: Freek de Kruijf <freek@opensuse.org>\n"
+"POT-Creation-Date: 2025-05-25 21:09+0200\n"
+"PO-Revision-Date: 2025-05-17 23:59+0000\n"
+"Last-Translator: Feike Donia <feikedonia@proton.me>\n"
 "Language-Team: Dutch <https://l10n.opensuse.org/projects/icewm/icewm-1-4-"
 "branch/nl/>\n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.9.1\n"
+"X-Generator: Weblate 5.11.4\n"
 
 #: src/aapm.cc:113
 #, c-format
@@ -31,7 +31,7 @@ msgstr "Kan geen ioctl uitvoeren op het APM-apparaat %s"
 #: src/aapm.cc:169
 #, c-format
 msgid "Unknown format used by APM device %s (%d)."
-msgstr "Onbekend formaat gebruikt door APM-apparaat %s (%d)."
+msgstr "Het APM-apparaat gebruikte een onbekend format %s (%d)."
 
 #: src/aapm.cc:201 src/aapm.cc:471 src/aapm.cc:630 src/aapm.cc:754
 msgid " - Power"
@@ -189,12 +189,12 @@ msgstr "Toetsenbord"
 #: src/amailbox.cc:64
 #, c-format
 msgid "Invalid mailbox protocol: \"%s\""
-msgstr "Ongeldig postvakprotocol: »%s«"
+msgstr "Ongeldig postvakprotocol: \"%s\""
 
 #: src/amailbox.cc:66
 #, c-format
 msgid "Invalid mailbox path: \"%s\""
-msgstr "Ongeldig postvakpad: »%s«"
+msgstr "Ongeldig postvakpad: \"%s\""
 
 #: src/amailbox.cc:140
 #, c-format
@@ -229,7 +229,7 @@ msgstr "Naar socket schrijven is mislukt: %s"
 #: src/amailbox.cc:694
 #, c-format
 msgid "Using MailBox \"%s\"\n"
-msgstr "Gebruikt postvak: »%s«\n"
+msgstr "Gebruikt postvak: \"%s\"\n"
 
 #: src/amailbox.cc:801
 msgid "Suspended"
@@ -346,7 +346,7 @@ msgstr "Werkruimte: "
 msgid "Tabs"
 msgstr "Tabbladen"
 
-#: src/fdomenu.cc:928
+#: src/fdomenu.cc:976
 msgid ""
 "USAGE: icewm-menu-fdo [OPTIONS] [FILENAME]\n"
 "OPTIONS:\n"
@@ -382,24 +382,24 @@ msgid ""
 msgstr ""
 
 #. TRANSLATORS: This is a SHORT category menu name from freedesktop.org. Please add compact punctuation if needed but no double-quotes! Hint for the content inside: An audio application
-#: src/fdomenu.cc:1117 src/fdospecgen.h:64 src/fdospecgen.h:72
+#: src/fdomenu.cc:1164 src/fdospecgen.h:64 src/fdospecgen.h:72
 #: src/fdospecgen.h:128 src/fdospecgen.h:144 src/fdospecgen.h:260
 #: src/fdospecgen.h:614 src/fdospecgen.h:830 src/fdospecgen.h:884
 #: src/fdospecgen.h:1090
 msgid "Audio"
 msgstr "Audio"
 
-#: src/fdomenu.cc:1118
+#: src/fdomenu.cc:1165
 msgid "Zarathustra"
-msgstr ""
+msgstr "Zaratoestra"
 
-#: src/fdomenu.cc:1218
+#: src/fdomenu.cc:1261
 msgid "System too slow! Failed to load menu content!"
-msgstr ""
+msgstr "Het systeem is te langzaam! Kon het menu niet laden!"
 
-#: src/fdomenu.cc:1221
+#: src/fdomenu.cc:1264
 msgid "Please push HERE and retry after some seconds."
-msgstr ""
+msgstr "Druk op HIER en probeer het na enkele seconden opnieuw."
 
 #. TRANSLATORS: This is a SHORT category menu name from freedesktop.org. Please add compact punctuation if needed but no double-quotes! Hint for the content inside: A tool to manage printers
 #: src/fdospecgen.h:24
@@ -637,7 +637,6 @@ msgstr "Kunst"
 
 #. TRANSLATORS: This is a SHORT category menu name from freedesktop.org. Please add compact punctuation if needed but no double-quotes! Hint for the content inside: Artificial Intelligence software
 #: src/fdospecgen.h:234 src/fdospecgen.h:240
-#, fuzzy
 msgid "Artificialtelligence"
 msgstr "Kunstmatige intelligentie"
 
@@ -737,7 +736,7 @@ msgstr "Klok"
 #. TRANSLATORS: This is a SHORT category menu name from freedesktop.org. Please add compact punctuation if needed but no double-quotes! Hint for the content inside: Application that only works inside a terminal (text-based or command line application)
 #: src/fdospecgen.h:366
 msgid "ConsoleOnly"
-msgstr ""
+msgstr "Werkt alleen in terminal"
 
 #. TRANSLATORS: This is a SHORT category menu name from freedesktop.org. Please add compact punctuation if needed but no double-quotes! Hint for the content inside:  
 #: src/fdospecgen.h:372 src/fdospecgen.h:378
@@ -1446,79 +1445,79 @@ msgstr "EWMH-vensterstatus"
 msgid "workspace #%d: `%s'\n"
 msgstr "Werkruimte #%d: »%s«\n"
 
-#: src/icesh.cc:2817 src/icesh.cc:4702 src/icesh.cc:5302
+#: src/icesh.cc:2817 src/icesh.cc:4701 src/icesh.cc:5301
 #, c-format
 msgid "Invalid state: `%s'."
 msgstr "Ongeldige status: `%s'."
 
-#: src/icesh.cc:2848 src/icesh.cc:4271 src/icesh.cc:4321 src/icesh.cc:5623
+#: src/icesh.cc:2848 src/icesh.cc:4270 src/icesh.cc:4320 src/icesh.cc:5622
 #, c-format
 msgid "Invalid argument: `%s'"
 msgstr "Ongeldig argument: '%s'"
 
-#: src/icesh.cc:3891
+#: src/icesh.cc:3890
 #, c-format
 msgid "Cannot get geometry of window 0x%lx"
 msgstr "Kan geometrie van venster 0x%lx niet ophalen"
 
-#: src/icesh.cc:3916
+#: src/icesh.cc:3915
 #, c-format
 msgid "Invalid Xinerama: `%s'."
 msgstr "Ongeldig Xinerama: `%s'."
 
-#: src/icesh.cc:4048 src/icesh.cc:4056 src/wmconfig.cc:139 src/wmsave.cc:65
+#: src/icesh.cc:4047 src/icesh.cc:4055 src/wmconfig.cc:139 src/wmsave.cc:65
 #: src/wmsave.cc:298 src/wmsave.cc:301
 #, c-format
 msgid "Unable to write to %s"
 msgstr "Schrijven naar %s lukt niet"
 
-#: src/icesh.cc:4287
+#: src/icesh.cc:4286
 #, c-format
 msgid "Action `%s' requires at least %d arguments."
 msgstr "Actie `%s' heeft minimaal %d argumenten nodig."
 
-#: src/icesh.cc:4296
+#: src/icesh.cc:4295
 #, c-format
 msgid "Invalid expression: `%s'"
 msgstr "Ongeldige expressie: »%s«"
 
-#: src/icesh.cc:4307 src/icesound.cc:800 src/icewmbg.cc:1088
-#: src/icewmhint.cc:37 src/wmapp.cc:1298 src/yxapp.cc:1049
+#: src/icesh.cc:4306 src/icesound.cc:800 src/icewmbg.cc:1089
+#: src/icewmhint.cc:37 src/wmapp.cc:1317 src/yxapp.cc:1049
 #, c-format
 msgid "Can't open display: %s. X must be running and $DISPLAY set."
 msgstr ""
 "Kan het display %s niet openen. De X-Server moet werken en de "
 "omgevingsvariabele $DISPLAY moet hiernaar verwijzen."
 
-#: src/icesh.cc:4423
+#: src/icesh.cc:4422
 #, c-format
 msgid "Unexpected: `%s'."
 msgstr "Onverwacht: '%s'."
 
-#: src/icesh.cc:4455
+#: src/icesh.cc:4454
 msgid "No windows found."
 msgstr "Geen vensters gevonden."
 
-#: src/icesh.cc:4471
+#: src/icesh.cc:4470
 msgid "No actions specified."
 msgstr "Geen aktie aangegeven."
 
-#: src/icesh.cc:4626
+#: src/icesh.cc:4625
 #, c-format
 msgid "Invalid window identifier: `%s'"
 msgstr "Ongeldige venster identificatie: »%s«"
 
-#: src/icesh.cc:4642
+#: src/icesh.cc:4641
 #, c-format
 msgid "Invalid PID: `%s'"
 msgstr "Ongeldige PID: `%s'"
 
-#: src/icesh.cc:4675
+#: src/icesh.cc:4674
 #, c-format
 msgid "Invalid layer: `%s'."
 msgstr "Ongeldige laag: `%s'."
 
-#: src/icesh.cc:5762
+#: src/icesh.cc:5761
 #, c-format
 msgid "Unknown action: `%s'"
 msgstr "Onbekende actie: »%s«"
@@ -1860,12 +1859,12 @@ msgstr "Tabbladen uitbreiden"
 msgid "Wrap Lines"
 msgstr "Lange regels afbreken"
 
-#: src/icewmbg.cc:35 src/icewmbg.cc:373
+#: src/icewmbg.cc:35 src/icewmbg.cc:374
 #, c-format
 msgid "Failed to load image '%s'."
 msgstr "Het laden van afbeelding '%s' is mislukt."
 
-#: src/icewmbg.cc:970
+#: src/icewmbg.cc:971
 msgid ""
 "Usage: icewmbg [OPTIONS]\n"
 "Where multiple values can be given they are separated by commas.\n"
@@ -1967,12 +1966,12 @@ msgstr ""
 " center:0 scaled:1 = beide dimensies vullen en beeldverhouding behouden\n"
 "\n"
 
-#: src/icewmbg.cc:1249 src/wmapp.cc:1906
+#: src/icewmbg.cc:1250 src/wmapp.cc:1923
 #, c-format
 msgid "Unrecognized option '%s'."
 msgstr "Onbekende optie: '%s'."
 
-#: src/icewmbg.cc:1336
+#: src/icewmbg.cc:1337
 msgid "Cannot start, because another icewmbg is still running."
 msgstr "Kan niet worden gestart, omdat een andere icewmbg wordt uitgevoerd."
 
@@ -1985,11 +1984,11 @@ msgstr "Gebruik: icewmhint klasse.instantie optie argument\n"
 msgid "Out of memory (len=%d)."
 msgstr "Onvoldoende geheugen (len=%d)."
 
-#: src/misc.cc:71 src/misc.cc:83
+#: src/misc.cc:70 src/misc.cc:82
 msgid "Warning: "
 msgstr "Waarschuwing: "
 
-#: src/misc.cc:394
+#: src/misc.cc:393
 #, c-format
 msgid ""
 "Usage: %s [OPTIONS]\n"
@@ -2307,18 +2306,18 @@ msgstr ""
 "Hef beheer van alle toepassing op en herstart\n"
 "als een terminal. Doorgaan?"
 
-#: src/wmapp.cc:1299 src/yxapp.cc:1050
+#: src/wmapp.cc:1318 src/yxapp.cc:1050
 msgid "<none>"
 msgstr "<geen>"
 
-#: src/wmapp.cc:1627
+#: src/wmapp.cc:1646
 msgid ""
 "  --client-id=ID      Client id to use when contacting session manager.\n"
 msgstr ""
 "  --client-id=ID      Te gebruiken client-id bij contact maken met de "
 "sessiemanager.\n"
 
-#: src/wmapp.cc:1633
+#: src/wmapp.cc:1652
 msgid ""
 "\n"
 "  --debug             Print generic debug messages.\n"
@@ -2328,7 +2327,7 @@ msgstr ""
 "  --debug             Algemene debugberichten afdrukken.\n"
 "  --debug-z           Debugberichten over stapelen van vensters afdrukken.\n"
 
-#: src/wmapp.cc:1641
+#: src/wmapp.cc:1660
 msgid ""
 "\n"
 "  -a, --alpha         Use a 32-bit visual for translucency.\n"
@@ -2348,15 +2347,15 @@ msgstr ""
 "--rewrite-preferences  Een bestaand bestand met voorkeuren bijwerken.\n"
 "  --trace=conf,icon   Paden volgen gebruiken om configuratie te laden.\n"
 
-#: src/wmapp.cc:1652
+#: src/wmapp.cc:1671
 msgid "  -o, --output=FILE   Redirect all output to FILE.\n"
 msgstr "  -o, --output=BESTAND   Stuur alle uitvoer naar FILE.\n"
 
-#: src/wmapp.cc:1658
+#: src/wmapp.cc:1677
 msgid "  -i, --install=THEME Install THEME from extra or 'list'.\n"
 msgstr "  -i, --install=THEMA Installeer THEMA uit extra of 'lijst'.\n"
 
-#: src/wmapp.cc:1661
+#: src/wmapp.cc:1680
 #, c-format
 msgid ""
 "Usage: %s [OPTIONS]\n"
@@ -2415,21 +2414,21 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: src/wmapp.cc:1727
+#: src/wmapp.cc:1746
 #, c-format
 msgid "%s configuration directories:\n"
 msgstr "%s configuratiemappen:\n"
 
-#: src/wmapp.cc:1815
+#: src/wmapp.cc:1834
 #, c-format
 msgid "%s configured options:%s\n"
 msgstr "%s geconfigureerde opties:%s\n"
 
-#: src/wmapp.cc:1956
+#: src/wmapp.cc:1973
 msgid "Confirm Logout"
 msgstr "Afmelden bevestigen"
 
-#: src/wmapp.cc:1957
+#: src/wmapp.cc:1974
 msgid ""
 "Logout will close all active applications.\n"
 "Proceed?"
@@ -2496,7 +2495,7 @@ msgstr "Werkstation blo_kkeren"
 
 #: src/wmdialog.cc:87 src/ymsgbox.cc:51
 msgid "_Cancel"
-msgstr "Af_breken"
+msgstr "_Annuleren"
 
 #. TRANSLATORS: This appears in a group with others items, so please make the hotkeys unique in the set: # T_ile Horizontally, Ca_scade, _Arrange, _Minimize All, _Hide All, _Undo, Arrange _Icons, _Windows, _Refresh, _About, _Logout
 #: src/wmdialog.cc:88 src/wmprog.cc:466 src/wmprog.cc:468 src/wmtaskbar.cc:243
@@ -2527,15 +2526,15 @@ msgstr "Win_opties opnieuw laden"
 msgid "_About"
 msgstr "_Over"
 
-#: src/wmframe.cc:1454
+#: src/wmframe.cc:1436
 msgid "Rename"
 msgstr "Hernoemen"
 
-#: src/wmframe.cc:1455
+#: src/wmframe.cc:1437
 msgid "Rename the window title"
 msgstr "De venstertitel hernoemen"
 
-#: src/wmframe.cc:1962
+#: src/wmframe.cc:1933
 msgid ""
 "WARNING! All unsaved changes will be lost when\n"
 "this client is killed. Do you wish to proceed?"
@@ -2544,7 +2543,7 @@ msgstr ""
 "als u dit programma stopt! Wilt u doorgaan?"
 
 #
-#: src/wmframe.cc:1967
+#: src/wmframe.cc:1938
 msgid "Kill Client: "
 msgstr "Stoppen van: "
 
@@ -2615,11 +2614,11 @@ msgstr "Tijdoverschrijding met '%s'!"
 msgid "'%s' produces no output"
 msgstr "'%s' produceert geen uitvoer"
 
-#: src/wmmgr.cc:3681
+#: src/wmmgr.cc:3688
 msgid "Missing program setxkbmap"
 msgstr "Programma setxkbmap ontbreekt"
 
-#: src/wmmgr.cc:3682
+#: src/wmmgr.cc:3689
 msgid "For keyboard switching, please install setxkbmap."
 msgstr "Om van toetsenbord te wisselen, installeer setxkbmap."
 
