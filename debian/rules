@@ -31,7 +31,6 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
 include /usr/share/dpkg/architecture.mk
--include /usr/share/quilt/quilt.make
 
 CXXFLAGS += $(CPPFLAGS) -DXTERMCMD=x-terminal-emulator -Wall -Wextra
 ifeq (linux,$(DEB_TARGET_ARCH_OS))
