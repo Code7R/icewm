@@ -28,6 +28,7 @@ Build-Depends: debhelper (>= 10),
   libfribidi-dev,
   libxcomposite-dev,
   libxdamage-dev,
+  libxres-dev
 Build-Conflicts: libttf-dev, libesd0-dev
 Standards-Version: 4.5.0
 Vcs-Git: https://github.com/Code7R/icewm.git
