@@ -3,12 +3,11 @@ Section: x11
 Priority: optional
 Maintainer: Eduard Bloch <blade@debian.org>
 Build-Depends: debhelper (>= 10),
-# misc, build tools
+# misc. build tools
   gettext,
   pandoc (>> 2),
   cmake (>> 3.12),
   asciidoctor,
-  libfribidi-dev,
   dpkg-dev (>= 1.16.1~),
 # sound libs
   libsndfile1-dev,
@@ -19,7 +18,16 @@ Build-Depends: debhelper (>= 10),
 # font processor(s)
   libxft-dev (>> 2.1.1) | libxft2-dev,
 # X11 libs
-  xorg-dev
+  x11proto-core-dev | x-dev,
+  libsm-dev,
+  libx11-dev,
+  libxext-dev,
+  libxinerama-dev,
+  libxrender-dev,
+  libxrandr-dev,
+  libfribidi-dev,
+  libxcomposite-dev,
+  libxdamage-dev,
 Build-Conflicts: libttf-dev, libesd0-dev
 Standards-Version: 4.5.0
 Vcs-Git: https://github.com/Code7R/icewm.git
