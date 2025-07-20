@@ -18,93 +18,62 @@
 #include <sys/stat.h>
 #include <time.h>
 
-DFile::DFile(IApp *app, const mstring &name, ref<YIcon> icon, upath path):
-    DObject(app, name, icon), fPath(path)
-{
-}
-
-DFile::~DFile() {
-}
-
-void DFile::open() {
-    const char *args[] = { openCommand, fPath.string(), nullptr };
-    app()->runProgram(openCommand, args);
-}
-
-DProgram::DProgram(
-    IApp *app,
-    YSMListener *smActionListener,
-    const mstring &name,
-    ref<YIcon> icon,
-    const bool restart,
-    const char *wmclass,
-    const char *exe,
-    YStringArray &args)
-    : DObject(app, name, icon),
-    fRestart(restart),
-    fRes(newstr(wmclass)),
-    fPid(0),
-    fCmd(exe),
-    fArgs(args),
-    smActionListener(smActionListener)
+RProgram::RProgram(bool restart, const char* resource,
+                   const char* command, YStringArray& args)
+    : fRestart(restart)
+    , fRes(resource)
+    , fPid(None)
+    , fCmd(command)
+    , fArgs(args)
 {
     if (fArgs.isEmpty() || fArgs.getString(fArgs.getCount() - 1))
         fArgs.append(nullptr);
 }
 
-DProgram::~DProgram() {
+RProgram::~RProgram() {
     delete[] fCmd;
     delete[] fRes;
 }
 
-void DProgram::open() {
+void RProgram::open(YSMListener* smActionListener, unsigned mods) {
     if (fRestart)
         smActionListener->restartClient(fCmd, fArgs.getCArray());
     else if (fRes)
         smActionListener->runOnce(fRes, &fPid, fCmd, fArgs.getCArray());
     else
-        app()->runProgram(fCmd, fArgs.getCArray());
+        smActionListener->runProgram(fCmd, fArgs.getCArray(), -1);
 }
 
-DProgram *DProgram::newProgram(
-    IApp *app,
-    YSMListener *smActionListener,
-    const char *name,
+DProgram::DProgram(
+    YSMListener* smActionListener,
+    const char* name,
     ref<YIcon> icon,
-    const bool restart,
-    const char *wmclass,
-    const char *exestr,
-    YStringArray &args)
+    bool restart,
+    const char* wmclass,
+    const char* command,
+    YStringArray& args)
+    : DObject(name, icon)
+    , RProgram(restart, wmclass, command, args)
+    , smActionListener(smActionListener)
 {
-    DProgram* program = nullptr;
-    if (nonempty(exestr)) {
-        MSG(("LOOKING FOR: %s\n", exestr));
-        char* path = path_lookup(exestr);
-        if (path) {
-            program = new DProgram(app, smActionListener, name, icon,
-                                   restart, wmclass, path, args);
-        } else {
-            MSG(("Program %s (%s) not found.", name, exestr));
-        }
-    }
-    return program;
+}
+
+void DProgram::open() {
+    RProgram::open(smActionListener, None);
 }
 
 KProgramArrayType keyProgs;
 
-KProgram::KProgram(const char *key, DProgram *prog, bool bIsDynSwitchMenuProg) :
-    wm(newstr(key)),
-    bIsDynSwitchMenu(bIsDynSwitchMenuProg),
-    fProg(prog),
-    pSwitchWindow(nullptr)
+KProgram::KProgram(const char* key, const char* resource,
+                   const char* command, YStringArray& args)
+    : RProgram(false, resource, command, args)
+    , wm(newstr(key))
 {
 }
 
 KProgram::~KProgram() {
-    delete fProg;
     if (wm.initial == false)
         delete[] const_cast<char *>(wm.name);
-    delete pSwitchWindow;
 }
 
 class MenuProgSwitchItems: public ISwitchItems {
@@ -113,10 +82,12 @@ class MenuProgSwitchItems: public ISwitchItems {
     const WMKey* wmkey;
 
 public:
-    MenuProgSwitchItems(DProgram* prog, const WMKey* wmkey) :
+    MenuProgSwitchItems(RProgram* prog, const WMKey* wmkey) :
         ISwitchItems(), zTarget(0), wmkey(wmkey) {
-        menu = new MenuProgMenu(wmapp, wmapp, nullptr /* no wmaction handling*/,
-                "switch popup internal menu", prog->cmd(), prog->args());
+        menu = new MenuProgMenu(wmapp, wmapp,
+                                nullptr /* no wmaction handling*/,
+                                "switch popup internal menu",
+                                prog->cmd(), prog->args());
     }
     ~MenuProgSwitchItems() {
         delete menu;
@@ -189,18 +160,23 @@ public:
     }
 };
 
-void KProgram::open(unsigned mods) {
-    if (!fProg) return;
+SProgram::SProgram(const char* key, const char* resource,
+                   const char* command, YStringArray& args)
+    : KProgram(key, resource, command, args)
+    , pSwitchWindow(nullptr)
+{
+}
 
-    if (bIsDynSwitchMenu) {
-        if (!pSwitchWindow) {
-            ISwitchItems* items = new MenuProgSwitchItems(fProg, &wm);
-            pSwitchWindow = new SwitchWindow(desktop, items, quickSwitchVertical);
-        }
-        pSwitchWindow->begin(true, mods);
+SProgram::~SProgram() {
+    delete pSwitchWindow;
+}
+
+void SProgram::open(YSMListener* smActionListener, unsigned mods) {
+    if (pSwitchWindow == nullptr) {
+        ISwitchItems* items = new MenuProgSwitchItems(this, &wm);
+        pSwitchWindow = new SwitchWindow(desktop, items, quickSwitchVertical);
     }
-    else
-        fProg->open();
+    pSwitchWindow->begin(true, mods);
 }
 
 MenuFileMenu::MenuFileMenu(
@@ -354,46 +330,17 @@ FocusMenu::FocusMenu() {
     }
 }
 
-HelpMenu::HelpMenu(
-    IApp *app,
-    YSMListener *smActionListener,
-    YActionListener *wmActionListener)
-    : ObjectMenu(wmActionListener)
-{
-    struct HelpMenuItem {
-        const char *name;
-        const char *menu;
-        const char *clas;
-    } help[] = {
-        { ICEHELPIDX, _("_Manual"), "browser.Manual" },
-        { "icewm.1.html", _("_Icewm(1)"), "browser.IceWM" },
-        { "icewmbg.1.html", _("Icewm_Bg(1)"), "browser.IcewmBg" },
-        { "icesound.1.html", _("Ice_Sound(1)"), "browser.IceSound" },
-    };
-    for (size_t k = 0; k < ACOUNT(help); ++k) {
-        YStringArray args(3);
-        args.append(ICEHELPEXE);
-        if (k == 0) {
-            args.append(help[k].name);
-        } else {
-            upath path = upath(ICEHELPIDX).parent() + help[k].name;
-            args.append(path.string());
-        }
-        args.append(nullptr);
-
-        DProgram *prog = DProgram::newProgram(
-            app,
-            smActionListener,
-            help[k].menu,
-            null,
-            false,
-            help[k].clas,
-            ICEHELPEXE,
-            args);
-
-        if (prog)
-            addObject(prog, "help");
-    }
+HelpMenu::HelpMenu() {
+    addItem(_("_Manual"), -2, null, actionHelpManual, "help");
+    addItem(_("_Icewm(1)"), -2, null, actionHelpIcewm, "help");
+    addItem(_("Icewm_Bg(1)"), -2, null, actionHelpIcewmbg, "help");
+    addItem(_("Ice_Sound(1)"), -2, null, actionHelpIcesound, "help");
+    addItem("icesh", -2, null, actionHelpIcesh, "help");
+    addItem("icewm-env", -2, null, actionHelpEnv, "help");
+    addItem("icewm-keys", -2, null, actionHelpKeys, "help");
+    addItem("icewm-startup", -2, null, actionHelpStartup, "help");
+    addItem("icewm-toolbar", -2, null, actionHelpToolbar, "help");
+    addItem("icewm-winoptions", -2, null, actionHelpWinoptions, "help");
 }
 
 void StartMenu::refresh() {
@@ -401,14 +348,12 @@ void StartMenu::refresh() {
 
     addSeparator();
 
-/// TODO #warning "make this into a menuprog (ala gnome.cc), and use mime"
+    // "make this into a menuprog (ala gnome.cc), and use mime"
     if (nonempty(openCommand)) {
         upath path[] = { upath::root(), YApplication::getHomeDir() };
-        ObjectMenu* sub;
-        for (const upath& p : path) {
-            sub = new BrowseMenu(app, smActionListener, wmActionListener, p);
-            DFile *file = new DFile(app, p, null, p);
-            addObject(file, "folder", sub, false);
+        for (upath& p : path) {
+            YMenu* sub = new BrowseMenu(app, p);
+            addItem(p.path(), -2, actionNull, sub, "folder");
         }
         addSeparator();
     }
@@ -435,7 +380,7 @@ void StartMenu::refresh() {
     }
 
     if (showHelp) {
-        HelpMenu* help = new HelpMenu(app, smActionListener, wmActionListener);
+        HelpMenu* help = new HelpMenu();
         settings->addSubmenu(_("_Help"), -2, help, "help");
     }
 
@@ -450,7 +395,7 @@ void StartMenu::refresh() {
     }
 
     if (showThemesMenu) {
-        YMenu *themes = new ThemesMenu(app, smActionListener, wmActionListener);
+        YMenu* themes = new ThemesMenu(app, smActionListener);
         settings->addSubmenu(_("_Themes"), -2, themes, "themes");
     }
 

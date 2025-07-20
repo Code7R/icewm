@@ -357,8 +357,8 @@ void YWMApp::subdirs(const char* subdir, bool themeOnly, MStringArray& paths) {
         upath confDir(YApplication::getConfigDir());
         upath libsDir(YApplication::getLibDir());
         upath themeFile(themeName);
-        upath themeDir(themeFile.getExtension().isEmpty()
-                       ? themeFile : themeFile.parent());
+        upath themeDir(themeFile.path().endsWith(".theme")
+                       ? themeFile.parent() : themeFile);
 
         if (themeDir.isAbsolute()) {
             if (privDir.dirExists()) {
@@ -958,6 +958,16 @@ void YWMApp::setFocusMode(FocusModel mode) {
     WMConfig::setDefaultFocus(mode);
 }
 
+void YWMApp::launchHelp(const char* file) {
+    const char* args[] = { ICEHELPEXE, file, nullptr };
+    upath path;
+    if (strchr(file, '/') == nullptr) {
+        path = upath(ICEHELPIDX).parent() + file;
+        args[1] = path.string();
+    }
+    runProgram(ICEHELPEXE, args);
+}
+
 void YWMApp::actionPerformed(YAction action, unsigned int /*modifiers*/) {
     if (action == actionLogout) {
         doLogout(Logout);
@@ -1017,6 +1027,26 @@ void YWMApp::actionPerformed(YAction action, unsigned int /*modifiers*/) {
         setFocusMode(FocusCustom);
     } else if (action == actionRefresh) {
         refreshDesktop();
+    } else if (action == actionHelpManual) {
+        launchHelp(ICEHELPIDX);
+    } else if (action == actionHelpIcewm) {
+        launchHelp("icewm.1.html");
+    } else if (action == actionHelpIcewmbg) {
+        launchHelp("icewmbg.1.html");
+    } else if (action == actionHelpIcesound) {
+        launchHelp("icesound.1.html");
+    } else if (action == actionHelpIcesh) {
+        launchHelp("icesh.1.html");
+    } else if (action == actionHelpEnv) {
+        launchHelp("icewm-env.5.html");
+    } else if (action == actionHelpKeys) {
+        launchHelp("icewm-keys.5.html");
+    } else if (action == actionHelpStartup) {
+        launchHelp("icewm-startup.5.html");
+    } else if (action == actionHelpToolbar) {
+        launchHelp("icewm-toolbar.5.html");
+    } else if (action == actionHelpWinoptions) {
+        launchHelp("icewm-winoptions.5.html");
     } else if (action == actionAbout) {
         if (aboutDlg == nullptr)
             aboutDlg = new AboutDlg(this);
@@ -2036,25 +2066,8 @@ void YWMApp::handleMsgBox(YMsgBox *msgbox, int operation) {
 }
 
 void YWMApp::handleSMAction(WMAction message) {
-    static const pair<WMAction, EAction> pairs[] = {
-        { ICEWM_ACTION_LOGOUT,        actionLogout },
-        { ICEWM_ACTION_CANCEL_LOGOUT, actionCancelLogout },
-        { ICEWM_ACTION_REBOOT,        actionReboot },
-        { ICEWM_ACTION_SHUTDOWN,      actionShutdown },
-        { ICEWM_ACTION_ABOUT,         actionAbout },
-        { ICEWM_ACTION_WINDOWLIST,    actionWindowList },
-        { ICEWM_ACTION_RESTARTWM,     actionRestart },
-        { ICEWM_ACTION_SUSPEND,       actionSuspend },
-        { ICEWM_ACTION_WINOPTIONS,    actionWinOptions },
-        { ICEWM_ACTION_RELOADKEYS,    actionReloadKeys },
-        { ICEWM_ACTION_ICEWMBG,       actionIcewmbg },
-        { ICEWM_ACTION_REFRESH,       actionRefresh },
-        { ICEWM_ACTION_HIBERNATE,     actionHibernate },
-        { ICEWM_ACTION_TOOLBAR,       actionToolbar },
-    };
-    for (auto p : pairs)
-        if (message == p.left)
-            return actionPerformed(p.right);
+    if (inrange<int>(message, 2, LAST_ICEWM_ACTION))
+        actionPerformed(YAction(EAction(message)));
 }
 
 void YWMApp::refreshDesktop() {
