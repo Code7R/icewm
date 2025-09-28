@@ -1,6 +1,7 @@
 icewm (3.9.0-1) unstable; urgency=low
 
   * New upstream release
+    + cherry-picking trivial bugfixes from upstream branch
 
  -- Eduard Bloch <blade@debian.org>  Sun, 28 Sep 2025 12:41:51 +0200
 
