@@ -2,10 +2,10 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([icewm],[3.8.2],
+AC_INIT([icewm],[3.9.0],
         [https://github.com/bbidulock/icewm/issues],
         [icewm],[https://ice-wm.org])
-AC_REVISION([3.8.2])
+AC_REVISION([3.9.0])
 
 # set better defaults
 AC_PREFIX_DEFAULT([/usr])
@@ -22,13 +22,13 @@ AC_CONFIG_AUX_DIR([scripts])
 AC_USE_SYSTEM_EXTENSIONS
 AC_CANONICAL_TARGET
 
-DATE='2025-08-03'
+DATE='2025-08-31'
 AC_SUBST([DATE])
 
-MDOCDATE='August 3, 2025'
+MDOCDATE='August 31, 2025'
 AC_SUBST([MDOCDATE])
 
-BRANCH='3.8.2'
+BRANCH='3.9.0'
 AC_SUBST([BRANCH])
 
 APPLICATIONS='icewm icewm-session icesh icewmhint icewmbg icehelp'
@@ -198,7 +198,8 @@ AC_RUN_IFELSE([AC_LANG_PROGRAM([[#include <regex>]],[[
                              ])
               ])
 
-PKG_CHECK_MODULES([CORE],[fontconfig xrender xcomposite xdamage xfixes xext x11])
+PKG_CHECK_MODULES([CORE],[fontconfig xrender xcomposite
+                          xcursor xdamage xfixes xext x11])
 AC_SUBST([CORE_CFLAGS])
 AC_SUBST([CORE_LIBS])
 
@@ -379,6 +380,9 @@ AC_ARG_ENABLE([nanosvg],
 AC_ARG_ENABLE([gdk-pixbuf],
     AS_HELP_STRING([--enable-gdk-pixbuf],[Enable gdk-pixbuf rendering.
 	@<:@default=disabled@:>@]))
+AC_ARG_ENABLE([xpm],
+    AS_HELP_STRING([--enable-xpm],[Enable libXpm monochrome cursors.
+        @<:@default=disabled@:>@]))
 
 image_library=
 if test "x$enable_gdk_pixbuf" = xyes
@@ -444,12 +448,14 @@ then
             [AC_MSG_WARN([Package librsvg is missing. SVG is not supported.])])
     fi
 
-    PKG_CHECK_MODULES([XPM],[xpm],[
-	IMAGE_CFLAGS="$IMAGE_CFLAGS $XPM_CFLAGS"
-	IMAGE_LIBS="$IMAGE_LIBS $XPM_LIBS"
-	AC_DEFINE([CONFIG_XPM],[1],[Define to enable libxpm rendering.])
-	image_library="$image_library libxpm"],
-	[AC_MSG_ERROR([Package libXpm is required for themable cursors.])])
+    if test "x$enable_xpm" = xyes
+    then
+        PKG_CHECK_MODULES([XPM],[xpm],[
+            IMAGE_CFLAGS="$IMAGE_CFLAGS $XPM_CFLAGS"
+            IMAGE_LIBS="$IMAGE_LIBS $XPM_LIBS"
+            AC_DEFINE([CONFIG_XPM],[1],[Enable libXpm monochrome-cursors.])
+            image_library="$image_library libxpm"])
+    fi
 fi
 
 if test "x$enable_gdk_pixbuf" != xyes &&
