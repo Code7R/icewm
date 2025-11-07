@@ -3,11 +3,12 @@ Section: x11
 Priority: optional
 Maintainer: Eduard Bloch <blade@debian.org>
 Build-Depends: debhelper (>= 10),
-# misc. build tools
+# misc, build tools
   gettext,
   pandoc (>> 2),
   cmake (>> 3.12),
   asciidoctor,
+  libfribidi-dev,
   dpkg-dev (>= 1.16.1~),
 # sound libs
   libsndfile1-dev,
@@ -17,18 +18,8 @@ Build-Depends: debhelper (>= 10),
   libnanosvg-dev,
 # font processor(s)
   libxft-dev (>> 2.1.1) | libxft2-dev,
-# X11 libs
-  x11proto-core-dev | x-dev,
-  libsm-dev,
-  libx11-dev,
-  libxext-dev,
-  libxinerama-dev,
-  libxrender-dev,
-  libxrandr-dev,
-  libfribidi-dev,
-  libxcomposite-dev,
-  libxdamage-dev,
-  libxres-dev
+# X11 libs - since we are not allowed to use the meta package
+  libfontenc-dev, libfs-dev, libice-dev, libsm-dev, libx11-dev, libxau-dev, libxaw7-dev, libxcomposite-dev, libxcursor-dev, libxdamage-dev, libxdmcp-dev, libxext-dev, libxfixes-dev, libxfont-dev, libxft-dev, libxi-dev, libxinerama-dev, libxkbfile-dev, libxmu-dev, libxmuu-dev, libxpm-dev, libxrandr-dev, libxrender-dev, libxres-dev, libxss-dev, libxt-dev, libxtst-dev, libxv-dev, libxvmc-dev, libxxf86dga-dev, libxxf86vm-dev, x11proto-dev, xserver-xorg-dev, xtrans-dev
 Build-Conflicts: libttf-dev, libesd0-dev
 Standards-Version: 4.5.0
 Vcs-Git: https://github.com/Code7R/icewm.git
