@@ -1,3 +1,10 @@
+icewm (4.0.0-1) unstable; urgency=low
+
+  * New upstream release
+    + cherry-picked CMake warning fix from pending MR
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 18 Jan 2026 22:49:03 +0100
+
 icewm (3.9.0-2) unstable; urgency=low
 
   * Updating build-deps with latest xorg-dev dependencies list, to prevent
